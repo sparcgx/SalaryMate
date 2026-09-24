@@ -1,0 +1,27 @@
+SalaryMate v4.2.0-web-dev.1 — Glass UI Foundation Validation
+========================================================================
+Source: SalaryMate_薪資管家_Dashboard_v0.6.8_Remaining_Write_Integrity.html
+Output: SalaryMate_v4.2.0-web-dev.1_Glass_UI_Foundation.html
+Source SHA-256: 1264fcb5e55ca96b0c91056bbf1bb2fb5dba4512994b94d7f57564062370ee9a
+Output SHA-256: faed8e8d587028fbbae6c4c2fc9b9cd1bb11180f5aa43bfcc0a54768bafdf775
+Result: 16 PASS / 0 FAIL / 16 TOTAL
+
+Scope: UI-only CSS override + visible version labels.
+Frozen: JavaScript/runtime logic, payroll formulas, Attendance/OT, company isolation, backup, OCR, Snapshot/Payslip, historical data.
+
+PASS SCRIPT-COUNT — 1 -> 1
+PASS SCRIPT-BYTE-IDENTITY — d7f0e0c32dda6b6ffff398fbc4da54874ea27ab889c8019760994863e8ddc886 == d7f0e0c32dda6b6ffff398fbc4da54874ea27ab889c8019760994863e8ddc886
+PASS DOM-ID-SET — 657 IDs unchanged
+PASS CONTROL-COUNT — 287 -> 287
+PASS HISTORICAL-OT — historical OT marker retained
+PASS CANONICAL-RECORDS — canonical data markers retained
+PASS ORPHAN-QUARANTINE — orphan quarantine retained
+PASS SNAPSHOT — snapshot markers retained
+PASS OCR — OCR markers retained
+PASS COMPANY-ISOLATION — company isolation marker retained
+PASS VERSION-TITLE — new title present
+PASS VERSION-BADGE — new badge present
+PASS GLASS-CSS — glass block present
+PASS NO-NEW-SCRIPT — no script block added
+PASS FORM-ACTION-PRESERVED — form count unchanged
+PASS SIZE-DELTA-LIMIT — +11250 chars UI CSS/labels only

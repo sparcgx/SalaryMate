@@ -1,0 +1,1999 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SalaryMate v4.2.0-web-dev.1｜Glass UI Foundation</title>
+<style>
+
+
+
+
+
+
+
+
+
+
+
+
+/* v0.6.8 Write Integrity */
+.embedded-history-import{border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:12px;margin:10px 0}
+.embedded-history-import-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}
+.embedded-history-import-head span{display:block;color:var(--muted);font-size:var(--fs-8);margin-top:3px}
+.embedded-history-import-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.embedded-history-import-state{margin-top:8px}
+.task-launcher{margin-bottom:10px}
+.task-launcher-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:9px}
+.task-launcher-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.task-card{
+ appearance:none;border:1px solid var(--line);border-radius:12px;background:var(--panel2);
+ display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:8px;
+ text-align:left;padding:11px 12px;cursor:pointer;color:inherit
+}
+.task-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.task-icon{width:38px;height:38px;border-radius:10px;background:var(--panel);display:grid;place-items:center;font-weight:900;font-size:var(--fs-14)}
+.task-main b,.task-main small{display:block}.task-main b{font-size:var(--fs-11)}.task-main small{font-size:var(--fs-8);color:var(--muted);margin-top:2px}
+.task-arrow{font-size:24px;color:var(--muted)}
+.dashboard-layout-lowfreq{display:none!important}
+.simplified-actions{align-items:center}
+.workbench-more{position:relative}
+.workbench-more>summary{list-style:none;cursor:pointer}.workbench-more>summary::-webkit-details-marker{display:none}
+.workbench-more-menu{
+ position:absolute;z-index:20;right:0;top:calc(100% + 5px);min-width:180px;padding:7px;
+ display:grid;gap:5px;border:1px solid var(--line);border-radius:10px;background:var(--panel);box-shadow:0 8px 30px rgba(0,0,0,.12)
+}
+.workbench-more-menu .btn{width:100%;text-align:left}
+.workbench-detail{margin:10px 0;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
+.workbench-detail>summary{cursor:pointer;padding:9px 11px;font-weight:900;color:var(--muted)}
+.workbench-detail-body{padding:0 9px 9px}
+#settingsPanel{display:flex!important;flex-direction:column}
+#settingsPanel .company-settings-card{order:1}
+#settingsPanel .local-data-cleanup-card{order:9}
+.settings-maintenance-details>summary{cursor:pointer;font-weight:900;padding:8px 0}
+.settings-maintenance-body{padding-top:6px}
+@media(max-width:780px){
+ .task-launcher-grid{grid-template-columns:1fr}
+ .workbench-more-menu{position:fixed;left:12px;right:12px;top:auto}
+}
+
+/* v0.6.2 Functional Consolidation & UI Simplification */
+.iv-head-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.iv-center.iv-collapsed{padding-bottom:10px}
+.iv-center.iv-collapsed > :not(.section-head){display:none!important}
+.payslip-photo-consolidated{display:grid;grid-template-columns:minmax(220px,.7fr) minmax(0,1.3fr);gap:7px;align-items:center}
+.payslip-photo-consolidated label{grid-column:1/-1}
+.payslip-photo-consolidated .hint{align-self:center}
+.secondary-center-note{padding:7px 10px;border:1px dashed var(--line);border-radius:10px;background:var(--panel2);color:var(--muted);font-size:var(--fs-8);margin-bottom:9px}
+@media(max-width:700px){.payslip-photo-consolidated{grid-template-columns:1fr}}
+
+/* v0.6.1 Image / Payslip Verification Import */
+.iv-center{display:block}
+.iv-modebar{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}
+.iv-top-grid{display:grid;grid-template-columns:minmax(180px,.6fr) minmax(260px,1fr) minmax(340px,1.2fr);gap:8px;align-items:end}
+.iv-top-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:end}
+.iv-work-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:9px;margin:10px 0}
+.iv-preview-card,.iv-text-card{min-width:0;padding:10px;border:1px solid var(--line);border-radius:11px;background:var(--panel2)}
+.iv-image-preview{min-height:330px;display:flex;align-items:center;justify-content:center;overflow:auto;border:1px dashed var(--line);border-radius:10px;background:var(--panel);padding:8px}
+.iv-image-preview img{max-width:100%;max-height:520px;object-fit:contain;border-radius:8px}
+.iv-textarea{width:100%;min-height:330px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;line-height:1.45}
+.iv-summary-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:10px 0}
+.iv-summary-grid>div{padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
+.iv-summary-grid span,.iv-summary-grid b,.iv-summary-grid small{display:block}
+.iv-summary-grid span{font-size:var(--fs-8);color:var(--muted)}
+.iv-summary-grid b{font-size:var(--fs-14);margin:4px 0 2px}
+.iv-summary-grid small{font-size:var(--fs-7);color:var(--muted)}
+.iv-result-pass{background:#eff9f1}.iv-result-warn{background:#fff8e7}.iv-result-missing{background:#fff0f0}
+.iv-field-detail{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:9px 0}
+.iv-field-card{padding:9px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
+.iv-field-card span,.iv-field-card b,.iv-field-card small{display:block}.iv-field-card span{font-size:var(--fs-8);color:var(--muted)}
+.iv-field-card b{font-size:var(--fs-12);margin:4px 0}.iv-field-card small{font-size:var(--fs-7);color:var(--muted)}
+.iv-field-card.pass{border-color:#9ed5aa;background:#eff9f1}.iv-field-card.warn{border-color:#e7c56f;background:#fff8e7}
+.iv-actionbar{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}.iv-privacy-note code{font-size:var(--fs-8)}
+@media(max-width:1050px){.iv-top-grid,.iv-work-grid{grid-template-columns:1fr}.iv-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.iv-field-detail{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.iv-summary-grid,.iv-field-detail{grid-template-columns:1fr}}
+
+/* v0.6.0-R2 Annual Center Detail Drilldown */
+.annual-center-month-block{display:grid;gap:0}
+.annual-center-month-block + .annual-center-month-block{margin-top:1px}
+.annual-center-recent-row .month{
+ flex-direction:column;gap:6px;align-items:stretch;justify-content:center
+}
+.annual-center-recent-row .month .month-label{
+ display:block;text-align:center;font-size:var(--fs-16);font-weight:900
+}
+.annual-drill-toggle{
+ width:100%;min-height:30px;padding:5px 7px;font-size:var(--fs-7)
+}
+.annual-drilldown{
+ display:none;margin:-1px 0 7px;padding:11px;border:1px solid var(--line);
+ border-top-style:dashed;border-radius:0 0 12px 12px;background:var(--panel2)
+}
+.annual-drilldown.open{display:block}
+.annual-drill-head{
+ display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:9px
+}
+.annual-drill-head b{font-size:var(--fs-12)}
+.annual-drill-head span{font-size:var(--fs-8);color:var(--muted)}
+.annual-drill-sourcebar{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-bottom:9px
+}
+.annual-drill-sourcebar>div{
+ padding:8px 9px;border:1px solid var(--line);border-radius:9px;background:var(--panel)
+}
+.annual-drill-sourcebar span,.annual-drill-sourcebar b,.annual-drill-sourcebar small{display:block}
+.annual-drill-sourcebar span{font-size:var(--fs-7);color:var(--muted)}
+.annual-drill-sourcebar b{font-size:var(--fs-10);margin:3px 0}
+.annual-drill-sourcebar small{font-size:var(--fs-7);color:var(--muted);line-height:1.35}
+.annual-drill-grid{
+ display:grid;grid-template-columns:1fr 1fr;gap:9px
+}
+.annual-drill-section{
+ min-width:0;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:9px
+}
+.annual-drill-section.full{grid-column:1/-1}
+.annual-drill-title{
+ display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px
+}
+.annual-drill-title b{font-size:var(--fs-10)}
+.annual-drill-title span{font-size:var(--fs-7);color:var(--muted)}
+.annual-drill-list{display:grid;gap:4px}
+.annual-drill-item{
+ display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.8fr) auto;
+ gap:7px;align-items:center;padding:6px 7px;border:1px solid var(--line);border-radius:8px;background:var(--panel2)
+}
+.annual-drill-item .name{font-weight:800;min-width:0}
+.annual-drill-item .meta{font-size:var(--fs-7);color:var(--muted);min-width:0}
+.annual-drill-item .amount{font-weight:900;text-align:right;white-space:nowrap}
+.annual-drill-item.disabled{opacity:.55}
+.annual-ot-detail-head{
+ display:grid;grid-template-columns:100px minmax(0,1fr) 80px minmax(0,1.15fr) 120px 95px;
+ gap:7px;padding:5px 7px;color:var(--muted);font-size:var(--fs-7);font-weight:800
+}
+.annual-ot-detail-row{
+ display:grid;grid-template-columns:100px minmax(0,1fr) 80px minmax(0,1.15fr) 120px 95px;
+ gap:7px;align-items:center;padding:6px 7px;border:1px solid var(--line);border-radius:8px;background:var(--panel2)
+}
+.annual-ot-detail-row .date{font-weight:900}
+.annual-ot-detail-row .meta,.annual-ot-detail-row .source{font-size:var(--fs-7);color:var(--muted)}
+.annual-ot-detail-row .hours,.annual-ot-detail-row .amount{text-align:right;font-weight:900;white-space:nowrap}
+.annual-ot-detail-row.history{border-style:dashed}
+.annual-drill-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+@media(max-width:1050px){
+ .annual-drill-sourcebar{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .annual-drill-grid{grid-template-columns:1fr}
+ .annual-drill-section.full{grid-column:auto}
+ .annual-ot-detail-head{display:none}
+ .annual-ot-detail-row{grid-template-columns:100px 1fr 80px 100px}
+ .annual-ot-detail-row .source,.annual-ot-detail-row .segments{grid-column:2/-1}
+}
+@media(max-width:700px){
+ .annual-drill-sourcebar{grid-template-columns:1fr}
+ .annual-ot-detail-row{grid-template-columns:1fr}
+ .annual-ot-detail-row .source,.annual-ot-detail-row .segments{grid-column:auto}
+ .annual-ot-detail-row .hours,.annual-ot-detail-row .amount{text-align:left}
+}
+
+/* v0.6.0-R1 Annual recent-month integrity */
+.annual-center-recent{
+ display:grid;gap:8px
+}
+.annual-center-recent-row{
+ display:grid;grid-template-columns:110px minmax(0,1.1fr) minmax(0,1.2fr) minmax(0,1.1fr) minmax(0,1.15fr) minmax(0,1.3fr);
+ gap:8px;align-items:stretch;padding:9px;border:1px solid var(--line);border-radius:11px;background:var(--panel)
+}
+.annual-center-recent-row .month{
+ display:flex;align-items:center;justify-content:center;font-size:var(--fs-16);font-weight:900;
+ border:1px solid var(--line);border-radius:10px;background:var(--panel2);padding:8px
+}
+.annual-center-recent-col{
+ border:1px solid var(--line);border-radius:10px;background:var(--panel2);padding:8px 9px;min-width:0
+}
+.annual-center-recent-col .h{display:block;font-size:var(--fs-7);font-weight:800;color:var(--muted);margin-bottom:4px}
+.annual-center-recent-col .v{display:block;font-size:var(--fs-10);font-weight:900}
+.annual-center-recent-col .s{display:block;font-size:var(--fs-7);color:var(--muted);margin-top:3px;line-height:1.35}
+.annual-center-recent-col.money .v{font-size:var(--fs-12)}
+.annual-center-recent-col.money .s{display:flex;flex-direction:column;gap:2px}
+.annual-center-recent-col .kline{display:block}
+.annual-center-recent-col.ot .v{white-space:nowrap}
+.annual-center-recent-row.pending .month{border-style:dashed}
+@media(max-width:1320px){
+ .annual-center-recent-row{
+  grid-template-columns:110px repeat(2,minmax(0,1fr)) repeat(2,minmax(0,1fr));
+ }
+ .annual-center-recent-row .money-block{grid-column:2 / -1}
+}
+@media(max-width:980px){
+ .annual-center-recent-row{
+  grid-template-columns:110px 1fr 1fr;
+ }
+ .annual-center-recent-row .money-block{grid-column:auto}
+}
+@media(max-width:700px){
+ .annual-center-recent-row{
+  grid-template-columns:1fr;
+ }
+ .annual-center-recent-row .month{justify-content:flex-start}
+}
+
+/* v0.6.0 Annual Compensation Center */
+.annual-center-overview{grid-column:1/-1}
+.annual-center-head-actions,.advanced-analytics-head-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.annual-center-toolbar{
+ display:grid;grid-template-columns:minmax(180px,.55fr) auto auto 1fr;gap:8px;align-items:end;margin:10px 0
+}
+.annual-center-kpis{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px
+}
+.annual-center-kpis>div{
+ padding:10px 11px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);min-width:0
+}
+.annual-center-kpis span,.annual-center-kpis b,.annual-center-kpis small{display:block}
+.annual-center-kpis span{font-size:var(--fs-8);color:var(--muted)}
+.annual-center-kpis b{font-size:var(--fs-16);margin:4px 0 2px}
+.annual-center-kpis small{font-size:var(--fs-7);color:var(--muted)}
+.annual-center-flow{
+ display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1.3fr);
+ gap:7px;align-items:center;margin:10px 0 6px
+}
+.annual-center-flow>div{padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+.annual-center-flow span,.annual-center-flow b{display:block}
+.annual-center-flow span{font-size:var(--fs-8);color:var(--muted)}
+.annual-center-flow b{font-size:var(--fs-13);margin-top:4px}
+.annual-center-flow em{font-style:normal;font-weight:900;text-align:center;color:var(--muted)}
+.annual-center-flow .result{border-width:2px}
+.annual-center-double-count-note{margin-bottom:10px}
+.annual-center-lower{display:grid;grid-template-columns:1.45fr .8fr;gap:9px}
+.annual-center-panel{padding:10px;border:1px solid var(--line);border-radius:11px;background:var(--panel2)}
+.annual-center-recent{display:grid;gap:5px}
+.annual-center-recent-row{
+ display:grid;grid-template-columns:85px minmax(0,1fr) minmax(0,1fr) 95px 95px;
+ gap:7px;align-items:center;padding:7px 8px;border:1px solid var(--line);border-radius:9px;background:var(--panel)
+}
+.annual-center-recent-row .month{font-weight:900}
+.annual-center-recent-row .meta{font-size:var(--fs-8);color:var(--muted)}
+.annual-center-recent-row .money{text-align:right;font-weight:900;white-space:nowrap}
+.annual-center-state{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.annual-center-state>div{padding:9px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
+.annual-center-state span,.annual-center-state b{display:block}
+.annual-center-state span{font-size:var(--fs-8);color:var(--muted)}
+.annual-center-state b{font-size:var(--fs-12);margin-top:3px}
+#payslipAnalytics::before{
+ content:"年度薪資中心的進階／歷史分析";display:block;margin-bottom:9px;padding:7px 10px;
+ border:1px dashed var(--line);border-radius:10px;color:var(--muted);font-size:var(--fs-8);font-weight:800;background:var(--panel2)
+}
+@media(max-width:1050px){
+ .annual-center-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .annual-center-lower{grid-template-columns:1fr}
+ .annual-center-recent-row{grid-template-columns:80px 1fr 1fr 90px}
+ .annual-center-recent-row .actual{display:none}
+}
+@media(max-width:700px){
+ .annual-center-toolbar,.annual-center-kpis,.annual-center-flow,.annual-center-state{grid-template-columns:1fr}
+ .annual-center-flow em{display:none}
+ .annual-center-recent-row{grid-template-columns:1fr}
+ .annual-center-recent-row .actual{display:block}
+ .annual-center-recent-row .money{text-align:left}
+}
+
+/* v0.5.2 Payroll Attendance & OT Integration */
+.pati-panel{
+ margin:12px 0;padding:13px;border:1px solid var(--line);border-radius:13px;background:var(--panel2)
+}
+.pati-cycle{
+ display:grid;grid-template-columns:1.5fr .8fr 1fr;gap:7px;margin:9px 0
+}
+.pati-cycle>div,.pati-summary-grid>div{
+ padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel);min-width:0
+}
+.pati-cycle span,.pati-cycle b,.pati-summary-grid span,.pati-summary-grid b,.pati-summary-grid small{display:block}
+.pati-cycle span,.pati-summary-grid span{font-size:var(--fs-8);color:var(--muted)}
+.pati-cycle b{font-size:var(--fs-11);margin-top:3px}
+.pati-summary-grid{
+ display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px
+}
+.pati-summary-grid b{font-size:var(--fs-14);margin:4px 0 2px}
+.pati-summary-grid small{font-size:var(--fs-7);color:var(--muted)}
+.pati-actions{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}
+.pati-recent-wrap{margin-top:8px}
+.compact-head{margin-bottom:5px!important}
+.pati-recent-list{display:grid;gap:5px}
+.pati-recent-row{
+ display:grid;grid-template-columns:105px minmax(0,1fr) minmax(0,1fr) 110px auto;
+ gap:7px;align-items:center;padding:7px 8px;border:1px solid var(--line);border-radius:9px;background:var(--panel)
+}
+.pati-recent-row .date{font-weight:900}
+.pati-recent-row .meta,.pati-recent-row .ot{font-size:var(--fs-8);color:var(--muted)}
+.pati-recent-row .amount{text-align:right;font-weight:900;white-space:nowrap}
+.pati-recent-row.imported{border-style:dashed}
+@media(max-width:1180px){
+ .pati-summary-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .pati-recent-row{grid-template-columns:95px 1fr 1fr auto}
+ .pati-recent-row .amount{display:none}
+}
+@media(max-width:720px){
+ .pati-cycle,.pati-summary-grid{grid-template-columns:1fr}
+ .pati-recent-row{grid-template-columns:1fr}
+ .pati-recent-row .amount{display:block;text-align:left}
+}
+
+/* v0.5.1 Payroll Settlement & Payslip Integration */
+.settlement-workbench{
+ margin:11px 0;padding:13px;border:1px solid var(--line);border-radius:13px;background:var(--panel2)
+}
+.settlement-status-grid{
+ display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:10px 0
+}
+.settlement-status-grid>div{
+ padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel);min-width:0
+}
+.settlement-status-grid span,.settlement-status-grid b,.settlement-status-grid small{display:block}
+.settlement-status-grid span{font-size:var(--fs-8);color:var(--muted)}
+.settlement-status-grid b{font-size:var(--fs-14);margin:4px 0 2px;white-space:nowrap}
+.settlement-status-grid small{font-size:var(--fs-7);color:var(--muted)}
+.settlement-form-grid{
+ display:grid;grid-template-columns:.8fr 1fr 1.35fr 1.35fr;gap:8px;align-items:end
+}
+.settlement-flow-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.settlement-lock-hint{margin-top:7px}
+.payslip-center-head-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.payslip-builder-only::before{
+ content:"歷史 / 跨月份進階管理";display:block;grid-column:1/-1;
+ margin-bottom:8px;padding:7px 10px;border:1px dashed var(--line);border-radius:10px;
+ color:var(--muted);font-size:var(--fs-8);font-weight:800;background:var(--panel2)
+}
+@media(max-width:1100px){
+ .settlement-status-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .settlement-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+ .settlement-status-grid,.settlement-form-grid{grid-template-columns:1fr}
+}
+
+/* v0.5.0 Payroll Compensation Integration */
+.pci-rolebar{
+ display:flex;justify-content:space-between;gap:10px;align-items:center;
+ margin:10px 0;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--panel2)
+}
+.pci-rolebar>div:first-child{display:flex;flex-direction:column;gap:2px}
+.pci-rolebar b{font-size:var(--fs-12)}
+.pci-rolebar span{font-size:var(--fs-8);color:var(--muted)}
+.pci-role-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.pci-flow-grid{
+ display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);
+ gap:7px;align-items:stretch;margin:10px 0 14px
+}
+.pci-flow-card{
+ border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:11px 12px;min-width:0
+}
+.pci-flow-card span,.pci-flow-card b,.pci-flow-card small{display:block}
+.pci-flow-card span{font-size:var(--fs-8);color:var(--muted);font-weight:800}
+.pci-flow-card b{font-size:var(--fs-18);margin:5px 0 3px;white-space:nowrap}
+.pci-flow-card small{font-size:var(--fs-7);color:var(--muted)}
+.pci-flow-card.additions{border-style:dashed}
+.pci-flow-card.deductions{border-style:dashed}
+.pci-flow-card.net{border-width:2px}
+.pci-flow-op{display:flex;align-items:center;justify-content:center;font-size:var(--fs-18);font-weight:900;color:var(--muted)}
+.pci-layer-head{
+ display:flex;justify-content:space-between;align-items:end;gap:8px;
+ margin:14px 0 7px;padding:7px 9px;border-left:4px solid var(--line);background:var(--panel2);border-radius:0 8px 8px 0
+}
+.pci-layer-head b{font-size:var(--fs-12)}
+.pci-layer-head span{font-size:var(--fs-8);color:var(--muted);text-align:right}
+.pci-equation{
+ display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1.15fr);
+ gap:7px;align-items:center;margin:8px 0 11px
+}
+.pci-equation>div{
+ border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:var(--panel)
+}
+.pci-equation span,.pci-equation b{display:block}
+.pci-equation span{font-size:var(--fs-8);color:var(--muted)}
+.pci-equation b{font-size:var(--fs-14);margin-top:4px}
+.pci-equation em{font-style:normal;font-weight:900;text-align:center;color:var(--muted)}
+.pci-equation .result{border-width:2px}
+.comp-center-head-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.ba-layout::before{
+ content:"歷史 / 跨月份進階管理";display:block;grid-column:1/-1;
+ margin-bottom:8px;padding:7px 10px;border:1px dashed var(--line);border-radius:10px;
+ color:var(--muted);font-size:var(--fs-8);font-weight:800;background:var(--panel2)
+}
+@media(max-width:1050px){
+ .pci-flow-grid{grid-template-columns:1fr 24px 1fr}
+ .pci-flow-grid .pci-flow-card.net{grid-column:1/-1}
+ .pci-flow-grid .pci-flow-op:nth-of-type(3){display:none}
+ .pci-equation{grid-template-columns:1fr 24px 1fr}
+ .pci-equation .result{grid-column:1/-1}
+}
+@media(max-width:720px){
+ .pci-rolebar{align-items:flex-start;flex-direction:column}
+ .pci-role-actions{justify-content:flex-start}
+ .pci-flow-grid{grid-template-columns:1fr}
+ .pci-flow-op{display:none!important}
+ .pci-flow-card.net{grid-column:auto!important}
+ .pci-layer-head{align-items:flex-start;flex-direction:column}
+ .pci-layer-head span{text-align:left}
+ .pci-equation{grid-template-columns:1fr}
+ .pci-equation em{display:none}
+ .pci-equation .result{grid-column:auto}
+}
+
+/* v0.4.9 Payroll Addition Detail Management */
+.addition-manager{
+ margin-top:12px;padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--panel2)
+}
+.addition-summary-grid{
+ display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:10px 0
+}
+.addition-summary-grid>div{
+ background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 10px
+}
+.addition-summary-grid span,.addition-summary-grid b,.addition-summary-grid small{display:block}
+.addition-summary-grid span{font-size:var(--fs-8);color:var(--muted)}
+.addition-summary-grid b{font-size:var(--fs-14);margin-top:4px}
+.addition-summary-grid small{font-size:var(--fs-7);color:var(--muted);margin-top:2px}
+.addition-form-grid{
+ display:grid;grid-template-columns:1.3fr .8fr .75fr .8fr 1.25fr auto;gap:8px;align-items:end
+}
+.addition-enabled-line{
+ min-height:var(--ctrl-h,38px);align-items:center;padding:7px 8px;border:1px solid var(--line);
+ border-radius:9px;background:var(--panel);white-space:nowrap
+}
+.addition-actions{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}
+.addition-table-wrap{margin-top:7px}
+.addition-table td:nth-child(3){font-weight:900}
+.addition-row-draft{opacity:.72}
+.addition-row-excluded{opacity:.55}
+.addition-type-bonus{background:#fff5e8;color:#9a5a00}
+.addition-type-allowance{background:#eef7ff;color:#205d8c}
+@media(max-width:1200px){
+ .addition-form-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:800px){
+ .addition-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .addition-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:560px){
+ .addition-form-grid{grid-template-columns:1fr}
+ .addition-summary-grid{grid-template-columns:1fr}
+}
+
+/* v0.4.8 Payroll Deduction Detail Management */
+.deduction-manager{
+ margin-top:12px;padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--panel2)
+}
+.deduction-summary-grid{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:10px 0
+}
+.deduction-summary-grid>div{
+ background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 10px
+}
+.deduction-summary-grid span,.deduction-summary-grid b{display:block}
+.deduction-summary-grid span{font-size:var(--fs-8);color:var(--muted)}
+.deduction-summary-grid b{font-size:var(--fs-14);margin-top:4px}
+.deduction-form-grid{
+ display:grid;grid-template-columns:1.25fr 1fr .8fr 1.3fr auto;gap:8px;align-items:end
+}
+.deduction-enabled-line{
+ min-height:var(--ctrl-h,38px);align-items:center;padding:7px 8px;border:1px solid var(--line);
+ border-radius:9px;background:var(--panel);white-space:nowrap
+}
+.deduction-actions{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}
+.deduction-table-wrap{margin-top:7px}
+.deduction-table td:nth-child(3){font-weight:900}
+.deduction-item-disabled{opacity:.55}
+.deduction-type-taxable{background:#fff5e8;color:#9a5a00}
+.deduction-type-taxfree{background:#eef7ff;color:#205d8c}
+@media(max-width:1100px){
+ .deduction-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .deduction-enabled-line{align-self:end}
+}
+@media(max-width:700px){
+ .deduction-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .deduction-form-grid{grid-template-columns:1fr}
+}
+
+/* v0.4.7-R2 Isolation Hardening & Cleanup Safety */
+.orphan-quarantine-state{
+ margin-top:6px;padding:6px 8px;border-radius:8px;background:var(--panel);
+ border:1px dashed var(--line)
+}
+.orphan-quarantine-state.has-orphans{color:#9a5c00;border-color:#e6c27a;background:#fff9eb}
+@media(min-width:1180px){
+ .cleanup-impact-grid{grid-template-columns:repeat(9,minmax(0,1fr))}
+}
+
+/* v0.4.7 Expanded Global Typography Scale */
+:root{--fs-8:9px;--fs-9:10px;--fs-10:10px;--fs-11:11px;--fs-12:12px;--fs-13:13px;--fs-14:14px;--fs-15:15px;--fs-16:16px;--fs-17:17px;--fs-20:20px;--fs-23:23px;--fs-24:24px}
+
+/* 85% — readable compact minimum */
+html[data-ui-scale="085"]{--fs-8:8px;--fs-9:8.5px;--fs-10:8.5px;--fs-11:9.35px;--fs-12:10.2px;--fs-13:11.05px;--fs-14:11.9px;--fs-15:12.75px;--fs-16:13.6px;--fs-17:14.45px;--fs-20:17px;--fs-23:19.55px;--fs-24:20.4px}
+html[data-ui-scale="090"]{--fs-8:8px;--fs-9:9px;--fs-10:9px;--fs-11:9.9px;--fs-12:10.8px;--fs-13:11.7px;--fs-14:12.6px;--fs-15:13.5px;--fs-16:14.4px;--fs-17:15.3px;--fs-20:18px;--fs-23:20.7px;--fs-24:21.6px}
+html[data-ui-scale="095"]{--fs-8:8.5px;--fs-9:9.5px;--fs-10:9.5px;--fs-11:10.45px;--fs-12:11.4px;--fs-13:12.35px;--fs-14:13.3px;--fs-15:14.25px;--fs-16:15.2px;--fs-17:16.15px;--fs-20:19px;--fs-23:21.85px;--fs-24:22.8px}
+html[data-ui-scale="100"]{--fs-8:9px;--fs-9:10px;--fs-10:10px;--fs-11:11px;--fs-12:12px;--fs-13:13px;--fs-14:14px;--fs-15:15px;--fs-16:16px;--fs-17:17px;--fs-20:20px;--fs-23:23px;--fs-24:24px}
+html[data-ui-scale="105"]{--fs-8:9.5px;--fs-9:10.5px;--fs-10:10.5px;--fs-11:11.55px;--fs-12:12.6px;--fs-13:13.65px;--fs-14:14.7px;--fs-15:15.75px;--fs-16:16.8px;--fs-17:17.85px;--fs-20:21px;--fs-23:24.15px;--fs-24:25.2px}
+html[data-ui-scale="110"]{--fs-8:10px;--fs-9:11px;--fs-10:11px;--fs-11:12.1px;--fs-12:13.2px;--fs-13:14.3px;--fs-14:15.4px;--fs-15:16.5px;--fs-16:17.6px;--fs-17:18.7px;--fs-20:22px;--fs-23:25.3px;--fs-24:26.4px}
+html[data-ui-scale="115"]{--fs-8:10.5px;--fs-9:11.5px;--fs-10:11.5px;--fs-11:12.65px;--fs-12:13.8px;--fs-13:14.95px;--fs-14:16.1px;--fs-15:17.25px;--fs-16:18.4px;--fs-17:19.55px;--fs-20:23px;--fs-23:26.45px;--fs-24:27.6px}
+html[data-ui-scale="120"]{--fs-8:11px;--fs-9:12px;--fs-10:12px;--fs-11:13.2px;--fs-12:14.4px;--fs-13:15.6px;--fs-14:16.8px;--fs-15:18px;--fs-16:19.2px;--fs-17:20.4px;--fs-20:24px;--fs-23:27.6px;--fs-24:28.8px}
+html[data-ui-scale="130"]{--fs-8:12px;--fs-9:13px;--fs-10:13px;--fs-11:14.3px;--fs-12:15.6px;--fs-13:16.9px;--fs-14:18.2px;--fs-15:19.5px;--fs-16:20.8px;--fs-17:22.1px;--fs-20:26px;--fs-23:29.9px;--fs-24:31.2px}
+html[data-ui-scale="140"]{--fs-8:13px;--fs-9:14px;--fs-10:14px;--fs-11:15.4px;--fs-12:16.8px;--fs-13:18.2px;--fs-14:19.6px;--fs-15:21px;--fs-16:22.4px;--fs-17:23.8px;--fs-20:28px;--fs-23:32.2px;--fs-24:33.6px}
+
+/* Typography-driven interface sizing; avoids double-scaling via CSS zoom. */
+html[data-ui-scale="085"]{--ui-control-pad-y:7px;--ui-control-pad-x:8px}
+html[data-ui-scale="090"]{--ui-control-pad-y:8px;--ui-control-pad-x:9px}
+html[data-ui-scale="095"]{--ui-control-pad-y:8px;--ui-control-pad-x:9px}
+html[data-ui-scale="100"]{--ui-control-pad-y:9px;--ui-control-pad-x:10px}
+html[data-ui-scale="105"]{--ui-control-pad-y:9px;--ui-control-pad-x:10px}
+html[data-ui-scale="110"]{--ui-control-pad-y:10px;--ui-control-pad-x:11px}
+html[data-ui-scale="115"]{--ui-control-pad-y:10px;--ui-control-pad-x:11px}
+html[data-ui-scale="120"]{--ui-control-pad-y:11px;--ui-control-pad-x:12px}
+html[data-ui-scale="130"]{--ui-control-pad-y:12px;--ui-control-pad-x:13px}
+html[data-ui-scale="140"]{--ui-control-pad-y:13px;--ui-control-pad-x:14px}
+.ctrl{padding:var(--ui-control-pad-y,9px) var(--ui-control-pad-x,10px)}
+.btn{padding:var(--ui-control-pad-y,9px) var(--ui-control-pad-x,10px)}
+
+.font-scale-quick-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:6px}
+.font-scale-quick-row>span{font-size:var(--fs-7,8px);color:var(--muted);font-weight:900}
+.font-scale-quick-row .btn{padding:4px 7px;min-height:26px;font-size:var(--fs-8)}
+.font-scale-quick-row .btn.is-active{border-color:var(--g);background:var(--gs);color:var(--gd);font-weight:1000}
+
+/* High-scale protection: let controls wrap instead of forcing horizontal overflow. */
+html[data-ui-scale="130"] .topbar-main,
+html[data-ui-scale="140"] .topbar-main{align-items:flex-start;flex-wrap:wrap}
+html[data-ui-scale="130"] .topbar-actions,
+html[data-ui-scale="140"] .topbar-actions{flex-wrap:wrap;justify-content:flex-end}
+html[data-ui-scale="130"] .ui-settings-grid,
+html[data-ui-scale="140"] .ui-settings-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+html[data-ui-scale="140"] .company-profile-grid,
+html[data-ui-scale="140"] .dashboard-layout-settings-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+html[data-ui-scale="130"] table,
+html[data-ui-scale="140"] table{min-width:max-content}
+html[data-ui-scale="130"] .tablewrap,
+html[data-ui-scale="140"] .tablewrap{overflow:auto}
+@media(max-width:900px){
+ html[data-ui-scale="130"] .ui-settings-grid,
+ html[data-ui-scale="140"] .ui-settings-grid,
+ html[data-ui-scale="140"] .company-profile-grid,
+ html[data-ui-scale="140"] .dashboard-layout-settings-grid{grid-template-columns:1fr}
+}
+
+:root{
+ --bg:#f5f7f6;--panel:#fff;--panel2:#fafcfb;--text:#17201b;--muted:#6b756f;--line:#e2e8e4;
+ --green:#169c54;--gd:#0f7d42;--gs:#e9f7ef;--amber:#c96b00;--as:#fff6e4;--red:#c63d3d;--rs:#fff1f1;
+ --blue:#2563eb;--shadow:0 9px 26px rgba(25,52,36,.055);--r:16px;
+}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif}
+button,input,select{font:inherit}.app{display:grid;grid-template-columns:246px minmax(0,1fr);min-height:100vh}
+aside{background:#fff;border-right:1px solid var(--line);padding:20px 14px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;z-index:10}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 10px 24px;font-size:var(--fs-24);font-weight:900}.logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(145deg,#20bd68,#13a570);color:#fff;display:grid;place-items:center;font-weight:950}
+nav{display:flex;flex-direction:column;gap:5px}nav a{text-decoration:none;color:#405047;display:flex;gap:11px;align-items:center;padding:11px 12px;border-radius:11px;font-size:var(--fs-13);font-weight:800}nav a small{display:block;color:#99a39d;font-size:var(--fs-10);margin-top:2px}nav a.active{background:var(--gs);color:var(--gd)}.ico{width:22px;text-align:center}
+.version{margin-top:auto;border-top:1px solid var(--line);padding:15px 10px 0;color:var(--muted);font-size:var(--fs-10);line-height:1.6}
+main{min-width:0}.top{min-height:70px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:12px 24px;gap:14px;position:sticky;top:0;z-index:8}.top-title{font-size:var(--fs-20);font-weight:900}.top-title span{font-size:var(--fs-12);color:var(--muted);margin-left:7px}
+.badge{white-space:nowrap;background:#f5fbf7;color:var(--gd);border:1px solid #dce9e0;border-radius:999px;padding:7px 10px;font-size:var(--fs-10);font-weight:850}
+.content{max-width:1600px;margin:auto;padding:20px 24px 36px}.hero{display:flex;justify-content:space-between;gap:16px;margin-bottom:15px}.hero h1{font-size:var(--fs-23);margin:0}.hero p{font-size:var(--fs-12);color:var(--muted);margin:5px 0 0;line-height:1.55}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:12px}.metric{padding:16px;min-height:116px;position:relative}.metric .label{font-size:var(--fs-11);color:#526058;font-weight:850}.metric .value{font-size:var(--fs-23);font-weight:950;margin-top:16px}.metric .meta{font-size:var(--fs-9);color:#87928b;margin-top:5px}.bubble{position:absolute;right:14px;top:14px;width:37px;height:37px;border-radius:50%;display:grid;place-items:center;background:var(--gs)}.metric.ot .value{color:var(--amber)}.metric.ot .bubble{background:var(--as)}
+.section{padding:15px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.section-title{font-size:var(--fs-14);font-weight:900}.section-title span{font-size:var(--fs-10);color:var(--muted);margin-left:4px}.link{font-size:var(--fs-10);color:var(--gd);font-weight:900}
+.grid2{display:grid;grid-template-columns:minmax(410px,.85fr) minmax(560px,1.15fr);gap:12px;margin-bottom:12px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}.field label{display:block;font-size:var(--fs-10);font-weight:850;color:#526058;margin-bottom:5px}.ctrl{width:100%;padding:9px 10px;border:1px solid #dce3de;border-radius:9px;background:#fff;color:#223128;outline:none}.ctrl:focus{border-color:#73bf91;box-shadow:0 0 0 3px rgba(21,150,83,.08)}.hint{font-size:var(--fs-9);color:#8a958e;margin-top:4px;line-height:1.45}
+.parambox{border:1px solid var(--line);border-radius:11px;overflow:hidden;margin-top:11px}.paramrow{display:grid;grid-template-columns:1fr auto;gap:8px;padding:8px 10px;border-top:1px solid var(--line);font-size:var(--fs-10)}.paramrow:first-child{border-top:0}.paramrow span{color:var(--muted)}
+.sm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:11px}.sm{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px}.sm span{font-size:var(--fs-9);color:var(--muted);font-weight:800}.sm b{display:block;margin-top:6px;font-size:var(--fs-17)}.sm.green b{color:var(--gd)}.sm.amber{background:var(--as)}.sm.amber b{color:var(--amber)}
+.guard{border:1px solid #d9e6dd;background:#f8fbf9;border-radius:12px;padding:12px;margin-bottom:11px}.guard-grid{display:grid;grid-template-columns:1.1fr 1.15fr .8fr auto;gap:8px;align-items:end}.btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 11px;font-size:var(--fs-10);font-weight:850;cursor:pointer}.btn.primary{background:var(--green);border-color:var(--green);color:#fff}.btn.danger{color:var(--red);background:#fff;border-color:#eedada}.btn:disabled{opacity:.5;cursor:not-allowed}
+.limit{margin-top:7px;font-size:var(--fs-9);color:var(--muted)}.validation{margin-top:8px;border-radius:8px;padding:8px 9px;font-size:var(--fs-9);font-weight:800;display:none}.validation.error{display:block;background:var(--rs);color:var(--red);border:1px solid #f0d1d1}.validation.ok{display:block;background:var(--gs);color:var(--gd);border:1px solid #d8eadf}
+.preview{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:10px 0}.seg{border:1px solid var(--line);border-radius:9px;padding:9px;background:#fff}.seg b{font-size:var(--fs-12);color:var(--gd)}.seg small{display:block;color:var(--muted);font-size:var(--fs-8);margin-top:3px}.seg strong{display:block;margin-top:6px;font-size:var(--fs-11)}.seg.spring{background:var(--as);border-color:#efdcb4}.seg.spring b{color:var(--amber)}
+.tablewrap{border:1px solid var(--line);border-radius:11px;overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{font-size:var(--fs-9);padding:8px 9px;border-bottom:1px solid var(--line);text-align:left}th{background:#fafbf9;color:#68746c;font-weight:900}tr:last-child td{border-bottom:0}.money{font-weight:900;color:var(--gd)}.empty{text-align:center!important;color:#98a39c;padding:22px!important}.tag{display:inline-flex;border-radius:999px;padding:4px 7px;background:#f2f5f3;font-size:var(--fs-8);font-weight:850;color:#556159}.tag.spring{background:var(--as);color:var(--amber)}
+.breakdown{font-size:var(--fs-8);color:#59675f;line-height:1.5}.delete{border:0;background:transparent;color:var(--red);cursor:pointer;font-size:var(--fs-11);font-weight:900}
+.formula{margin-top:10px;border-radius:10px;background:#101914;color:#dcebe0;padding:11px 12px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:var(--fs-9);line-height:1.6;white-space:pre-wrap}.g{color:#82e9a6}.gold{color:#ffd887}
+.rulebar{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:10px}.rule{border:1px solid var(--line);border-radius:9px;text-align:center;padding:8px 5px}.rule b{display:block;font-size:var(--fs-15);color:var(--gd)}.rule small{font-size:var(--fs-8);color:var(--muted)}.rule.spring{background:var(--as);border-color:#efdcb4}.rule.spring b{color:var(--amber)}
+.info{margin-top:10px;background:#f8faf9;border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-size:var(--fs-9);color:#5d6961;line-height:1.55}.info b{color:#27362d}
+.lower{display:grid;grid-template-columns:1fr 1fr;gap:12px}.list-row{display:grid;grid-template-columns:30px 1fr auto;gap:9px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}.list-row:first-child{border-top:0}.doc{width:28px;height:28px;border:1px solid var(--line);border-radius:8px;display:grid;place-items:center}.list-row b{font-size:var(--fs-10)}.list-row small{font-size:var(--fs-8);color:var(--muted);display:block;margin-top:2px}
+.chart{width:100%;height:185px}.mobile{display:none}
+
+.att-layout{display:grid;grid-template-columns:minmax(360px,.78fr) minmax(620px,1.22fr);gap:12px;margin-bottom:12px}
+.att-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0 12px}
+.att-stat{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fbfcfb}
+.att-stat span{display:block;font-size:var(--fs-8);color:var(--muted);font-weight:800}
+.att-stat b{display:block;margin-top:6px;font-size:var(--fs-16)}
+.att-stat.warn{background:var(--as)}.att-stat.warn b{color:var(--amber)}
+.att-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.att-form .wide{grid-column:1/-1}
+.checkline{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:#fafcfb;font-size:var(--fs-10);font-weight:800}
+.checkline input{width:16px;height:16px}
+.att-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.att-filter{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;margin-bottom:9px}
+.incident-yes{color:var(--red);font-weight:900}.incident-no{color:var(--gd);font-weight:900}
+.editbtn{border:0;background:transparent;color:var(--blue);cursor:pointer;font-size:var(--fs-9);font-weight:900}
+.att-note{font-size:var(--fs-8);color:#78847d;line-height:1.45}
+
+
+.cycle-panel{border:1px solid #d8e7dd;background:#f7fbf8;border-radius:12px;padding:12px;margin:0 0 12px}
+.cycle-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cycle-stat{border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px}
+.cycle-stat span{display:block;font-size:var(--fs-8);color:var(--muted);font-weight:800}
+.cycle-stat b{display:block;margin-top:6px;font-size:var(--fs-15)}
+.cycle-stat.warn{background:var(--as)}.cycle-stat.warn b{color:var(--amber)}
+.cycle-stat.good{background:var(--gs)}.cycle-stat.good b{color:var(--gd)}
+.cycle-head{display:grid;grid-template-columns:1.1fr 1fr auto;gap:8px;align-items:end;margin-bottom:9px}
+.cycle-range{font-size:var(--fs-10);color:#4f5e55;font-weight:850;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:#fff}
+.cycle-list{border:1px solid var(--line);border-radius:10px;overflow:auto;max-height:220px;background:#fff}
+.cycle-list table{min-width:620px}
+.autobadge{display:inline-flex;padding:4px 7px;border-radius:999px;background:var(--gs);color:var(--gd);font-size:var(--fs-8);font-weight:900}
+.override{display:flex;align-items:center;gap:8px;font-size:var(--fs-9);color:var(--muted);margin-top:8px}
+.override input{width:15px;height:15px}
+
+
+.snapshot-ok{background:var(--gs)!important;color:var(--gd)!important}
+.snapshot-none{background:#f2f5f3!important;color:var(--muted)!important}
+.chart-label{font-size:var(--fs-8);fill:#758078}
+.chart-value{font-size:var(--fs-8);fill:#4f5d54;font-weight:700}
+
+
+/* v0.2.6-R1: mobile overflow isolation */
+.card,.grid2>* ,.att-layout>* ,.lower>* ,.section,.guard,.cycle-panel{min-width:0}
+.tablewrap,.cycle-list{width:100%;max-width:100%;overflow-x:auto}
+@media(max-width:560px){
+  .wrap{width:100%;max-width:100%;overflow-x:hidden}
+  main,.main{min-width:0}
+  .grid2,.att-layout,.lower{min-width:0}
+}
+
+
+/* v0.2.7 Payslip Module */
+.payslip-grid{display:grid;grid-template-columns:.95fr 1.45fr;gap:12px;align-items:start}
+.payslip-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.payslip-form-grid .wide{grid-column:1/-1}
+.payslip-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.payslip-stat{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}
+.payslip-stat span{display:block;font-size:var(--fs-8);color:var(--muted);font-weight:800}
+.payslip-stat b{display:block;font-size:var(--fs-15);margin-top:5px}
+.payslip-filter{display:grid;grid-template-columns:1fr 1fr 1.2fr auto;gap:8px;align-items:end;margin-bottom:10px}
+.payslip-preview{border:1px dashed var(--line);border-radius:10px;min-height:100px;display:flex;align-items:center;justify-content:center;background:#fbfcfb;overflow:hidden}
+.payslip-preview img{width:100%;max-height:230px;object-fit:contain;display:block}
+.payslip-source{border:1px solid #dbe8df;background:#f8fbf9;border-radius:10px;padding:10px;margin-top:9px}
+.payslip-source .row{display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:var(--fs-9)}
+.payslip-source .row b{font-size:var(--fs-9)}
+.payslip-detail{margin-top:12px}
+.payslip-detail-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:9px}
+.payslip-detail-item{border:1px solid var(--line);border-radius:9px;padding:9px;background:#fff}
+.payslip-detail-item span{display:block;color:var(--muted);font-size:var(--fs-8);font-weight:800}
+.payslip-detail-item b{display:block;font-size:var(--fs-12);margin-top:4px}
+.sync-ok{background:var(--gs);color:var(--gd)}
+.sync-warn{background:#fff4df;color:#9a6500}
+.sync-missing{background:#fdecec;color:#a44242}
+.status-draft{background:#f2f5f3;color:#637068}
+.status-confirmed{background:var(--gs);color:var(--gd)}
+.attachment-chip{font-size:var(--fs-8);font-weight:900;padding:3px 6px;border-radius:999px;background:#eef4ff;color:#3d5e9b}
+@media(max-width:900px){.payslip-grid{grid-template-columns:1fr}.payslip-detail-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.payslip-form-grid,.payslip-stats,.payslip-filter,.payslip-detail-grid{grid-template-columns:1fr}}
+
+
+/* v0.2.8 Payslip Verification & Finalization */
+.verify-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:9px}
+.verify-box{border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px}
+.verify-box span{display:block;font-size:var(--fs-8);color:var(--muted);font-weight:800}
+.verify-box b{display:block;margin-top:5px;font-size:var(--fs-14)}
+.verify-box.good{background:var(--gs)}.verify-box.good b{color:var(--gd)}
+.verify-box.warn{background:#fff4df}.verify-box.warn b{color:#9a6500}
+.verify-box.bad{background:#fdecec}.verify-box.bad b{color:#a44242}
+.locked-card{border-color:#bcd7c5!important;background:#fbfefc!important}
+.final-badge{background:#e8f7ee;color:#167542}
+.verify-badge-ok{background:#e8f7ee;color:#167542}
+.verify-badge-warn{background:#fff4df;color:#9a6500}
+.verify-badge-pending{background:#f2f5f3;color:#657269}
+.actual-money{font-weight:900;color:#176b3a}
+@media(max-width:560px){.verify-grid{grid-template-columns:1fr}}
+
+
+/* v0.2.9 Payslip History & Annual Analytics */
+.analytics-toolbar{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:end;margin-bottom:10px}
+.analytics-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:10px}
+.analytics-kpi{border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px;min-width:0}
+.analytics-kpi span{display:block;font-size:var(--fs-8);color:var(--muted);font-weight:800}
+.analytics-kpi b{display:block;font-size:var(--fs-15);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.analytics-kpi small{display:block;font-size:var(--fs-8);color:var(--muted);margin-top:4px}
+.analytics-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:12px;align-items:start}
+.analytics-card{min-width:0}
+.analytics-chart{width:100%;height:auto;min-height:220px}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.compare-panel{border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px}
+.compare-panel h4{font-size:var(--fs-11);margin:0 0 7px}
+.compare-row{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid #eef1ef;font-size:var(--fs-9)}
+.compare-row:last-child{border-bottom:0}
+.compare-delta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.compare-delta .box{border:1px solid var(--line);border-radius:9px;padding:9px}
+.compare-delta span{display:block;font-size:var(--fs-8);color:var(--muted);font-weight:800}
+.compare-delta b{display:block;margin-top:4px;font-size:var(--fs-12)}
+.pos{color:#167542}.neg{color:#a44242}.neutral{color:#66726b}
+.analytics-table td,.analytics-table th{white-space:nowrap}
+.analytics-note{font-size:var(--fs-8);color:var(--muted);margin-top:7px}
+@media(max-width:1100px){.analytics-kpis{grid-template-columns:repeat(3,1fr)}.analytics-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.analytics-toolbar{grid-template-columns:1fr}.analytics-kpis{grid-template-columns:repeat(2,1fr)}.compare-grid,.compare-delta{grid-template-columns:1fr}}
+
+
+/* v0.3.0 Multi-Company Payroll Structure Foundation */
+.ba-layout{display:grid;grid-template-columns:.92fr 1.5fr;gap:12px;align-items:start;margin-bottom:12px}
+.ba-form{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ba-form .wide{grid-column:1/-1}
+.ba-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.ba-stat{border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px;min-width:0}
+.ba-stat span{display:block;font-size:var(--fs-8);color:var(--muted);font-weight:800}
+.ba-stat b{display:block;margin-top:5px;font-size:var(--fs-14);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ba-filter{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;align-items:end;margin-bottom:10px}
+.ba-type-bonus{background:#fff4df;color:#986000}
+.ba-type-allowance{background:#eef6ff;color:#315f91}
+.ba-confirmed{background:var(--gs);color:var(--gd)}
+.ba-draft{background:#f2f5f3;color:#66726b}
+.ba-included{background:#e8f7ee;color:#167542}
+.ba-excluded{background:#f2f5f3;color:#66726b}
+.ba-note{max-width:230px;white-space:normal}
+@media(max-width:950px){.ba-layout{grid-template-columns:1fr}}
+@media(max-width:620px){.ba-form,.ba-stats,.ba-filter{grid-template-columns:1fr}}
+
+
+/* v0.3.2 Multi-Company Payroll Structure Foundation */
+[data-module-page][hidden]{display:none!important}
+nav a{cursor:pointer}
+.module-route-note{font-size:var(--fs-8);color:var(--muted)}
+@media(max-width:820px){
+ .app.sidebar-open aside{
+   display:flex;position:fixed;left:0;top:0;bottom:0;width:min(280px,84vw);
+   height:100vh;z-index:30;box-shadow:0 12px 40px rgba(28,42,33,.18)
+ }
+ .app.sidebar-open::after{
+   content:"";position:fixed;inset:0;background:rgba(25,38,30,.28);z-index:25
+ }
+ .app.sidebar-open aside{z-index:30}
+}
+
+
+/* v0.3.3 Multi-Company Payroll Structure Foundation */
+.hero-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.shortcut-launcher{white-space:nowrap}
+.modal-backdrop{position:fixed;inset:0;background:rgba(21,33,26,.38);display:grid;place-items:center;padding:18px;z-index:100}
+.modal-backdrop[hidden]{display:none!important}
+.shortcut-modal{width:min(720px,100%);max-height:90vh;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 28px 80px rgba(22,42,29,.22);padding:16px}
+.shortcut-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.shortcut-card{border:1px solid var(--line);border-radius:13px;padding:14px;background:#fbfcfb}
+.shortcut-card b{font-size:var(--fs-13)}
+.shortcut-card p{font-size:var(--fs-9);color:var(--muted);line-height:1.55;min-height:42px}
+.shortcut-icon{font-size:var(--fs-24);margin-bottom:8px}
+.shortcut-card .btn{margin-right:5px;margin-top:4px}
+.shortcut-guide{margin-top:10px;border:1px solid var(--line);background:#f8faf9;border-radius:11px;padding:11px;font-size:var(--fs-9);line-height:1.65;color:#55635b}
+.shortcut-guide-title{font-size:var(--fs-10);font-weight:900;color:#26362c;margin-bottom:5px}
+.shortcut-guide ol{padding-left:18px;margin:5px 0}
+.shortcut-url{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;border:1px solid var(--line);border-radius:11px;padding:10px}
+.shortcut-url b{display:block;font-size:var(--fs-9)}
+.shortcut-url small{display:block;color:var(--muted);font-size:var(--fs-8);max-width:470px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:3px}
+@media(max-width:700px){
+ .hero{align-items:flex-start}
+ .hero-actions{flex-direction:column;align-items:flex-end}
+ .shortcut-grid{grid-template-columns:1fr}
+ .shortcut-url{align-items:flex-start;flex-direction:column}
+ .shortcut-url small{max-width:72vw}
+}
+
+
+/* v0.3.4 Multi-Company Payroll Structure */
+.company-switcher{display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:5px 7px}
+.company-switcher span{font-size:var(--fs-8);font-weight:900;color:var(--muted);white-space:nowrap}
+.company-switcher .ctrl{width:auto;min-width:120px;padding:6px 8px;border:0;background:#f8faf9;font-weight:900}
+.company-settings-card{grid-column:1/-1}
+.company-settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px}
+.company-profile-grid{display:grid;grid-template-columns:1fr 1.15fr .85fr;gap:10px}
+.company-profile-card{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fbfcfb}
+.company-profile-card h4{margin:0 0 10px;font-size:var(--fs-11)}
+.company-profile-card .field{margin-bottom:8px}
+.company-profile-card .field:last-child{margin-bottom:0}
+@media(max-width:900px){.company-profile-grid{grid-template-columns:1fr}.company-settings-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.company-switcher{width:100%}.company-switcher .ctrl{flex:1;min-width:0}.hero-actions{align-items:stretch}}
+
+
+/* v0.3.5 Custom Company Payroll Structure Items */
+.company-custom-items{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.custom-structure-form{display:grid;grid-template-columns:1.35fr .8fr .8fr 1.15fr;gap:8px;align-items:end}
+.custom-structure-checks{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding-bottom:7px}
+.custom-structure-checks .checkline{margin:0}
+@media(max-width:900px){.custom-structure-form{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.custom-structure-form{grid-template-columns:1fr}}
+
+
+/* v0.3.6 Layout & UI Settings Module */
+:root{--sidebar-w:246px;--content-max:1600px}
+.app{grid-template-columns:var(--sidebar-w) minmax(0,1fr)}
+.content{max-width:var(--content-max)}
+.ui-settings-layout{display:grid;grid-template-columns:1.15fr .85fr;gap:12px;margin-bottom:12px}
+.ui-settings-layout>.ui-preview-card{grid-column:1/-1}
+.ui-settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ui-settings-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.ui-menu-order{display:flex;flex-direction:column;gap:6px}
+.ui-menu-order-row{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;background:var(--panel2);padding:8px}
+.ui-menu-order-row .order-no{width:30px;height:30px;border-radius:8px;background:var(--gs);display:grid;place-items:center;font-size:var(--fs-9);font-weight:950;color:var(--gd)}
+.ui-menu-order-row b{font-size:var(--fs-10)}.ui-menu-order-row small{display:block;font-size:var(--fs-8);color:var(--muted);margin-top:2px}
+.ui-menu-order-actions{display:flex;gap:4px}.ui-menu-order-actions .btn{padding:5px 8px}
+.ui-preview-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.ui-preview-box{border:1px solid var(--line);border-radius:var(--r);background:var(--panel2);padding:13px}
+.ui-preview-box small{display:block;color:var(--muted);font-size:var(--fs-8);font-weight:850}.ui-preview-box b{display:block;margin-top:8px;font-size:var(--fs-16)}
+html[data-ui-theme="blue"]{--green:#2563eb;--gd:#1d4ed8;--gs:#eff6ff;--blue:#2563eb}
+html[data-ui-theme="amber"]{--green:#d28a00;--gd:#a86300;--gs:#fff7df;--blue:#c97a00}
+html[data-ui-theme="red"]{--green:#c94a4a;--gd:#a62f2f;--gs:#fff0f0;--blue:#c94a4a}
+html[data-ui-theme="white"]{--bg:#f8f9f8;--green:#4d6255;--gd:#35463c;--gs:#f0f3f1;--blue:#536b5d;--shadow:0 7px 20px rgba(32,43,36,.035)}
+html[data-ui-theme="dark"]{
+ --bg:#151a17;--panel:#1d2420;--panel2:#232b26;--text:#edf4ef;--muted:#a3afa7;--line:#354139;
+ --green:#61c98b;--gd:#83dca5;--gs:#243c2e;--amber:#e4a84a;--as:#3a301e;--red:#ee7a7a;--rs:#3a2424;
+ --blue:#83aaff;--shadow:0 9px 26px rgba(0,0,0,.18)
+}
+html[data-ui-theme="dark"] body,
+html[data-ui-theme="dark"] aside,
+html[data-ui-theme="dark"] .top,
+html[data-ui-theme="dark"] .card,
+html[data-ui-theme="dark"] .company-switcher,
+html[data-ui-theme="dark"] .shortcut-modal,
+html[data-ui-theme="dark"] .ba-stat,
+html[data-ui-theme="dark"] .company-profile-card,
+html[data-ui-theme="dark"] .shortcut-card{background:var(--panel);color:var(--text)}
+html[data-ui-theme="dark"] .ctrl,
+html[data-ui-theme="dark"] input,
+html[data-ui-theme="dark"] select{background:var(--panel2);color:var(--text);border-color:var(--line)}
+html[data-ui-theme="dark"] nav a{color:#c8d3cc}
+html[data-ui-theme="dark"] .badge{border-color:var(--line)}
+html[data-ui-density="compact"] .section{padding:11px}
+html[data-ui-density="compact"] .content{padding-top:14px}
+html[data-ui-density="compact"] .cards,
+html[data-ui-density="compact"] .grid2,
+html[data-ui-density="compact"] .ba-layout{gap:8px;margin-bottom:8px}
+html[data-ui-density="compact"] nav{gap:2px}
+html[data-ui-density="compact"] nav a{padding:8px 10px}
+html[data-ui-density="comfortable"] .section{padding:19px}
+html[data-ui-density="comfortable"] .content{padding-top:26px}
+html[data-ui-density="comfortable"] .cards,
+html[data-ui-density="comfortable"] .grid2,
+html[data-ui-density="comfortable"] .ba-layout{gap:16px;margin-bottom:16px}
+html[data-ui-density="comfortable"] nav{gap:7px}
+html[data-ui-density="comfortable"] nav a{padding:13px}
+html[data-ui-radius="small"]{--r:10px}
+html[data-ui-radius="standard"]{--r:16px}
+html[data-ui-radius="large"]{--r:22px}
+
+
+
+
+@media(max-width:900px){.ui-settings-layout{grid-template-columns:1fr}.ui-settings-layout>.ui-preview-card{grid-column:auto}}
+@media(max-width:620px){.ui-settings-grid,.ui-preview-metrics{grid-template-columns:1fr}}
+
+
+/* v0.3.7 Daily Attendance / Overtime Entry Integration */
+.daily-entry-form{grid-template-columns:repeat(3,minmax(0,1fr))}
+.daily-ot-toggle{border-left:3px solid var(--green);padding-left:10px}
+.daily-ot-field.is-disabled{opacity:.45;pointer-events:none}
+.daily-ot-detail.is-disabled{display:none}
+.daily-engine-note code{font-weight:900;color:var(--gd)}
+.daily-multi-warning{color:#a36a00;font-weight:900}
+.payroll-ot-source-note{margin-bottom:10px}
+@media(max-width:900px){.daily-entry-form{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.daily-entry-form{grid-template-columns:1fr}}
+
+
+/* v0.3.8 Excel Payroll Parameter Alignment */
+.special-cycle-badge{background:#fff4df!important;color:#9b6500!important;border:1px solid #e8c57f!important}
+
+
+/* v0.3.9 Year-End Bonus & Annual Starting Salary */
+.annual-comp-layout{display:grid;grid-template-columns:minmax(390px,.78fr) minmax(0,1.22fr);gap:12px;margin-bottom:12px}
+.annual-starting-card,.annual-history-card{grid-column:1/-1}
+.annual-form-grid{display:grid;grid-template-columns:.7fr .8fr 1fr;gap:9px}
+.annual-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.annual-kpi{border:1px solid var(--line);background:var(--panel2);border-radius:var(--r);padding:12px}
+.annual-kpi span{display:block;font-size:var(--fs-8);color:var(--muted);font-weight:900}
+.annual-kpi b{display:block;font-size:var(--fs-17);margin-top:7px}
+.annual-kpi small{display:block;font-size:var(--fs-8);color:var(--muted);margin-top:4px}
+.annual-kpi.highlight{border-color:var(--green);background:var(--gs)}
+.yearend-dist{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.yearend-dist>div{border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:12px;text-align:center}
+.yearend-dist b{font-size:var(--fs-20)}.yearend-dist small{display:block;font-size:var(--fs-8);color:var(--muted);margin-top:3px}
+.starting-salary-form{display:grid;grid-template-columns:.7fr 1fr auto;gap:8px;align-items:end}
+.starting-trend-up{color:var(--green);font-weight:900}.starting-trend-flat{color:var(--muted)}
+@media(max-width:900px){.annual-comp-layout{grid-template-columns:1fr}.annual-starting-card,.annual-history-card{grid-column:auto}.annual-kpis{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.annual-form-grid,.annual-kpis,.starting-salary-form{grid-template-columns:1fr}}
+
+
+/* v0.3.9-R2 Cross-Module Company Context Integrity Fix */
+.company-calendar-rules{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.company-calendar-form{display:grid;grid-template-columns:.8fr 1fr 1fr 1fr 1.4fr;gap:8px;align-items:end}
+.context-reset-note{font-size:var(--fs-8);color:var(--muted)}
+@media(max-width:1100px){.company-calendar-form{grid-template-columns:1fr 1fr 1fr}}
+@media(max-width:700px){.company-calendar-form{grid-template-columns:1fr}}
+
+
+/* v0.3.9-R4-R1 Annual Panel Size Alignment */
+.annual-comp-layout{align-items:stretch}
+.annual-yearend-card,
+.annual-comp-layout > .card.section:nth-child(2){
+    height:100%;
+    display:flex;
+    flex-direction:column;
+}
+.annual-yearend-card .info,
+.annual-comp-layout > .card.section:nth-child(2) .info:last-child{
+    margin-top:auto;
+}
+
+
+/* v0.3.9-R4-R2 Annual panel width rebalance */
+.annual-yearend-card{min-width:0}
+.annual-comp-layout > .card.section:nth-child(2){min-width:0}
+.annual-comp-layout > .card.section:nth-child(2) .tablewrap{overflow-x:auto}
+.annual-comp-layout > .card.section:nth-child(2) table{
+    width:100%;
+    min-width:0;
+    table-layout:auto;
+}
+.annual-comp-layout > .card.section:nth-child(2) th,
+.annual-comp-layout > .card.section:nth-child(2) td{
+    white-space:nowrap;
+    padding-left:7px;
+    padding-right:7px;
+}
+@media(min-width:1250px){
+    .annual-comp-layout > .card.section:nth-child(2) .tablewrap{overflow-x:visible}
+}
+
+
+/* v0.3.9-R4-R6 Unified single page header */
+.unified-page-header{display:flex;align-items:flex-start;gap:10px}
+.unified-page-heading{min-width:0;display:flex;flex-direction:column;gap:2px}
+.unified-page-heading>div{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+#globalPageTitleZh{font-weight:900}
+#globalPageTitleEn{font-weight:500;color:var(--muted)}
+#globalPageDesc{display:block;color:var(--muted);font-size:var(--fs-9);font-weight:500;line-height:1.35}
+.legacy-module-meta{display:none!important}
+
+
+/* v0.3.9-R4-R7 Unified top header controls */
+.topbar-main{max-width:1600px;margin:auto;width:100%;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:12px 24px}
+.topbar-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-left:auto}
+.topbar-actions .company-switcher{margin-left:auto}
+.topbar-actions .badge{max-width:100%}
+.version-badge{white-space:nowrap}
+.hero{display:none!important}
+@media(max-width:1100px){
+ .topbar-main{padding:12px 18px}
+ .topbar-actions{width:100%;justify-content:flex-start}
+ .topbar-actions .company-switcher{margin-left:0}
+}
+@media(max-width:760px){
+ .topbar-actions{gap:8px}
+ .topbar-actions .company-switcher{width:100%;justify-content:space-between}
+ .topbar-actions .company-switcher .ctrl{min-width:0;width:160px}
+}
+
+
+/* v0.3.9-R4-R8 Historical salary import */
+.history-import-info{margin-bottom:10px}
+.history-import-info b{color:var(--gd)}
+.history-source-tag{background:#eef6ff;color:#35628a}
+
+
+/* v0.3.9-R4-R9 Payslip Detail / Records Reorder */
+.payslip-builder-only{grid-template-columns:1fr}
+.payslip-builder-only>.card{width:100%}
+.payslip-records-card{width:100%}
+#payslipDetailCard{width:100%}
+
+
+/* v0.3.9-R4-R10 Payslip Builder / Detail Side-by-Side */
+.payslip-workspace{
+ display:grid;
+ grid-template-columns:1fr;
+ gap:12px;
+ margin-bottom:12px;
+ align-items:start;
+}
+.payslip-workspace.detail-open{
+ grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
+}
+.payslip-workspace.detail-open #payslip,
+.payslip-workspace.detail-open #payslipDetailCard{
+ min-width:0;
+ height:100%;
+}
+.payslip-workspace.detail-open #payslipDetailCard{
+ margin-top:0;
+}function activeBonusAllowanceRecords(month){return moduleRead("addition",{payrollMonth:month}).filter(r=>r.status==="confirmed"&&r.includeInPayroll)}
+
+function legacyOtherFixedOverlapWarning(){
+ const p=currentProfile(),month=$("payrollMonth").value||monthNow(),ba=bonusAllowanceSummary(month);
+ return Number(p.other||0)>0&&(ba.bonusTotal>0||ba.allowanceTotal>0);
+}
+function compensationRecordById(id,companyId=currentCompanyId()){
+ return bonusAllowanceRecords.find(r=>r.id===id&&recordCompanyId(r)===companyId)||null;
+}
+function compensationRecordIndex(id,companyId=currentCompanyId()){
+ return bonusAllowanceRecords.findIndex(r=>r.id===id&&recordCompanyId(r)===companyId);
+}
+function upsertCompensationRecord(record,{companyId=currentCompanyId()}={}){
+ const normalized=canonicalCompensationRecord({...record,companyId});
+ const idx=compensationRecordIndex(normalized.id,companyId),edited=idx>=0;
+ if(edited)bonusAllowanceRecords[idx]=normalized;
+ else bonusAllowanceRecords.push(normalized);
+ return {record:normalized,edited,index:edited?idx:bonusAllowanceRecords.length-1};
+}
+function removeCompensationRecord(id,companyId=currentCompanyId()){
+ const existing=compensationRecordById(id,companyId);
+ if(!existing)return null;
+ bonusAllowanceRecords=bonusAllowanceRecords.filter(r=>!(r.id===id&&recordCompanyId(r)===companyId));
+ return existing;
+}
+function refreshCompensationIntegrationViews({message="",target="addition"}={}){
+ renderBonusAllowance();renderAdditionManager();renderProfile();renderPayslipModule();renderAnalytics();renderDashboard();saveState(true);
+ if(message&&target==="addition"&&$("additionValidation")){
+  $("additionValidation").className="validation ok";$("additionValidation").textContent=message;
+ }
+ if(message&&target==="bonus"&&$("baValidation")){
+  $("baValidation").className="validation ok";$("baValidation").textContent=message;
+ }
+}
+function additionBuiltInCategory(type,name){
+ const n=normalizeCompName(name);
+ const found=(BA_CATEGORIES[type]||[]).find(([key,label])=>!key.startsWith("other_")&&normalizeCompName(label)===n);
+ return found?found[0]:"";
+}
+function additionRecordName(record){
+ return baCategoryLabel(record.type,record.category,record.customCategoryName);
+}
+function currentMonthAdditionRecords(month=$("payrollMonth").value||monthNow()){
+ return moduleRead("addition",{payrollMonth:month});
+}
+function additionManagerSummary(month=$("payrollMonth").value||monthNow()){
+ const ba=bonusAllowanceSummary(month),p=currentProfile(),att=attendance(p),hr=calcHourly(p,att),activeOT=activeOvertimeRecords();
+ const overtime=activeOT.reduce((sum,r)=>sum+recordAmount(r,hr),0);
+ return {
+  attendance:att,overtime,
+  bonus:ba.bonusTotal,allowance:ba.allowanceTotal,
+  total:att+overtime+ba.bonusTotal+ba.allowanceTotal,
+  records:currentMonthAdditionRecords(month)
+ };
+}
+function clearAdditionItemForm(){
+ additionEditId="";
+ if(!$("additionName"))return;
+ $("additionName").value="";$("additionType").value="bonus";$("additionAmount").value="";
+ $("additionStatus").value="confirmed";$("additionNote").value="";$("additionInclude").checked=true;
+ $("saveAdditionItem").textContent="＋ 新增加項";
+ $("additionValidation").className="validation";$("additionValidation").textContent="";
+}
+function renderAdditionManager(){
+ if(!$("additionItemBody"))return;
+ const month=$("payrollMonth").value||monthNow(),s=additionManagerSummary(month),body=$("additionItemBody");
+ $("additionAttendanceSummary").textContent=money2(s.attendance);
+ $("additionOvertimeSummary").textContent=money2(s.overtime);
+ $("additionBonusSummary").textContent=money2(s.bonus);
+ $("additionAllowanceSummary").textContent=money2(s.allowance);
+ $("additionTotalSummary").textContent=money2(s.total);
+ $("additionItemCount").textContent=`${s.records.length} 項`;
+ body.innerHTML="";
+ if(!s.records.length){
+  body.innerHTML='<tr><td colspan="7" class="empty">目前月份尚無獎金／津貼明細</td></tr>';
+  return;
+ }
+ [...s.records].sort((a,b)=>String(a.updatedAt||"").localeCompare(String(b.updatedAt||""))).reverse().forEach(r=>{
+  const included=r.status==="confirmed"&&r.includeInPayroll;
+  const tr=document.createElement("tr");
+  tr.className=(r.status==="draft"?"addition-row-draft ":"")+(r.includeInPayroll?"":"addition-row-excluded");
+  tr.innerHTML=`<td><b>${esc(additionRecordName(r))}</b></td>
+   <td><span class="tag ${r.type==="bonus"?"addition-type-bonus":"addition-type-allowance"}">${r.type==="bonus"?"獎金":"津貼"}</span></td>
+   <td class="money">${money2(r.amount)}</td>
+   <td><span class="tag ${r.status==="confirmed"?"ba-confirmed":"ba-draft"}">${r.status==="confirmed"?"已確認":"草稿"}</span></td>
+   <td><span class="tag ${included?"ba-included":"ba-excluded"}">${included?"已計入":"未計入"}</span></td>
+   <td>${esc(r.note||"—")}</td>
+   <td><button class="editbtn" data-addedit="${esc(r.id)}">編輯</button> <button class="delete" data-adddel="${esc(r.id)}">×</button></td>`;
+  body.appendChild(tr);
+ });
+ body.querySelectorAll("[data-addedit]").forEach(b=>b.addEventListener("click",()=>editAdditionItem(b.dataset.addedit)));
+ body.querySelectorAll("[data-adddel]").forEach(b=>b.addEventListener("click",()=>deleteAdditionItem(b.dataset.adddel)));
+}
+function validateAdditionDraft(){
+ const name=$("additionName").value.trim(),amount=Number($("additionAmount").value),box=$("additionValidation");
+ if(!name){box.className="validation error";box.textContent="請輸入加項名稱。";return false}
+ if(reservedCompName(name)){box.className="validation error";box.textContent="此名稱屬於系統自動計算薪資項目，不能另外建立，避免重複計薪。";return false}
+ if(!Number.isFinite(amount)||amount<=0){box.className="validation error";box.textContent="加項金額必須大於 0。";return false}
+ box.className="validation ok";box.textContent="加項資料有效。";return true;
+}
+function additionRecordFromForm(existing=null){
+ const type=$("additionType").value==="allowance"?"allowance":"bonus";
+ const name=$("additionName").value.trim(),builtIn=additionBuiltInCategory(type,name);
+ return {
+  id:existing?.id||baId(),
+  companyId:currentCompanyId(),
+  payrollMonth:$("payrollMonth").value||monthNow(),
+  payDate:existing?.payDate||payDateForPayrollMonth($("payrollMonth").value||monthNow()),
+  type,
+  category:builtIn||(type==="bonus"?"other_bonus":"other_allowance"),
+  customCategoryName:builtIn?"":name,
+  amount:Number($("additionAmount").value)||0,
+  status:$("additionStatus").value==="draft"?"draft":"confirmed",
+  includeInPayroll:$("additionInclude").checked,
+  note:$("additionNote").value.trim(),
+  updatedAt:new Date().toISOString()
+ };
+}
+function refreshPayrollAfterAdditionChange(message){
+ refreshCompensationIntegrationViews({target:"addition",message});
+}
+function legacy_saveAdditionDetailItem(){
+ if(!validateAdditionDraft())return {ok:false,code:"VALIDATION_FAILED",message:$("additionValidation").textContent};
+ const existing=compensationRecordById(additionEditId)||null;
+ const result=upsertCompensationRecord(additionRecordFromForm(existing));
+ clearAdditionItemForm();
+ refreshCompensationIntegrationViews({target:"addition",message:result.edited?"加項明細已更新；本月薪資已重新計算。":"加項明細已新增；本月薪資已重新計算。"});
+}
+function editAdditionItem(id){
+ const r=compensationRecordById(id);if(!r)return;
+ additionEditId=id;
+ $("additionName").value=additionRecordName(r);$("additionType").value=r.type;$("additionAmount").value=r.amount;
+ $("additionStatus").value=r.status;$("additionInclude").checked=!!r.includeInPayroll;$("additionNote").value=r.note||"";
+ $("saveAdditionItem").textContent="儲存加項修改";
+ $("additionValidation").className="validation";$("additionValidation").textContent=`正在編輯「${additionRecordName(r)}」。`;
+ $("additionDetailManager").scrollIntoView({behavior:"smooth",block:"center"});
+}
+function legacy_deleteAdditionItem(id){
+ const r=compensationRecordById(id);if(!r)return;
+ if(!confirm(`確定刪除加項「${additionRecordName(r)}」 ${money2(r.amount)}？`))return;
+ removeCompensationRecord(id);
+ if(additionEditId===id)clearAdditionItemForm();
+ refreshCompensationIntegrationViews({target:"addition",message:`已刪除「${additionRecordName(r)}」，本月薪資已重新計算。`});
+}
+
+function bonusAllowanceSummary(month){
+ const active=activeBonusAllowanceRecords(month),bonusItems=active.filter(r=>r.type==="bonus"),allowanceItems=active.filter(r=>r.type==="allowance");
+ return {bonusItems,allowanceItems,bonusTotal:bonusItems.reduce((s,r)=>s+Number(r.amount||0),0),allowanceTotal:allowanceItems.reduce((s,r)=>s+Number(r.amount||0),0)};
+}
+function bonusAllowanceSignature(items){
+ return [...items].sort((a,b)=>String(a.id).localeCompare(String(b.id))).map(r=>({id:r.id,type:r.type,category:r.category,customCategoryName:r.customCategoryName||"",amount:Number(r.amount||0),payDate:r.payDate||"",note:r.note||""}));
+}
+function snapshotFingerprint(summary){
+ return JSON.stringify({
+  companyId:summary.companyId||"company-a",month:summary.month,profile:summary.profile,base:summary.base,meal:summary.meal,
+  attendancePay:summary.attendancePay,incidentDays:summary.incidentDays,
+  nightAllowance:summary.nightAllowance,other:summary.other,...deductionFingerprintPart(summary.deductionItems||[]),taxableDeduct:Number(summary.taxableDeduct||0),taxFreeDeduct:Number(summary.taxFreeDeduct||0),deduct:summary.deduct,
+  dispatchHours:summary.dispatchHours,hourly:Number(summary.hourly.toFixed(6)),
+  overtime:Number(summary.overtime.toFixed(6)),overtimeHours:Number(summary.overtimeHours.toFixed(4)),
+  customStructureTotal:Number(summary.customStructureTotal||0),
+  customStructureItems:customStructureSignature(summary.customStructureItems||[]),
+  bonusTotal:Number(summary.bonusTotal||0),allowanceTotal:Number(summary.allowanceTotal||0),
+  bonusAllowanceItems:bonusAllowanceSignature(summary.bonusAllowanceItems||[]),
+  exactGross:Number(summary.exactGross.toFixed(6)),payable:summary.payable,
+  roundingMode:summary.roundingMode,attendanceCycle:summary.attendanceCycle
+ });
+}
+function snapshotIsDirty(snapshot){
+ if(!snapshot)return false;
+ if(snapshot.importedHistory)return false;
+ return snapshot.fingerprint!==snapshotFingerprint(getPayrollSummary());
+}
+function snapshotMoney(r,n){
+ return r&&r.roundingMode==="cent"?money2(n):money0(n);
+}
+function esc(v){
+ return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+}
+function payslipSourceState(p){
+ const src=sourceSnapshot(p.month,recordCompanyId(p));
+ if(!src)return {code:"missing",label:"來源不存在"};
+ const currentMonth=$("payrollMonth").value||monthNow();
+ if(recordCompanyId(p)===currentCompanyId()&&p.month===currentMonth&&snapshotIsDirty(src))return {code:"dirty",label:"Payroll 已變更 · Snapshot 待重新結算"};
+ if(src.fingerprint!==p.sourceFingerprint)return {code:"stale",label:"需同步"};
+ return {code:"ok",label:"已同步"};
+}
+function payslipStatusLabel(s){return s==="confirmed"?"已確認":"草稿"}
+function payslipMoney(p,n){return p&&p.roundingMode==="cent"?money2(n):money0(n)}
+function payslipVariance(p){
+ if(p.actualNet===null||p.actualNet===undefined||p.actualNet==="")return null;
+ return Number(p.actualNet)-Number(p.payable||0);
+}
+function payslipVerifyState(p){
+ const v=payslipVariance(p);
+ if(v===null)return {code:"pending",label:"待核對"};
+ if(Math.abs(v)<0.005)return {code:"ok",label:"一致"};
+ return {code:"variance",label:"有差異"};
+}
+function analyticsRows(year){
+ if(!year)return [];
+ const snaps=moduleRead("settlement",{year}),pays=moduleRead("payslip",{year}),months=new Set();
+ snaps.forEach(r=>months.add(r.month));
+ pays.forEach(p=>months.add(p.month));
+ return [...months].sort().map(month=>{
+  const snap=snaps.find(r=>r.month===month)||null;
+  const pay=pays.find(p=>p.month===month)||null;
+  const expected=snap?Number(snap.payable||0):pay?Number(pay.payable||0):0;
+  const actual=pay&&pay.finalized&&(pay.actualNet!==null&&pay.actualNet!==undefined&&pay.actualNet!=="")?Number(pay.actualNet):null;
+  const variance=actual===null?null:actual-expected;
+  return {
+   month,profileName:snap?.profileName||pay?.profileName||"—",expected,actual,variance,
+   overtime:Number(snap?.overtime??pay?.overtime??0),customStructureTotal:Number(snap?.customStructureTotal??pay?.customStructureTotal??0),bonusTotal:Number(snap?.bonusTotal??pay?.bonusTotal??0),
+   allowanceTotal:Number(snap?.allowanceTotal??pay?.allowanceTotal??0),
+   taxableDeduct:Number(snap?.taxableDeduct??pay?.taxableDeduct??0),
+   taxFreeDeduct:Number(snap?.taxFreeDeduct??pay?.taxFreeDeduct??0),
+   deduct:Number(snap?.deduct??pay?.deduct??0),
+   overtimeHours:Number(snap?.overtimeHours??pay?.overtimeHours??0),
+   incidentDays:Number(snap?.incidentDays??pay?.incidentDays??0),
+   verify:pay?(pay.finalized?payslipVerifyState(pay):{code:"pending",label:"待結案"}):{code:"pending",label:"未建薪資單"},
+   finalized:!!pay?.finalized,hasPayslip:!!pay,hasSnapshot:!!snap,sourceState:pay?payslipSourceState(pay):null
+  };
+ });
+}
+function analyticsMoney(n,decimals=false){return decimals?money2(n):money0(n)}
+function analyticsDelta(n){
+ if(n===null||!Number.isFinite(Number(n)))return {text:"—",cls:"neutral"};
+ const x=Number(n),sign=x>0?"+":"";
+ return {text:`${sign}${money2(x)}`,cls:x>0?"pos":x<0?"neg":"neutral"};
+}
+function overtimeSummaryForPayrollMonth(month,hourly=0){
+ const list=companyScoped(records).filter(r=>recordBelongsToPayrollMonth(r,month));
+ return {
+  count:list.length,
+  historyCount:list.filter(r=>r.importedHistory).length,
+  manualCount:list.filter(r=>!r.importedHistory).length,
+  hours:list.reduce((s,r)=>s+Number(r.hours||0),0),
+  amount:list.reduce((s,r)=>s+recordAmount(r,hourly),0)
+ };
+}
+function enrichAnnualMonthRow(baseRow){
+ const snap=companyScoped(monthlyPayrollRecords).find(r=>r.month===baseRow.month)||null;
+ const pay=companyScoped(payslipRecords).find(r=>r.month===baseRow.month)||null;
+ const hourly=Number(snap?.hourly??pay?.hourly??0);
+ const ot=overtimeSummaryForPayrollMonth(baseRow.month,hourly);
+ return {
+  ...baseRow,
+  overtimeHours:ot.hours,
+  overtimeRecordCount:ot.count,
+  overtimeHistoryCount:ot.historyCount,
+  overtimeManualCount:ot.manualCount,
+  overtime:ot.count?ot.amount:Number(baseRow.overtime||0),
+  additionTotal:Number(baseRow.customStructureTotal||0)+Number(baseRow.bonusTotal||0)+Number(baseRow.allowanceTotal||0),
+  deductionTotal:Number(baseRow.taxableDeduct||0)+Number(baseRow.taxFreeDeduct||0),
+  sourceType:snap&&pay?"Snapshot / Payslip":snap?"Snapshot":pay?"Payslip":"—"
+ };
+}
+
+const annualDrilldownExpanded=new Set();
+function annualDrillKey(month){return `${currentCompanyId()}|${month}`}
+function annualMonthSources(month){
+ return {
+  snap:sourceSnapshot(month),
+  pay:getPayslip(month)
+ };
+}
+function annualMonthAdditionItems(month){
+ const {snap,pay}=annualMonthSources(month),src=snap||pay;
+ if(!src)return [];
+ const items=[];
+ const custom=Array.isArray(src.customStructureItems)?src.customStructureItems.filter(i=>Number(i.amount||0)!==0):[];
+ custom.forEach(i=>items.push({
+  name:i.name||"固定薪資加項",kind:"固定薪資",amount:Number(i.amount||0),meta:i.includeInOvertimeBase?"計入加班基數":"不計入加班基數"
+ }));
+ const ba=Array.isArray(src.bonusAllowanceItems)?src.bonusAllowanceItems:[];
+ ba.filter(i=>i.status==="confirmed"&&i.includeInPayroll!==false).forEach(i=>items.push({
+  name:baCategoryLabel(i.type,i.category,i.customCategoryName)||"加項",
+  kind:i.type==="allowance"?"津貼":"獎金",amount:Number(i.amount||0),
+  meta:`${i.status==="confirmed"?"已確認":"草稿"}${i.payDate?` · ${i.payDate}`:""}${i.note?` · ${i.note}`:""}`
+ }));
+ if(!custom.length&&Number(src.customStructureTotal||0)!==0){
+  items.push({name:"自訂固定薪資合計",kind:"固定薪資",amount:Number(src.customStructureTotal||0),meta:"歷史／彙總資料未保存逐項明細"});
+ }
+ if(!ba.length&&Number(src.bonusTotal||0)!==0){
+  items.push({name:"獎金合計",kind:"獎金",amount:Number(src.bonusTotal||0),meta:"歷史／彙總資料未保存逐項明細"});
+ }
+ if(!ba.length&&Number(src.allowanceTotal||0)!==0){
+  items.push({name:"額外津貼合計",kind:"津貼",amount:Number(src.allowanceTotal||0),meta:"歷史／彙總資料未保存逐項明細"});
+ }
+ return items;
+}
+function annualMonthDeductionItems(month){
+ const {snap,pay}=annualMonthSources(month),src=snap||pay;
+ if(!src)return [];
+ const raw=Array.isArray(src.deductionItems)?src.deductionItems:[];
+ const items=raw.filter(i=>Number(i.amount||0)>0).map(i=>({
+  name:i.name||"薪資扣項",
+  kind:i.type==="taxfree"?"免稅":"應稅",
+  amount:Number(i.amount||0),
+  enabled:i.enabled!==false,
+  meta:`${i.enabled===false?"未計入":"已計入"}${i.note?` · ${i.note}`:""}`
+ }));
+ if(!items.length){
+  const taxable=Number(src.taxableDeduct||0),taxFree=Number(src.taxFreeDeduct||0);
+  if(taxable>0)items.push({name:"應稅扣項合計",kind:"應稅",amount:taxable,enabled:true,meta:"歷史／彙總資料未保存逐項明細"});
+  if(taxFree>0)items.push({name:"免稅扣項合計",kind:"免稅",amount:taxFree,enabled:true,meta:"歷史／彙總資料未保存逐項明細"});
+ }
+ return items;
+}
+function annualMonthOvertimeItems(month){
+ const {snap,pay}=annualMonthSources(month),src=snap||pay;
+ const fallbackHourly=Number(src?.hourly||0);
+ return moduleRead("overtime",{payrollMonth:month})
+  .sort((a,b)=>String(a.date||"").localeCompare(String(b.date||""))||String(a.type||"").localeCompare(String(b.type||"")))
+  .map(r=>{
+   const segs=recordSegments(r);
+   return {
+    date:r.date||"—",
+    type:r.type||"—",
+    typeName:TYPE[r.type]?.name||r.type||"—",
+    hours:Number(r.hours||0),
+    amount:recordAmount(r,fallbackHourly),
+    hourly:recordHourly(r,fallbackHourly),
+    segments:segs.map(s=>`${Number(s.hours||0).toFixed(2)}H×${Number(s.m||0).toFixed(2)}`).join(" + "),
+    imported:!!r.importedHistory,
+    source:r.importedHistory
+      ?`${r.sourceSheet||"Excel"} · ${r.payrollMonth||month}${r.amountOverrideBasis?" · 月總額對帳":""}`
+      :"手動登記",
+    amountBasis:r.amountOverrideBasis||"",
+    sourceEstimatedAmount:r.sourceEstimatedAmount===undefined?null:Number(r.sourceEstimatedAmount)
+   };
+  });
+}
+function annualSourceTrace(month){
+ const {snap,pay}=annualMonthSources(month);
+ const variance=pay?payslipVariance(pay):null;
+ return {
+  snap,pay,
+  snapshotLabel:snap?(snap.importedHistory?"歷史 Snapshot":"SalaryMate Snapshot"):"無 Snapshot",
+  snapshotMeta:snap?`${snap.profileName||"—"} · ${snap.settledAt?String(snap.settledAt).slice(0,19).replace("T"," "):"無結算時間"}`:"—",
+  payslipLabel:pay?(pay.finalized?"已結案薪資單":pay.status==="confirmed"?"已確認薪資單":"草稿薪資單"):"無薪資單",
+  payslipMeta:pay?`發薪 ${pay.payDate||"—"} · 來源 ${payslipSourceState(pay).label}`:"—",
+  actualLabel:pay&&pay.actualNet!==null&&pay.actualNet!==undefined?money2(pay.actualNet):"—",
+  varianceLabel:variance===null?"—":`${variance>0?"+":""}${money2(variance)}`
+ };
+}
+function annualAdditionDrillHtml(items){
+ if(!items.length)return '<div class="empty">此月份沒有可用的加項逐筆明細。</div>';
+ return `<div class="annual-drill-list">${items.map(i=>`<div class="annual-drill-item">
+  <div class="name">${esc(i.name)}</div><div class="meta">${esc(i.kind)} · ${esc(i.meta||"")}</div><div class="amount">${money2(i.amount)}</div>
+ </div>`).join("")}</div>`;
+}
+function annualDeductionDrillHtml(items){
+ if(!items.length)return '<div class="empty">此月份沒有扣項。</div>';
+ return `<div class="annual-drill-list">${items.map(i=>`<div class="annual-drill-item${i.enabled===false?" disabled":""}">
+  <div class="name">${esc(i.name)}</div><div class="meta">${esc(i.kind)} · ${esc(i.meta||"")}</div><div class="amount">${money2(i.amount)}</div>
+ </div>`).join("")}</div>`;
+}
+function annualOvertimeDrillHtml(items){
+ if(!items.length)return '<div class="empty">此薪資月份沒有加班紀錄。</div>';
+ return `<div class="annual-ot-detail-head"><span>日期</span><span>類型</span><span>時數</span><span>倍率拆分</span><span>來源</span><span>金額</span></div>
+ ${items.map(i=>`<div class="annual-ot-detail-row${i.imported?" history":""}">
+  <div class="date">${esc(i.date)}</div>
+  <div><b>${esc(i.typeName)}</b><div class="meta">時薪 ${money2(i.hourly)}</div></div>
+  <div class="hours">${i.hours.toFixed(2)} H</div>
+  <div class="segments meta">${esc(i.segments||"—")}</div>
+  <div class="source">${esc(i.source)}</div>
+  <div class="amount">${money2(i.amount)}</div>
+ </div>`).join("")}`;
+}
+function annualMonthDrilldownHtml(month){
+ const add=annualMonthAdditionItems(month),ded=annualMonthDeductionItems(month),ot=annualMonthOvertimeItems(month),trace=annualSourceTrace(month);
+ const ot2526=EXCEL_2025_2026_OVERTIME_MONTHLY_MAP.get(month)||null;
+ const addTotal=add.filter(i=>i.amount>0).reduce((s,i)=>s+Number(i.amount||0),0);
+ const dedTotal=ded.filter(i=>i.enabled!==false).reduce((s,i)=>s+Number(i.amount||0),0);
+ const otTotal=ot.reduce((s,i)=>s+Number(i.amount||0),0),otHours=ot.reduce((s,i)=>s+Number(i.hours||0),0);
+ return `<div class="annual-drill-head"><div><b>${esc(month)} 完整薪資來源明細</b><span>同一 Canonical Source，不建立第二套年度資料</span></div></div>
+ <div class="annual-drill-sourcebar">
+  <div><span>Snapshot</span><b>${esc(trace.snapshotLabel)}</b><small>${esc(trace.snapshotMeta)}</small></div>
+  <div><span>Payslip</span><b>${esc(trace.payslipLabel)}</b><small>${esc(trace.payslipMeta)}</small></div>
+  <div><span>公司實領</span><b>${trace.actualLabel}</b><small>差異 ${trace.varianceLabel}</small></div>
+  <div><span>資料完整度</span><b>${trace.snap&&trace.pay?"Snapshot + Payslip":trace.snap?"Snapshot only":trace.pay?"Payslip only":"無來源"}</b><small>加班 ${ot.length} 筆</small></div>
+ </div>
+ ${ot2526?`<div class="hint" style="margin-bottom:9px"><b>2025/2026 Excel OT Source：</b>${ot2526.recordCount} 筆、${Number(ot2526.totalHours||0).toFixed(2)}H；
+  來源自行登記加班費 ${ot2526.sourceSelfRecordedAmount===null?"—":money2(ot2526.sourceSelfRecordedAmount)}。
+  ${ot2526.reconciliationStatus==="SOURCE_ADJUSTMENT"?"此月含混合時薪／薪調追溯，明細金額已做月總額比例對帳；日期、時數、倍率不變。":"逐日倍率重算與來源月總額一致。"}</div>`:""}
+ <div class="annual-drill-grid">
+  <div class="annual-drill-section">
+   <div class="annual-drill-title"><b>薪資加項明細</b><span>${add.length} 項 · ${money2(addTotal)}</span></div>
+   ${annualAdditionDrillHtml(add)}
+  </div>
+  <div class="annual-drill-section">
+   <div class="annual-drill-title"><b>薪資減項明細</b><span>${ded.length} 項 · ${money2(dedTotal)}</span></div>
+   ${annualDeductionDrillHtml(ded)}
+  </div>
+  <div class="annual-drill-section full">
+   <div class="annual-drill-title"><b>全部加班紀錄</b><span>${ot.length} 筆 · ${otHours.toFixed(2)} H · ${money2(otTotal)}</span></div>
+   ${annualOvertimeDrillHtml(ot)}
+  </div>
+ </div>
+ <div class="annual-drill-actions">
+  ${trace.pay?`<button class="btn" data-annual-open-payslip="${esc(month)}">開啟薪資單</button>`:""}
+  <button class="btn" data-annual-open-analytics="${esc(month)}">進階分析</button>
+ </div>`;
+}
+function bindAnnualDrilldownActions(scope){
+ scope.querySelectorAll("[data-annual-toggle]").forEach(btn=>btn.addEventListener("click",()=>{
+  const month=btn.dataset.annualToggle,key=annualDrillKey(month),panel=scope.querySelector(`[data-annual-drill="${month}"]`);
+  if(!panel)return;
+  const opening=!panel.classList.contains("open");
+  panel.classList.toggle("open",opening);
+  btn.textContent=opening?"收合明細":"展開明細";
+  if(opening){annualDrilldownExpanded.add(key);panel.innerHTML=annualMonthDrilldownHtml(month);bindAnnualDrilldownActions(panel)}
+  else annualDrilldownExpanded.delete(key);
+ }));
+ scope.querySelectorAll("[data-annual-open-payslip]").forEach(btn=>btn.addEventListener("click",()=>{
+  const month=btn.dataset.annualOpenPayslip;
+  showModule("payslip",{updateHash:true});
+  loadPayslipForm(month);
+ }));
+ scope.querySelectorAll("[data-annual-open-analytics]").forEach(btn=>btn.addEventListener("click",()=>{
+  const month=btn.dataset.annualOpenAnalytics,year=month.slice(0,4);
+  showModule("analytics",{updateHash:true});
+  renderAnalytics();
+  if([...$("analyticsYear").options].some(o=>o.value===year)){$("analyticsYear").value=year;renderAnalytics()}
+  if([...$("compareMonthB").options].some(o=>o.value===month)){$("compareMonthB").value=month;renderMonthComparison()}
+ }));
+}
+
+function annualAnalyticsSummary(year){
+ const rows=analyticsRows(String(year)).map(enrichAnnualMonthRow);
+ const actualRows=rows.filter(r=>r.actual!==null);
+ const varianceRows=rows.filter(r=>r.variance!==null);
+ return {
+  year:String(year),rows,
+  actualRows,
+  actualIncome:actualRows.reduce((s,r)=>s+r.actual,0),
+  expectedIncome:rows.reduce((s,r)=>s+r.expected,0),
+  varianceTotal:varianceRows.reduce((s,r)=>s+r.variance,0),
+  overtimeTotal:rows.reduce((s,r)=>s+r.overtime,0),
+  overtimeHours:rows.reduce((s,r)=>s+r.overtimeHours,0),
+  bonusTotal:rows.reduce((s,r)=>s+r.bonusTotal,0),
+  allowanceTotal:rows.reduce((s,r)=>s+r.allowanceTotal,0),
+  taxableDeductTotal:rows.reduce((s,r)=>s+r.taxableDeduct,0),
+  taxFreeDeductTotal:rows.reduce((s,r)=>s+r.taxFreeDeduct,0),
+  deductTotal:rows.reduce((s,r)=>s+r.deductionTotal,0),
+  finalized:rows.filter(r=>r.finalized).length,
+  pending:rows.filter(r=>r.actual===null).length
+ };
+}
+function annualCenterAvailableYears(){
+ const annual=companyAnnualCompensation();
+ const years=new Set([
+  ...companyScoped(monthlyPayrollRecords).map(r=>String(r.month||"").slice(0,4)),
+  ...companyScoped(payslipRecords).map(r=>String(r.month||"").slice(0,4)),
+  ...(annual.startingSalaryHistory||[]).map(r=>String(r.year||"")),
+  ...(annual.yearEndResults||[]).map(r=>String(r.year||"")),
+  String(new Date().getFullYear())
+ ]);
+ return [...years].filter(y=>/^\d{4}$/.test(y)).sort().reverse();
+}
+function renderAnnualCenterYearOptions(){
+ if(!$("annualCenterYear"))return;
+ const years=annualCenterAvailableYears(),sel=$("annualCenterYear");
+ const old=sel.value||String($("yearEndYear")?.value||new Date().getFullYear());
+ sel.innerHTML=years.map(y=>`<option value="${y}">${y}</option>`).join("");
+ sel.value=years.includes(old)?old:(years[0]||String(new Date().getFullYear()));
+}
+function renderAnnualCompensationCenter(){
+ if(!$("annualCenterOverview"))return;
+ renderAnnualCenterYearOptions();
+ const year=$("annualCenterYear").value||String(new Date().getFullYear());
+ const summary=annualAnalyticsSummary(year),annual=companyAnnualCompensation();
+ const start=(annual.startingSalaryHistory||[]).find(r=>Number(r.year)===Number(year))||null;
+ const yearEnd=(annual.yearEndResults||[]).find(r=>Number(r.year)===Number(year))||null;
+ const snaps=companyScoped(monthlyPayrollRecords).filter(r=>String(r.month||"").startsWith(year+"-"));
+ const pays=companyScoped(payslipRecords).filter(r=>String(r.month||"").startsWith(year+"-"));
+
+ $("annualCenterCompany").textContent=currentCompanyName();
+ $("acyActual").textContent=money2(summary.actualIncome);
+ $("acyActualMeta").textContent=`${summary.actualRows.length} 個有實領月份`;
+ $("acyExpected").textContent=money2(summary.expectedIncome);
+ $("acyOT").textContent=money2(summary.overtimeTotal);
+ $("acyOTHours").textContent=`${summary.overtimeHours.toFixed(2)} H`;
+ $("acyBonus").textContent=money2(summary.bonusTotal);
+ $("acyAllowance").textContent=money2(summary.allowanceTotal);
+ $("acyDeduct").textContent=money2(summary.deductTotal);
+ $("acyFinalized").textContent=String(summary.finalized);
+ $("acyPending").textContent=`待核對 ${summary.pending} 月`;
+ $("acyStartingSalary").textContent=start?money2(start.amount):"—";
+ $("acyStartingSalaryMeta").textContent=start?`${year} 年新進起薪`:"尚無該年度資料";
+ $("acyYearEnd").textContent=yearEnd?money2(yearEnd.net):"—";
+ $("acyYearEndMeta").textContent=yearEnd?`${yearEnd.grade||"—"} · 預扣 ${money2(yearEnd.tax||0)}`:"尚無該年度結果";
+ $("acyFlowActual").textContent=money2(summary.actualIncome);
+ $("acyFlowYearEnd").textContent=yearEnd?money2(yearEnd.net):"未記錄";
+ $("acyFlowNote").textContent=yearEnd?"分開顯示，避免重複計入":"月薪實領已統計；年終尚未記錄";
+ $("acyMonthCount").textContent=`${summary.rows.length} 月`;
+ $("acyStartCount").textContent=`${(annual.startingSalaryHistory||[]).length} 筆`;
+ $("acyYearEndCount").textContent=`${(annual.yearEndResults||[]).length} 筆`;
+ $("acySnapshotCount").textContent=`${snaps.length} 月`;
+ $("acyPayslipCount").textContent=`${pays.length} 月`;
+
+ const recent=$("annualCenterRecent");recent.innerHTML="";
+ const rows=[...summary.rows].sort((a,b)=>b.month.localeCompare(a.month));
+ if(!rows.length){
+  recent.innerHTML='<div class="empty">尚無年度薪資資料</div>';
+ }else{
+  rows.forEach(r=>{
+   const block=document.createElement("div"),row=document.createElement("div"),drill=document.createElement("div");
+   const verify=r.finalized?"已結案":r.hasPayslip?"待結案":"未建薪資單",key=annualDrillKey(r.month),opened=annualDrilldownExpanded.has(key);
+   block.className="annual-center-month-block";
+   row.className=`annual-center-recent-row${r.actual===null?" pending":""}`;
+   row.innerHTML=`<div class="month"><span class="month-label">${r.month}</span><button class="btn annual-drill-toggle" data-annual-toggle="${r.month}">${opened?"收合明細":"展開明細"}</button></div>
+    <div class="annual-center-recent-col">
+      <span class="h">狀態 / 來源</span>
+      <span class="v">${esc(r.profileName)} · ${verify}</span>
+      <span class="s">${esc(r.sourceType)}</span>
+    </div>
+    <div class="annual-center-recent-col ot">
+      <span class="h">全部加班紀錄</span>
+      <span class="v">${r.overtimeHours.toFixed(2)} H · ${money2(r.overtime)}</span>
+      <span class="s">${r.overtimeRecordCount} 筆${r.overtimeHistoryCount?` · 歷史 ${r.overtimeHistoryCount}`:""}${r.overtimeManualCount?` · 手動 ${r.overtimeManualCount}`:""}</span>
+    </div>
+    <div class="annual-center-recent-col">
+      <span class="h">加項匯總</span>
+      <span class="v">${money2(r.additionTotal)}</span>
+      <span class="s">固定 ${money2(r.customStructureTotal)}<br>獎金 ${money2(r.bonusTotal)}<br>津貼 ${money2(r.allowanceTotal)}</span>
+    </div>
+    <div class="annual-center-recent-col">
+      <span class="h">減項匯總</span>
+      <span class="v">${money2(r.deductionTotal)}</span>
+      <span class="s">應稅 ${money2(r.taxableDeduct)}<br>免稅 ${money2(r.taxFreeDeduct)}</span>
+    </div>
+    <div class="annual-center-recent-col money money-block">
+      <span class="h">薪資金額</span>
+      <span class="v">系統應付 ${money2(r.expected)}</span>
+      <span class="s"><span class="kline">公司實領 ${r.actual===null?"—":money2(r.actual)}</span><span class="kline">差異 ${r.variance===null?"—":((r.variance>0?"+":"")+money2(r.variance))}</span></span>
+    </div>`;
+   drill.className=`annual-drilldown${opened?" open":""}`;
+   drill.dataset.annualDrill=r.month;
+   if(opened)drill.innerHTML=annualMonthDrilldownHtml(r.month);
+   block.appendChild(row);block.appendChild(drill);recent.appendChild(block);
+  });
+  bindAnnualDrilldownActions(recent);
+ }
+}
+function renderAnalyticsYearOptions(){
+ const snaps=moduleRead("settlement"),pays=moduleRead("payslip");
+ const years=[...new Set([...snaps.map(r=>r.month.slice(0,4)),...pays.map(p=>p.month.slice(0,4))])].sort().reverse();
+ const current=($("payrollMonth").value||monthNow()).slice(0,4);
+ if(!years.includes(current))years.push(current);
+ years.sort().reverse();
+ const sel=$("analyticsYear"),old=sel.value;
+ sel.innerHTML=years.map(y=>`<option value="${y}">${y}</option>`).join("");
+ sel.value=years.includes(old)?old:current;
+}
+function renderAnalytics(){
+ renderAnalyticsYearOptions();
+ const year=$("analyticsYear").value||(($("payrollMonth").value||monthNow()).slice(0,4));
+ const summary=annualAnalyticsSummary(year),rows=summary.rows;
+ const actualRows=summary.actualRows;
+ const avgActual=actualRows.length?summary.actualIncome/actualRows.length:0;
+ const customStructureTotal=rows.reduce((s,r)=>s+r.customStructureTotal,0);
+ const incidentDays=rows.reduce((s,r)=>s+r.incidentDays,0);
+
+ $("anActualIncome").textContent=money2(summary.actualIncome);
+ $("anActualMeta").textContent=`${actualRows.length} 個有實領月份`;
+ $("anExpectedIncome").textContent=money2(summary.expectedIncome);
+ $("anVarianceTotal").textContent=(summary.varianceTotal>0?"+":"")+money2(summary.varianceTotal);
+ $("anVarianceMeta").textContent=`待核對 ${summary.pending} 月`;
+ $("anAvgActual").textContent=money2(avgActual);
+ $("anOvertimeTotal").textContent=money2(summary.overtimeTotal);
+ $("anCustomStructureTotal").textContent=money2(customStructureTotal);
+ $("anOvertimeHours").textContent=`${summary.overtimeHours.toFixed(2)}H`;
+ $("anIncidentDays").textContent=`${incidentDays} 天`;
+ $("anFinalizedMeta").textContent=`已結案 ${summary.finalized} 月`;
+ $("anBonusTotal").textContent=money2(summary.bonusTotal);
+ $("anAllowanceTotal").textContent=money2(summary.allowanceTotal);
+ $("anTaxableDeductTotal").textContent=money2(summary.taxableDeductTotal);
+ $("anTaxFreeDeductTotal").textContent=money2(summary.taxFreeDeductTotal);
+ $("anDeductTotal").textContent=money2(summary.deductTotal);
+ $("analyticsRowCount").textContent=`${rows.length} 筆`;
+
+ const body=$("analyticsBody");body.innerHTML="";
+ if(!rows.length)body.innerHTML='<tr><td class="empty" colspan="16">尚無年度薪資資料</td></tr>';
+ else rows.forEach(r=>{
+  const d=analyticsDelta(r.variance),tr=document.createElement("tr");
+  tr.innerHTML=`<td><b>${r.month}</b></td><td>${esc(r.profileName)}</td><td class="money">${money2(r.expected)}</td><td class="actual-money">${r.actual===null?"—":money2(r.actual)}</td><td class="${d.cls}">${d.text}</td><td>${money2(r.overtime)}</td><td>${money2(r.customStructureTotal)}</td><td>${money2(r.bonusTotal)}</td><td>${money2(r.allowanceTotal)}</td><td>${money2(r.taxableDeduct)}</td><td>${money2(r.taxFreeDeduct)}</td><td>${money2(r.deduct)}</td><td>${r.overtimeHours.toFixed(2)}</td><td>${r.incidentDays}</td><td>${r.sourceState&&r.sourceState.code!=="ok"?`${r.verify.label} / ${r.sourceState.label}`:r.verify.label}</td><td>${r.finalized?"已結案":"—"}</td>`;
+  body.appendChild(tr);
+ });
+
+ renderCompareOptions(rows);
+ drawAnnualPayslipChart(year,rows);
+}
+function renderCompareOptions(rows){
+ const months=rows.map(r=>r.month).sort().reverse();
+ const a=$("compareMonthA"),b=$("compareMonthB"),oldA=a.value,oldB=b.value;
+ const opts=months.length?months.map(m=>`<option value="${m}">${m}</option>`).join(""):'<option value="">無資料</option>';
+ a.innerHTML=opts;b.innerHTML=opts;
+ if(months.includes(oldA))a.value=oldA;else if(months[1])a.value=months[1];else if(months[0])a.value=months[0];
+ if(months.includes(oldB))b.value=oldB;else if(months[0])b.value=months[0];
+ renderMonthComparison();
+}
+function comparisonRowFor(month){
+ const year=month?month.slice(0,4):"";
+ return analyticsRows(year).find(r=>r.month===month)||null;
+}
+function renderMonthComparison(){
+ const ra=comparisonRowFor($("compareMonthA").value),rb=comparisonRowFor($("compareMonthB").value),box=$("comparePanels");
+ if(!ra||!rb){box.innerHTML='<div class="hint">至少需要一個月份資料。</div>';return}
+ const panel=r=>`<div class="compare-panel"><h4>${r.month}</h4>
+  <div class="compare-row"><span>班別</span><b>${esc(r.profileName)}</b></div>
+  <div class="compare-row"><span>系統應付</span><b>${money2(r.expected)}</b></div>
+  <div class="compare-row"><span>公司實領</span><b>${r.actual===null?"—":money2(r.actual)}</b></div>
+  <div class="compare-row"><span>加班費</span><b>${money2(r.overtime)}</b></div>
+  <div class="compare-row"><span>自訂固定薪資</span><b>${money2(r.customStructureTotal)}</b></div>
+  <div class="compare-row"><span>獎金</span><b>${money2(r.bonusTotal)}</b></div>
+  <div class="compare-row"><span>額外津貼</span><b>${money2(r.allowanceTotal)}</b></div>
+  <div class="compare-row"><span>應稅扣項</span><b>${money2(r.taxableDeduct)}</b></div>
+  <div class="compare-row"><span>免稅扣項</span><b>${money2(r.taxFreeDeduct)}</b></div>
+  <div class="compare-row"><span>扣項合計</span><b>${money2(r.deduct)}</b></div>
+  <div class="compare-row"><span>加班時數</span><b>${r.overtimeHours.toFixed(2)}H</b></div>
+  <div class="compare-row"><span>全勤事件</span><b>${r.incidentDays} 天</b></div>
+ </div>`;
+ const salaryDelta=(rb.actual??rb.expected)-(ra.actual??ra.expected);
+ const otDelta=rb.overtime-ra.overtime;
+ const incidentDelta=rb.incidentDays-ra.incidentDays;
+ const salary=analyticsDelta(salaryDelta),ot=analyticsDelta(otDelta);
+ box.innerHTML=`<div class="compare-grid">${panel(ra)}${panel(rb)}</div>
+ <div class="compare-delta">
+  <div class="box"><span>B－A 薪資</span><b class="${salary.cls}">${salary.text}</b></div>
+  <div class="box"><span>B－A 加班費</span><b class="${ot.cls}">${ot.text}</b></div>
+  <div class="box"><span>B－A 全勤事件</span><b class="${incidentDelta>0?"neg":incidentDelta<0?"pos":"neutral"}">${incidentDelta>0?"+":""}${incidentDelta} 天</b></div>
+ </div>`;
+}
+function drawAnnualPayslipChart(year,rows){
+ const svg=$("annualPayslipChart"),empty=$("annualChartEmpty");
+ const map=Object.fromEntries(rows.map(r=>[Number(r.month.slice(5,7)),r]));
+ const vals=Array.from({length:12},(_,i)=>map[i+1]||null);
+ const nums=vals.flatMap(r=>r?[r.expected,...(r.actual===null?[]:[r.actual])]:[]);
+ const max=Math.max(...nums,0);
+ if(max<=0){
+  svg.innerHTML='<text x="430" y="120" text-anchor="middle" class="chart-label">尚無年度薪資資料</text>';
+  empty.style.display="block";empty.textContent=`${year} 尚無年度薪資資料`;return;
+ }
+ empty.style.display="none";
+ const W=860,H=250,left=48,right=20,top=18,bottom=32,w=W-left-right,h=H-top-bottom,step=w/11;
+ const y=v=>top+h-(v/max)*h;
+ const grid=[0,.25,.5,.75,1].map(t=>{const yy=top+h-h*t;return `<line x1="${left}" y1="${yy}" x2="${W-right}" y2="${yy}" stroke="#e8ece9"/><text x="5" y="${yy+3}" class="chart-label">${Math.round(max*t/1000)}K</text>`}).join("");
+ const expPts=vals.map((r,i)=>r?{x:left+i*step,y:y(r.expected),v:r.expected}:null);
+ const actPts=vals.map((r,i)=>r&&r.actual!==null?{x:left+i*step,y:y(r.actual),v:r.actual}:null);
+ const runs=pts=>{let all=[],run=[];pts.forEach(p=>{if(!p){if(run.length)all.push(run);run=[]}else run.push(p)});if(run.length)all.push(run);return all};
+ const lines=(pts,stroke)=>runs(pts).map(run=>run.length>1?`<polyline points="${run.map(p=>`${p.x},${p.y}`).join(" ")}" fill="none" stroke="${stroke}" stroke-width="3"/>`:"").join("");
+ const expDots=expPts.filter(Boolean).map(p=>`<circle cx="${p.x}" cy="${p.y}" r="3" fill="#6a7a70"/>`).join("");
+ const actDots=actPts.filter(Boolean).map(p=>`<circle cx="${p.x}" cy="${p.y}" r="4" fill="#169c54"/>`).join("");
+ const labels=Array.from({length:12},(_,i)=>`<text x="${left+i*step}" y="${H-8}" text-anchor="middle" class="chart-label">${i+1}</text>`).join("");
+ svg.innerHTML=`${grid}${lines(expPts,"#74847a")}${lines(actPts,"#169c54")}${expDots}${actDots}${labels}
+ <text x="${left}" y="12" class="chart-label">灰：系統應付　綠：公司實領</text>`;
+}
+function exportAnalyticsCsv(){
+ const year=$("analyticsYear").value,rows=analyticsRows(year);
+ if(!rows.length){alert("此年度沒有可匯出的薪資資料。");return}
+ const cols=["月份","班別","系統應付","公司實領","差異","加班費","自訂固定薪資","獎金","額外津貼","應稅薪資扣項","免稅薪資扣項","薪資扣項合計","加班時數","全勤事件日","核對狀態","結案"];
+ const csv=[cols.join(",")].concat(rows.map(r=>[
+  r.month,`"${String(r.profileName).replace(/"/g,'""')}"`,r.expected,
+  r.actual===null?"":r.actual,r.variance===null?"":r.variance,
+  r.overtime,r.customStructureTotal,r.bonusTotal,r.allowanceTotal,r.taxableDeduct,r.taxFreeDeduct,r.deduct,r.overtimeHours,r.incidentDays,r.verify.label,r.finalized?"已結案":""
+ ].join(","))).join("\r\n");
+ const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`SalaryMate_${year}_Payslip_Analytics.csv`;a.click();URL.revokeObjectURL(url);
+}
+
+function currentVerification(){
+ const src=sourceSnapshot($("payslipMonth").value);
+ const actualRaw=$("payslipActualNet").value;
+ const actual=actualRaw===""?null:Number(actualRaw);
+ if(!src)return {expected:0,actual,variance:null,status:"待核對"};
+ const variance=actual===null?null:actual-Number(src.payable||0);
+ return {
+  expected:Number(src.payable||0),actual,variance,
+  status:variance===null?"待核對":Math.abs(variance)<0.005?"一致":"有差異"
+ };
+}
+function renderVerificationPreview(){
+ const v=currentVerification(),box=$("verifyVarianceBox");
+ $("verifyExpected").textContent=money2(v.expected);
+ $("verifyActual").textContent=v.actual===null?"尚未輸入":money2(v.actual);
+ $("verifyVariance").textContent=v.variance===null?"—":(v.variance>=0?"+":"")+money2(v.variance).replace("NT$ ","NT$ ");
+ box.className="verify-box"+(v.status==="一致"?" good":v.status==="有差異"?" warn":"");
+ renderPayslipBuilderVisual();
+}
+function setPayslipFormLocked(locked){
+ ["payslipMonth","payslipPayDate","payslipStatus","payslipNote","payslipActualNet","payslipVarianceReason","payslipFile"].forEach(id=>$(id).disabled=locked);
+ $("savePayslip").disabled=locked;
+ $("removePayslipAttachment").disabled=locked;
+ $("finalizePayslip").style.display=locked?"none":"inline-block";
+ $("unlockPayslip").style.display=locked?"inline-block":"none";
+}
+
+function getPayslip(month,companyId=currentCompanyId()){return moduleReadOne("payslip",{companyId,payrollMonth:month})}
+function sourceSnapshot(month,companyId=currentCompanyId()){return moduleReadOne("settlement",{companyId,payrollMonth:month})}
+function attachmentStorageSize(dataUrl){return dataUrl?Math.ceil(dataUrl.length*0.75):0}
+
+function renderPayslipSourceOptions(){
+ const sel=$("payslipMonth"),old=sel.value||payslipEditMonth;
+ const snaps=moduleRead("settlement").sort((a,b)=>b.month.localeCompare(a.month));
+ if(!snaps.length){
+  sel.innerHTML='<option value="">尚無已結算薪資月份</option>';
+  sel.disabled=true;
+ }else{
+  sel.disabled=false;
+  sel.innerHTML=snaps.map(r=>`<option value="${r.month}">${r.month} · ${r.profileName} · ${snapshotMoney(r,r.payable)}</option>`).join("");
+  if(old&&snaps.some(r=>r.month===old))sel.value=old;
+ }
+ renderPayslipSourceSummary();
+}
+
+function payslipMonthZh(month){
+ if(!month)return "--月";
+ const parts=String(month).split("-");
+ const m=Number(parts[1]||0);
+ return m?`${m}月`:month;
+}
+function payslipWeekdayZh(dateStr){
+ if(!dateStr)return "—";
+ const d=new Date(dateStr+"T00:00:00");
+ if(Number.isNaN(d.getTime()))return "—";
+ return ["週日","週一","週二","週三","週四","週五","週六"][d.getDay()]||"—";
+}
+function renderPayslipMiniList(targetId,items,emptyLabel){
+ const el=$(targetId);if(!el)return;
+ if(!items||!items.length){el.innerHTML=`<div class="ps-mini-empty">${esc(emptyLabel||"—")}</div>`;return}
+ el.innerHTML=items.map(i=>`<div class="ps-mini-row"><span>${esc(i.name||i.label||i.title||"項目")}</span><b>${money2(Number(i.amount||0))}</b></div>`).join("");
+}
+function renderPayslipBuilderVisual(){
+ const month=$("payslipMonth")?.value||"";
+ const src=sourceSnapshot(month),existingPayslip=getPayslip(month);
+ const payDate=$("payslipPayDate")?.value||payDateForPayrollMonth(month)||"";
+ const v=currentVerification();
+ const actualRaw=$("payslipActualNet")?.value||"";
+ const actual=actualRaw===""?null:Number(actualRaw);
+ const presentation=payrollPresentationBreakdown(src);
+ const structureTotal=presentation.structureTotal,additionTotal=presentation.additionTotal;
+ const taxableDeduct=Number(src?.taxableDeduct||0),taxFreeDeduct=Number(src?.taxFreeDeduct||0),deductionTotal=presentation.deductionTotal;
+ const deductionItems=Array.isArray(src?.deductionItems)?src.deductionItems.filter(i=>i.enabled!==false&&Number(i.amount||0)>0):[];
+ const profileName=src?.profileName||"—";
+ const statusText=$("payslipStatus")?.value==="confirmed"?"已確認":"草稿";
+ const noteText=($("payslipNote")?.value||"").trim()||"—";
+ const varianceReason=($("payslipVarianceReason")?.value||"").trim()||"—";
+ const attachmentReady=!!(typeof payslipAttachmentDraft!=="undefined"&&payslipAttachmentDraft&&payslipAttachmentDraft.dataUrl);
+ const customItems=Array.isArray(src?.customStructureItems)?src.customStructureItems.filter(i=>Number(i.amount||0)!==0):[];
+ const rawBonusItems=Array.isArray(src?.bonusAllowanceItems)?src.bonusAllowanceItems:[];
+ const additionItems=rawBonusItems.filter(i=>["bonus","allowance"].includes(String(i.type||""))).map(i=>({name:baCategoryLabel(i.type,i.category,i.customCategoryName)||"項目",amount:Number(i.amount||0)}));
+ if(Number(src?.attendancePay||0)!==0)additionItems.unshift({name:"全勤實發",amount:Number(src?.attendancePay||0)});
+ if(Number(src?.overtime||0)!==0)additionItems.splice(Math.min(1,additionItems.length),0,{name:"應稅加班",amount:Number(src?.overtime||0)});
+ const statusBadge=$("psvVerifyStatusBadge");
+ if($("psvMonthBig"))$("psvMonthBig").textContent=payslipMonthZh(month);
+ if($("psvPayDateDisplay"))$("psvPayDateDisplay").textContent=payDate||"—";
+ if($("psvPayDateWeekday"))$("psvPayDateWeekday").textContent=payslipWeekdayZh(payDate);
+ if($("psvCompanyName"))$("psvCompanyName").textContent=existingPayslip?.companyNameAtPayslipCreation||existingPayslip?.companyName||currentCompanyName();
+ if($("psvSalaryStructure"))$("psvSalaryStructure").textContent=money2(structureTotal);
+ if($("psvSalaryAddition"))$("psvSalaryAddition").textContent=money2(additionTotal);
+ if($("psvSalaryDeduction"))$("psvSalaryDeduction").textContent=money2(deductionTotal);
+ if($("psvSalaryNet"))$("psvSalaryNet").textContent=actual===null?money2(Number(src?.payable||0)):money2(actual);
+ if($("psvBase"))$("psvBase").textContent=money2(Number(src?.base||0));
+ if($("psvMeal"))$("psvMeal").textContent=money2(Number(src?.meal||0));
+ if($("psvNightAllowance"))$("psvNightAllowance").textContent=money2(Number(src?.nightAllowance||0));
+ if($("psvOtherFixed"))$("psvOtherFixed").textContent=money2(Number(src?.other||0));
+ if($("psvDispatchGross"))$("psvDispatchGross").textContent=money2(Number(presentation.dispatchGross||0));
+ if($("psvCustomStructure"))$("psvCustomStructure").textContent=money2(Number(src?.customStructureTotal||0));
+ if($("psvStructureTotal"))$("psvStructureTotal").textContent=money2(structureTotal);
+ if($("psvAttendancePay"))$("psvAttendancePay").textContent=money2(Number(src?.attendancePay||0));
+ if($("psvOvertimePay"))$("psvOvertimePay").textContent=money2(Number(src?.overtime||0));
+ if($("psvBonusTotal"))$("psvBonusTotal").textContent=money2(Number(src?.bonusTotal||0));
+ if($("psvAllowanceTotal"))$("psvAllowanceTotal").textContent=money2(Number(src?.allowanceTotal||0));
+ if($("psvAdditionTotal"))$("psvAdditionTotal").textContent=money2(additionTotal);
+ if($("psvTaxableDeduct"))$("psvTaxableDeduct").textContent=money2(taxableDeduct);
+ if($("psvTaxFreeDeduct"))$("psvTaxFreeDeduct").textContent=money2(taxFreeDeduct);
+ if($("psvDeductTotal"))$("psvDeductTotal").textContent=money2(deductionTotal);
+ renderPayslipMiniList("psvDeductionItems",deductionItems,deductionTotal>0?"此月份只有扣項總額，沒有逐項明細":"目前沒有薪資扣項");
+ if($("psvVarianceAmount"))$("psvVarianceAmount").textContent=v.variance===null?"—":((v.variance>=0?"+":"")+money2(v.variance).replace("NT$ ","NT$ "));
+ if($("psvPayslipStatus"))$("psvPayslipStatus").textContent=statusText;
+ if($("psvHourly"))$("psvHourly").textContent=money2(Number(src?.hourly||0));
+ if($("psvOvertimeHours"))$("psvOvertimeHours").textContent=`${Number(src?.overtimeHours||0).toFixed(2)} H`;
+ if($("psvIncidentDays"))$("psvIncidentDays").textContent=String(Number(src?.incidentDays||0));
+ if($("psvExpectedPay"))$("psvExpectedPay").textContent=money2(Number(src?.payable||0));
+ if($("psvProfileName"))$("psvProfileName").textContent=profileName;
+ if($("psvCycleDisplay"))$("psvCycleDisplay").textContent=`考勤週期：${src?.attendanceCycle?`${src.attendanceCycle.start} ～ ${src.attendanceCycle.end}`:"—"}`;
+ if($("psvAttachmentState"))$("psvAttachmentState").textContent=`薪資單照片：${attachmentReady?"已加入":"未加入"}`;
+ if($("psvNotePreview"))$("psvNotePreview").textContent=noteText;
+ if($("psvVarianceReasonPreview"))$("psvVarianceReasonPreview").textContent=varianceReason;
+ const structureItems=[...customItems];
+ if(Math.abs(Number(presentation.reconciliationAdjustment||0))>=0.005)structureItems.push({name:"來源對帳差額",amount:Number(presentation.reconciliationAdjustment||0)});
+ renderPayslipMiniList("psvStructureItems",structureItems.length?structureItems:[{name:"自訂固定薪資合計",amount:Number(src?.customStructureTotal||0)}],structureItems.length?"":"目前沒有自訂項目");
+ renderPayslipMiniList("psvAdditionItems",additionItems.filter(i=>Number(i.amount||0)!==0),additionItems.length?"":"目前沒有薪資加項");
+ if(statusBadge){
+  const badgeText=v.status==="一致"?"核對一致":v.status==="有差異"?"核對有差異":"待核對";
+  statusBadge.textContent=badgeText;
+  statusBadge.className="ps-status-badge "+(v.status==="一致"?"ok":v.status==="有差異"?"warn":"pending");
+ }
+ if(!src){
+  if($("psvSalaryStructure"))$("psvSalaryStructure").textContent="NT$ 0";
+  if($("psvSalaryAddition"))$("psvSalaryAddition").textContent="NT$ 0";
+  if($("psvSalaryDeduction"))$("psvSalaryDeduction").textContent="NT$ 0";
+  if($("psvSalaryNet"))$("psvSalaryNet").textContent="NT$ 0";
+  if($("psvExpectedPay"))$("psvExpectedPay").textContent="NT$ 0";
+  if($("psvProfileName"))$("psvProfileName").textContent="—";
+  if($("psvCycleDisplay"))$("psvCycleDisplay").textContent="考勤週期：—";
+  if($("psvHourly"))$("psvHourly").textContent="NT$ 0";
+  if($("psvOvertimeHours"))$("psvOvertimeHours").textContent="0.00 H";
+  if($("psvIncidentDays"))$("psvIncidentDays").textContent="0";
+  renderPayslipMiniList("psvStructureItems",[],"請先選擇來源月份");
+  renderPayslipMiniList("psvAdditionItems",[],"請先選擇來源月份");
+  renderPayslipMiniList("psvDeductionItems",[],"請先選擇來源月份");
+ }
+}
+
+
+function moduleMonthZh(month){
+ if(!month)return "--月";
+ const parts=String(month).split("-");
+ const m=Number(parts[1]||0);
+ return m?`${m}月`:month;
+}
+function renderWBList(targetId,items,emptyLabel){
+ const el=$(targetId);if(!el)return;
+ if(!items||!items.length){el.innerHTML=`<div class="wb-list-empty">${esc(emptyLabel||"—")}</div>`;return;}
+ el.innerHTML=items.map(item=>`<div class="wb-list-row"><span>${esc(item.label||item.name||"項目")}</span><b>${esc(item.value||"—")}</b></div>`).join("");
+}
+function renderCalculatorWorkbookView(){
+ if(!$("calcWBMonth"))return;
+ const s=getPayrollSummary();
+ $("calcWBMonth").textContent=moduleMonthZh(s.month);
+ $("calcWBPayDate").textContent=`領薪日 ${payDateForPayrollMonth(s.month)||"—"}`;
+ $("calcWBBase").textContent=money2(Number(s.base||0));
+ $("calcWBMeal").textContent=money2(Number(s.meal||0));
+ $("calcWBCustom").textContent=money2(Number(s.customStructureTotal||0));
+ const pbd=payrollPresentationBreakdown(s);
+ $("calcWBStructure").textContent=money2(pbd.structureTotal);
+ $("calcWBAttendance").textContent=money2(Number(s.attendancePay||0));
+ $("calcWBNight").textContent=money2(Number(s.nightAllowance||0));
+ $("calcWBHours").textContent=`${Number(s.overtimeHours||0).toFixed(2)} H`;
+ $("calcWBOT").textContent=money2(Number(s.overtime||0));
+ $("calcWBBonus").textContent=money2(Number(s.bonusTotal||0));
+ $("calcWBAllowance").textContent=money2(Number(s.allowanceTotal||0));
+ $("calcWBOther").textContent=money2(Number(s.other||0));
+ $("calcWBAdditions").textContent=money2(pbd.additionTotal);
+ $("calcWBTaxableDeduct").textContent=money2(Number(s.taxableDeduct||0));
+ $("calcWBTaxFreeDeduct").textContent=money2(Number(s.taxFreeDeduct||0));
+ $("calcWBDeduct").textContent=money2(Number(s.deduct||0));
+ $("calcWBProfile").textContent=s.profileName||"—";
+ $("calcWBHourly").textContent=money2(Number(s.hourly||0));
+ const roundMap={nearest:"四捨五入",floor:"無條件捨去",ceil:"無條件進位",cent:"保留 2 位"};
+ $("calcWBRounding").textContent=roundMap[s.roundingMode]||"—";
+ $("calcWBCycle").textContent=s.attendanceCycle?`${s.attendanceCycle.start} → ${s.attendanceCycle.end}`:"—";
+ $("calcWBIncidents").textContent=String(Number(s.incidentDays||0));
+ $("calcWBSnapshot").textContent=$("snapshotState")?.textContent||"尚未結算";
+ $("calcWBGross").textContent=payableMoney(Number(s.exactGross||0));
+}
+function renderBonusWorkbookView(){
+ if(!$("baWBMonth"))return;
+ const month=$("baPayrollMonth")?.value||$("payrollMonth")?.value||monthNow();
+ const summary=bonusAllowanceSummary(month);
+ const all=companyScoped(bonusAllowanceRecords).filter(r=>r.payrollMonth===month);
+ const confirmed=all.filter(r=>r.status==="confirmed");
+ $("baWBMonth").textContent=moduleMonthZh(month);
+ $("baWBMonth2").textContent=month||"—";
+ $("baWBBonus").textContent=money2(Number(summary.bonusTotal||0));
+ $("baWBAllowance").textContent=money2(Number(summary.allowanceTotal||0));
+ $("baWBTotal").textContent=money2(Number(summary.bonusTotal||0)+Number(summary.allowanceTotal||0));
+ $("baWBIncluded").textContent=String(activeBonusAllowanceRecords(month).length);
+ $("baWBRecords").textContent=String(all.length);
+ $("baWBConfirmed").textContent=String(confirmed.length);
+ const top=[...summary.bonusItems,...summary.allowanceItems]
+  .sort((a,b)=>Number(b.amount||0)-Number(a.amount||0))
+  .slice(0,6)
+  .map(r=>({label:baCategoryLabel(r.type,r.category,r.customCategoryName),value:money2(Number(r.amount||0))}));
+ renderWBList("baWBList",top,"本月尚無已確認獎金／津貼");
+}
+function renderAttendanceWorkbookView(){
+ if(!$("attWBMonth"))return;
+ const month=$("attMonthFilter")?.value||$("payrollMonth")?.value||monthNow();
+ const companyAtt=moduleRead("attendance",{calendarMonth:month});
+ const companyOT=moduleRead("overtime",{calendarMonth:month});
+ const cycle=getCycleSummary();
+ const recentDates=[...new Set([...companyAtt.map(r=>r.date),...companyOT.map(r=>r.date)].filter(Boolean))].sort().reverse().slice(0,8);
+ const recent=recentDates.map(date=>{
+  const att=companyAtt.find(r=>r.date===date);
+  const ots=companyOT.filter(r=>r.date===date);
+  const late=Number(att?.lateMinutes||0);
+  const leave=att?.leaveType&&att.leaveType!=="none"?` / ${LEAVE[att.leaveType]}`:"";
+  const otHours=ots.reduce((s,r)=>s+Number(r.hours||0),0);
+  return {
+   label:`${date} · ${att?SHIFT[att.shift]:"—"}`,
+   value:`${att?ATT_STATUS[att.status]:"無考勤"}${late?` 遲到${late}分`:""}${leave}${otHours?` · OT ${otHours.toFixed(2)}H`:""}`
+  };
+ });
+ $("attWBMonth").textContent=moduleMonthZh(month);
+ $("attWBCycle").textContent=`週期 ${cycle.range?`${cycle.range.start} → ${cycle.range.end}`:"—"}`;
+ $("attWBCount").textContent=String(recentDates.length || companyAtt.length || companyOT.length ? [...new Set([...companyAtt.map(r=>r.date),...companyOT.map(r=>r.date)].filter(Boolean))].length : 0);
+ $("attWBWorkdays").textContent=String(companyAtt.filter(r=>r.isWorkday).length);
+ $("attWBIncidents").textContent=String(companyAtt.filter(attendanceIncident).length);
+ $("attWBOTDays").textContent=String(new Set(companyOT.filter(r=>r.date).map(r=>r.date)).size);
+ $("attWBOTHours").textContent=`${companyOT.reduce((s,r)=>s+Number(r.hours||0),0).toFixed(2)} H`;
+ $("attWBShift").textContent=SHIFT[$("attShift")?.value]||SHIFT[cycle.shift]||"全部";
+ $("attWBPersonal").textContent=String(companyAtt.filter(r=>r.leaveType==="personal").length);
+ $("attWBSick").textContent=String(companyAtt.filter(r=>r.leaveType==="sick").length);
+ $("attWBLate").textContent=String(companyAtt.filter(r=>Number(r.lateMinutes||0)>=16).length);
+ renderWBList("attWBRecent",recent,"目前月份尚無日期紀錄");
+}
+function renderAnnualWorkbookView(){
+ if(!$("annualWBYear"))return;
+ const r=calculateYearEnd();
+ const start=[...(companyAnnualCompensation().startingSalaryHistory||[])].sort((a,b)=>Number(b.year||0)-Number(a.year||0));
+ const latest=start[0]||null;
+ $("annualWBYear").textContent=String($("yearEndYear")?.value||new Date().getFullYear());
+ $("annualWBCompany").textContent=currentCompanyName();
+ $("annualWBBase").textContent=money2(Number(r.base||0));
+ $("annualWBFixed").textContent=money2(Number(r.fixed||0));
+ $("annualWBPerformance").textContent=money2(Number(r.performance||0));
+ $("annualWBGross").textContent=money2(Number(r.gross||0));
+ $("annualWBGrade").textContent=String(r.grade||"—");
+ $("annualWBTax").textContent=money2(Number(r.tax||0));
+ $("annualWBThreshold").textContent=Number(r.gross||0)>=YEAR_END_WITHHOLDING_THRESHOLD?`超過 ${money0(YEAR_END_WITHHOLDING_THRESHOLD)} → 預扣 5%`:`未達 ${money0(YEAR_END_WITHHOLDING_THRESHOLD)}`;
+ $("annualWBNet").textContent=money2(Number(r.net||0));
+ $("annualWBStartYear").textContent=latest?String(latest.year):"—";
+ $("annualWBStartAmount").textContent=latest?money2(Number(latest.amount||0)):"NT$ 0";
+ $("annualWBStartCount").textContent=String(start.length);
+ $("annualWBResultCount").textContent=String((companyAnnualCompensation().yearEndResults||[]).length);
+}
+function renderWorkbookModuleViews(){
+ renderCalculatorWorkbookView();
+ renderBonusWorkbookView();
+ renderAttendanceWorkbookView();
+ renderAnnualWorkbookView();
+}
+
+function renderPayslipSourceSummary(){
+ const month=$("payslipMonth").value,src=sourceSnapshot(month),box=$("payslipSourceSummary");
+ if(!src){box.innerHTML='<div class="hint">請先完成 Payroll 月份結算，再建立正式薪資單。</div>';return}
+ const existing=getPayslip(month),state=existing?payslipSourceState(existing):null;
+ const suggestedPayDate=payDateForPayrollMonth(month);
+ if(!existing&&!payslipEditMonth&&!$("payslipPayDate").value)$("payslipPayDate").value=suggestedPayDate;
+ box.innerHTML=
+  `<div class="row"><span>來源月份</span><b>${src.month}</b></div>`+
+  `<div class="row"><span>發薪日預設</span><b>${suggestedPayDate||"—"}</b></div>`+
+  `<div class="row"><span>班別</span><b>${esc(src.profileName)}</b></div>`+
+  `<div class="row"><span>全勤實發</span><b>${money2(src.attendancePay)}</b></div>`+
+  `<div class="row"><span>自訂固定薪資</span><b>${money2(src.customStructureTotal||0)}</b></div>`+
+  `<div class="row"><span>加班費</span><b>${money2(src.overtime)}</b></div>`+
+  `<div class="row"><span>獎金</span><b>${money2(src.bonusTotal||0)}</b></div>`+
+  `<div class="row"><span>額外津貼</span><b>${money2(src.allowanceTotal||0)}</b></div>`+
+  `<div class="row"><span>應稅薪資扣項</span><b>${money2(src.taxableDeduct||0)}</b></div>`+
+   `<div class="row"><span>免稅薪資扣項</span><b>${money2(src.taxFreeDeduct||0)}</b></div>`+
+   `<div class="row"><span>薪資扣項合計</span><b>${money2(src.deduct)}</b></div>`+
+  `<div class="row"><span>最終應付</span><b>${snapshotMoney(src,src.payable)}</b></div>`+
+  (existing?`<div class="row"><span>既有薪資單</span><b class="${state.code==="ok"?"incident-no":"incident-yes"}">${state.label}</b></div>`:"");
+ renderVerificationPreview();
+ renderPayslipBuilderVisual();
+}
+function showPayslipAttachmentPreview(){
+ const box=$("payslipAttachmentPreview");
+ if(payslipAttachmentDraft&&payslipAttachmentDraft.dataUrl){
+  box.innerHTML=`<img src="${payslipAttachmentDraft.dataUrl}" alt="薪資單附件預覽">`;
+ }else box.innerHTML='<span class="hint">尚未加入薪資單照片</span>';
+ renderPayslipBuilderVisual();
+}
+function clearPayslipForm(){
+ payslipEditMonth="";payslipAttachmentDraft=null;
+ $("payslipFormMode").textContent="新增";
+ $("payslipStatus").value="draft";$("payslipPayDate").value="";$("payslipNote").value="";$("payslipActualNet").value="";$("payslipVarianceReason").value="";$("payslipFile").value="";
+ $("savePayslip").textContent="＋ 建立正式薪資單";
+ $("payslipValidation").className="validation";$("payslipValidation").textContent="";
+ setPayslipFormLocked(false);renderPayslipSourceOptions();showPayslipAttachmentPreview();renderVerificationPreview();
+}
+function loadPayslipForm(month){
+ const p=getPayslip(month);if(!p)return;showModule("payslip",{updateHash:true});
+ payslipEditMonth=month;payslipAttachmentDraft=p.attachment?{...p.attachment}:null;
+ renderPayslipSourceOptions();$("payslipMonth").value=month;
+ $("payslipPayDate").value=p.payDate||"";$("payslipStatus").value=p.status||"draft";$("payslipNote").value=p.note||"";$("payslipActualNet").value=(p.actualNet===null||p.actualNet===undefined)?"":p.actualNet;$("payslipVarianceReason").value=p.varianceReason||"";
+ $("payslipFormMode").textContent="編輯 "+month;$("savePayslip").textContent="儲存／同步薪資單";
+ $("payslipFile").value="";showPayslipAttachmentPreview();renderPayslipSourceSummary();setPayslipFormLocked(!!p.finalized);renderVerificationPreview();
+ document.getElementById("payslip").scrollIntoView({behavior:"smooth",block:"start"});
+}
+async function compressPayslipImage(file){
+ if(!file||!file.type.startsWith("image/"))throw new Error("僅支援圖片格式。");
+ const raw=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(new Error("讀取圖片失敗"));r.readAsDataURL(file)});
+ const img=await new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=()=>reject(new Error("無法解析圖片"));i.src=raw});
+ const maxSide=1600,scale=Math.min(1,maxSide/Math.max(img.width,img.height));
+ const canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));
+ canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);
+ let dataUrl=canvas.toDataURL("image/jpeg",0.78);
+ if(attachmentStorageSize(dataUrl)>1800000)dataUrl=canvas.toDataURL("image/jpeg",0.62);
+ if(attachmentStorageSize(dataUrl)>1800000)throw new Error("圖片壓縮後仍過大，請改用較小的照片。");
+ return {name:file.name,type:"image/jpeg",size:attachmentStorageSize(dataUrl),dataUrl};
+}
+function buildPayslipRecordFromDraft(src,existing,draft={}){
+ const payslipCreationCompanyName=existing?.companyNameAtPayslipCreation||existing?.companyName||currentCompanyName();
+ const hasAttachment=Object.prototype.hasOwnProperty.call(draft,"attachment");
+ return {
+  companyId:currentCompanyId(),companyName:payslipCreationCompanyName,
