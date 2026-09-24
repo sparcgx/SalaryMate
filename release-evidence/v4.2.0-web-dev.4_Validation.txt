@@ -1,0 +1,74 @@
+SalaryMate v4.2.0-web-dev.4 — Payroll + Annual Center Glass Integration Validation
+================================================================================
+Base: main / v4.2.0-web-dev.3
+Clean rebuild after CSS injection correction.
+Result: 50 PASS / 0 FAIL / 50 TOTAL
+
+Version: 3 PASS / 0 FAIL
+Structure: 4 PASS / 0 FAIL
+Payroll UI: 6 PASS / 0 FAIL
+Annual UI: 6 PASS / 0 FAIL
+Readability: 3 PASS / 0 FAIL
+Mobile: 3 PASS / 0 FAIL
+Accessibility: 1 PASS / 0 FAIL
+Isolation: 2 PASS / 0 FAIL
+Core: 13 PASS / 0 FAIL
+DOM: 9 PASS / 0 FAIL
+
+Isolation:
+- Script blocks before: 2
+- Script blocks after: 2
+- All script blocks byte-identical: YES
+- dev.4 style lives in outer <head>: YES
+- Payroll / OT / Attendance / Snapshot / Payslip / Annual / storage logic unchanged.
+
+PASS [Version] dev.4 title
+PASS [Version] sidebar dev.4
+PASS [Version] top badge dev.4
+PASS [Structure] dedicated dev4 style
+PASS [Structure] dev4 style before head close
+PASS [Structure] dev4 style before first script
+PASS [Structure] HTML close
+PASS [Payroll UI] .pci-rolebar
+PASS [Payroll UI] .pci-flow-card
+PASS [Payroll UI] .workbench-detail
+PASS [Payroll UI] .workbench-more-menu
+PASS [Payroll UI] #calculator .ctrl
+PASS [Payroll UI] #calculator .tablewrap
+PASS [Annual UI] .annual-center-kpis
+PASS [Annual UI] .annual-center-flow
+PASS [Annual UI] .annual-center-panel
+PASS [Annual UI] .annual-yearend-card
+PASS [Annual UI] .annual-center-toolbar
+PASS [Annual UI] advanced analytics secondary
+PASS [Readability] financial controls solid
+PASS [Readability] payroll tables solid
+PASS [Readability] annual tables solid
+PASS [Mobile] payroll flow stacks
+PASS [Mobile] annual KPI 2-col
+PASS [Mobile] annual KPI 1-col phone
+PASS [Accessibility] reduced transparency
+PASS [Isolation] script count unchanged
+PASS [Isolation] all scripts byte-identical
+PASS [Core] const STORAGE_KEY=
+PASS [Core] const CURRENT_SCHEMA_VERSION=
+PASS [Core] function saveState(
+PASS [Core] function readState(
+PASS [Core] function writeCanonicalState(
+PASS [Core] function calcHourly(
+PASS [Core] function attendance(
+PASS [Core] function recordAmount(
+PASS [Core] monthlyPayrollRecords
+PASS [Core] payslipRecords
+PASS [Core] orphanQuarantine
+PASS [Core] const MODULE_ROUTES=
+PASS [Core] function showModule(
+PASS [DOM] preserve pciNet
+PASS [DOM] preserve pciStructure
+PASS [DOM] preserve pciAdditions
+PASS [DOM] preserve pciDeductions
+PASS [DOM] preserve annualCenterOverview
+PASS [DOM] preserve acyActual
+PASS [DOM] preserve acyExpected
+PASS [DOM] preserve acyOT
+PASS [DOM] preserve acyYearEnd
