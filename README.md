@@ -2,9 +2,9 @@
 
 個人薪資與收入管理工具。
 
-## Web Release Candidate
+## Web Stable Release
 
-**v4.2.0-web-RC.1｜Full Glass Regression & Release Candidate Gate**
+**v4.2.0-web｜Full Glass Stable Release**
 
 整合範圍：
 - Glass UI Foundation
@@ -12,12 +12,15 @@
 - Settings Glass + Mobile Navigation
 - Payroll + Annual Center Glass Integration
 
-## Gate
+## Release Gate
 - dev.1～dev.4：128 PASS / 0 FAIL
 - RC Integration：88 PASS / 0 FAIL
 - RC Package：64 PASS / 0 FAIL
-- **累積：280 PASS / 0 FAIL**
+- RC Total：280 PASS / 0 FAIL
+- Stable normalization：33 PASS / 0 FAIL
+- Existing business/data script blocks：byte-identical
 
-## RC Freeze
-RC 期間只允許 Regression、Accessibility、Packaging、Data Safety 修正。
-薪資計算、OT、Attendance、多公司、Canonical Storage、Snapshot、Payslip、OCR、Backup 與歷史資料契約全部凍結。
+## Stable Freeze
+`stable/v4.2.0-web` 為正式凍結基線。後續功能請從下一個版本分支；不得直接修改 Stable branch。
+
+Repository 維持 Private。
