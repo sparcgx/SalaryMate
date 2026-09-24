@@ -1,0 +1,68 @@
+SalaryMate v4.2.0-web — Stable Release Gate
+============================================================
+Source RC: v4.2.0-web-RC.1
+RC Gate: 280 PASS / 0 FAIL
+Stable normalization: version/label only
+
+RESULT: 33 PASS / 0 FAIL / 33 TOTAL
+
+Version: 5 PASS / 0 FAIL
+Isolation: 2 PASS / 0 FAIL
+Core: 13 PASS / 0 FAIL
+Glass: 9 PASS / 0 FAIL
+Accessibility: 2 PASS / 0 FAIL
+Structure: 2 PASS / 0 FAIL
+
+Isolation
+---------
+Script blocks before: 2
+Script blocks after:  2
+Existing script blocks byte-identical: YES
+
+Stable Freeze
+-------------
+- Payroll calculation / rounding: unchanged
+- Attendance / OT: unchanged
+- Multi-company isolation: unchanged
+- Canonical local storage contract: unchanged
+- Snapshot / Payslip: unchanged
+- OCR verification: unchanged
+- Backup / Restore: unchanged
+- Historical imports incl. 1,373 OT: unchanged
+- Dashboard / Quick Entry: unchanged
+- Settings / Mobile navigation: unchanged
+- Annual Center / Drilldown: unchanged
+
+PASS [Version] formal title
+PASS [Version] no RC version residue
+PASS [Version] no Release Candidate residue
+PASS [Version] sidebar stable label
+PASS [Version] top stable badge
+PASS [Isolation] script count unchanged
+PASS [Isolation] all scripts byte-identical
+PASS [Core] const STORAGE_KEY=
+PASS [Core] const CURRENT_SCHEMA_VERSION=
+PASS [Core] function saveState(
+PASS [Core] function readState(
+PASS [Core] function writeCanonicalState(
+PASS [Core] function calcHourly(
+PASS [Core] function attendance(
+PASS [Core] function recordAmount(
+PASS [Core] monthlyPayrollRecords
+PASS [Core] payslipRecords
+PASS [Core] orphanQuarantine
+PASS [Core] const MODULE_ROUTES=
+PASS [Core] function showModule(
+PASS [Glass] salarymateDev3Presentation
+PASS [Glass] settings-glass-hub
+PASS [Glass] mobile-glass-dock
+PASS [Glass] dashboardTaskLauncher
+PASS [Glass] dashboardDailyQuick
+PASS [Glass] salarymateDev4Glass
+PASS [Glass] annualCenterOverview
+PASS [Glass] pci-flow-grid
+PASS [Glass] imageVerificationCenter
+PASS [Accessibility] reduced transparency
+PASS [Accessibility] safe area
+PASS [Structure] html close
+PASS [Structure] body close
