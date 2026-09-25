@@ -1,0 +1,31 @@
+SalaryMate v4.3.0-dev.1 — CM-01 Unified Version Foundation
+============================================================
+
+CM-01 targeted gate: PASS
+Targeted regression: 16 PASS / 0 FAIL
+Full npm regression: PENDING_ENVIRONMENT
+
+Version source: version.json
+Product Version: 4.3.0-dev.1
+Release Version: 4.3.0
+Schema: 13
+Android versionCode: 14
+iOS build: 2
+Version Drift: 0
+
+CM-01-01 Single Version Source                PASS
+CM-01-02 Web / Shared Version Binding         PASS
+CM-01-03 Android Unified Version Binding      PASS
+CM-01-04 iOS Unified Version Binding          PASS_STATIC
+CM-01-05 Targeted Version / Drift Gate        PASS
+
+Core isolation:
+NativeSalaryMateRepository                    SAME
+NativePayrollMath                             SAME
+src/storage.js                                SAME
+src/snapshot-store.mjs                        SAME
+src/backup-crypto.mjs                         SAME
+src/app.js                                    SAME
+
+Full cross-platform / real-device regression remains PENDING.
+RC / Stable promotion is not authorized.
