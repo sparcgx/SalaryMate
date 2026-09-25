@@ -1,0 +1,32 @@
+{
+  "gate": "CM-01 Unified Version Foundation",
+  "productVersion": "4.3.0-dev.1",
+  "releaseVersion": "4.3.0",
+  "schemaVersion": 13,
+  "androidVersionCode": 14,
+  "iosBuildNumber": 2,
+  "humanMaintainedVersionSource": "version.json",
+  "targetedRegression": {
+    "pass": 16,
+    "fail": 0,
+    "result": "PASS"
+  },
+  "fullNpmRegression": {
+    "result": "PENDING_ENVIRONMENT",
+    "blockedAt": "scripts/ios-foundation-test.mjs",
+    "reason": "Locked xcode npm dependency unavailable in current execution environment"
+  },
+  "versionDrift": 0,
+  "coreIsolation": {
+    "NativeSalaryMateRepository": "SAME",
+    "NativePayrollMath": "SAME",
+    "src/storage.js": "SAME",
+    "src/snapshot-store.mjs": "SAME",
+    "src/backup-crypto.mjs": "SAME",
+    "src/app.js": "SAME"
+  },
+  "sourcePackage": "SalaryMate_v4.3.0-dev.1_CM-01_Unified_Version_Foundation_R1_Source.zip",
+  "sourceSha256": "e27adfb5dfbbd0224bbcc6d763211a60991e8d474c5650f77a5ae27d3472ccd9",
+  "stableEligible": false,
+  "next": "CM-02 Company Management Shell"
+}
