@@ -1,0 +1,14 @@
+{
+  "productVersion": "4.3.0-dev.1",
+  "releaseVersion": "4.3.0",
+  "buildNumber": 2,
+  "androidVersionCode": 14,
+  "schemaVersion": 13,
+  "channel": "development",
+  "status": "canonical-integration-baseline",
+  "sourcePackage": "SalaryMate_v4.3.0-dev.1_Canonical_Integration_Source.zip",
+  "sourceSha256": "a2ffbb29e1e7b52ab6ca9dc9b30a975bcd384ec894b632b69177559ef36d08c4",
+  "sourceBaseline": "SM_v4.2.0-dev.1_iOS_Hybrid_Foundation_ShortPath.zip",
+  "githubWebBaseline": "fe3da26698e09470f895733309b0bc64c6d96e6a",
+  "stableEligible": false
+}
