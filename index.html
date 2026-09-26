@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SalaryMate v4.2.0-web｜Full Glass Stable Release</title>
+<title>SalaryMate v4.2.1-web-dev.1｜Local Data Export</title>
 <style>
 
 
@@ -2197,7 +2197,7 @@ aside .version{
   <a href="#calculator" data-route="calculator"><span class="ico">⌘</span><div>薪資工作台<small>Payroll</small></div></a>
   <a href="#settings" data-route="settings"><span class="ico">⚙</span><div>設定<small>Settings</small></div></a>
  </nav>
- <div class="version"><b>SalaryMate 薪資管家</b><br>v4.2.0-web<br>Full Glass<br>Stable Release</div>
+ <div class="version"><b>SalaryMate 薪資管家</b><br>v4.2.1-web-dev.1<br>Data Export<br>Development</div>
 </aside>
 
 <main>
@@ -2221,7 +2221,7 @@ aside .version{
    <button id="retryWrite" class="btn" hidden>重試保存</button><button id="retryMaintenance" class="btn" hidden>重試清理舊版資料</button>
 <button id="dismissWriteRetry" class="btn" hidden>取消重試</button><div role="status" class="badge" id="writeStatus" hidden></div>
    <div class="badge" id="persistBadge">單一 HTML · Unified Top Controls Ready</div>
-   <div class="badge version-badge">● v4.2.0-web Full Glass Stable</div>
+   <div class="badge version-badge">● v4.2.1-web-dev.1 Data Export</div>
   </div>
  </div>
 </header>
@@ -3927,6 +3927,21 @@ aside .version{
      <button id="importEmbeddedAll" class="btn primary">全部匯入</button>
     </div>
     <div id="embeddedHistoryImportState" class="hint embedded-history-import-state">正在檢查目前匯入狀態…</div>
+   </div>
+
+   <div class="embedded-history-import data-export-center">
+    <div class="embedded-history-import-head">
+     <div>
+      <b>匯出歷史資料與紀錄</b>
+      <span>將目前瀏覽器中的 SalaryMate 完整 Canonical State 匯出成單一 JSON 檔，檔案只下載到本機，不會上傳到 GitHub 或其他伺服器。</span>
+     </div>
+     <span class="badge">Local Export</span>
+    </div>
+    <div class="info"><b>包含：</b>公司設定、Workspace、每日考勤、加班紀錄、Monthly Snapshot、Payslip、獎金／津貼、年度資料、特殊假日與 Orphan Quarantine。</div>
+    <div class="embedded-history-import-actions">
+     <button id="exportFullHistoryJson" class="btn primary">匯出完整歷史資料與紀錄（JSON）</button>
+    </div>
+    <div id="dataExportState" class="hint embedded-history-import-state">尚未匯出。</div>
    </div>
 
    <div class="cleanup-impact-preview">
@@ -9734,6 +9749,52 @@ function canonicalStateForInterface(){
   bonusAllowanceRecords:deepClone(bonusAllowanceRecords),orphanQuarantine:deepClone(orphanQuarantine)
  });
 }
+function salaryMateExportStamp(){
+ const d=new Date(),p=n=>String(n).padStart(2,"0");
+ return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
+}
+function salaryMateExportSummary(state){
+ const annual=(state.companies||[]).reduce((n,c)=>{
+  const a=c?.annualCompensation||{};
+  return n+
+   (Array.isArray(a.startingSalaryHistory)?a.startingSalaryHistory.length:0)+
+   (Array.isArray(a.yearEndResults)?a.yearEndResults.length:0);
+ },0);
+ return {
+  companies:(state.companies||[]).length,
+  attendance:(state.attendanceRecords||[]).length,
+  overtime:(state.records||[]).length,
+  snapshots:(state.monthlyPayrollRecords||[]).length,
+  payslips:(state.payslipRecords||[]).length,
+  additions:(state.bonusAllowanceRecords||[]).length,
+  annual
+ };
+}
+function exportFullHistoryJson(){
+ try{
+  const state=canonicalStateForInterface();
+  const summary=salaryMateExportSummary(state);
+  const payload={
+   format:"SalaryMate Canonical Data Export",
+   formatVersion:1,
+   appVersion:"v4.2.1-web-dev.1",
+   exportedAt:new Date().toISOString(),
+   source:{protocol:location.protocol,host:location.host||"local-file"},
+   summary,
+   data:state
+  };
+  const filename=`SalaryMate_Full_History_${salaryMateExportStamp()}.json`;
+  downloadBlobFile(JSON.stringify(payload,null,2),"application/json;charset=utf-8",filename);
+  const el=$("dataExportState");
+  if(el)el.textContent=`已匯出：${filename}｜OT ${summary.overtime}｜考勤 ${summary.attendance}｜Snapshot ${summary.snapshots}｜Payslip ${summary.payslips}｜加項 ${summary.additions}`;
+  return {ok:true,code:"FULL_HISTORY_EXPORTED",filename,summary};
+ }catch(e){
+  const el=$("dataExportState");
+  if(el)el.textContent="匯出失敗："+String(e?.message||e);
+  return {ok:false,code:"FULL_HISTORY_EXPORT_FAILED",message:String(e?.message||e)};
+ }
+}
+
 function legacy_manualImportEmbeddedHistory({salary=false,overtime=false}={}){
  if(!salary&&!overtime)return {ok:false,code:"NO_IMPORT_SCOPE",message:"請選擇要匯入的歷史資料。"};
  const before=embeddedHistoryImportStatus();
@@ -10030,6 +10091,7 @@ const SalaryMateModuleInterface=Object.freeze({
 });
 Object.defineProperty(window,"SalaryMateModuleInterface",{value:SalaryMateModuleInterface,writable:false,configurable:false,enumerable:true});
 
+$("exportFullHistoryJson").addEventListener("click",exportFullHistoryJson);
 $("retryMaintenance").addEventListener("click",finalizeStorageMaintenance);
 $("retryWrite").addEventListener("click",retryPendingWrite);
 $("dismissWriteRetry").addEventListener("click",dismissPendingWrite);
