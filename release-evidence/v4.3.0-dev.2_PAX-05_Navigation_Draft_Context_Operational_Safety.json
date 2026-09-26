@@ -1,0 +1,54 @@
+{
+  "gate": "PAX-05 Navigation / Draft / Context Operational Safety",
+  "productVersion": "4.3.0-dev.2",
+  "releaseVersion": "4.3.0",
+  "schemaVersion": 13,
+  "androidVersionCode": 15,
+  "iosBuildNumber": 3,
+  "result": "IMPLEMENTATION_REGRESSION_PASS",
+  "physicalOperationalSafetyQA": "PENDING_DEVICE_QA",
+  "fullPlatformBuildDeviceGate": "PENDING_ENVIRONMENT",
+  "regression": {
+    "executableSourceGates": 26,
+    "pass": 26,
+    "fail": 0,
+    "productFail": 0
+  },
+  "versionDrift": 0,
+  "sourceManifest": {
+    "trackedFiles": 265,
+    "shaErrors": 0
+  },
+  "zipIntegrity": "PASS",
+  "operationalSafety": {
+    "singleContextIntegrity": "PASS",
+    "draftScope": "PASS",
+    "scopeDirtySeparation": "PASS",
+    "dirtyRevertToClean": "PASS",
+    "selectedEntityScope": "PASS",
+    "companySwitchReset": "PASS",
+    "contextGenerationGuard": "PASS",
+    "duplicateSubmitProtection": "PASS",
+    "restoreOperationLock": "PASS",
+    "saveTargetAssertion": "PASS",
+    "logicalBrowserBack": "PASS",
+    "androidDirtyNavigationGuard": "PASS_STATIC",
+    "wrongCompanyWriteObservedAutomated": 0,
+    "duplicateUiWriteObservedAutomated": 0,
+    "physicalRapidSwitch": "PENDING_DEVICE_QA",
+    "physicalDoubleTap": "PENDING_DEVICE_QA",
+    "physicalLifecycle": "PENDING_DEVICE_QA"
+  },
+  "coreIsolation": {
+    "NativePayrollMath": "SAME",
+    "NativeSalaryMateRepository": "SAME",
+    "storage": "SAME",
+    "snapshotStore": "SAME",
+    "backupCrypto": "SAME",
+    "nativeBackup": "SAME"
+  },
+  "sourcePackage": "SalaryMate_v4.3.0-dev.2_PAX-05_Navigation_Draft_Context_Operational_Safety_R1_Source.zip",
+  "sourceSha256": "f99bf4c93f301c9f603163152c9291f0fc1ef409aa91b575b133bb31d9ff9940",
+  "stableEligible": false,
+  "next": "PAX-06 Full Regression & dev.2 Freeze Gate"
+}
