@@ -1,33 +1,22 @@
 # SalaryMate
 
-個人薪資與收入管理工具。
+## Current Development Line
 
-## Current Frozen Development Baseline
-
-**v4.3.0-dev.2｜PAX-06 Full Regression & dev.2 Freeze**
+**v4.3.0-dev.3｜Release Integration & Real-Device Hardening**
 
 Canonical Source SHA-256:
 
-`886b230c38b0a4af5d6662c259fc96b6cb341f83d42328c9bdd60910ad89b7a6`
+`ef3bb060e345e7ebdd779dcc1cbc35ba4a4c454b5800e59078b1f0023405f956`
 
-- Baseline: `freeze/v4.3.0-dev.1`
 - Schema: `13`
-- Android versionCode: `15`
-- iOS build: `3`
-- PAX-01～PAX-05: **PASS / PRESERVED**
-- PAX-06 source regression: **27 / 27 PASS**
-- Product FAIL: **0**
-- Source Manifest: **274 / 0 SHA errors**
-- Wrong-company write observed automated: **0**
-- Duplicate UI write observed automated: **0**
-- Full platform build/device gate: **PENDING_ENVIRONMENT**
-- Physical device QA: **PENDING_DEVICE_QA**
+- Android versionCode: `16`
+- iOS build: `4`
+- RI-01～RI-06 source integration: **PASS**
+- Source regression: **35 PASS lines / 0 product FAIL**
+- Production/native build: **PENDING_ENVIRONMENT**
+- Real-device / upgrade / backup / lifecycle: **PENDING_DEVICE_QA / NOT_RUN**
 - RC / Stable: **NOT AUTHORIZED**
 
-The dev.2 source line is frozen. No new feature work belongs on the frozen snapshot.
+This source line hardens version promotion, build/device evidence, upgrade/data-preservation and physical acceptance workflows without changing SalaryMate business formulas or canonical data stores.
 
-Next lifecycle line: **v4.3.0-dev.3｜Release Integration & Real-Device Hardening**
-
-## Previous frozen baselines
-- `freeze/v4.3.0-dev.1` — v4.3.0-dev.1 Development Source Freeze
-- `stable/v4.2.0-web` — previous Web Stable Freeze
+See `docs/releases/v4.3.0/RI-01_06_RELEASE_INTEGRATION_REAL_DEVICE_HARDENING.md`.
