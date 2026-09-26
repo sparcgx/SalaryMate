@@ -1,0 +1,40 @@
+SalaryMate v4.3.0-RC.1 — Web Official Final Publication Gate
+=============================================================
+
+WEBSITE IDENTITY                 v4.3.0-RC.1
+SOURCE BASELINE                  RC.1 Freeze R1
+WEB PUBLICATION STATUS           PASS
+GITHUB PAGES DEPLOYMENT          PASS
+GITHUB ACTIONS RUN               36227853262
+DEPLOYED COMMIT                  08a27b4a4a9f1f37fda9cadf8c929fe9e5277097
+PAGES SOURCE BRANCH              stable/v4.2.0-web
+OFFICIAL WEB BRANCH              pages/v4.3.0-RC.1
+RELEASE BRANCH                   release/v4.3.0-RC.1-web-official
+STABLE-CANDIDATE BRANCH          stable/v4.3.0-RC.1-web
+LIVE URL                         https://sparcgx.github.io/SalaryMate/
+INDEX GIT BLOB                   f125193bac4d3fb788945f1233880855dfa30af8
+INDEX SHA-256                    c5a848b306d3b1b6a47effbee1854413c17e7c2170468f9b126db6fd4a3b1686
+WEB OFFICIAL ZIP SHA-256         75959fce850c37ec61fa89034fbe414a522fe0881fe28b38ed13be7e7edb20bc
+SCHEMA                           13
+STORAGE KEY                      salarymate_v310_state
+BROWSER PERSONAL DATA            PRESERVED
+NETWORK TRANSPORT APIS           0
+LEGACY v4.2.1 CURRENT RESIDUES   0
+RC SOURCE REGRESSION             47 / 47 PASS
+CHROMIUM DESKTOP                 PASS
+CHROMIUM MOBILE                  PASS
+PAGE ERRORS                      0
+CONSOLE ERRORS                   0
+EXTERNAL REQUESTS                0
+APPLICATION STABLE PROMOTION     NOT AUTHORIZED
+ANDROID / IOS PHYSICAL QA        PENDING
+
+GitHub Pages deployment Run 36227853262 completed successfully. The deploy job
+reported the evaluated environment URL as https://sparcgx.github.io/SalaryMate/.
+Direct external HTTP retrieval is unavailable from the current verification
+sandbox, so publication proof is based on GitHub Pages deployment success plus
+byte-identical deployed source and prior Chromium runtime validation.
+
+OVERALL: PASS
+WEB FREEZE ELIGIBILITY: PASS
+APPLICATION STABLE ELIGIBILITY: NOT AUTHORIZED
