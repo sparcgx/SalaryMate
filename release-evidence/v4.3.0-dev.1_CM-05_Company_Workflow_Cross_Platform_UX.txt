@@ -1,0 +1,46 @@
+SalaryMate v4.3.0-dev.1 — CM-05 Company Workflow Simplification & Cross-Platform UX
+=====================================================================================
+
+RESULT: IMPLEMENTATION_REGRESSION_PASS
+FULL_PLATFORM_GATE: PENDING
+
+CM-05-01 End-to-End Company Workflow Map              PASS
+CM-05-02 Company Create → Start Using Flow             PASS
+CM-05-03 Company Switch & Context UX                   PASS
+CM-05-04 Payroll Creation Workflow Simplification      PASS
+CM-05-05 Cross-Platform Navigation / Interaction       PASS_TARGETED
+CM-05-06 Full Workflow Regression / UX Freeze          DEFERRED_TO_CM-06
+
+Single Current Company Context                         PASS
+Operational Module Company Selectors                   0
+No-current-company Fallback                            0
+Payroll Create Steps                                   月份 / 本月資料 / 確認
+Payroll Duplicate Scope                                companyId + payrollMonth
+Payroll Draft Company Lock                             PASS
+Month-scoped Draft Reset                               PASS
+Dirty Guard                                            PASS
+Browser Back / Forward                                 PASS_TARGETED
+Legacy WebView History Compatibility                   PASS
+Android System Back                                    PASS_STATIC
+Android Payroll Draft Back Guard                       PASS_STATIC
+
+Executable Script Gates                                20
+PASS Messages                                          22
+Product FAIL                                           0
+Schema                                                 13
+Version Drift                                          0
+
+NativePayrollMath                                      SAME
+Storage                                                SAME
+Snapshot                                               SAME
+Backup Crypto                                          SAME
+Native Backup                                          SAME
+NativeSalaryMateRepository                             FAIL-CLOSED CURRENT-COMPANY CHANGE ONLY
+
+Android Gradle / physical device                       PENDING_ENVIRONMENT
+iOS Foundation parser                                  PENDING_ENVIRONMENT
+iOS Result Gate                                        PASS
+
+Source SHA-256                                         8c6223328d96b7e180ff40f012db7330618658149268cde1259dbed863ae88d8
+RC / Stable Promotion                                  NOT AUTHORIZED
+NEXT                                                    CM-06 Full Regression & dev.1 Freeze Gate
