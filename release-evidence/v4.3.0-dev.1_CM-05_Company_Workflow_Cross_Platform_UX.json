@@ -1,0 +1,69 @@
+{
+  "gate": "CM-05 Company Workflow Simplification & Cross-Platform UX",
+  "productVersion": "4.3.0-dev.1",
+  "schemaVersion": 13,
+  "result": "IMPLEMENTATION_REGRESSION_PASS",
+  "fullPlatformGate": "PENDING",
+  "subgates": {
+    "CM-05-01": "PASS",
+    "CM-05-02": "PASS",
+    "CM-05-03": "PASS",
+    "CM-05-04": "PASS",
+    "CM-05-05": "PASS_TARGETED",
+    "CM-05-06": "DEFERRED_TO_CM-06"
+  },
+  "rootNavigation": [
+    "首頁",
+    "快速登記",
+    "薪資",
+    "年度總覽",
+    "公司管理",
+    "設定"
+  ],
+  "singleCurrentCompanyContext": "PASS",
+  "operationalModuleCompanySelectors": 0,
+  "noCurrentCompanyFallback": 0,
+  "payrollCreation": {
+    "steps": [
+      "月份",
+      "本月資料",
+      "確認"
+    ],
+    "duplicateScope": "companyId + payrollMonth",
+    "companyLock": "PASS",
+    "monthScopedReset": "PASS"
+  },
+  "navigationSafety": {
+    "dirtyGuard": "PASS",
+    "browserBackForward": "PASS_TARGETED",
+    "legacyWebViewHistoryCompatibility": "PASS",
+    "androidSystemBack": "PASS_STATIC",
+    "androidPayrollDraftBackGuard": "PASS_STATIC"
+  },
+  "regression": {
+    "scriptGates": 20,
+    "passLines": 22,
+    "productFail": 0
+  },
+  "versionDrift": 0,
+  "coreIsolation": {
+    "NativePayrollMath": "SAME",
+    "storage": "SAME",
+    "snapshot": "SAME",
+    "backupCrypto": "SAME",
+    "nativeBackup": "SAME",
+    "NativeSalaryMateRepository": "FAIL_CLOSED_CURRENT_COMPANY_ONLY"
+  },
+  "platforms": {
+    "webSharedRuntime": "PASS",
+    "androidSource": "PASS_STATIC",
+    "androidGradleDevice": "PENDING_ENVIRONMENT",
+    "iosHybridShared": "PASS_STATIC",
+    "iosFoundationParser": "PENDING_ENVIRONMENT",
+    "iosResultGate": "PASS"
+  },
+  "sourcePackage": "SalaryMate_v4.3.0-dev.1_CM-05_Company_Workflow_Cross_Platform_UX_R1_Source.zip",
+  "sourceSha256": "8c6223328d96b7e180ff40f012db7330618658149268cde1259dbed863ae88d8",
+  "stableEligible": false,
+  "next": "CM-06 Full Regression & dev.1 Freeze Gate"
+}
