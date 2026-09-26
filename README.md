@@ -4,11 +4,11 @@
 
 ## Current Development Line
 
-**v4.3.0-dev.2｜PAX-03 Form Validation & Error Messaging**
+**v4.3.0-dev.2｜PAX-04 Loading / Empty / Failure State Hardening**
 
 Canonical Source SHA-256:
 
-`3cbe056c70230a2fb627ef2afe51cd4e76c012caa3691dfb93e75a4bb77fc860`
+`58c2bf04d745ee26e825ef1e36c0452c9a9957a2fe50b36dac07e0072650a212`
 
 - Baseline: `freeze/v4.3.0-dev.1`
 - Schema: `13`
@@ -16,15 +16,16 @@ Canonical Source SHA-256:
 - iOS build: `3`
 - PAX-01: **IMPLEMENTATION_REGRESSION_PASS**
 - PAX-02: **IMPLEMENTATION_REGRESSION_PASS**
-- PAX-03 executable regression: **24 / 24 PASS**
+- PAX-03: **IMPLEMENTATION_REGRESSION_PASS**
+- PAX-04 executable regression: **25 / 25 PASS**
 - Product FAIL: **0**
-- Physical validation UX: **PENDING_DEVICE_QA**
+- Physical state/lifecycle QA: **PENDING_DEVICE_QA**
 - Full platform build/device gate: **PENDING_ENVIRONMENT**
 - RC / Stable: **NOT AUTHORIZED**
 
-PAX-03 adds field-level validation, Error/Warning/Info separation, first-error focus, fail-closed commit rollback and backup/restore error taxonomy. It does not change SalaryMate business formulas, Schema 13, repository data model or historical-data contracts.
+PAX-04 separates Loading / Empty / Invalid / Failure / Ready / Submitting states and hardens startup, company-switch, retry, write rollback and restore failure behavior. Payroll math, repository model, storage, snapshot and backup cores remain frozen.
 
-Next: **PAX-04｜Loading / Empty / Failure State Hardening**
+Next: **PAX-05｜Navigation / Draft / Context Operational Safety**
 
 ## Previous frozen baselines
 - `freeze/v4.3.0-dev.1` — v4.3.0-dev.1 Development Source Freeze
