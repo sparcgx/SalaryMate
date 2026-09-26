@@ -15,28 +15,35 @@
 | PAX-01 Visual Polish & Density Consistency | IMPLEMENTATION_REGRESSION_PASS |
 | PAX-02 Accessibility & Keyboard / Touch Hardening | IMPLEMENTATION_REGRESSION_PASS |
 | PAX-03 Form Validation & Error Messaging | IMPLEMENTATION_REGRESSION_PASS |
-| PAX-04 Loading / Empty / Failure State Hardening | NEXT |
-| PAX-05 Navigation / Draft / Context Operational Safety | PENDING |
+| PAX-04 Loading / Empty / Failure State Hardening | IMPLEMENTATION_REGRESSION_PASS |
+| PAX-05 Navigation / Draft / Context Operational Safety | NEXT |
 | PAX-06 Full Regression / dev.2 Freeze | PENDING |
 
-## PAX-03 regression
-- Executable source gates: **24 / 24 PASS**
+## PAX-04 regression
+- Executable source gates: **25 / 25 PASS**
 - Product FAIL: **0**
-- Physical validation UX: **PENDING_DEVICE_QA**
+- Source Manifest: **256 files / 0 SHA errors**
+- ZIP integrity: **PASS**
+- Physical state/lifecycle QA: **PENDING_DEVICE_QA**
 - Production/native builds: **PENDING_ENVIRONMENT**
 
-Validation contract:
-- Native / format → existing domain rule → persistence / commit layers
-- Error / Warning / Info separation
-- inline field errors + first-error focus
-- company, payroll, OT, leave, payroll-cycle, annual-raise and Year-End validation
-- duplicate payroll scope remains `companyId + payrollMonth`
-- fail-closed write rollback
-- backup/restore error taxonomy
-- accessibility-bound errors
+State contract:
+- Loading / Empty / Invalid / Failure / Ready separated
+- operation Loading / Submitting / Failure separated
+- startup read failure never becomes Empty
+- invalid Current Company fails closed
+- company switch persists before context activation
+- failed company switch rolls back to original company
+- destructive writes and restore preserve original state on persistence failure
+- restore is validated before mutation
+
+Runtime smoke:
+- corrupt storage startup -> Failure: PASS
+- invalid current company -> Invalid: PASS
+- failed switch -> original current company preserved: PASS
 
 ## Core isolation
-Byte-identical to PAX-02 R1:
+Byte-identical to PAX-03 R1:
 - NativePayrollMath
 - NativeSalaryMateRepository
 - Storage
@@ -45,11 +52,11 @@ Byte-identical to PAX-02 R1:
 - Native Backup
 
 ## Canonical source
-`3cbe056c70230a2fb627ef2afe51cd4e76c012caa3691dfb93e75a4bb77fc860`
+`58c2bf04d745ee26e825ef1e36c0452c9a9957a2fe50b36dac07e0072650a212`
 
-`SalaryMate_v4.3.0-dev.2_PAX-03_Form_Validation_Error_Messaging_R1_Source.zip`
+`SalaryMate_v4.3.0-dev.2_PAX-04_Loading_Empty_Failure_State_Hardening_R1_Source.zip`
 
 ## Next
-**PAX-04｜Loading / Empty / Failure State Hardening**
+**PAX-05｜Navigation / Draft / Context Operational Safety**
 
 RC / Stable promotion remains unauthorized.
