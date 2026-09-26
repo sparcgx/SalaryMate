@@ -1,0 +1,52 @@
+{
+  "version": "v4.2.1-web-RC.1",
+  "title": "Full Data Import & Migration Release Gate",
+  "base": "v4.2.1-web-dev.2",
+  "stableBaseline": "stable/v4.2.0-web",
+  "stableBaselineSha": "fe3da26698e09470f895733309b0bc64c6d96e6a",
+  "mainMatchesStable": true,
+  "pagesDev2MatchesDev2": true,
+  "rcIndexArchiveBlobMatch": true,
+  "rcDeltaFromDev2": {
+    "scope": "version/release labeling + archived RC build only",
+    "indexChanges": 8,
+    "functionalFeatureChanges": 0
+  },
+  "automatedGate": {
+    "versionIdentity": "PASS",
+    "exportUi": "PASS",
+    "importUi": "PASS",
+    "wrappedExportCompatibility": "PASS",
+    "legacyRawWebJsonCompatibility": "PASS",
+    "normalizeMigratedStatePath": "PASS",
+    "cleanupCanonicalStatePath": "PASS",
+    "canonicalValidationBeforeWrite": "PASS",
+    "explicitReplacementConfirmation": "PASS",
+    "transactionalRollback": "PASS",
+    "reloadAfterSuccess": "PASS",
+    "crossBrowserLocalJsonTransferArchitecture": "PASS",
+    "stableFreezeIsolation": "PASS",
+    "pagesCandidateBranchPrepared": "PASS"
+  },
+  "privacyGate": {
+    "fetchCalls": 0,
+    "XMLHttpRequest": 0,
+    "sendBeacon": 0,
+    "WebSocket": 0,
+    "Supabase": 0,
+    "Firebase": 0,
+    "result": "PASS"
+  },
+  "manualReleaseChecks": [
+    "From an existing/local SalaryMate browser, export a full-history JSON.",
+    "Open the RC Pages candidate in a different browser/origin.",
+    "Select the JSON and verify pre-import record counts.",
+    "Apply import and confirm reload completes.",
+    "Verify overtime, attendance, snapshots, payslips, additions, annual data and company settings.",
+    "Close and reopen the browser/page and confirm data persists.",
+    "Export again from the migrated browser and confirm a valid JSON is produced.",
+    "Optional failure test: use invalid JSON and verify no existing data changes."
+  ],
+  "automatedResult": "PASS",
+  "stablePromotionStatus": "PENDING_MANUAL_ACCEPTANCE"
+}
