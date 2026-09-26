@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SalaryMate v4.2.1-web-dev.1｜Local Data Export</title>
+<title>SalaryMate v4.2.1-web-dev.2｜Full Data Import & Migration</title>
 <style>
 
 
@@ -2197,7 +2197,7 @@ aside .version{
   <a href="#calculator" data-route="calculator"><span class="ico">⌘</span><div>薪資工作台<small>Payroll</small></div></a>
   <a href="#settings" data-route="settings"><span class="ico">⚙</span><div>設定<small>Settings</small></div></a>
  </nav>
- <div class="version"><b>SalaryMate 薪資管家</b><br>v4.2.1-web-dev.1<br>Data Export<br>Development</div>
+ <div class="version"><b>SalaryMate 薪資管家</b><br>v4.2.1-web-dev.2<br>Import & Migration<br>Development</div>
 </aside>
 
 <main>
@@ -2221,7 +2221,7 @@ aside .version{
    <button id="retryWrite" class="btn" hidden>重試保存</button><button id="retryMaintenance" class="btn" hidden>重試清理舊版資料</button>
 <button id="dismissWriteRetry" class="btn" hidden>取消重試</button><div role="status" class="badge" id="writeStatus" hidden></div>
    <div class="badge" id="persistBadge">單一 HTML · Unified Top Controls Ready</div>
-   <div class="badge version-badge">● v4.2.1-web-dev.1 Data Export</div>
+   <div class="badge version-badge">● v4.2.1-web-dev.2 Import & Migration</div>
   </div>
  </div>
 </header>
@@ -3932,16 +3932,22 @@ aside .version{
    <div class="embedded-history-import data-export-center">
     <div class="embedded-history-import-head">
      <div>
-      <b>匯出歷史資料與紀錄</b>
-      <span>將目前瀏覽器中的 SalaryMate 完整 Canonical State 匯出成單一 JSON 檔，檔案只下載到本機，不會上傳到 GitHub 或其他伺服器。</span>
+      <b>完整資料匯出 / 匯入與遷移</b>
+      <span>用 JSON 將本機 HTML、GitHub Pages 或另一個瀏覽器中的 SalaryMate 完整 Canonical State 搬移到目前瀏覽器。檔案只在本機讀取，不會上傳到 GitHub 或其他伺服器。</span>
      </div>
-     <span class="badge">Local Export</span>
+     <span class="badge">Local Transfer</span>
     </div>
-    <div class="info"><b>包含：</b>公司設定、Workspace、每日考勤、加班紀錄、Monthly Snapshot、Payslip、獎金／津貼、年度資料、特殊假日與 Orphan Quarantine。</div>
+    <div class="info"><b>完整範圍：</b>公司設定、Workspace、每日考勤、加班紀錄、Monthly Snapshot、Payslip、附件、獎金／津貼、年度資料、特殊假日、版面設定與 Orphan Quarantine。</div>
     <div class="embedded-history-import-actions">
      <button id="exportFullHistoryJson" class="btn primary">匯出完整歷史資料與紀錄（JSON）</button>
+     <button id="selectFullHistoryJson" class="btn">選擇完整資料 JSON</button>
+     <input id="importFullHistoryFile" type="file" accept=".json,application/json" hidden>
+     <button id="applyFullHistoryImport" class="btn primary" disabled>套用匯入 / 遷移</button>
+     <button id="cancelFullHistoryImport" class="btn" hidden>取消匯入</button>
     </div>
     <div id="dataExportState" class="hint embedded-history-import-state">尚未匯出。</div>
+    <div id="dataImportState" class="hint embedded-history-import-state">尚未選擇匯入檔案。</div>
+    <div class="info"><b>匯入規則：</b>會先驗證並升級舊版 Web JSON，再以匯入內容取代「目前瀏覽器」的 SalaryMate 本機資料。若目前已有重要資料，請先執行上方完整匯出。</div>
    </div>
 
    <div class="cleanup-impact-preview">
@@ -9777,7 +9783,7 @@ function exportFullHistoryJson(){
   const payload={
    format:"SalaryMate Canonical Data Export",
    formatVersion:1,
-   appVersion:"v4.2.1-web-dev.1",
+   appVersion:"v4.2.1-web-dev.2",
    exportedAt:new Date().toISOString(),
    source:{protocol:location.protocol,host:location.host||"local-file"},
    summary,
@@ -9793,6 +9799,100 @@ function exportFullHistoryJson(){
   if(el)el.textContent="匯出失敗："+String(e?.message||e);
   return {ok:false,code:"FULL_HISTORY_EXPORT_FAILED",message:String(e?.message||e)};
  }
+}
+
+let fullHistoryImportCandidate=null;
+
+function isSalaryMateStateShape(value){
+ if(!value||typeof value!=="object"||Array.isArray(value))return false;
+ return Array.isArray(value.companies)||
+  Array.isArray(value.records)||
+  Array.isArray(value.attendanceRecords)||
+  Array.isArray(value.monthlyPayrollRecords)||
+  Array.isArray(value.payslipRecords)||
+  Array.isArray(value.bonusAllowanceRecords)||
+  (!!value.companyWorkspaces&&typeof value.companyWorkspaces==="object")||
+  (typeof value.schemaVersion==="string"&&("activeCompanyId" in value||"uiSettings" in value));
+}
+function resetFullHistoryImportSelection(message="尚未選擇匯入檔案。"){
+ fullHistoryImportCandidate=null;
+ const input=$("importFullHistoryFile");
+ if(input)input.value="";
+ const apply=$("applyFullHistoryImport"),cancel=$("cancelFullHistoryImport"),state=$("dataImportState");
+ if(apply)apply.disabled=true;
+ if(cancel)cancel.hidden=true;
+ if(state)state.textContent=message;
+}
+function importedPayloadState(parsed){
+ if(parsed&&typeof parsed==="object"&&!Array.isArray(parsed)&&parsed.format==="SalaryMate Canonical Data Export"){
+  if(!isSalaryMateStateShape(parsed.data))throw new Error("匯出檔缺少 SalaryMate Canonical State。");
+  return {raw:parsed.data,sourceVersion:parsed.appVersion||parsed.data?.schemaVersion||"unknown",exportedAt:parsed.exportedAt||"",wrapped:true};
+ }
+ if(isSalaryMateStateShape(parsed)){
+  return {raw:parsed,sourceVersion:parsed.schemaVersion||"legacy-web",exportedAt:"",wrapped:false};
+ }
+ throw new Error("這不是可辨識的 SalaryMate Web JSON。請使用「匯出完整歷史資料與紀錄」產生的檔案。");
+}
+async function prepareFullHistoryImport(file){
+ resetFullHistoryImportSelection("正在讀取並驗證檔案…");
+ if(!file)return;
+ try{
+  if(!/\.json$/i.test(file.name||""))throw new Error("請選擇 .json 檔案。");
+  const text=await file.text();
+  if(!text.trim())throw new Error("檔案是空白的。");
+  let parsed;
+  try{parsed=JSON.parse(text)}catch(e){throw new Error("JSON 格式錯誤，無法解析。")}
+  const payload=importedPayloadState(parsed);
+  const migrated=cleanupCanonicalState(normalizeMigratedState(payload.raw));
+  if(!validCanonicalState(migrated))throw new Error("資料結構驗證失敗，未套用任何變更。");
+  const summary=salaryMateExportSummary(migrated);
+  fullHistoryImportCandidate={
+   fileName:file.name||"SalaryMate.json",
+   sourceVersion:payload.sourceVersion,
+   exportedAt:payload.exportedAt,
+   state:migrated,
+   summary
+  };
+  const apply=$("applyFullHistoryImport"),cancel=$("cancelFullHistoryImport"),state=$("dataImportState");
+  if(apply)apply.disabled=false;
+  if(cancel)cancel.hidden=false;
+  if(state)state.textContent=
+   `已驗證：${fullHistoryImportCandidate.fileName}｜來源 ${payload.sourceVersion}｜公司 ${summary.companies}｜OT ${summary.overtime}｜考勤 ${summary.attendance}｜Snapshot ${summary.snapshots}｜Payslip ${summary.payslips}｜加項 ${summary.additions}。尚未寫入。`;
+ }catch(e){
+  resetFullHistoryImportSelection("匯入檔案驗證失敗："+String(e?.message||e));
+ }
+}
+function applyFullHistoryImport(){
+ const candidate=fullHistoryImportCandidate;
+ if(!candidate)return {ok:false,code:"NO_IMPORT_CANDIDATE",message:"尚未選擇有效的匯入檔案。"};
+ if(moduleRetry){
+  const state=$("dataImportState");if(state)state.textContent="目前有待重試的保存操作，請先完成或取消後再匯入。";
+  return {ok:false,code:"RETRY_PENDING"};
+ }
+ const current=salaryMateExportSummary(canonicalStateForInterface());
+ const incoming=candidate.summary;
+ const message=
+  `確定匯入「${candidate.fileName}」？\n\n`+
+  `目前瀏覽器：OT ${current.overtime}、考勤 ${current.attendance}、Snapshot ${current.snapshots}、Payslip ${current.payslips}、加項 ${current.additions}\n`+
+  `匯入檔案：OT ${incoming.overtime}、考勤 ${incoming.attendance}、Snapshot ${incoming.snapshots}、Payslip ${incoming.payslips}、加項 ${incoming.additions}\n\n`+
+  "匯入會取代目前瀏覽器中的 SalaryMate 本機資料。若目前資料需要保留，請先取消並執行完整匯出。";
+ if(!confirm(message))return {ok:false,code:"CANCELLED"};
+ try{
+  const saved=writeCanonicalState(candidate.state);
+  if(!validCanonicalState(saved))throw new Error("IMPORT_WRITE_VALIDATION_FAILED");
+  applyState(saved);
+  finalizeStorageMaintenance();
+  alert("完整資料匯入 / 遷移完成。SalaryMate 將重新載入並使用匯入後的本機資料。");
+  location.reload();
+  return {ok:true,code:"FULL_HISTORY_IMPORTED"};
+ }catch(e){
+  const state=$("dataImportState");
+  if(state)state.textContent="匯入失敗，原本資料未取代："+String(e?.message||e);
+  return {ok:false,code:"FULL_HISTORY_IMPORT_FAILED",message:String(e?.message||e)};
+ }
+}
+function cancelFullHistoryImport(){
+ resetFullHistoryImportSelection("已取消匯入；目前資料未變更。");
 }
 
 function legacy_manualImportEmbeddedHistory({salary=false,overtime=false}={}){
@@ -10091,6 +10191,10 @@ const SalaryMateModuleInterface=Object.freeze({
 });
 Object.defineProperty(window,"SalaryMateModuleInterface",{value:SalaryMateModuleInterface,writable:false,configurable:false,enumerable:true});
 
+$("selectFullHistoryJson").addEventListener("click",()=>$("importFullHistoryFile").click());
+$("importFullHistoryFile").addEventListener("change",event=>prepareFullHistoryImport(event.target.files?.[0]||null));
+$("applyFullHistoryImport").addEventListener("click",applyFullHistoryImport);
+$("cancelFullHistoryImport").addEventListener("click",cancelFullHistoryImport);
 $("exportFullHistoryJson").addEventListener("click",exportFullHistoryJson);
 $("retryMaintenance").addEventListener("click",finalizeStorageMaintenance);
 $("retryWrite").addEventListener("click",retryPendingWrite);
