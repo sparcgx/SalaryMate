@@ -1,48 +1,52 @@
-# v4.3.0-dev.2｜PAX-01 Visual Polish & Density Consistency
+# v4.3.0-dev.2｜PAX Integration Status
 
-## Baseline
-- Source baseline: `freeze/v4.3.0-dev.1`
-- CM-06 Development Source Freeze: **PRESERVED**
+## Identity
 - Product: `4.3.0-dev.2`
 - Release target: `4.3.0`
 - Schema: `13`
 - Android versionCode: `15`
 - iOS build: `3`
+- Version Drift: `0`
 
-## PAX-01 result
-**Implementation Regression: PASS**
+## Completed dev.2 gates
 
-- source gates: `22 / 22 PASS`
-- product FAIL: `0`
-- version drift: `0`
+| Gate | Result |
+|---|---|
+| PAX-01 Visual Polish & Density Consistency | IMPLEMENTATION_REGRESSION_PASS |
+| PAX-02 Accessibility & Keyboard / Touch Hardening | IMPLEMENTATION_REGRESSION_PASS |
+| PAX-03 Form Validation & Error Messaging | NEXT |
+| PAX-04 Loading / Empty / Failure State Hardening | PENDING |
+| PAX-05 Navigation / Draft / Context Operational Safety | PENDING |
+| PAX-06 Full Regression / dev.2 Freeze | PENDING |
 
-Visual contract:
-- white / neutral enterprise canvas
-- teal primary action language
-- low shadow / low border cards
-- unified Page Header / Section Header / Summary Row / Status / Button / Form density
-- compact / regular / large density tiers
-- Company Management / Salary Rules / Payroll 3-Step explicit density polish
-- narrow layout action stacking
+## PAX-02 regression
+- Executable source gates: **23 / 23 PASS**
+- Product FAIL: **0**
+- Physical accessibility QA: **PENDING_DEVICE_QA**
+- Production/native builds: **PENDING_ENVIRONMENT**
 
-Core byte-identical to dev.1 freeze:
+Accessibility contract:
+- route heading focus and skip link
+- dialog focus trap / Escape / return focus
+- form required/help/invalid semantics
+- semantic payroll 3-step progress
+- keyboard menu / radiogroups
+- coarse-pointer touch targets
+- large-text wrapping / reduced motion
+- Android heading/button/selection semantics
+
+## Core isolation
+Byte-identical to PAX-01 R1:
 - NativePayrollMath
 - NativeSalaryMateRepository
 - Storage
 - Snapshot Store
 - Backup Crypto
-
-Environment pending:
-- Production Build
-- Android Gradle / physical-device visual QA
-- iOS Foundation / native visual QA
+- Native Backup
 
 ## Canonical source
-`a9050776d631d8a97dd96506d56c7147271fd1b822dd502ce09c7417f3ef4de2`
+`aa52632f13ce3678db7142c823ac16969298c1fb7b61b242cdff551f1a5ae5a7`
 
-`SalaryMate_v4.3.0-dev.2_PAX-01_Visual_Polish_Density_Consistency_R1_Source.zip`
+`SalaryMate_v4.3.0-dev.2_PAX-02_Accessibility_Keyboard_Touch_Hardening_R1_Source.zip`
 
-## Next
-**PAX-02｜Accessibility & Keyboard / Touch Hardening**
-
-RC / Stable remain not authorized.
+RC / Stable promotion remains unauthorized.
