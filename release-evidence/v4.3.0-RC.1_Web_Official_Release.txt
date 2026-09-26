@@ -5,12 +5,22 @@ WEBSITE IDENTITY                 v4.3.0-RC.1
 SOURCE BASELINE                  RC.1 Freeze R1
 SCHEMA                           13
 STORAGE KEY                      salarymate_v310_state
-LEGACY WEBSITE REFERENCES        0
+LEGACY CURRENT-SITE RESIDUES     0
 NETWORK TRANSPORT APIs           0
 WEB BOOTSTRAP                    localStorage only
 BROWSER PERSONAL DATA            PRESERVED
 RC SOURCE REGRESSION             47 / 47 PASS
+WEB RUNTIME SMOKE                PASS
+CHROMIUM DESKTOP 1440x1000       PASS
+CHROMIUM MOBILE 390x844          PASS
+PAGE ERRORS                      0
+CONSOLE ERRORS                   0
+EXTERNAL REQUESTS                0
 WEBSITE INDEX SHA-256            c5a848b306d3b1b6a47effbee1854413c17e7c2170468f9b126db6fd4a3b1686
 WEBSITE ZIP SHA-256              75959fce850c37ec61fa89034fbe414a522fe0881fe28b38ed13be7e7edb20bc
 APPLICATION STABLE PROMOTION     NOT AUTHORIZED
 WEBSITE PUBLICATION              AUTHORIZED
+
+Runtime note: the verification container blocks direct file:// and localhost navigation.
+Chromium DOM/script smoke therefore used an in-memory localStorage-equivalent harness; the published
+payload itself remains unchanged and continues to use salarymate_v310_state in normal browser origin.
