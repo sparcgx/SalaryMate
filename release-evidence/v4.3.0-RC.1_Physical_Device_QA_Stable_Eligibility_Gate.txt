@@ -1,0 +1,47 @@
+SalaryMate v4.3.0-RC.1 — Physical Device QA & Stable Eligibility Gate
+========================================================================
+
+STATUS                           ACTIVE / DEVICE QA PENDING
+STABLE PROMOTION                 NOT AUTHORIZED
+BASELINE BRANCH                  v4.3.0-RC.1
+FREEZE BRANCH                    freeze/v4.3.0-RC.1
+BASELINE COMMIT                  5842eaf0f36026aea81c283b18708a0a01bfea8d
+CANONICAL SOURCE SHA-256         bfef4c6de7901d55933fc9730b00f4ad7355aa6ea075ec41a0547998cfde1c97
+ANDROID PACKAGE                  com.salarymate.personal
+ANDROID VERSIONCODE              18
+IOS BUILD                        6
+SCHEMA                           13
+
+SOURCE REGRESSION                47 / 47 PASS
+VERSION DRIFT                    0
+SOURCE MANIFEST                  324 files / 0 SHA errors
+ZIP INTEGRITY                    PASS
+
+PDQ-01 Production build          PENDING
+PDQ-02 Real-device launch        PENDING
+PDQ-03 In-place upgrade          PENDING
+PDQ-04 Backup/restore roundtrip  PENDING
+PDQ-05 Lifecycle/long session    PENDING
+PDQ-06 Accessibility             PENDING
+PDQ-07 Isolation/write safety    PENDING
+PDQ-08 Golden numeric/data       PENDING
+PDQ-09 Final manual acceptance   PENDING
+
+ANDROID PHYSICAL ACCEPTANCE      PENDING
+IOS PHYSICAL ACCEPTANCE          PENDING
+
+GOLDEN CONTRACTS
+- Current Company: fail-closed
+- Wrong-company Write = 0
+- Duplicate Commit = 0
+- Historical OT = 1,373
+- Snapshot retention = 3
+- Tax 86,000 -> 0
+- Tax 86,001 -> 0
+- Tax 86,002 -> 4,300
+- OT = 1 / 1.34 / 1.67 / 2 / 2.67
+- Lunar New Year OT = 2.5
+- Year-End Runtime Golden = 153,900
+
+FINAL ELIGIBILITY                PENDING
+v4.3.0 STABLE                    BLOCKED
