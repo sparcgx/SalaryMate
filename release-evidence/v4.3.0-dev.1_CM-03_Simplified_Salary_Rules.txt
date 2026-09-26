@@ -1,0 +1,39 @@
+SalaryMate v4.3.0-dev.1 — CM-03 Simplified Salary Rules
+=========================================================
+
+RESULT: IMPLEMENTATION_REGRESSION_PASS
+FULL_PLATFORM_GATE: PENDING
+
+CM-03-01 Salary Rules Entry / Summary Shell           PASS
+CM-03-02 Basic Salary / Fixed Earnings                PASS
+CM-03-03 Overtime Rules Separation                    PASS
+CM-03-04 Bonus / Addition / Deduction Separation      PASS
+CM-03-05 Tax Summary / Advanced Separation            PASS
+CM-03-06 Regression / Legacy Compatibility            PASS_TARGETED
+
+Salary Rules Order                                    基本薪資 > 固定收入 > 加班規則 > 獎金 > 加項／扣項 > 稅務
+Second Salary Rules Store                             0
+Schema                                                 13
+Version Drift                                          0
+
+NativePayrollMath                                      SAME
+NativeSalaryMateRepository                             SAME
+Storage                                                SAME
+Snapshot                                               SAME
+Backup Crypto                                          SAME
+Native Backup                                          SAME
+
+Tax 86,000                                             0
+Tax 86,001                                             0
+Tax 86,002                                             4,300
+
+Executable script commands                             18
+PASS lines                                             20
+Product FAIL                                           0
+
+Android compile / physical device                      PENDING_ENVIRONMENT
+iOS Foundation parser                                  PENDING_ENVIRONMENT
+
+Source SHA-256                                         4b5d0c78b85b4d8d54ba17769d9ab778727d4da600d3ae24f30708cf4604b4c4
+RC / Stable Promotion                                  NOT AUTHORIZED
+NEXT                                                    CM-04 Advanced Company Rules Simplification
