@@ -1,0 +1,31 @@
+{
+  "productVersion": "4.3.0-dev.2",
+  "releaseVersion": "4.3.0",
+  "schemaVersion": 13,
+  "gate": "PAX-06",
+  "sourceBaseline": "PAX-05 R1",
+  "sourcePackage": "SalaryMate_v4.3.0-dev.2_PAX-06_Full_Regression_dev2_Freeze_R1_Source.zip",
+  "sourceSha256": "886b230c38b0a4af5d6662c259fc96b6cb341f83d42328c9bdd60910ad89b7a6",
+  "manifestFiles": 274,
+  "manifestShaErrors": 0,
+  "zipIntegrity": "PASS",
+  "pax01": "PASS_PRESERVED",
+  "pax02": "PASS_PRESERVED",
+  "pax03": "PASS_PRESERVED",
+  "pax04": "PASS_PRESERVED",
+  "pax05": "PASS_PRESERVED",
+  "pax06": "PASS",
+  "executableGates": {
+    "pass": 27,
+    "fail": 0
+  },
+  "productFail": 0,
+  "wrongCompanyWriteObservedAutomated": 0,
+  "duplicateUiWriteObservedAutomated": 0,
+  "versionDrift": 0,
+  "fullPlatformGate": "PENDING_ENVIRONMENT",
+  "physicalDeviceQA": "PENDING_DEVICE_QA",
+  "developmentSourceFreeze": "PASS",
+  "rcPromotionEligible": false,
+  "stableEligible": false
+}
