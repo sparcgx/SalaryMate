@@ -1,0 +1,52 @@
+{
+  "gate": "v4.3.0-dev.3 Release Integration & Real-Device Hardening",
+  "productVersion": "4.3.0-dev.3",
+  "releaseVersion": "4.3.0",
+  "schemaVersion": 13,
+  "androidVersionCode": 16,
+  "iosBuildNumber": 4,
+  "result": "SOURCE_INTEGRATION_REGRESSION_PASS",
+  "sourceRegression": {
+    "passLines": 35,
+    "productFail": 0
+  },
+  "versionDrift": 0,
+  "sourceManifest": {
+    "files": 294,
+    "shaErrors": 0
+  },
+  "zipIntegrity": "PASS",
+  "ri": {
+    "RI-01": "PASS",
+    "RI-02": "PASS_CONTRACT",
+    "RI-03": "PASS_EVIDENCE_CONTRACT",
+    "RI-04": "PASS_CONTRACT",
+    "RI-05": "PASS_CONTRACT",
+    "RI-06": "PASS_SOURCE_REGRESSION"
+  },
+  "environment": {
+    "productionBuild": "PENDING_ENVIRONMENT",
+    "androidBuildDevice": "PENDING_ENVIRONMENT",
+    "iosBuildDevice": "PENDING_ENVIRONMENT",
+    "iosResultGate": "PASS"
+  },
+  "physical": {
+    "realDevice": "NOT_RUN",
+    "upgradeDataPreservation": "NOT_RUN",
+    "backupRestore": "NOT_RUN",
+    "lifecycle": "NOT_RUN",
+    "longSession": "NOT_RUN"
+  },
+  "coreIsolation": {
+    "NativePayrollMath": "SAME",
+    "NativeSalaryMateRepository": "SAME",
+    "storage": "SAME",
+    "snapshotStore": "SAME",
+    "backupCrypto": "SAME",
+    "nativeBackup": "VERSION_BINDING_ONLY"
+  },
+  "sourcePackage": "SalaryMate_v4.3.0-dev.3_Release_Integration_Real_Device_Hardening_R1_Source.zip",
+  "sourceSha256": "ef3bb060e345e7ebdd779dcc1cbc35ba4a4c454b5800e59078b1f0023405f956",
+  "rcPromotionEligible": false,
+  "stableEligible": false
+}
