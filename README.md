@@ -2,7 +2,7 @@
 
 ## 官方網站版
 
-**v4.3.0-RC.1｜Release Candidate Website**
+**v4.3.0-RC.1｜Web Official Publication PASS**
 
 - Website identity: `v4.3.0-RC.1`
 - Schema: `13`
@@ -10,7 +10,14 @@
 - Data storage: current browser / device only
 - Network upload channel: none
 - RC.1 source regression: `47 / 47 PASS`
+- Chromium desktop/mobile runtime: `PASS`
+- GitHub Pages deployment: `PASS`
+- GitHub Pages Run: `36227853262`
+- Live URL: `https://sparcgx.github.io/SalaryMate/`
 - Website payload SHA-256: `c5a848b306d3b1b6a47effbee1854413c17e7c2170468f9b126db6fd4a3b1686`
+- Web Official ZIP SHA-256: `75959fce850c37ec61fa89034fbe414a522fe0881fe28b38ed13be7e7edb20bc`
+- Legacy v4.2.1 current-release residues: `0`
 
 The public website uses the v4.3.0-RC.1 shared SalaryMate UI and local-browser storage contract.
-Application Stable promotion remains blocked by Android/iOS physical acceptance; website publication does not relabel RC.1 as v4.3.0 Stable.
+
+Web Official publication is complete. Application Stable promotion remains blocked by Android/iOS physical acceptance; website publication does not relabel RC.1 as v4.3.0 Stable.
