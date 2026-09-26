@@ -1,22 +1,25 @@
 # SalaryMate
 
-## Current Development Line
+## Current Release Candidate Baseline
 
-**v4.3.0-dev.4｜RC Readiness, Evidence & Final Release Gate Preparation**
+**v4.3.0-RC.1｜Full Regression & Release Candidate Freeze Gate**
 
 Canonical Source SHA-256:
 
-`9ba15d280b4d187bd622a0fb25a97d0c4633fa09be0af8cdd3cb99aae48410f0`
+`bfef4c6de7901d55933fc9730b00f4ad7355aa6ea075ec41a0547998cfde1c97`
 
+- Release target: `4.3.0`
 - Schema: `13`
-- Android versionCode: `17`
-- iOS build: `5`
-- RR-01～RR-06: **PASS**
-- Source regression: **40 PASS messages / 0 product FAIL**
-- Source Manifest: **310 / 0 SHA errors**
-- Source readiness: **SOURCE_READY_DEVICE_PENDING**
-- Production/native build: **PENDING_ENVIRONMENT**
-- Physical device / upgrade / backup / lifecycle/manual acceptance: **NOT_RUN / PENDING_DEVICE_QA**
-- RC / Stable: **NOT AUTHORIZED**
+- Android versionCode: `18`
+- iOS build: `6`
+- Full source regression: **47 PASS / 0 FAIL**
+- RC source freeze: **PASS**
+- Source Manifest: **324 files / 0 SHA errors**
+- ZIP integrity: **PASS**
+- Full platform build/device: **PENDING_ENVIRONMENT**
+- Physical device QA: **PENDING_DEVICE_QA**
+- Stable promotion: **NOT AUTHORIZED**
 
-This line prepares the RC evidence and promotion gates without adding SalaryMate business features or changing Schema 13 / payroll / tax / overtime / year-end / canonical storage contracts.
+GitHub stores the version-governance/evidence index for the v4.3 line. The exact executable RC.1 source is the canonical ZIP identified by the SHA above.
+
+Physical Android/iOS build, in-place upgrade/data preservation, backup/restore round-trip, lifecycle/long-session and manual accessibility acceptance remain mandatory before Stable promotion.
