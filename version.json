@@ -5,9 +5,9 @@
   "androidVersionCode": 15,
   "schemaVersion": 13,
   "channel": "development",
-  "status": "pax-01-visual-polish-density-consistency",
-  "sourcePackage": "SalaryMate_v4.3.0-dev.2_PAX-01_Visual_Polish_Density_Consistency_R1_Source.zip",
-  "sourceSha256": "a9050776d631d8a97dd96506d56c7147271fd1b822dd502ce09c7417f3ef4de2",
+  "status": "pax-02-accessibility-keyboard-touch-hardening",
+  "sourcePackage": "SalaryMate_v4.3.0-dev.2_PAX-02_Accessibility_Keyboard_Touch_Hardening_R1_Source.zip",
+  "sourceSha256": "aa52632f13ce3678db7142c823ac16969298c1fb7b61b242cdff551f1a5ae5a7",
   "sourceBaseline": "SalaryMate_v4.3.0-dev.1_CM-06_Full_Regression_Development_Freeze_R1_Source.zip",
   "githubWebBaseline": "fe3da26698e09470f895733309b0bc64c6d96e6a",
   "completedGates": [
@@ -17,8 +17,10 @@
     "CM-04_IMPLEMENTATION_REGRESSION",
     "CM-05_IMPLEMENTATION_REGRESSION",
     "CM-06_SOURCE_FREEZE",
-    "PAX-01_IMPLEMENTATION_REGRESSION"
+    "PAX-01_IMPLEMENTATION_REGRESSION",
+    "PAX-02_IMPLEMENTATION_REGRESSION"
   ],
   "fullPlatformGate": "PENDING_ENVIRONMENT",
+  "physicalAccessibilityQA": "PENDING_DEVICE_QA",
   "stableEligible": false
 }
