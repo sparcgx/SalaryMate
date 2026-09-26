@@ -1,0 +1,21 @@
+SalaryMate v4.3.0-dev.4 — RC Readiness Source Gate
+=====================================================
+
+RESULT                         SOURCE_READY_DEVICE_PENDING
+RR-01～RR-06                   PASS
+SOURCE REGRESSION              40 PASS / 0 FAIL
+VERSION DRIFT                  0
+SCHEMA                         13
+SOURCE MANIFEST                310 / 0 SHA ERRORS
+ZIP INTEGRITY                  PASS
+PRODUCTION BUILD               PENDING_ENVIRONMENT
+ANDROID DEVICE                 NOT_RUN
+IOS DEVICE                     NOT_RUN
+UPGRADE / DATA PRESERVATION    NOT_RUN
+BACKUP / RESTORE PHYSICAL      NOT_RUN
+LIFECYCLE / LONG SESSION       NOT_RUN
+RC PROMOTION                   NOT AUTHORIZED
+STABLE PROMOTION               NOT AUTHORIZED
+
+SOURCE SHA-256
+9ba15d280b4d187bd622a0fb25a97d0c4633fa09be0af8cdd3cb99aae48410f0
