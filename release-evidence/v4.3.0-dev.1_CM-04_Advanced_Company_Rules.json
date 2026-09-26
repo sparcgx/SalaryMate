@@ -1,0 +1,59 @@
+{
+  "gate": "CM-04 Advanced Company Rules Simplification",
+  "productVersion": "4.3.0-dev.1",
+  "schemaVersion": 13,
+  "result": "IMPLEMENTATION_REGRESSION_PASS",
+  "fullPlatformGate": "PENDING",
+  "subgates": {
+    "CM-04-01": "PASS",
+    "CM-04-02": "PASS",
+    "CM-04-03": "PASS",
+    "CM-04-04": "PASS",
+    "CM-04-05": "PASS",
+    "CM-04-06": "PASS_TARGETED"
+  },
+  "advancedRulesOrder": [
+    "特殊薪資週期",
+    "年度加薪",
+    "年終規則",
+    "其他特殊規則"
+  ],
+  "secondAdvancedRulesStore": 0,
+  "ruleEngine": 0,
+  "versionDrift": 0,
+  "payrollCycle": {
+    "calendar": "PRESERVED",
+    "prev16": "PRESERVED",
+    "custom20to19": "PASS",
+    "custom5to25": "PASS_FAIL_CLOSED_OUTSIDE_RANGE",
+    "februaryClamp": "PASS"
+  },
+  "nativeCycleExecution": {
+    "pass": 16,
+    "fail": 0
+  },
+  "regression": {
+    "scriptGates": 19,
+    "passLines": 21,
+    "productFail": 0
+  },
+  "coreIsolation": {
+    "storage": "SAME",
+    "snapshot": "SAME",
+    "backupCrypto": "SAME",
+    "nativeBackup": "SAME",
+    "tax": "SAME_BY_REGRESSION",
+    "overtime": "SAME_BY_REGRESSION"
+  },
+  "platforms": {
+    "webShared": "PASS",
+    "androidSource": "PASS_STATIC_AND_KOTLIN_MATH",
+    "androidGradleDevice": "PENDING_ENVIRONMENT",
+    "iosHybridSharedShell": "PASS_STATIC",
+    "iosFoundationParser": "PENDING_ENVIRONMENT"
+  },
+  "sourcePackage": "SalaryMate_v4.3.0-dev.1_CM-04_Advanced_Company_Rules_R1_Source.zip",
+  "sourceSha256": "2a06eabb854b722f1f13b19f7e3a5e0b9a7be5f62bf2f52bfd3a8f906906746a",
+  "stableEligible": false,
+  "next": "CM-05 Company Workflow Simplification & Cross-Platform UX"
+}
