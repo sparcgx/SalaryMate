@@ -5,12 +5,12 @@
   "androidVersionCode": 15,
   "schemaVersion": 13,
   "channel": "development",
-  "status": "pax-05-navigation-draft-context-operational-safety",
-  "sourcePackage": "SalaryMate_v4.3.0-dev.2_PAX-05_Navigation_Draft_Context_Operational_Safety_R1_Source.zip",
-  "sourceSha256": "f99bf4c93f301c9f603163152c9291f0fc1ef409aa91b575b133bb31d9ff9940",
+  "status": "pax-06-development-source-freeze",
+  "sourcePackage": "SalaryMate_v4.3.0-dev.2_PAX-06_Full_Regression_dev2_Freeze_R1_Source.zip",
+  "sourceSha256": "886b230c38b0a4af5d6662c259fc96b6cb341f83d42328c9bdd60910ad89b7a6",
   "sourceBaseline": "SalaryMate_v4.3.0-dev.1_CM-06_Full_Regression_Development_Freeze_R1_Source.zip",
   "githubWebBaseline": "fe3da26698e09470f895733309b0bc64c6d96e6a",
-  "notes": "PAX-05 scopes drafts and selected entities, separates Scope from Dirty, validates commit targets, hardens logical Back, stale async results, double-submit protection and restore-context reset. Business logic, Schema 13, payroll/tax/OT/year-end, repository model, snapshot and backup formats remain frozen.",
+  "notes": "PAX-06 closes the v4.3.0-dev.2 source line after full regression. PAX-01 through PAX-05 are preserved; business logic, Schema 13, payroll/tax/OT/year-end, repository model, storage, snapshot and backup formats remain frozen. Full platform build/device validation remains pending before RC.",
   "completedGates": [
     "CM-01_TARGETED",
     "CM-02_IMPLEMENTATION_REGRESSION",
@@ -22,10 +22,12 @@
     "PAX-02_IMPLEMENTATION_REGRESSION",
     "PAX-03_IMPLEMENTATION_REGRESSION",
     "PAX-04_IMPLEMENTATION_REGRESSION",
-    "PAX-05_IMPLEMENTATION_REGRESSION"
+    "PAX-05_IMPLEMENTATION_REGRESSION",
+    "PAX-06_SOURCE_FREEZE"
   ],
   "fullPlatformGate": "PENDING_ENVIRONMENT",
-  "physicalOperationalSafetyQA": "PENDING_DEVICE_QA",
-  "developmentFreezeEligible": false,
+  "physicalDeviceQA": "PENDING_DEVICE_QA",
+  "developmentFreezeEligible": true,
+  "rcPromotionEligible": false,
   "stableEligible": false
 }
