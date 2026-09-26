@@ -1,0 +1,43 @@
+SalaryMate v4.3.0-dev.1 — CM-06 Full Regression & Development Freeze
+========================================================================
+
+DEVELOPMENT SOURCE FREEZE                  PASS
+FULL PLATFORM BUILD / DEVICE GATE          PENDING_ENVIRONMENT
+RC / STABLE PROMOTION                      NOT AUTHORIZED
+
+CM-01                                      PASS_TARGETED
+CM-02                                      IMPLEMENTATION_REGRESSION_PASS
+CM-03                                      IMPLEMENTATION_REGRESSION_PASS
+CM-04                                      IMPLEMENTATION_REGRESSION_PASS
+CM-05                                      IMPLEMENTATION_REGRESSION_PASS
+CM-06                                      PASS
+
+Node / Source Gates                        21 / 21 PASS
+Kotlin Native Gate                         16 / 16 PASS
+Product FAIL                               0
+Version Drift                              0
+Schema                                     13
+
+CM06-FIX-01 Android Current Company         FIXED / PASS
+Operational Company Selectors              0
+Silent First-company Fallback              0
+
+Tax 86,000 / 86,001 / 86,002              0 / 0 / 4,300
+OT                                         1 / 1.34 / 1.67 / 2 / 2.67 / 2.5
+Year-End Runtime Golden                    153,900
+
+NativePayrollMath vs CM-04                 SAME
+Storage vs CM-04                           SAME
+Snapshot Store vs CM-04                    SAME
+Backup Crypto vs CM-04                     SAME
+Native Backup vs CM-04                     SAME
+
+Historical OT Contract                     1,373
+Physical Live-device OT Count              PENDING_DEVICE_GATE
+
+Production Build                           PENDING_ENVIRONMENT
+Android Gradle / Device                    PENDING_ENVIRONMENT
+iOS Foundation / Build                     PENDING_ENVIRONMENT
+
+Source SHA-256                              3020cf41e964e282ebb607366d224a65fc8106490109c22ebb88fbf2cc935605
+RESULT                                     SOURCE_FREEZE_PASS_PLATFORM_PENDING
