@@ -1,0 +1,22 @@
+SalaryMate v4.3.0-RC.1 — Full Regression & Release Candidate Freeze
+=================================================================
+
+RC SOURCE FREEZE                         PASS
+FULL SOURCE REGRESSION                   47 PASS / 0 FAIL
+MANIFEST                                 324 / 0 SHA ERRORS
+ZIP INTEGRITY                            PASS
+VERSION DRIFT                            0
+SCHEMA                                   13
+
+PRODUCTION BUILD                         PENDING_ENVIRONMENT
+ANDROID SDK / DEVICE                     PENDING_ENVIRONMENT
+IOS FOUNDATION / NATIVE BUILD            PENDING_ENVIRONMENT
+REAL DEVICE                              NOT_RUN
+UPGRADE / DATA PRESERVATION              NOT_RUN
+BACKUP / RESTORE PHYSICAL                NOT_RUN
+LIFECYCLE / LONG SESSION                 NOT_RUN
+MANUAL ACCEPTANCE                        NOT_RUN
+STABLE PROMOTION                         NOT AUTHORIZED
+
+SOURCE SHA-256
+bfef4c6de7901d55933fc9730b00f4ad7355aa6ea075ec41a0547998cfde1c97
