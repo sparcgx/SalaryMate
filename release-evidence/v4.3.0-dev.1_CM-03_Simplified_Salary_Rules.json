@@ -1,0 +1,62 @@
+{
+  "gate": "CM-03 Simplified Salary Rules",
+  "productVersion": "4.3.0-dev.1",
+  "schemaVersion": 13,
+  "result": "IMPLEMENTATION_REGRESSION_PASS",
+  "fullPlatformGate": "PENDING",
+  "subgates": {
+    "CM-03-01": "PASS",
+    "CM-03-02": "PASS",
+    "CM-03-03": "PASS",
+    "CM-03-04": "PASS",
+    "CM-03-05": "PASS",
+    "CM-03-06": "PASS_TARGETED"
+  },
+  "salaryRulesOrder": [
+    "基本薪資",
+    "固定收入",
+    "加班規則",
+    "獎金",
+    "加項／扣項",
+    "稅務"
+  ],
+  "secondSalaryRulesStore": 0,
+  "taxBoundary": {
+    "86000": 0,
+    "86001": 0,
+    "86002": 4300
+  },
+  "overtimeRates": [
+    1,
+    1.34,
+    1.67,
+    2,
+    2.67,
+    2.5
+  ],
+  "regression": {
+    "scriptCommands": 18,
+    "passLines": 20,
+    "productFail": 0
+  },
+  "versionDrift": 0,
+  "coreIsolation": {
+    "NativeSalaryMateRepository": "SAME",
+    "NativePayrollMath": "SAME",
+    "storage": "SAME",
+    "snapshot": "SAME",
+    "backupCrypto": "SAME",
+    "nativeBackup": "SAME"
+  },
+  "platforms": {
+    "webShared": "PASS",
+    "androidSourceSummary": "PASS_STATIC",
+    "androidCompileDevice": "PENDING_ENVIRONMENT",
+    "iosHybridSharedShell": "PASS_STATIC",
+    "iosFoundationParser": "PENDING_ENVIRONMENT"
+  },
+  "sourcePackage": "SalaryMate_v4.3.0-dev.1_CM-03_Simplified_Salary_Rules_R1_Source.zip",
+  "sourceSha256": "4b5d0c78b85b4d8d54ba17769d9ab778727d4da600d3ae24f30708cf4604b4c4",
+  "stableEligible": false,
+  "next": "CM-04 Advanced Company Rules Simplification"
+}
