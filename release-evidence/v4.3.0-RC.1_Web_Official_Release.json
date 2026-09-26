@@ -1,0 +1,14 @@
+{
+  "websiteVersion": "v4.3.0-RC.1",
+  "sourceBaseline": "RC.1 Freeze R1",
+  "schemaVersion": 13,
+  "storageKey": "salarymate_v310_state",
+  "legacyWebsiteReferences": 0,
+  "networkTransportApis": 0,
+  "browserPersonalData": "PRESERVED",
+  "rcSourceRegression": "47/47 PASS",
+  "indexSha256": "c5a848b306d3b1b6a47effbee1854413c17e7c2170468f9b126db6fd4a3b1686",
+  "websiteZipSha256": "75959fce850c37ec61fa89034fbe414a522fe0881fe28b38ed13be7e7edb20bc",
+  "applicationStablePromotion": "NOT_AUTHORIZED",
+  "websitePublication": "AUTHORIZED"
+}
