@@ -1,0 +1,58 @@
+{
+  "gate": "PAX-02 Accessibility & Keyboard / Touch Hardening",
+  "productVersion": "4.3.0-dev.2",
+  "releaseVersion": "4.3.0",
+  "schemaVersion": 13,
+  "androidVersionCode": 15,
+  "iosBuildNumber": 3,
+  "result": "IMPLEMENTATION_REGRESSION_PASS",
+  "physicalAccessibilityQA": "PENDING_DEVICE_QA",
+  "fullPlatformBuildDeviceGate": "PENDING_ENVIRONMENT",
+  "regression": {
+    "executableSourceGates": 23,
+    "pass": 23,
+    "fail": 0,
+    "productFail": 0
+  },
+  "versionDrift": 0,
+  "web": {
+    "skipLink": "PASS_STATIC",
+    "routeHeadingFocus": "PASS_STATIC",
+    "dialogFocusTrap": "PASS_STATIC",
+    "dialogFocusRestore": "PASS_STATIC",
+    "escapeDirtyGuard": "PASS_STATIC",
+    "formRequiredHelpSemantics": "PASS_STATIC",
+    "ariaInvalidLifecycle": "PASS_STATIC",
+    "payrollStepSemantics": "PASS_STATIC",
+    "menuKeyboard": "PASS_STATIC",
+    "radiogroupArrowKeyboard": "PASS_STATIC",
+    "touchTargetContract": "PASS_STATIC",
+    "largeTextWrapping": "PASS_STATIC",
+    "reducedMotion": "PASS_STATIC"
+  },
+  "android": {
+    "headingSemantics": "PASS_STATIC",
+    "customButtonRole": "PASS_STATIC",
+    "selectedStateDescription": "PASS_STATIC",
+    "duplicateIconAnnouncementGuard": "PASS_STATIC",
+    "talkBackPhysicalQA": "PENDING_DEVICE_QA"
+  },
+  "coreIsolation": {
+    "NativePayrollMath": "SAME",
+    "NativeSalaryMateRepository": "SAME",
+    "storage": "SAME",
+    "snapshotStore": "SAME",
+    "backupCrypto": "SAME",
+    "nativeBackup": "SAME"
+  },
+  "environmentPending": [
+    "Production build / esbuild package",
+    "Android SDK / Gradle / physical device",
+    "iOS xcode npm module / native build",
+    "TalkBack / VoiceOver physical QA"
+  ],
+  "sourcePackage": "SalaryMate_v4.3.0-dev.2_PAX-02_Accessibility_Keyboard_Touch_Hardening_R1_Source.zip",
+  "sourceSha256": "aa52632f13ce3678db7142c823ac16969298c1fb7b61b242cdff551f1a5ae5a7",
+  "stableEligible": false,
+  "next": "PAX-03 Form Validation & Error Messaging"
+}
