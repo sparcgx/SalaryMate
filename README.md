@@ -2,21 +2,21 @@
 
 ## Current Development Line
 
-**v4.3.0-dev.3｜Release Integration & Real-Device Hardening**
+**v4.3.0-dev.4｜RC Readiness, Evidence & Final Release Gate Preparation**
 
 Canonical Source SHA-256:
 
-`ef3bb060e345e7ebdd779dcc1cbc35ba4a4c454b5800e59078b1f0023405f956`
+`9ba15d280b4d187bd622a0fb25a97d0c4633fa09be0af8cdd3cb99aae48410f0`
 
 - Schema: `13`
-- Android versionCode: `16`
-- iOS build: `4`
-- RI-01～RI-06 source integration: **PASS**
-- Source regression: **35 PASS lines / 0 product FAIL**
+- Android versionCode: `17`
+- iOS build: `5`
+- RR-01～RR-06: **PASS**
+- Source regression: **40 PASS messages / 0 product FAIL**
+- Source Manifest: **310 / 0 SHA errors**
+- Source readiness: **SOURCE_READY_DEVICE_PENDING**
 - Production/native build: **PENDING_ENVIRONMENT**
-- Real-device / upgrade / backup / lifecycle: **PENDING_DEVICE_QA / NOT_RUN**
+- Physical device / upgrade / backup / lifecycle/manual acceptance: **NOT_RUN / PENDING_DEVICE_QA**
 - RC / Stable: **NOT AUTHORIZED**
 
-This source line hardens version promotion, build/device evidence, upgrade/data-preservation and physical acceptance workflows without changing SalaryMate business formulas or canonical data stores.
-
-See `docs/releases/v4.3.0/RI-01_06_RELEASE_INTEGRATION_REAL_DEVICE_HARDENING.md`.
+This line prepares the RC evidence and promotion gates without adding SalaryMate business features or changing Schema 13 / payroll / tax / overtime / year-end / canonical storage contracts.
