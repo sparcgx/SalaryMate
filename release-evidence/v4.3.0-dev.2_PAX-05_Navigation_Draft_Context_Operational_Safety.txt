@@ -1,0 +1,45 @@
+SalaryMate v4.3.0-dev.2 — PAX-05 Navigation / Draft / Context Operational Safety
+==================================================================================
+
+RESULT                                      IMPLEMENTATION_REGRESSION_PASS
+PHYSICAL OPERATIONAL SAFETY QA              PENDING_DEVICE_QA
+FULL PLATFORM BUILD / DEVICE                PENDING_ENVIRONMENT
+
+PAX0501 Single Context Integrity             PASS
+PAX0502 Draft Scope                          PASS
+PAX0503 Wrong-company Write                  0 OBSERVED_AUTOMATED / DEVICE_PENDING
+PAX0504 Dirty Guard                          PASS
+PAX0505 Clean Back Navigation                PASS
+PAX0506 Browser / Native Back                PASS_STATIC_RUNTIME / DEVICE_PENDING
+PAX0507 Selected Entity Scope                PASS
+PAX0508 Company Switch Reset                 PASS
+PAX0509 Rapid Switch Safety                  PASS_CONTRACT / DEVICE_PENDING
+PAX0510 Stale Async Result                   BLOCKED_BY_CONTEXT_GENERATION
+PAX0511 Double-submit Protection             PASS
+PAX0512 Duplicate UI Write                   0 OBSERVED_AUTOMATED / DEVICE_PENDING
+PAX0513 Payroll Month Draft Reset            PASS
+PAX0514 Save Target Assertion                PASS
+PAX0515 Reload Safety                        PASS_CONTRACT
+PAX0516 Restart Safety                       PRESERVED / DEVICE_PENDING
+PAX0517 Deep Link Scope Validation           PASS_CONTRACT
+PAX0518 Historical View Context              PASS_CONTRACT
+PAX0519 Restore Context Re-resolution        PASS
+PAX0520 Snapshot / Lock                      PRESERVED
+PAX0521 Cross-Company Isolation              PASS_AUTOMATED / DEVICE_PENDING
+PAX0522 Web Operational Safety               PASS_RUNTIME
+PAX0523 Android Operational Safety           PASS_STATIC / DEVICE_PENDING
+PAX0524 iOS Operational Safety               PASS_SHARED / DEVICE_PENDING
+PAX0525 Schema                               13
+PAX0526 Version Drift                        0
+
+Executable Source Gates                     26 / 26 PASS
+Product FAIL                                0
+Source Manifest                             265 / 0 SHA ERRORS
+ZIP Integrity                               PASS
+Source SHA-256                              f99bf4c93f301c9f603163152c9291f0fc1ef409aa91b575b133bb31d9ff9940
+
+Production Build                            PENDING_ENVIRONMENT
+Android Gradle / Physical Device            PENDING_ENVIRONMENT
+iOS Foundation / Native Build               PENDING_ENVIRONMENT
+RC / Stable Promotion                       NOT AUTHORIZED
+NEXT                                         PAX-06 Full Regression & dev.2 Freeze Gate
