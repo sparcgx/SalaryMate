@@ -17,7 +17,6 @@
 - Live URL: `https://sparcgx.github.io/SalaryMate/`
 - Website payload SHA-256: `c5a848b306d3b1b6a47effbee1854413c17e7c2170468f9b126db6fd4a3b1686`
 - Web Official ZIP SHA-256: `75959fce850c37ec61fa89034fbe414a522fe0881fe28b38ed13be7e7edb20bc`
-- Legacy v4.2.1 current-release residues: `0`
 
 The public website uses the v4.3.0-RC.1 shared SalaryMate UI and local-browser storage contract.
 
