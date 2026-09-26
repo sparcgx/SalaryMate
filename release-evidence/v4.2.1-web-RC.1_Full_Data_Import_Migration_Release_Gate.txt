@@ -1,0 +1,48 @@
+SalaryMate v4.2.1-web-RC.1 | Full Data Import & Migration Release Gate
+=============================================================================
+Base: v4.2.1-web-dev.2
+Stable Freeze Baseline: stable/v4.2.0-web
+Stable/Main SHA: fe3da26698e09470f895733309b0bc64c6d96e6a
+
+RC SCOPE
+- No new business feature added.
+- No payroll / OT / attendance / company-isolation calculation change.
+- RC delta from dev.2 is release identity + archived RC build only.
+- index.html and versions/SalaryMate_v4.2.1-web-RC.1.html are blob-identical.
+
+AUTOMATED GATE
+- Version identity: PASS
+- Full-history JSON export UI: PASS
+- Local JSON import UI: PASS
+- Wrapped v4.2.1 export compatibility: PASS
+- Legacy/raw Web JSON compatibility: PASS
+- normalizeMigratedState migration path: PASS
+- cleanupCanonicalState canonicalization: PASS
+- validCanonicalState before write: PASS
+- Explicit replacement confirmation: PASS
+- Transactional rollback: PASS
+- Reload after successful import: PASS
+- Stable Freeze isolation: PASS
+- Pages RC candidate branch prepared: PASS
+
+PRIVACY / NETWORK GATE
+- fetch(): 0
+- XMLHttpRequest: 0
+- sendBeacon: 0
+- WebSocket: 0
+- Supabase: 0
+- Firebase: 0
+Result: PASS
+
+MANUAL RELEASE CHECKS REQUIRED BEFORE STABLE PROMOTION
+1. Export full-history JSON from an existing/local SalaryMate browser.
+2. Open the RC Pages candidate in a different browser/origin.
+3. Select JSON and verify record-count preview.
+4. Apply import; confirm success and reload.
+5. Verify OT, attendance, snapshots, payslips, additions, annual data and company settings.
+6. Close/reopen and confirm persistence.
+7. Export again from migrated browser and confirm JSON remains valid.
+8. Invalid JSON should be rejected without changing existing data.
+
+AUTOMATED RESULT: PASS
+STABLE PROMOTION: PENDING MANUAL ACCEPTANCE

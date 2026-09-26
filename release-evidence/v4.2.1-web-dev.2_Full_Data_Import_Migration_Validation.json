@@ -1,0 +1,33 @@
+{
+  "version": "v4.2.1-web-dev.2",
+  "base": "v4.2.1-web-dev.1",
+  "stableBaseline": "stable/v4.2.0-web",
+  "indexArchiveBlobMatch": true,
+  "ui": {
+    "exportButton": 1,
+    "selectImportButton": 1,
+    "jsonFileInput": 1,
+    "applyImportButton": 1,
+    "cancelImportButton": 1
+  },
+  "engine": {
+    "salaryMateShapeGuard": 1,
+    "wrappedExportCompatibility": 1,
+    "legacyRawStateCompatibility": 1,
+    "migrationNormalization": 1,
+    "canonicalValidation": 1,
+    "replacementConfirmation": 1,
+    "transactionBeforeState": 1,
+    "rollbackWrite": 1,
+    "reloadAfterSuccess": 1
+  },
+  "privacy": {
+    "fetchCalls": 0,
+    "XMLHttpRequest": 0,
+    "sendBeacon": 0,
+    "WebSocket": 0,
+    "Supabase": 0,
+    "Firebase": 0
+  },
+  "result": "PASS"
+}

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SalaryMate v4.2.1-web-RC.1｜Full Data Import & Migration Release Gate</title>
+<title>SalaryMate v4.2.1-web-dev.2｜Full Data Import & Migration</title>
 <style>
 
 
@@ -2197,7 +2197,7 @@ aside .version{
   <a href="#calculator" data-route="calculator"><span class="ico">⌘</span><div>薪資工作台<small>Payroll</small></div></a>
   <a href="#settings" data-route="settings"><span class="ico">⚙</span><div>設定<small>Settings</small></div></a>
  </nav>
- <div class="version"><b>SalaryMate 薪資管家</b><br>v4.2.1-web-RC.1<br>Import & Migration<br>Release Candidate</div>
+ <div class="version"><b>SalaryMate 薪資管家</b><br>v4.2.1-web-dev.2<br>Import & Migration<br>Development</div>
 </aside>
 
 <main>
@@ -2221,7 +2221,7 @@ aside .version{
    <button id="retryWrite" class="btn" hidden>重試保存</button><button id="retryMaintenance" class="btn" hidden>重試清理舊版資料</button>
 <button id="dismissWriteRetry" class="btn" hidden>取消重試</button><div role="status" class="badge" id="writeStatus" hidden></div>
    <div class="badge" id="persistBadge">單一 HTML · Unified Top Controls Ready</div>
-   <div class="badge version-badge">● v4.2.1-web-RC.1 Release Gate</div>
+   <div class="badge version-badge">● v4.2.1-web-dev.2 Import & Migration</div>
   </div>
  </div>
 </header>
@@ -9783,7 +9783,7 @@ function exportFullHistoryJson(){
   const payload={
    format:"SalaryMate Canonical Data Export",
    formatVersion:1,
-   appVersion:"v4.2.1-web-RC.1",
+   appVersion:"v4.2.1-web-dev.2",
    exportedAt:new Date().toISOString(),
    source:{protocol:location.protocol,host:location.host||"local-file"},
    summary,
