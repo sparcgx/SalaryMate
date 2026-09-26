@@ -1,0 +1,72 @@
+{
+  "gate": "CM-06 Full Regression & Development Freeze Gate",
+  "productVersion": "4.3.0-dev.1",
+  "releaseVersion": "4.3.0",
+  "schemaVersion": 13,
+  "developmentSourceFreeze": "PASS",
+  "fullPlatformBuildDeviceGate": "PENDING_ENVIRONMENT",
+  "rcStablePromotion": "NOT_AUTHORIZED",
+  "regression": {
+    "nodeSourceGates": {
+      "pass": 21,
+      "fail": 0
+    },
+    "kotlinNativeGate": {
+      "pass": 16,
+      "fail": 0
+    },
+    "productFail": 0
+  },
+  "versionDrift": 0,
+  "releaseBlockingFixes": [
+    {
+      "id": "CM06-FIX-01",
+      "area": "Android NativeSnapshot.currentCompany",
+      "result": "FIXED_PASS",
+      "behavior": "no current identity -> null"
+    }
+  ],
+  "critical": {
+    "taxBoundary": {
+      "86000": 0,
+      "86001": 0,
+      "86002": 4300
+    },
+    "otMultipliers": [
+      1,
+      1.34,
+      1.67,
+      2,
+      2.67,
+      2.5
+    ],
+    "yearEndRuntimeGolden": 153900,
+    "snapshotRetention": 3,
+    "operationalModuleCompanySelectors": 0,
+    "silentFirstCompanyFallback": 0
+  },
+  "coreIsolationVsCM04": {
+    "NativePayrollMath": "SAME",
+    "storage": "SAME",
+    "snapshotStore": "SAME",
+    "backupCrypto": "SAME",
+    "nativeBackup": "SAME"
+  },
+  "historicalOT": {
+    "legacyValidated": 914,
+    "newValidated": 459,
+    "combinedValidated": 1373,
+    "combinedUniqueValidated": 1373,
+    "physicalLiveDeviceCount": "PENDING_DEVICE_GATE"
+  },
+  "environmentPending": [
+    "Production build / dependency install",
+    "Android SDK / Gradle / physical device",
+    "iOS Xcode project parser / native build"
+  ],
+  "sourcePackage": "SalaryMate_v4.3.0-dev.1_CM-06_Full_Regression_Development_Freeze_R1_Source.zip",
+  "sourceSha256": "3020cf41e964e282ebb607366d224a65fc8106490109c22ebb88fbf2cc935605",
+  "developmentFreezeEligible": true,
+  "stableEligible": false,
+  "result": "SOURCE_FREEZE_PASS_PLATFORM_PENDING"
+}
