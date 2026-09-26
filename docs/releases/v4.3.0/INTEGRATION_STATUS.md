@@ -16,34 +16,33 @@
 | PAX-02 Accessibility & Keyboard / Touch Hardening | IMPLEMENTATION_REGRESSION_PASS |
 | PAX-03 Form Validation & Error Messaging | IMPLEMENTATION_REGRESSION_PASS |
 | PAX-04 Loading / Empty / Failure State Hardening | IMPLEMENTATION_REGRESSION_PASS |
-| PAX-05 Navigation / Draft / Context Operational Safety | NEXT |
-| PAX-06 Full Regression / dev.2 Freeze | PENDING |
+| PAX-05 Navigation / Draft / Context Operational Safety | IMPLEMENTATION_REGRESSION_PASS |
+| PAX-06 Full Regression / dev.2 Freeze | NEXT |
 
-## PAX-04 regression
-- Executable source gates: **25 / 25 PASS**
+## PAX-05 regression
+- Executable source gates: **26 / 26 PASS**
 - Product FAIL: **0**
-- Source Manifest: **256 files / 0 SHA errors**
+- Source Manifest: **265 files / 0 SHA errors**
 - ZIP integrity: **PASS**
-- Physical state/lifecycle QA: **PENDING_DEVICE_QA**
+- Wrong-company write observed in automated regression: **0**
+- Duplicate UI write observed in automated regression: **0**
+- Physical operational safety QA: **PENDING_DEVICE_QA**
 - Production/native builds: **PENDING_ENVIRONMENT**
 
-State contract:
-- Loading / Empty / Invalid / Failure / Ready separated
-- operation Loading / Submitting / Failure separated
-- startup read failure never becomes Empty
-- invalid Current Company fails closed
-- company switch persists before context activation
-- failed company switch rolls back to original company
-- destructive writes and restore preserve original state on persistence failure
-- restore is validated before mutation
-
-Runtime smoke:
-- corrupt storage startup -> Failure: PASS
-- invalid current company -> Invalid: PASS
-- failed switch -> original current company preserved: PASS
+Operational safety contract:
+- Draft Scope and Dirty are separate.
+- Reverting edited values returns Draft to Clean.
+- Commit target must match Draft / Current Company for operational screens.
+- Existing entity drafts carry entity identity; payroll additionally carries payroll month.
+- Selected entities are invalidated on company switch.
+- Context generation blocks stale async results.
+- Browser Back follows logical Company Management parent routes and cannot bypass Dirty Guard.
+- Per-draft operation identity blocks repeated submit without blocking unrelated new records.
+- Restore is operation-locked and clears/re-resolves transient context after success.
+- Android bottom navigation/system Back respect dirty Payroll/company drafts.
 
 ## Core isolation
-Byte-identical to PAX-03 R1:
+Byte-identical to PAX-04 R1:
 - NativePayrollMath
 - NativeSalaryMateRepository
 - Storage
@@ -52,11 +51,11 @@ Byte-identical to PAX-03 R1:
 - Native Backup
 
 ## Canonical source
-`58c2bf04d745ee26e825ef1e36c0452c9a9957a2fe50b36dac07e0072650a212`
+`f99bf4c93f301c9f603163152c9291f0fc1ef409aa91b575b133bb31d9ff9940`
 
-`SalaryMate_v4.3.0-dev.2_PAX-04_Loading_Empty_Failure_State_Hardening_R1_Source.zip`
+`SalaryMate_v4.3.0-dev.2_PAX-05_Navigation_Draft_Context_Operational_Safety_R1_Source.zip`
 
 ## Next
-**PAX-05｜Navigation / Draft / Context Operational Safety**
+**PAX-06｜Full Regression & dev.2 Freeze Gate**
 
 RC / Stable promotion remains unauthorized.
