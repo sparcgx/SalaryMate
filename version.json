@@ -5,15 +5,16 @@
   "androidVersionCode": 14,
   "schemaVersion": 13,
   "channel": "development",
-  "status": "cm-03-simplified-salary-rules",
-  "sourcePackage": "SalaryMate_v4.3.0-dev.1_CM-03_Simplified_Salary_Rules_R1_Source.zip",
-  "sourceSha256": "4b5d0c78b85b4d8d54ba17769d9ab778727d4da600d3ae24f30708cf4604b4c4",
+  "status": "cm-04-advanced-company-rules",
+  "sourcePackage": "SalaryMate_v4.3.0-dev.1_CM-04_Advanced_Company_Rules_R1_Source.zip",
+  "sourceSha256": "2a06eabb854b722f1f13b19f7e3a5e0b9a7be5f62bf2f52bfd3a8f906906746a",
   "sourceBaseline": "SM_v4.2.0-dev.1_iOS_Hybrid_Foundation_ShortPath.zip",
   "githubWebBaseline": "fe3da26698e09470f895733309b0bc64c6d96e6a",
   "completedGates": [
     "CM-01_TARGETED",
     "CM-02_IMPLEMENTATION_REGRESSION",
-    "CM-03_IMPLEMENTATION_REGRESSION"
+    "CM-03_IMPLEMENTATION_REGRESSION",
+    "CM-04_IMPLEMENTATION_REGRESSION"
   ],
   "fullPlatformGate": "PENDING",
   "stableEligible": false
