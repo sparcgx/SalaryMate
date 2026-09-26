@@ -1,0 +1,54 @@
+SalaryMate v4.2.1-web-dev.2 | Full Data Import & Migration Validation
+======================================================================
+Base: v4.2.1-web-dev.1
+Stable Freeze Baseline: stable/v4.2.0-web (unchanged)
+Scope: Web local JSON full-data transfer only
+
+FUNCTIONAL GATE
+- Export full-history JSON button: PASS
+- Select JSON import button: PASS
+- Local JSON file input: PASS
+- Import preview/validation: PASS
+- Explicit apply/replace confirmation: PASS
+- Cancel import: PASS
+- v4.2.1-web-dev.1 wrapped export compatibility: PASS
+- Legacy/raw Web canonical state compatibility: PASS
+- normalizeMigratedState -> cleanupCanonicalState migration path: PASS
+- validCanonicalState gate before write: PASS
+- Full canonical replacement: PASS
+- Successful import reload: PASS
+- Transactional rollback to pre-import Canonical State on post-write failure: PASS
+- index.html and archived dev.2 build blob-identical: PASS
+
+DATA SCOPE
+- companies / company settings
+- companyWorkspaces
+- uiSettings
+- attendanceRecords
+- records (overtime)
+- monthlyPayrollRecords
+- payslipRecords and canonical attachments
+- bonusAllowanceRecords
+- annual compensation data through company canonical state
+- special-day / calendar rules through company canonical state
+- orphanQuarantine
+
+PRIVACY / NETWORK GATE
+- fetch(): 0
+- XMLHttpRequest: 0
+- sendBeacon: 0
+- WebSocket: 0
+- Supabase: 0
+- Firebase: 0
+Result: no data-upload/network transport added.
+
+IMPORT SEMANTICS
+- The selected file is parsed locally with File.text().
+- File is not uploaded.
+- Imported data replaces SalaryMate data only in the current browser origin.
+- User receives a count comparison before confirmation.
+- Existing current-browser data should be exported first when it must be retained.
+- Invalid/non-SalaryMate JSON is rejected before write.
+- A write-path exception triggers rollback to the pre-import Canonical State.
+
+OVERALL: PASS
