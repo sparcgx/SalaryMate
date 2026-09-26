@@ -1,0 +1,56 @@
+SalaryMate v4.3.0-dev.2 — PAX-04 Loading / Empty / Failure State Hardening
+============================================================================
+
+RESULT                                      IMPLEMENTATION_REGRESSION_PASS
+PHYSICAL STATE UX                           PENDING_DEVICE_QA
+FULL PLATFORM BUILD / DEVICE                PENDING_ENVIRONMENT
+
+PAX0401 State Model Separation              PASS
+PAX0402 Loading != Empty                    PASS
+PAX0403 Empty != Invalid                    PASS
+PAX0404 Invalid != Failure                  PASS
+PAX0405 Dashboard / Startup Loading         PASS
+PAX0406 Company Switch Loading              PASS
+PAX0407 Stale Company Exposure Contract     PASS
+PAX0408 Empty State Contract                PASS
+PAX0409 Failure State Contract              PASS
+PAX0410 Retry Safety                        PASS
+PAX0411 Submit Loading                      PASS
+PAX0412 Draft / State Preserved on Failure  PASS
+PAX0413 Partial-success Handling Contract   PASS_STATIC
+PAX0414 Startup Failure Safety              PASS_RUNTIME
+PAX0415 Invalid Context Fail Closed         PASS_RUNTIME
+PAX0416 Backup Failure Safety               PASS
+PAX0417 Restore Pre-validation              PASS
+PAX0418 Restore Fail Closed                 PASS
+PAX0419 Accessibility States                PASS_STATIC
+PAX0420 Web State UX                        PASS_RUNTIME
+PAX0421 Android State UX                    PASS_STATIC / DEVICE_PENDING
+PAX0422 iOS State UX                        PASS_SHARED / DEVICE_PENDING
+PAX0423 Functional Regression               25 / 25 PASS
+PAX0424 Historical Data                     PRESERVED_BY_CORE_ISOLATION
+PAX0425 Schema                              13
+PAX0426 Version Drift                       0
+
+Runtime Smoke:
+- corrupt storage startup -> Failure, not Empty             PASS
+- invalid Current Company -> Invalid                        PASS
+- failed company switch -> previous Current Company kept    PASS
+
+NativePayrollMath                           SAME
+NativeSalaryMateRepository                  SAME
+Storage                                     SAME
+Snapshot Store                              SAME
+Backup Crypto                               SAME
+Native Backup                               SAME
+
+Source Manifest                             256 / 0 SHA ERRORS
+ZIP Integrity                               PASS
+Source SHA-256                              58c2bf04d745ee26e825ef1e36c0452c9a9957a2fe50b36dac07e0072650a212
+
+Production Build                            PENDING_ENVIRONMENT (esbuild unavailable)
+Android Gradle / Physical Device            PENDING_ENVIRONMENT
+iOS Foundation / Native Build               PENDING_ENVIRONMENT (xcode unavailable)
+
+RC / Stable Promotion                       NOT AUTHORIZED
+NEXT                                         PAX-05 Navigation / Draft / Context Operational Safety
