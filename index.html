@@ -9877,8 +9877,11 @@ function applyFullHistoryImport(){
   `匯入檔案：OT ${incoming.overtime}、考勤 ${incoming.attendance}、Snapshot ${incoming.snapshots}、Payslip ${incoming.payslips}、加項 ${incoming.additions}\n\n`+
   "匯入會取代目前瀏覽器中的 SalaryMate 本機資料。若目前資料需要保留，請先取消並執行完整匯出。";
  if(!confirm(message))return {ok:false,code:"CANCELLED"};
+ const before=canonicalStateForInterface();
+ let importWritten=false;
  try{
   const saved=writeCanonicalState(candidate.state);
+  importWritten=true;
   if(!validCanonicalState(saved))throw new Error("IMPORT_WRITE_VALIDATION_FAILED");
   applyState(saved);
   finalizeStorageMaintenance();
@@ -9886,9 +9889,16 @@ function applyFullHistoryImport(){
   location.reload();
   return {ok:true,code:"FULL_HISTORY_IMPORTED"};
  }catch(e){
+  let rollbackOk=true;
+  if(importWritten){
+   try{
+    const restored=writeCanonicalState(before);
+    applyState(restored);
+   }catch(rollbackError){rollbackOk=false}
+  }
   const state=$("dataImportState");
-  if(state)state.textContent="匯入失敗，原本資料未取代："+String(e?.message||e);
-  return {ok:false,code:"FULL_HISTORY_IMPORT_FAILED",message:String(e?.message||e)};
+  if(state)state.textContent=(rollbackOk?"匯入失敗，已回復匯入前資料：":"匯入失敗，且自動回復未完成，請勿關閉頁面並先匯出目前資料：")+String(e?.message||e);
+  return {ok:false,code:rollbackOk?"FULL_HISTORY_IMPORT_ROLLED_BACK":"FULL_HISTORY_IMPORT_ROLLBACK_FAILED",message:String(e?.message||e)};
  }
 }
 function cancelFullHistoryImport(){
