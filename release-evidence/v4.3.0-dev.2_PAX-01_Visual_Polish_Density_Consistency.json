@@ -1,0 +1,49 @@
+{
+  "gate": "PAX-01 Visual Polish & Density Consistency",
+  "productVersion": "4.3.0-dev.2",
+  "releaseVersion": "4.3.0",
+  "schemaVersion": 13,
+  "androidVersionCode": 15,
+  "iosBuildNumber": 3,
+  "result": "IMPLEMENTATION_REGRESSION_PASS",
+  "fullPlatformVisualQA": "PENDING_ENVIRONMENT",
+  "regression": {
+    "executableSourceGates": 22,
+    "pass": 22,
+    "fail": 0,
+    "productFail": 0
+  },
+  "versionDrift": 0,
+  "visualContract": {
+    "primary": "teal",
+    "canvas": "white-neutral",
+    "shadow": "low",
+    "border": "low",
+    "densityTiers": [
+      "compact",
+      "regular",
+      "large"
+    ],
+    "companyManagement": "PASS_STATIC",
+    "salaryRules": "PASS_STATIC",
+    "payroll3Step": "PASS_STATIC",
+    "responsiveNarrow": "PASS_STATIC",
+    "androidThemeAlignment": "PASS_STATIC"
+  },
+  "coreIsolation": {
+    "NativePayrollMath": "SAME",
+    "NativeSalaryMateRepository": "SAME",
+    "storage": "SAME",
+    "snapshotStore": "SAME",
+    "backupCrypto": "SAME"
+  },
+  "environmentPending": [
+    "Production build / complete esbuild package",
+    "Android SDK / Gradle / physical device",
+    "iOS xcode npm module / native build"
+  ],
+  "sourcePackage": "SalaryMate_v4.3.0-dev.2_PAX-01_Visual_Polish_Density_Consistency_R1_Source.zip",
+  "sourceSha256": "a9050776d631d8a97dd96506d56c7147271fd1b822dd502ce09c7417f3ef4de2",
+  "stableEligible": false,
+  "next": "PAX-02 Accessibility & Keyboard / Touch Hardening"
+}
