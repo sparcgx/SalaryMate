@@ -5,9 +5,9 @@
   "androidVersionCode": 14,
   "schemaVersion": 13,
   "channel": "development",
-  "status": "cm-05-company-workflow-cross-platform-ux",
-  "sourcePackage": "SalaryMate_v4.3.0-dev.1_CM-05_Company_Workflow_Cross_Platform_UX_R1_Source.zip",
-  "sourceSha256": "8c6223328d96b7e180ff40f012db7330618658149268cde1259dbed863ae88d8",
+  "status": "cm-06-development-source-freeze",
+  "sourcePackage": "SalaryMate_v4.3.0-dev.1_CM-06_Full_Regression_Development_Freeze_R1_Source.zip",
+  "sourceSha256": "3020cf41e964e282ebb607366d224a65fc8106490109c22ebb88fbf2cc935605",
   "sourceBaseline": "SM_v4.2.0-dev.1_iOS_Hybrid_Foundation_ShortPath.zip",
   "githubWebBaseline": "fe3da26698e09470f895733309b0bc64c6d96e6a",
   "completedGates": [
@@ -15,8 +15,11 @@
     "CM-02_IMPLEMENTATION_REGRESSION",
     "CM-03_IMPLEMENTATION_REGRESSION",
     "CM-04_IMPLEMENTATION_REGRESSION",
-    "CM-05_IMPLEMENTATION_REGRESSION"
+    "CM-05_IMPLEMENTATION_REGRESSION",
+    "CM-06_SOURCE_FREEZE"
   ],
-  "fullPlatformGate": "PENDING",
+  "fullPlatformGate": "PENDING_ENVIRONMENT",
+  "developmentFreezeEligible": true,
+  "rcPromotionEligible": false,
   "stableEligible": false
 }
