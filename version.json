@@ -1,14 +1,14 @@
 {
-  "productVersion": "4.3.0-dev.1",
+  "productVersion": "4.3.0-dev.2",
   "releaseVersion": "4.3.0",
-  "buildNumber": 2,
-  "androidVersionCode": 14,
+  "buildNumber": 3,
+  "androidVersionCode": 15,
   "schemaVersion": 13,
   "channel": "development",
-  "status": "cm-06-development-source-freeze",
-  "sourcePackage": "SalaryMate_v4.3.0-dev.1_CM-06_Full_Regression_Development_Freeze_R1_Source.zip",
-  "sourceSha256": "3020cf41e964e282ebb607366d224a65fc8106490109c22ebb88fbf2cc935605",
-  "sourceBaseline": "SM_v4.2.0-dev.1_iOS_Hybrid_Foundation_ShortPath.zip",
+  "status": "pax-01-visual-polish-density-consistency",
+  "sourcePackage": "SalaryMate_v4.3.0-dev.2_PAX-01_Visual_Polish_Density_Consistency_R1_Source.zip",
+  "sourceSha256": "a9050776d631d8a97dd96506d56c7147271fd1b822dd502ce09c7417f3ef4de2",
+  "sourceBaseline": "SalaryMate_v4.3.0-dev.1_CM-06_Full_Regression_Development_Freeze_R1_Source.zip",
   "githubWebBaseline": "fe3da26698e09470f895733309b0bc64c6d96e6a",
   "completedGates": [
     "CM-01_TARGETED",
@@ -16,10 +16,9 @@
     "CM-03_IMPLEMENTATION_REGRESSION",
     "CM-04_IMPLEMENTATION_REGRESSION",
     "CM-05_IMPLEMENTATION_REGRESSION",
-    "CM-06_SOURCE_FREEZE"
+    "CM-06_SOURCE_FREEZE",
+    "PAX-01_IMPLEMENTATION_REGRESSION"
   ],
   "fullPlatformGate": "PENDING_ENVIRONMENT",
-  "developmentFreezeEligible": true,
-  "rcPromotionEligible": false,
   "stableEligible": false
 }
