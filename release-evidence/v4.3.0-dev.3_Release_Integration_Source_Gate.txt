@@ -1,0 +1,42 @@
+SalaryMate v4.3.0-dev.3 — Release Integration & Real-Device Hardening
+======================================================================
+
+RESULT                                      SOURCE_INTEGRATION_REGRESSION_PASS
+SOURCE REGRESSION PASS LINES                35
+PRODUCT FAIL                                0
+VERSION DRIFT                               0
+SCHEMA                                      13
+
+RI-01 Release Identity                      PASS
+RI-02 Upgrade/Data Preservation Contract    PASS
+RI-03 Device Evidence Contract              PASS
+RI-04 Backup Round-trip Contract            PASS
+RI-05 Lifecycle/Recovery Contract           PASS
+RI-06 Source Integration Regression         PASS
+
+Product Version                             4.3.0-dev.3
+Android versionCode                         16
+iOS Build                                   4
+
+Production Build                            PENDING_ENVIRONMENT
+Android Build / Device                      PENDING_ENVIRONMENT
+iOS Foundation / Native Build               PENDING_ENVIRONMENT
+ios-gate-test                               PASS
+
+Real Device                                 NOT_RUN
+Upgrade / Data Preservation                 NOT_RUN
+Backup / Restore Physical                   NOT_RUN
+Lifecycle / Long Session                    NOT_RUN
+
+NativePayrollMath                           SAME
+NativeSalaryMateRepository                  SAME
+Storage                                     SAME
+Snapshot Store                              SAME
+Backup Crypto                               SAME
+Native Backup                               VERSION_BINDING_ONLY
+
+Source Manifest                             294 / 0 SHA ERRORS
+ZIP Integrity                               PASS
+Source SHA-256                              ef3bb060e345e7ebdd779dcc1cbc35ba4a4c454b5800e59078b1f0023405f956
+
+RC / Stable Promotion                       NOT AUTHORIZED
