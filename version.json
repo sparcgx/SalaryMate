@@ -1,14 +1,14 @@
 {
-  "productVersion": "4.3.0-dev.4",
+  "productVersion": "4.3.0-RC.1",
   "releaseVersion": "4.3.0",
-  "buildNumber": 5,
-  "androidVersionCode": 17,
+  "buildNumber": 6,
+  "androidVersionCode": 18,
   "schemaVersion": 13,
-  "channel": "development",
-  "status": "rr-06-rc-readiness-source-gate",
-  "sourcePackage": "SalaryMate_v4.3.0-dev.4_RC_Readiness_Evidence_Final_Release_Gate_Preparation_R1_Source.zip",
-  "sourceSha256": "9ba15d280b4d187bd622a0fb25a97d0c4633fa09be0af8cdd3cb99aae48410f0",
-  "sourceBaseline": "SalaryMate_v4.3.0-dev.3_Release_Integration_Real_Device_Hardening_R1_Source.zip",
+  "channel": "release-candidate",
+  "status": "rc1-release-candidate-source-freeze",
+  "sourcePackage": "SalaryMate_v4.3.0-RC.1_Full_Regression_Release_Candidate_Freeze_R1_Source.zip",
+  "sourceSha256": "bfef4c6de7901d55933fc9730b00f4ad7355aa6ea075ec41a0547998cfde1c97",
+  "sourceBaseline": "SalaryMate_v4.3.0-dev.4_RC_Readiness_Evidence_Final_Release_Gate_Preparation_R1_Source.zip",
   "completedGates": [
     "CM-01_TARGETED",
     "CM-02_IMPLEMENTATION_REGRESSION",
@@ -33,10 +33,17 @@
     "RR-03_PHYSICAL_GATE_SCHEMA",
     "RR-04_RC_PROMOTION_BLOCKER",
     "RR-05_SOURCE_REGRESSION",
-    "RR-06_RC_READINESS_SOURCE_GATE"
+    "RR-06_RC_READINESS_SOURCE_GATE",
+    "RC-01_RELEASE_CANDIDATE_IDENTITY",
+    "RC-02_READINESS_INHERITANCE",
+    "RC-03_PHYSICAL_EVIDENCE_BLOCKER",
+    "RC-04_CRITICAL_INVARIANTS",
+    "RC-05_PACKAGE_FREEZE_CONTRACT",
+    "RC-06_RELEASE_CANDIDATE_SOURCE_FREEZE"
   ],
   "fullPlatformGate": "PENDING_ENVIRONMENT",
   "physicalDeviceQA": "PENDING_DEVICE_QA",
+  "releaseCandidateSourceFreezeEligible": true,
   "rcPromotionEligible": false,
   "stableEligible": false
 }
