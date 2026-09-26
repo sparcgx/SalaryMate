@@ -5,12 +5,12 @@
   "androidVersionCode": 15,
   "schemaVersion": 13,
   "channel": "development",
-  "status": "pax-03-form-validation-error-messaging",
-  "sourcePackage": "SalaryMate_v4.3.0-dev.2_PAX-03_Form_Validation_Error_Messaging_R1_Source.zip",
-  "sourceSha256": "3cbe056c70230a2fb627ef2afe51cd4e76c012caa3691dfb93e75a4bb77fc860",
+  "status": "pax-04-loading-empty-failure-state-hardening",
+  "sourcePackage": "SalaryMate_v4.3.0-dev.2_PAX-04_Loading_Empty_Failure_State_Hardening_R1_Source.zip",
+  "sourceSha256": "58c2bf04d745ee26e825ef1e36c0452c9a9957a2fe50b36dac07e0072650a212",
   "sourceBaseline": "SalaryMate_v4.3.0-dev.1_CM-06_Full_Regression_Development_Freeze_R1_Source.zip",
   "githubWebBaseline": "fe3da26698e09470f895733309b0bc64c6d96e6a",
-  "notes": "PAX-03 form validation, inline error binding, warning/error separation, fail-closed commit rollback and backup error taxonomy only. Business logic, Schema 13, payroll/tax/OT/year-end, repository, backup/snapshot and Current Company contracts remain frozen.",
+  "notes": "PAX-04 separates Loading / Empty / Invalid / Failure / Ready / Submitting, makes startup and company switching fail closed, and hardens retry/write/restore rollback. Business logic, Schema 13, payroll/tax/OT/year-end, repository model and historical-data contracts remain frozen.",
   "completedGates": [
     "CM-01_TARGETED",
     "CM-02_IMPLEMENTATION_REGRESSION",
@@ -20,10 +20,11 @@
     "CM-06_SOURCE_FREEZE",
     "PAX-01_IMPLEMENTATION_REGRESSION",
     "PAX-02_IMPLEMENTATION_REGRESSION",
-    "PAX-03_IMPLEMENTATION_REGRESSION"
+    "PAX-03_IMPLEMENTATION_REGRESSION",
+    "PAX-04_IMPLEMENTATION_REGRESSION"
   ],
   "fullPlatformGate": "PENDING_ENVIRONMENT",
-  "physicalValidationUX": "PENDING_DEVICE_QA",
+  "physicalStateUX": "PENDING_DEVICE_QA",
   "developmentFreezeEligible": false,
   "stableEligible": false
 }
