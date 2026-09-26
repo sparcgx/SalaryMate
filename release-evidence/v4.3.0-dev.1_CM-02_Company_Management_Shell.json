@@ -1,0 +1,47 @@
+{
+  "gate": "CM-02 Company Management Shell",
+  "productVersion": "4.3.0-dev.1",
+  "schemaVersion": 13,
+  "result": "IMPLEMENTATION_REGRESSION_PASS",
+  "fullPlatformGate": "PENDING",
+  "subgates": {
+    "CM-02-01": "PASS",
+    "CM-02-02": "PASS",
+    "CM-02-03": "PASS",
+    "CM-02-04": "PASS",
+    "CM-02-05": "PASS"
+  },
+  "behavior": {
+    "firstCompanyAutoCurrent": "PASS",
+    "secondCompanyKeepsCurrent": "PASS",
+    "companySelectorSwitchOnly": "PASS",
+    "duplicateNameWarning": "PASS",
+    "zeroBaseSalaryWarning": "PASS",
+    "fullSettingsCompatibility": "PRESERVED",
+    "secondCompanyStore": 0
+  },
+  "regression": {
+    "scriptGates": 17,
+    "passLines": 19,
+    "productFail": 0
+  },
+  "versionDrift": 0,
+  "coreIsolation": {
+    "NativePayrollMath": "SAME",
+    "storage": "SAME",
+    "snapshot": "SAME",
+    "backupCrypto": "SAME",
+    "nativeBackup": "SAME"
+  },
+  "platforms": {
+    "webShared": "PASS",
+    "androidSourceWiring": "PASS_STATIC",
+    "androidCompileDevice": "PENDING_ENVIRONMENT",
+    "iosHybridSharedShell": "PASS_STATIC",
+    "iosFoundation": "PENDING_ENVIRONMENT"
+  },
+  "sourcePackage": "SalaryMate_v4.3.0-dev.1_CM-02_Company_Management_Shell_R1_Source.zip",
+  "sourceSha256": "af1f7deec719283f75b8519dd4100a283ef10f9902807caebfef7c78cbdfbb9e",
+  "stableEligible": false,
+  "next": "CM-03 Simplified Salary Rules"
+}
