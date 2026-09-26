@@ -1,0 +1,40 @@
+SalaryMate v4.3.0-dev.1 — CM-02 Company Management Shell
+=========================================================
+
+RESULT: IMPLEMENTATION_REGRESSION_PASS
+FULL_PLATFORM_GATE: PENDING
+
+CM-02-01 Company Management Entry / Current Card       PASS
+CM-02-02 Other Companies / Current Switch              PASS
+CM-02-03 Detail / Basic Edit Separation                PASS
+CM-02-04 Minimal Company Creation                      PASS
+CM-02-05 Navigation / Compatibility Cleanup            PASS
+
+First Company Auto Current                             PASS
+Second Company Keeps Existing Current                  PASS
+Company Selector Switch-only                           PASS
+Duplicate Name Warning Path                            PASS
+Base Salary 0 Warning Path                             PASS
+Existing Full Settings Compatibility                   PRESERVED
+Second Company Store                                   0
+Schema                                                 13
+Version Drift                                          0
+
+Regression Script Gates                                17
+Regression PASS Lines                                  19
+Product FAIL                                           0
+
+NativePayrollMath                                      SAME
+Storage Core                                           SAME
+Snapshot Core                                          SAME
+Backup Crypto                                          SAME
+Native Backup                                          SAME
+
+Android Source Wiring                                  PASS_STATIC
+Android Compile / Device                               PENDING_ENVIRONMENT
+iOS Hybrid Shared Shell                                PASS_STATIC
+iOS Foundation Parser                                  PENDING_ENVIRONMENT
+
+Source SHA-256                                         af1f7deec719283f75b8519dd4100a283ef10f9902807caebfef7c78cbdfbb9e
+RC / Stable Promotion                                  NOT AUTHORIZED
+NEXT                                                    CM-03 Simplified Salary Rules
