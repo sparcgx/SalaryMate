@@ -1,58 +1,42 @@
-# v4.3.0-dev.2｜Development Source Freeze
-
-## Decision
-- PAX-01～PAX-05: **PASS / PRESERVED**
-- PAX-06 Full Regression: **PASS**
-- Development Source Freeze: **PASS**
-- Full Platform Build / Device Gate: **PENDING_ENVIRONMENT**
-- Physical Device QA: **PENDING_DEVICE_QA**
-- RC / Stable Promotion: **NOT AUTHORIZED**
+# v4.3.0-dev.3｜Release Integration Status
 
 ## Identity
-- Product: `4.3.0-dev.2`
-- Release target: `4.3.0`
+- Product: `4.3.0-dev.3`
+- Release: `4.3.0`
+- Android versionCode: `16`
+- iOS build: `4`
 - Schema: `13`
-- Android versionCode: `15`
-- iOS build: `3`
 - Version Drift: `0`
 
-## Final regression
-- Executable source gates: **27 / 27 PASS**
-- Product FAIL: **0**
-- Source Manifest: **274 files / 0 SHA errors**
+## Source integration
+- RI-01～RI-06 source contracts: **PASS**
+- Source regression: **35 PASS lines / 0 product FAIL**
+- Source Manifest: **294 files / 0 SHA errors**
 - ZIP integrity: **PASS**
-- Wrong-company write observed automated: **0**
-- Duplicate UI write observed automated: **0**
 
-## Critical invariants
-- Tax boundary: 86,000 → 0; 86,001 → 0; 86,002 → 4,300
-- OT: 1 / 1.34 / 1.67 / 2 / 2.67; Lunar New Year 2.5
-- Year-End Runtime Golden: 153,900
-- Historical OT retained contract: 1,373; unique identities: 1,373
-- Snapshot retention: 3
-- Silent Current Company fallback: 0
-
-## Core isolation vs PAX-05 R1
+## Core isolation vs dev.2 Freeze
 - NativePayrollMath: SAME
 - NativeSalaryMateRepository: SAME
 - Storage: SAME
 - Snapshot Store: SAME
 - Backup Crypto: SAME
-- Native Backup: SAME
+- Native Backup: VERSION_BINDING_ONLY
 
-## Platform status
-- ios-gate-test: PASS
-- Production Build: PENDING_ENVIRONMENT
-- Android SDK / Gradle / Device: PENDING_ENVIRONMENT
-- iOS Foundation / Native Build: PENDING_ENVIRONMENT
-- Physical Accessibility / State / Operational QA: PENDING_DEVICE_QA
+## Environment / physical status
+- Production build: **PENDING_ENVIRONMENT**
+- Android SDK / ADB / Gradle device: **PENDING_ENVIRONMENT**
+- iOS Foundation / native build: **PENDING_ENVIRONMENT**
+- ios-gate-test: **PASS**
+- Real Device: **NOT_RUN**
+- Upgrade / Data Preservation: **NOT_RUN**
+- Backup / Restore Physical: **NOT_RUN**
+- Lifecycle / Long Session: **NOT_RUN**
 
-## Canonical freeze artifact
-`886b230c38b0a4af5d6662c259fc96b6cb341f83d42328c9bdd60910ad89b7a6`
+## Canonical source
+`ef3bb060e345e7ebdd779dcc1cbc35ba4a4c454b5800e59078b1f0023405f956`
 
-`SalaryMate_v4.3.0-dev.2_PAX-06_Full_Regression_dev2_Freeze_R1_Source.zip`
+`SalaryMate_v4.3.0-dev.3_Release_Integration_Real_Device_Hardening_R1_Source.zip`
 
-No new feature work is permitted on this frozen snapshot.
+RC / Stable promotion remains unauthorized.
 
-## Next lifecycle line
-**v4.3.0-dev.3｜Release Integration & Real-Device Hardening**
+Next after physical/build evidence is complete: **v4.3.0-dev.4｜RC Readiness, Evidence & Final Release Gate Preparation**.
