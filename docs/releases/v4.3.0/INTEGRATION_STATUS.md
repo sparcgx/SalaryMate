@@ -1,20 +1,24 @@
-# v4.3.0-dev.3｜Release Integration Status
+# v4.3.0-dev.4｜RC Readiness Status
+
+## Decision
+- RR-01～RR-06: **PASS**
+- Source regression: **40 PASS messages / 0 product FAIL**
+- Source Manifest: **310 files / 0 SHA errors**
+- ZIP integrity: **PASS**
+- Source readiness: **SOURCE_READY_DEVICE_PENDING**
+- Production/native build: **PENDING_ENVIRONMENT**
+- Physical device QA: **PENDING_DEVICE_QA**
+- RC / Stable promotion: **NOT AUTHORIZED**
 
 ## Identity
-- Product: `4.3.0-dev.3`
-- Release: `4.3.0`
-- Android versionCode: `16`
-- iOS build: `4`
+- Product: `4.3.0-dev.4`
+- Release target: `4.3.0`
 - Schema: `13`
+- Android versionCode: `17`
+- iOS build: `5`
 - Version Drift: `0`
 
-## Source integration
-- RI-01～RI-06 source contracts: **PASS**
-- Source regression: **35 PASS lines / 0 product FAIL**
-- Source Manifest: **294 files / 0 SHA errors**
-- ZIP integrity: **PASS**
-
-## Core isolation vs dev.2 Freeze
+## Core isolation vs dev.3
 - NativePayrollMath: SAME
 - NativeSalaryMateRepository: SAME
 - Storage: SAME
@@ -22,21 +26,20 @@
 - Backup Crypto: SAME
 - Native Backup: VERSION_BINDING_ONLY
 
-## Environment / physical status
-- Production build: **PENDING_ENVIRONMENT**
-- Android SDK / ADB / Gradle device: **PENDING_ENVIRONMENT**
-- iOS Foundation / native build: **PENDING_ENVIRONMENT**
-- ios-gate-test: **PASS**
-- Real Device: **NOT_RUN**
-- Upgrade / Data Preservation: **NOT_RUN**
-- Backup / Restore Physical: **NOT_RUN**
-- Lifecycle / Long Session: **NOT_RUN**
+## Physical evidence still required
+- Android/iOS real device
+- signed/native build identity
+- in-place upgrade + data preservation
+- historical OT physical count
+- backup/restore physical round-trip
+- lifecycle / long session
+- accessibility/manual acceptance
+- wrong-company write = 0
+- duplicate commit = 0
 
 ## Canonical source
-`ef3bb060e345e7ebdd779dcc1cbc35ba4a4c454b5800e59078b1f0023405f956`
+`9ba15d280b4d187bd622a0fb25a97d0c4633fa09be0af8cdd3cb99aae48410f0`
 
-`SalaryMate_v4.3.0-dev.3_Release_Integration_Real_Device_Hardening_R1_Source.zip`
+`SalaryMate_v4.3.0-dev.4_RC_Readiness_Evidence_Final_Release_Gate_Preparation_R1_Source.zip`
 
-RC / Stable promotion remains unauthorized.
-
-Next after physical/build evidence is complete: **v4.3.0-dev.4｜RC Readiness, Evidence & Final Release Gate Preparation**.
+RC remains blocked until every required release evidence item is PASS.
