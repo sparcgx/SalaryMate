@@ -1,0 +1,66 @@
+{
+  "gate": "PAX-06 Full Regression & dev.2 Freeze Gate",
+  "productVersion": "4.3.0-dev.2",
+  "releaseVersion": "4.3.0",
+  "schemaVersion": 13,
+  "androidVersionCode": 15,
+  "iosBuildNumber": 3,
+  "developmentSourceFreeze": "PASS",
+  "fullPlatformBuildDeviceGate": "PENDING_ENVIRONMENT",
+  "physicalDeviceQA": "PENDING_DEVICE_QA",
+  "rcStablePromotion": "NOT_AUTHORIZED",
+  "regression": {
+    "executableSourceGates": 27,
+    "pass": 27,
+    "fail": 0,
+    "productFail": 0
+  },
+  "versionDrift": 0,
+  "sourceManifest": {
+    "files": 274,
+    "shaErrors": 0
+  },
+  "zipIntegrity": "PASS",
+  "critical": {
+    "taxBoundary": {
+      "86000": 0,
+      "86001": 0,
+      "86002": 4300
+    },
+    "otMultipliers": [
+      1,
+      1.34,
+      1.67,
+      2,
+      2.67,
+      2.5
+    ],
+    "yearEndRuntimeGolden": 153900,
+    "historicalOT": 1373,
+    "historicalOTUniqueIdentities": 1373,
+    "snapshotRetention": 3,
+    "wrongCompanyWriteObservedAutomated": 0,
+    "duplicateUiWriteObservedAutomated": 0,
+    "silentFirstCompanyFallback": 0
+  },
+  "coreIsolationVsPAX05": {
+    "NativePayrollMath": "SAME",
+    "NativeSalaryMateRepository": "SAME",
+    "storage": "SAME",
+    "snapshotStore": "SAME",
+    "backupCrypto": "SAME",
+    "nativeBackup": "SAME"
+  },
+  "platform": {
+    "iosResultGate": "PASS",
+    "iosFoundation": "PENDING_ENVIRONMENT",
+    "productionBuild": "PENDING_ENVIRONMENT",
+    "androidSdkGradleDevice": "PENDING_ENVIRONMENT"
+  },
+  "sourcePackage": "SalaryMate_v4.3.0-dev.2_PAX-06_Full_Regression_dev2_Freeze_R1_Source.zip",
+  "sourceSha256": "886b230c38b0a4af5d6662c259fc96b6cb341f83d42328c9bdd60910ad89b7a6",
+  "developmentFreezeEligible": true,
+  "rcPromotionEligible": false,
+  "stableEligible": false,
+  "result": "SOURCE_FREEZE_PASS_PLATFORM_PENDING"
+}
