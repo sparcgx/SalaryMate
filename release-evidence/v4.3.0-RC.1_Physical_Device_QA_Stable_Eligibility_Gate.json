@@ -1,0 +1,61 @@
+{
+  "version": "v4.3.0-RC.1",
+  "gate": "Physical Device QA & Stable Eligibility Gate",
+  "status": "ACTIVE_DEVICE_QA_PENDING",
+  "stablePromotion": "NOT_AUTHORIZED",
+  "baselineBranch": "v4.3.0-RC.1",
+  "freezeBranch": "freeze/v4.3.0-RC.1",
+  "baselineCommit": "5842eaf0f36026aea81c283b18708a0a01bfea8d",
+  "canonicalSourceSha256": "bfef4c6de7901d55933fc9730b00f4ad7355aa6ea075ec41a0547998cfde1c97",
+  "android": {
+    "packageId": "com.salarymate.personal",
+    "versionCode": 18,
+    "physicalAcceptance": "PENDING"
+  },
+  "ios": {
+    "build": 6,
+    "physicalAcceptance": "PENDING"
+  },
+  "schema": 13,
+  "sourceRegression": "47/47 PASS",
+  "versionDrift": 0,
+  "sourceManifest": {
+    "files": 324,
+    "shaErrors": 0
+  },
+  "zipIntegrity": "PASS",
+  "gates": {
+    "PDQ-01": "PENDING",
+    "PDQ-02": "PENDING",
+    "PDQ-03": "PENDING",
+    "PDQ-04": "PENDING",
+    "PDQ-05": "PENDING",
+    "PDQ-06": "PENDING",
+    "PDQ-07": "PENDING",
+    "PDQ-08": "PENDING",
+    "PDQ-09": "PENDING"
+  },
+  "goldenContracts": {
+    "currentCompany": "FAIL_CLOSED",
+    "wrongCompanyWrite": 0,
+    "duplicateCommit": 0,
+    "historicalOT": 1373,
+    "snapshotRetention": 3,
+    "tax": {
+      "86000": 0,
+      "86001": 0,
+      "86002": 4300
+    },
+    "otMultipliers": [
+      1,
+      1.34,
+      1.67,
+      2,
+      2.67
+    ],
+    "lunarNewYearOT": 2.5,
+    "yearEndRuntimeGolden": 153900
+  },
+  "finalEligibility": "PENDING",
+  "v430Stable": "BLOCKED"
+}
