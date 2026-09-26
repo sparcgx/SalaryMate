@@ -1,4 +1,12 @@
-# v4.3.0-dev.2｜PAX Integration Status
+# v4.3.0-dev.2｜Development Source Freeze
+
+## Decision
+- PAX-01～PAX-05: **PASS / PRESERVED**
+- PAX-06 Full Regression: **PASS**
+- Development Source Freeze: **PASS**
+- Full Platform Build / Device Gate: **PENDING_ENVIRONMENT**
+- Physical Device QA: **PENDING_DEVICE_QA**
+- RC / Stable Promotion: **NOT AUTHORIZED**
 
 ## Identity
 - Product: `4.3.0-dev.2`
@@ -8,54 +16,43 @@
 - iOS build: `3`
 - Version Drift: `0`
 
-## Completed dev.2 gates
-
-| Gate | Result |
-|---|---|
-| PAX-01 Visual Polish & Density Consistency | IMPLEMENTATION_REGRESSION_PASS |
-| PAX-02 Accessibility & Keyboard / Touch Hardening | IMPLEMENTATION_REGRESSION_PASS |
-| PAX-03 Form Validation & Error Messaging | IMPLEMENTATION_REGRESSION_PASS |
-| PAX-04 Loading / Empty / Failure State Hardening | IMPLEMENTATION_REGRESSION_PASS |
-| PAX-05 Navigation / Draft / Context Operational Safety | IMPLEMENTATION_REGRESSION_PASS |
-| PAX-06 Full Regression / dev.2 Freeze | NEXT |
-
-## PAX-05 regression
-- Executable source gates: **26 / 26 PASS**
+## Final regression
+- Executable source gates: **27 / 27 PASS**
 - Product FAIL: **0**
-- Source Manifest: **265 files / 0 SHA errors**
+- Source Manifest: **274 files / 0 SHA errors**
 - ZIP integrity: **PASS**
-- Wrong-company write observed in automated regression: **0**
-- Duplicate UI write observed in automated regression: **0**
-- Physical operational safety QA: **PENDING_DEVICE_QA**
-- Production/native builds: **PENDING_ENVIRONMENT**
+- Wrong-company write observed automated: **0**
+- Duplicate UI write observed automated: **0**
 
-Operational safety contract:
-- Draft Scope and Dirty are separate.
-- Reverting edited values returns Draft to Clean.
-- Commit target must match Draft / Current Company for operational screens.
-- Existing entity drafts carry entity identity; payroll additionally carries payroll month.
-- Selected entities are invalidated on company switch.
-- Context generation blocks stale async results.
-- Browser Back follows logical Company Management parent routes and cannot bypass Dirty Guard.
-- Per-draft operation identity blocks repeated submit without blocking unrelated new records.
-- Restore is operation-locked and clears/re-resolves transient context after success.
-- Android bottom navigation/system Back respect dirty Payroll/company drafts.
+## Critical invariants
+- Tax boundary: 86,000 → 0; 86,001 → 0; 86,002 → 4,300
+- OT: 1 / 1.34 / 1.67 / 2 / 2.67; Lunar New Year 2.5
+- Year-End Runtime Golden: 153,900
+- Historical OT retained contract: 1,373; unique identities: 1,373
+- Snapshot retention: 3
+- Silent Current Company fallback: 0
 
-## Core isolation
-Byte-identical to PAX-04 R1:
-- NativePayrollMath
-- NativeSalaryMateRepository
-- Storage
-- Snapshot Store
-- Backup Crypto
-- Native Backup
+## Core isolation vs PAX-05 R1
+- NativePayrollMath: SAME
+- NativeSalaryMateRepository: SAME
+- Storage: SAME
+- Snapshot Store: SAME
+- Backup Crypto: SAME
+- Native Backup: SAME
 
-## Canonical source
-`f99bf4c93f301c9f603163152c9291f0fc1ef409aa91b575b133bb31d9ff9940`
+## Platform status
+- ios-gate-test: PASS
+- Production Build: PENDING_ENVIRONMENT
+- Android SDK / Gradle / Device: PENDING_ENVIRONMENT
+- iOS Foundation / Native Build: PENDING_ENVIRONMENT
+- Physical Accessibility / State / Operational QA: PENDING_DEVICE_QA
 
-`SalaryMate_v4.3.0-dev.2_PAX-05_Navigation_Draft_Context_Operational_Safety_R1_Source.zip`
+## Canonical freeze artifact
+`886b230c38b0a4af5d6662c259fc96b6cb341f83d42328c9bdd60910ad89b7a6`
 
-## Next
-**PAX-06｜Full Regression & dev.2 Freeze Gate**
+`SalaryMate_v4.3.0-dev.2_PAX-06_Full_Regression_dev2_Freeze_R1_Source.zip`
 
-RC / Stable promotion remains unauthorized.
+No new feature work is permitted on this frozen snapshot.
+
+## Next lifecycle line
+**v4.3.0-dev.3｜Release Integration & Real-Device Hardening**
