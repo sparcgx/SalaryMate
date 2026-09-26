@@ -1,0 +1,25 @@
+{
+  "gate": "v4.3.0-RC.1 Full Regression & Release Candidate Freeze Gate",
+  "productVersion": "4.3.0-RC.1",
+  "releaseVersion": "4.3.0",
+  "schemaVersion": 13,
+  "androidVersionCode": 18,
+  "iosBuildNumber": 6,
+  "rcSourceFreeze": "PASS",
+  "sourceRegression": {
+    "pass": 47,
+    "fail": 0,
+    "productFail": 0
+  },
+  "sourceManifest": {
+    "files": 324,
+    "shaErrors": 0
+  },
+  "zipIntegrity": "PASS",
+  "versionDrift": 0,
+  "fullPlatformGate": "PENDING_ENVIRONMENT",
+  "physicalDeviceQA": "PENDING_DEVICE_QA",
+  "stablePromotion": "NOT_AUTHORIZED",
+  "sourcePackage": "SalaryMate_v4.3.0-RC.1_Full_Regression_Release_Candidate_Freeze_R1_Source.zip",
+  "sourceSha256": "bfef4c6de7901d55933fc9730b00f4ad7355aa6ea075ec41a0547998cfde1c97"
+}
