@@ -1,0 +1,60 @@
+{
+  "gate": "PAX-03 Form Validation & Error Messaging",
+  "productVersion": "4.3.0-dev.2",
+  "releaseVersion": "4.3.0",
+  "schemaVersion": 13,
+  "androidVersionCode": 15,
+  "iosBuildNumber": 3,
+  "result": "IMPLEMENTATION_REGRESSION_PASS",
+  "physicalValidationUX": "PENDING_DEVICE_QA",
+  "fullPlatformBuildDeviceGate": "PENDING_ENVIRONMENT",
+  "regression": {
+    "executableSourceGates": 24,
+    "pass": 24,
+    "fail": 0,
+    "productFail": 0
+  },
+  "versionDrift": 0,
+  "validation": {
+    "layers": "PASS",
+    "errorWarningInfo": "PASS",
+    "inlineFieldErrors": "PASS",
+    "firstErrorFocus": "PASS",
+    "company": "PASS",
+    "money": "PASS",
+    "date": "PASS",
+    "salaryRules": "PASS",
+    "payrollCycle": "PASS",
+    "annualRaise": "PASS",
+    "yearEnd": "PASS",
+    "payroll": "PASS",
+    "duplicatePayrollScope": "companyId + payrollMonth",
+    "commitFailClosed": "PASS",
+    "backupErrorTaxonomy": "PASS",
+    "accessibilityBinding": "PASS",
+    "partialSuccessMessaging": "PASS_STATIC"
+  },
+  "coreIsolation": {
+    "NativePayrollMath": "SAME",
+    "NativeSalaryMateRepository": "SAME",
+    "storage": "SAME",
+    "snapshotStore": "SAME",
+    "backupCrypto": "SAME",
+    "nativeBackup": "SAME"
+  },
+  "platforms": {
+    "web": "PASS_RUNTIME",
+    "android": "PASS_STATIC_DEVICE_PENDING",
+    "ios": "PASS_SHARED_DEVICE_PENDING"
+  },
+  "environmentPending": [
+    "Production build / esbuild package",
+    "Android SDK / Gradle / physical device",
+    "iOS xcode npm module / native build",
+    "TalkBack / VoiceOver validation UX"
+  ],
+  "sourcePackage": "SalaryMate_v4.3.0-dev.2_PAX-03_Form_Validation_Error_Messaging_R1_Source.zip",
+  "sourceSha256": "3cbe056c70230a2fb627ef2afe51cd4e76c012caa3691dfb93e75a4bb77fc860",
+  "stableEligible": false,
+  "next": "PAX-04 Loading / Empty / Failure State Hardening"
+}
