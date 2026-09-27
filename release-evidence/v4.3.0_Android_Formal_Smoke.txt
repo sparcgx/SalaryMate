@@ -1,0 +1,17 @@
+SalaryMate v4.3.0 Android Formal Smoke Evidence
+Date: 2026-09-27
+
+FORMAL APK: SalaryMate_v4.3.0-release.apk
+APK SHA-256: ed9e427272aae2a5f9b6e45df1ffe0666501e37f3b2f17ab7b3ce7f374da0c36
+FORMAL AAB: SalaryMate_v4.3.0-release.aab
+AAB SHA-256: 8993274fee85f5cdec92bd2a0c48cb4a86f2abc2a6ece11c436fc955ae70a817
+
+USER PHYSICAL SMOKE:
+- data-preserving install: PASS
+- app launch / no crash: PASS
+- existing data preservation: PASS
+- current company / payroll / overtime data readable: PASS
+
+ANDROID FORMAL BINARY GATE: CLOSED / PASS
+PENDING: iOS Formal Release build, signing identity, launch and data-preservation smoke.
+stable/v4.3.0 remains intentionally uncreated.
