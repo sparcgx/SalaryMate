@@ -4,8 +4,8 @@
   "buildNumber": 7,
   "androidVersionCode": 19,
   "schemaVersion": 13,
-  "channel": "stable-candidate",
-  "status": "formal-binary-build-pending",
+  "channel": "stable",
+  "status": "formal-stable-freeze",
   "sourcePackage": "SM_v4.3.0_Formal_Stable_Source_R1.zip",
   "sourceSha256": "d5b7fc24df390477af5f4a2b5d16003fa90e6a982375078ca6a56406a30d6418",
   "sourceBaseline": "SM_v4.3.0-RC.2_Source_R1.zip",
@@ -19,11 +19,15 @@
     "FR-02_FORMAL_SOURCE_FREEZE",
     "FR-03_ANDROID_FORMAL_BINARY_BUILD",
     "FR-04_ANDROID_FORMAL_SMOKE",
-    "FR-05A_IOS_FORMAL_FOUNDATION_SPM"
+    "FR-05A_IOS_FORMAL_FOUNDATION_SPM",
+    "FR-05B_IOS_FORMAL_RELEASE_SIGNING_SMOKE",
+    "FR-06_FORMAL_STABLE_PROMOTION"
   ],
-  "fullPlatformGate": "ANDROID_FORMAL_COMPLETE_IOS_RELEASE_BUILD_PENDING",
+  "fullPlatformGate": "PASS",
   "physicalDeviceQA": "PASS",
   "releaseCandidateSourceFreezeEligible": true,
   "rcPromotionEligible": true,
-  "stableEligible": false
+  "stableEligible": true,
+  "stableBranch": "stable/v4.3.0",
+  "freezeBranch": "freeze/v4.3.0"
 }
