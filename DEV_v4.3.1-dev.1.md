@@ -10,7 +10,7 @@
 - 移除原生「快速登記」導覽與首頁快捷；Web 導覽改名「工時／出勤」。保留工時、請假與加班資料及管理頁。
 - 資料入口改為「匯入／匯出」。預設 `.salarymate` 匯出不加密、不詢問密碼。使用者主動選擇時才用 AES-GCM 加密；舊加密檔匯入仍要求原密碼。未加密匯入驗證 Schema 13 與摘要，使用者確認後才寫入。BIN／.file 與舊 JSON 依內容驗證。
 - 保留單一資料來源、跨公司隔離、三份 Snapshot 與 `.salarymate` 舊加密格式。NativePayrollMath、NativeSalaryMateRepository、storage、snapshot-store、backup-crypto 的 hash 與凍結 Source 相同。
-- Web 工作站預覽採專用瀏覽器儲存命名空間 `salarymate_v431_dev1_preview:`，不讀寫同網域正式站的儲存鍵。預覽檔案放在 Pages 分支的 `dev/v4.3.1-dev.1/`，沒有更動正式站首頁。
+- Web 工作站位於開發分支的 [`workstation/v4.3.1-dev.1/`](workstation/v4.3.1-dev.1/)，採專用瀏覽器儲存命名空間 `salarymate_v431_dev1_preview:`，不讀寫同網域正式站的儲存鍵。正式站首頁與所有凍結分支內容未更動。
 
 ## Gate
 
@@ -21,7 +21,9 @@
 | 核心 hash 隔離 | PASS | `scripts/v431-dev1-gate.mjs` 比對正式 Source manifest。 |
 | 備份來源回歸 | PASS | `npm run test:source`；包含新未加密與既有加密路徑。 |
 | Web 打包與 JS 語法 | PASS | `npm ci` 後 `npm run build`、`node --check www/bootstrap.js`。 |
-| Web 預覽公開 URL | PENDING_DEPLOYMENT | 檔案已上傳至 Pages 分支獨立子目錄；等待 GitHub Pages 部署後檢查 HTTP 與互動。 |
+| 工作站可編輯／打包檔同步 | PASS | Source ZIP 與八個打包後資源均在 `v4.3.1-dev.1` 開發分支。 |
+| GitHub Pages 公開預覽 | BLOCKED_CONFIGURATION | Pages 目前由舊 Web Stable 分支部署；為維持凍結基線，未將新版本寫入該分支或切換正式站來源。公開測試網址尚未建立。 |
+| 工作站瀏覽器互動 | NOT_RUN | 公開網址尚未建立；本環境的雲端瀏覽器無法連線至本機預覽伺服器。 |
 | Android Kotlin compile | PENDING_ENVIRONMENT | Gradle wrapper 無法下載 Gradle 8.14.3。 |
 | iOS build／實機匯入匯出 | NOT_RUN | 需 Mac／實機。 |
 | Android 實機匯入匯出 | NOT_RUN | 需先通過 Kotlin compile。 |
