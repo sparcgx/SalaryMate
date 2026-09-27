@@ -1,0 +1,43 @@
+SalaryMate v4.3.0 Formal Stable Promotion
+Date: 2026-09-27
+Status: PASS / CLOSED / IMMUTABLE
+
+PROMOTION SOURCE: release/v4.3.0-formal-promotion
+PROMOTION BASE: v4.3.0-RC.2
+
+SOURCE:
+- Formal Source SHA-256: d5b7fc24df390477af5f4a2b5d16003fa90e6a982375078ca6a56406a30d6418
+- Formal Stable Kit SHA-256: 6f036f019c6d2d804df3fcd5be96a55f19610514d8a69b507b6309e62fb7cbbe
+
+ANDROID:
+- Formal binary build: PASS
+- Formal smoke: PASS
+- APK SHA-256: ed9e427272aae2a5f9b6e45df1ffe0666501e37f3b2f17ab7b3ce7f374da0c36
+- AAB SHA-256: 8993274fee85f5cdec92bd2a0c48cb4a86f2abc2a6ece11c436fc955ae70a817
+- package: com.salarymate.personal
+- versionCode: 19
+- versionName: 4.3.0
+
+IOS:
+- Formal Release build / signing: PASS
+- Physical smoke: PASS
+- MARKETING_VERSION: 4.3.0
+- build: 7
+
+DATA / SAFETY:
+- Schema: 13
+- Android PDQ-01~09: PASS
+- iOS PDQ-01~10: PASS
+- Wrong-company Write: 0
+- Context Leakage: 0
+- Stale Company Exposure: 0
+- Duplicate Commit: 0
+- Data Loss: 0
+- Version Drift: 0
+- Core Hash Isolation: PASS
+
+FINAL DECISION:
+- stableEligible: true
+- stable/v4.3.0: CREATE
+- freeze/v4.3.0: CREATE
+- Formal Stable Promotion: PASS / CLOSED
