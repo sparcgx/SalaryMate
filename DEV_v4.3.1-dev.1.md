@@ -24,10 +24,10 @@
 | 工作站可編輯／打包檔同步 | PASS | Source ZIP 與八個打包後資源均在 `v4.3.1-dev.1` 開發分支。 |
 | 單檔工作站靜態 Gate | PASS | JS 語法、版本、工時／出勤導覽、匯入匯出與獨立儲存鍵檢查。瀏覽器互動另列 NOT_RUN。 |
 | GitHub Pages 公開預覽 | BLOCKED_CONFIGURATION | Pages 目前由舊 Web Stable 分支部署；為維持凍結基線，未將新版本寫入該分支或切換正式站來源。GitHub dev 分支提供打包資源，公開測試站由獨立 GPT 工作站承載。 |
-| GPT 公開測試站部署 | PASS | 獨立 Sites 專案版本 1 部署成功：[`salarymate-v431-test.sparcgx2420.chatgpt.site`](https://salarymate-v431-test.sparcgx2420.chatgpt.site)；來源 commit `aec54ba301403ee4f07aef973732408dc9707dc8`。部署成功不等於互動測試通過。 |\n| 公開站瀏覽器載入 Smoke | PASS | 雲端瀏覽器開啟公開 URL，確認標頭 `v4.3.1-dev.1`、獨立儲存提示、工時／出勤與公司管理導覽正常呈現。 |\n| 匯入匯出互動與資料完整性 | NOT_RUN | 仍須實測匯入、匯出、密碼選用、跨公司隔離與取消時不寫入。 |
+| GPT 公開測試站部署 | PASS | 獨立 Sites 專案版本 1 部署成功：[`salarymate-v431-test.sparcgx2420.chatgpt.site`](https://salarymate-v431-test.sparcgx2420.chatgpt.site)；來源 commit `aec54ba301403ee4f07aef973732408dc9707dc8`。部署成功不等於互動測試通過。 |\n| 公開站瀏覽器載入 Smoke | PASS | 雲端瀏覽器開啟公開 URL，確認標頭 `v4.3.1-dev.1`、獨立儲存提示、工時／出勤與公司管理導覽正常呈現。 |\n| 備份還原與跨公司切換操作防護稽核 | FAIL / BLOCKER | 原生 `createNativeStore.setItem()` 先更新記憶體並排入非同步 SQLite 寫入；`src/app.js` 的還原 `saveState(true)` 與公司切換 `commitStateMutation()` 在未等待 `flush()` 前即可顯示成功及切換 Context。若其後寫入失敗，介面狀態可能與磁碟資料不一致。瀏覽器版 localStorage 同步寫入，不代表原生版通過。 |\n| 匯入匯出互動與資料完整性 | NOT_RUN | 仍須實測匯入、匯出、密碼選用、跨公司隔離與取消時不寫入。 |
 | Android Kotlin compile | PENDING_ENVIRONMENT | Gradle wrapper 無法下載 Gradle 8.14.3。 |
 | iOS build／實機匯入匯出 | NOT_RUN | 需 Mac／實機。 |
 | Android 實機匯入匯出 | NOT_RUN | 需先通過 Kotlin compile。 |
 | 全平台正式 Gate | NOT_RUN | 本版仍是 dev。 |
 
-下一步：於具備 npm 相依套件、Gradle 與 Xcode 的環境完成打包與編譯；分別實測未加密匯出／匯入、加密匯出、舊加密檔還原、錯密碼及取消時不寫入，再執行跨公司與 Snapshot 回歸。
+下一步：先修正原生持久化成功確認與失敗回復，在測試中注入 SQLite 寫入失敗、還原提交失敗及公司切換提交失敗；核對資料庫、記憶體、目前公司與畫面一致，才解除此 BLOCKER。另於具備 npm 相依套件、Gradle 與 Xcode 的環境完成打包與編譯；分別實測未加密匯出／匯入、加密匯出、舊加密檔還原、錯密碼及取消時不寫入，再執行跨公司與 Snapshot 回歸。
