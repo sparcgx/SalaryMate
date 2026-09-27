@@ -1,8 +1,8 @@
 # SalaryMate
 
-## Current Release Candidate Baseline
+## Current Formal Release Promotion
 
-**v4.3.0-RC.2｜Full Regression & Release Candidate Freeze Gate**
+**v4.3.0｜Formal Release & Stable Freeze**
 
 Canonical Source SHA-256:
 
@@ -23,3 +23,8 @@ Canonical Source SHA-256:
 GitHub stores the version-governance/evidence index for the v4.3 line. The exact executable RC.1 source is the canonical ZIP identified by the SHA above.
 
 Android PDQ-01~09 and iOS PDQ-01~10 physical QA are complete and PASS. RC.2 is eligible for formal v4.3.0 promotion; final signed v4.3.0 binary identity remains a separate Formal Binary Gate.
+
+
+### Formal Binary Gate
+
+Formal source freeze is PASS. The signed v4.3.0 APK/AAB and iOS Release build must be rebuilt with the existing production signing identities before stable/v4.3.0 is created. RC.2 binaries are validation evidence only and are not relabeled as v4.3.0 binaries.

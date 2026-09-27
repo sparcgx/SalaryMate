@@ -1,0 +1,25 @@
+SalaryMate v4.3.0 Formal Binary Gate
+Date: 2026-09-27
+
+STATUS: PENDING_LOCAL_SIGNED_BUILD
+
+Required Android output:
+- package: com.salarymate.personal
+- versionCode: 19
+- versionName: 4.3.0
+- signing identity: same production identity used by accepted RC.2
+- output: SalaryMate_v4.3.0-release.apk
+- output: SalaryMate_v4.3.0-release.aab
+- apksigner verification: PASS
+- jarsigner AAB verification: PASS
+- in-place install/launch smoke: PASS
+- existing data preservation smoke: PASS
+
+Required iOS output:
+- MARKETING_VERSION: 4.3.0
+- CURRENT_PROJECT_VERSION / build: 7
+- existing production signing identity
+- Release build: PASS
+- launch + existing data preservation smoke: PASS
+
+Do not create stable/v4.3.0 until the formal binary identity and signing evidence are supplied.
