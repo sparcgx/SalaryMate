@@ -24,7 +24,7 @@
 | 工作站可編輯／打包檔同步 | PASS | Source ZIP 與八個打包後資源均在 `v4.3.1-dev.1` 開發分支。 |
 | 單檔工作站靜態 Gate | PASS | JS 語法、版本、工時／出勤導覽、匯入匯出與獨立儲存鍵檢查。瀏覽器互動另列 NOT_RUN。 |
 | GitHub Pages 公開預覽 | BLOCKED_CONFIGURATION | Pages 目前由舊 Web Stable 分支部署；為維持凍結基線，未將新版本寫入該分支或切換正式站來源。GitHub dev 分支提供打包資源，公開測試站由獨立 GPT 工作站承載。 |
-| GPT 公開測試站部署 | PASS | 獨立 Sites 專案版本 1 部署成功：[`salarymate-v431-test.sparcgx2420.chatgpt.site`](https://salarymate-v431-test.sparcgx2420.chatgpt.site)；來源 commit `aec54ba301403ee4f07aef973732408dc9707dc8`。部署成功不等於互動測試通過。 |\n| 工作站瀏覽器互動 | NOT_RUN | 仍須於公開測試站實測匯入、匯出、密碼選用、跨公司隔離與取消時不寫入。 |
+| GPT 公開測試站部署 | PASS | 獨立 Sites 專案版本 1 部署成功：[`salarymate-v431-test.sparcgx2420.chatgpt.site`](https://salarymate-v431-test.sparcgx2420.chatgpt.site)；來源 commit `aec54ba301403ee4f07aef973732408dc9707dc8`。部署成功不等於互動測試通過。 |\n| 公開站瀏覽器載入 Smoke | PASS | 雲端瀏覽器開啟公開 URL，確認標頭 `v4.3.1-dev.1`、獨立儲存提示、工時／出勤與公司管理導覽正常呈現。 |\n| 匯入匯出互動與資料完整性 | NOT_RUN | 仍須實測匯入、匯出、密碼選用、跨公司隔離與取消時不寫入。 |
 | Android Kotlin compile | PENDING_ENVIRONMENT | Gradle wrapper 無法下載 Gradle 8.14.3。 |
 | iOS build／實機匯入匯出 | NOT_RUN | 需 Mac／實機。 |
 | Android 實機匯入匯出 | NOT_RUN | 需先通過 Kotlin compile。 |
