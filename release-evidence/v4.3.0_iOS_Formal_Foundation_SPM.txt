@@ -1,0 +1,26 @@
+SalaryMate v4.3.0 iOS Formal Foundation / SPM Evidence
+Date: 2026-09-27
+
+FORMAL IOS GATE PACKAGE: SM_v4.3.0_Formal_iOS_Gate_R4
+FORMAL SOURCE IDENTITY: 4.3.0
+IOS BUILD: 7
+SCHEMA: 13
+
+USER-VERIFIED:
+- Formal test profile / preparation: PASS
+- Swift Package resolution: PASS
+- Previously missing package products resolved:
+  * sqlite_CapacitorCommunitySqlite
+  * filesystem_CapacitorFilesystem
+  * privacy-screen_CapacitorPrivacyScreen
+  * share_CapacitorShare
+
+FR-05A IOS FORMAL FOUNDATION / SPM: CLOSED / PASS
+
+PENDING:
+- iOS Release build
+- production signing identity
+- physical iPhone launch
+- existing-data preservation smoke
+
+stable/v4.3.0 remains intentionally uncreated until these final checks pass.
