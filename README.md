@@ -1,5 +1,7 @@
 # SalaryMate
 
+目前開發分支狀態見 [v4.3.1-dev.1](DEV_v4.3.1-dev.1.md)；可編輯程式位於 `app-source/`。以下 v4.3.0 內容保留為歷史證據，最新正式 Identity 請參照根目錄 `version.json`。
+
 ## Current Formal Release Promotion
 
 **v4.3.0｜Formal Release & Stable Freeze**
