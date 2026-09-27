@@ -2,7 +2,7 @@
 
 ## Current Release Candidate Baseline
 
-**v4.3.0-RC.1｜Full Regression & Release Candidate Freeze Gate**
+**v4.3.0-RC.2｜Full Regression & Release Candidate Freeze Gate**
 
 Canonical Source SHA-256:
 
@@ -22,4 +22,4 @@ Canonical Source SHA-256:
 
 GitHub stores the version-governance/evidence index for the v4.3 line. The exact executable RC.1 source is the canonical ZIP identified by the SHA above.
 
-Physical Android/iOS build, in-place upgrade/data preservation, backup/restore round-trip, lifecycle/long-session and manual accessibility acceptance remain mandatory before Stable promotion.
+Android PDQ-01~09 and iOS PDQ-01~10 physical QA are complete and PASS. RC.2 is eligible for formal v4.3.0 promotion; final signed v4.3.0 binary identity remains a separate Formal Binary Gate.

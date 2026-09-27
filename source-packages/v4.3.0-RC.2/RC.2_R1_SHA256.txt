@@ -1,0 +1,5 @@
+SM_v4.3.0-RC.2_Source_R1.zip
+SHA-256: f9fe0c9162453ed35f10b2034ba95363c80cd58d5c6ecddc6d8a43cd97cb271e
+
+SM_v4.3.0-RC.2_AllPlatform_R2.zip
+SHA-256: d8ba7fc92b26d1754ce7d3b83f9983bfa3bc923356d9a01431224d1e5cd59dc8

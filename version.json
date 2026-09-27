@@ -1,14 +1,14 @@
 {
-  "productVersion": "4.3.0-RC.1",
+  "productVersion": "4.3.0-RC.2",
   "releaseVersion": "4.3.0",
-  "buildNumber": 6,
-  "androidVersionCode": 18,
+  "buildNumber": 7,
+  "androidVersionCode": 19,
   "schemaVersion": 13,
   "channel": "release-candidate",
-  "status": "rc1-release-candidate-source-freeze",
-  "sourcePackage": "SalaryMate_v4.3.0-RC.1_Full_Regression_Release_Candidate_Freeze_R1_Source.zip",
-  "sourceSha256": "bfef4c6de7901d55933fc9730b00f4ad7355aa6ea075ec41a0547998cfde1c97",
-  "sourceBaseline": "SalaryMate_v4.3.0-dev.4_RC_Readiness_Evidence_Final_Release_Gate_Preparation_R1_Source.zip",
+  "status": "rc2-physical-qa-pass",
+  "sourcePackage": "SM_v4.3.0-RC.2_Source_R1.zip",
+  "sourceSha256": "f9fe0c9162453ed35f10b2034ba95363c80cd58d5c6ecddc6d8a43cd97cb271e",
+  "sourceBaseline": "SalaryMate_v4.3.0-RC.1_Full_Regression_Release_Candidate_Freeze_R1_Source.zip",
   "completedGates": [
     "CM-01_TARGETED",
     "CM-02_IMPLEMENTATION_REGRESSION",
@@ -39,11 +39,15 @@
     "RC-03_PHYSICAL_EVIDENCE_BLOCKER",
     "RC-04_CRITICAL_INVARIANTS",
     "RC-05_PACKAGE_FREEZE_CONTRACT",
-    "RC-06_RELEASE_CANDIDATE_SOURCE_FREEZE"
+    "RC-06_RELEASE_CANDIDATE_SOURCE_FREEZE",
+    "RC2-01_ANDROID_COMPILE_INTEGRATION_FIX",
+    "RC2-02_ANDROID_PRODUCTION_BUILD_IDENTITY",
+    "RC2-03_ANDROID_PHYSICAL_QA_PDQ01_09",
+    "RC2-04_IOS_PHYSICAL_QA_PDQ01_10"
   ],
-  "fullPlatformGate": "PENDING_ENVIRONMENT",
-  "physicalDeviceQA": "PENDING_DEVICE_QA",
+  "fullPlatformGate": "PASS",
+  "physicalDeviceQA": "PASS",
   "releaseCandidateSourceFreezeEligible": true,
-  "rcPromotionEligible": false,
-  "stableEligible": false
+  "rcPromotionEligible": true,
+  "stableEligible": true
 }
