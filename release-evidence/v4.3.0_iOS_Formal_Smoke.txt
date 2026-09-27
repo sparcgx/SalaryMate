@@ -1,0 +1,18 @@
+SalaryMate v4.3.0 iOS Formal Release / Smoke Evidence
+Date: 2026-09-27
+
+USER-VERIFIED:
+- iOS Formal Release build: PASS
+- production signing: PASS
+- physical iPhone install: PASS
+- app launch / no crash: PASS
+- existing data preservation: PASS
+- Current Company preserved: PASS
+- payroll / overtime existing data readable: PASS
+
+IDENTITY CONTRACT:
+- MARKETING_VERSION: 4.3.0
+- iOS build: 7
+- Schema: 13
+
+FR-05B iOS FORMAL RELEASE / SIGNING / SMOKE: CLOSED / PASS
