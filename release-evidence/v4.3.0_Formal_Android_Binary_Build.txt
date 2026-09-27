@@ -1,0 +1,26 @@
+SalaryMate v4.3.0 Formal Android Binary Build Evidence
+Date: 2026-09-27
+Gate package: SM_v4.3.0_Formal_Binary_Gate_R3
+
+FORMAL SOURCE REGRESSION: PASS 32/32
+RUNTIME AUDIT: PASS / 0 vulnerabilities
+DEBUG UNIT + INSTRUMENTATION BUILD: PASS
+RELEASE APK + AAB BUILD: PASS
+APK SIGNATURE: PASS (APK Signature Scheme v2)
+SIGNERS: 1
+SIGNER CERT SHA-256: 21cef327faf8e060df38e369ad3f5ee653a96916eb5be92053d02ca6899a850d
+
+APK: SalaryMate_v4.3.0-release.apk
+APK SHA-256: ed9e427272aae2a5f9b6e45df1ffe0666501e37f3b2f17ab7b3ce7f374da0c36
+
+AAB: SalaryMate_v4.3.0-release.aab
+AAB SHA-256: 8993274fee85f5cdec92bd2a0c48cb4a86f2abc2a6ece11c436fc955ae70a817
+
+BUILD PIPELINE IDENTITY CONTRACT:
+package = com.salarymate.personal
+versionCode = 19
+versionName = 4.3.0
+
+STATUS: ANDROID FORMAL BINARY BUILD PASS
+PENDING: Android data-preserving install/launch smoke; iOS Formal Release build/signing/launch/data-preservation smoke.
+stable/v4.3.0 remains intentionally uncreated.

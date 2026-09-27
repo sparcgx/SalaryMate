@@ -16,9 +16,10 @@
     "RC2-03_ANDROID_PHYSICAL_QA_PDQ01_09",
     "RC2-04_IOS_PHYSICAL_QA_PDQ01_10",
     "FR-01_FORMAL_SOURCE_PROMOTION",
-    "FR-02_FORMAL_SOURCE_FREEZE"
+    "FR-02_FORMAL_SOURCE_FREEZE",
+    "FR-03_ANDROID_FORMAL_BINARY_BUILD"
   ],
-  "fullPlatformGate": "FORMAL_BINARY_PENDING",
+  "fullPlatformGate": "ANDROID_FORMAL_BINARY_PASS_IOS_PENDING",
   "physicalDeviceQA": "PASS",
   "releaseCandidateSourceFreezeEligible": true,
   "rcPromotionEligible": true,
