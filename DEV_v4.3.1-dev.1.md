@@ -1,6 +1,6 @@
 # SalaryMate v4.3.1-dev.1｜匯入匯出與入口精簡
 
-狀態：DEVELOPMENT / SOURCE GATE PASS / NATIVE BUILD GATES PENDING。此分支從 `stable/v4.3.0` commit `09120121080256ba29066af90be59ccf82bc1d0a` 建立；`stable/v4.3.0` 與 `freeze/v4.3.0` 保持不可變。完整可編輯 Source 位於 [`SalaryMate_v4.3.1-dev.1_Source.zip`](SalaryMate_v4.3.1-dev.1_Source.zip)，SHA-256：`2a4e806b446348158d2287f0a690241ccd41c0c0e685e71ea5a485c4c43a8983`。
+狀態：DEVELOPMENT / SOURCE GATE PASS / NATIVE BUILD GATES PENDING。此分支從 `stable/v4.3.0` commit `09120121080256ba29066af90be59ccf82bc1d0a` 建立；`stable/v4.3.0` 與 `freeze/v4.3.0` 保持不可變。完整可編輯 Source 位於 [`SalaryMate_v4.3.1-dev.1_Source.zip`](SalaryMate_v4.3.1-dev.1_Source.zip)，SHA-256：`810045baf63b0e927824163ad913591ed084c73b4fb58facf8c1ab16fd408483`。可直接開啟的單檔工作站：[`SalaryMate_v4.3.1-dev.1_Workstation.html`](SalaryMate_v4.3.1-dev.1_Workstation.html)，SHA-256：`816f4f1dfc01a8469257cde418c60b700cf9cb537da54ab5f1439b7baf12e542`。
 
 根目錄舊 README 與 `docs/releases/v4.3.0/` 保留各階段歷史證據，其中早期的 PENDING 不代表正式發行的最新狀態。正式版 Identity 以根目錄 `version.json` 為準；本開發版 Identity 以 `app-source/version.json` 為準。
 
@@ -22,6 +22,7 @@
 | 備份來源回歸 | PASS | `npm run test:source`；包含新未加密與既有加密路徑。 |
 | Web 打包與 JS 語法 | PASS | `npm ci` 後 `npm run build`、`node --check www/bootstrap.js`。 |
 | 工作站可編輯／打包檔同步 | PASS | Source ZIP 與八個打包後資源均在 `v4.3.1-dev.1` 開發分支。 |
+| 單檔工作站靜態 Gate | PASS | JS 語法、版本、工時／出勤導覽、匯入匯出與獨立儲存鍵檢查。瀏覽器互動另列 NOT_RUN。 |
 | GitHub Pages 公開預覽 | BLOCKED_CONFIGURATION | Pages 目前由舊 Web Stable 分支部署；為維持凍結基線，未將新版本寫入該分支或切換正式站來源。公開測試網址尚未建立。 |
 | 工作站瀏覽器互動 | NOT_RUN | 公開網址尚未建立；本環境的雲端瀏覽器無法連線至本機預覽伺服器。 |
 | Android Kotlin compile | PENDING_ENVIRONMENT | Gradle wrapper 無法下載 Gradle 8.14.3。 |
