@@ -27,6 +27,12 @@ VALIDATION BEFORE PUSH
 - Frozen base styles.css SHA-256 remains unchanged from the v4.3.0 baseline.
 - Source-level and simulated-runtime gate from the GPT Site source: 15 PASS / 0 FAIL.
 
+USER REAL-DEVICE ACCEPTANCE
+- Reported by the user on 2026-09-29 (Asia/Taipei).
+- High Motion mode real-device test: PASS.
+- The High Motion visual effect is sufficiently visible on the tested device.
+- Acceptance scope is limited to the web/PWA High Motion appearance.
+
 GOVERNANCE
 - stable/v4.3.0 and freeze/v4.3.0 are not modified.
 - This publishes the requested web build to the official GitHub Pages surface.
