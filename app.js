@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '4.3.1-web-dev.2';
+    const APP_VERSION = '4.3.1-web';
     const SCHEMA_VERSION = 13;
     const STORAGE_KEY = 'salarymate_v310_state';
     const LEGACY_KEYS = {
