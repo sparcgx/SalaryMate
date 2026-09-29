@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '4.3.2-dev.1';
+    const APP_VERSION = '4.3.2-dev.2';
     const SCHEMA_VERSION = 13;
     const STORAGE_KEY = 'salarymate_v310_state';
     const LEGACY_KEYS = {
@@ -1831,7 +1831,7 @@
           <div class="page-head"><div><h2 id="recordsTitle">各月薪資明細</h2><p>每家公司、每個月份保留一份完整薪資拆解。</p></div></div>
           <div class="card toolbar">
             <div class="search-wrap"><span class="search-mark">⌕</span><label class="sr-only" for="recordSearch">搜尋薪資紀錄</label><input id="recordSearch" class="field" type="search" value="${escapeAttr(ui.search)}" placeholder="搜尋公司、備註、月份或實領金額"></div>
-            <div class="page-actions"><button class="btn" type="button" data-action="duplicate-record" ${state.records.length ? '' : 'disabled'}>複製最近月份</button><button class="btn btn-primary" type="button" data-action="add-record">＋ 新增薪資</button></div>
+            <div class="page-actions"><button class="btn" type="button" data-action="duplicate-record" ${state.records.length ? '' : 'disabled'}>複製上月薪資</button><button class="btn btn-primary" type="button" data-action="add-record">＋ 新增薪資</button></div>
           </div>
           ${records.length ? `<article class="card table-shell"><div class="table-scroll"><table><thead><tr><th>月份／入帳日</th><th>發薪公司</th><th>應發</th><th>代扣</th><th>勞退自提</th><th>副業</th><th>實際入帳</th><th>操作</th></tr></thead><tbody>${records.map(renderRecordRows).join('')}</tbody></table></div></article>` : emptyPanel('▦', '查無薪資紀錄', query ? '目前搜尋條件沒有相符結果。' : '請新增薪資紀錄，或調整上方年度與公司篩選。', `<button class="btn btn-primary" type="button" data-action="add-record">新增薪資</button>`) }
         </section>`;
@@ -3611,15 +3611,44 @@
       persistLeave(draft);
     };
 
+    // COPY_MONTH_START
+    let copyMonthDraft = null;
     const duplicateLatestRecord = () => {
-      const latest = sortedRecords(state.records)[0];
-      if (!latest) return toast('目前沒有可複製的薪資紀錄', 'error');
-      const month = latest.month === 12 ? 1 : latest.month + 1;
-      const year = latest.month === 12 ? latest.year + 1 : latest.year;
-      const copy = normalizeRecord({ ...clone(latest), reconciliation: null, id: newId('record'), year, month, payDate: defaultPayDate(year, month), overtime: 0, bonus: 0, sideIncome: 0, note: `複製自 ${latest.year} 年 ${latest.month} 月` });
-      openRecordForm(copy);
-      toast(`已複製到 ${year} 年 ${month} 月表單，尚未儲存`);
+      const company = currentCompany();
+      if (!company || (ui.companyFilter !== 'ALL' && ui.companyFilter !== company.id)) return toast('請先選擇目前公司，再複製上月薪資。', 'error');
+      const latest = sortedRecords(state.records.filter(record => record.companyId === company.id))[0];
+      if (!latest) return toast('目前公司沒有可複製的薪資紀錄，請先新增薪資。', 'error');
+      const target = window.SalaryMateCopyMonth.next(Number(latest.year), Number(latest.month));
+      copyMonthDraft = {companyId:company.id,year:target.year,month:target.month};
+      beginDraftScope({entityType:'copy-month',companyId:company.id,operational:true});
+      renderCopyMonthPreview();
     };
+    const renderCopyMonthPreview = () => {
+      const draft = copyMonthDraft;
+      if (!draft) return;
+      const plan = window.SalaryMateCopyMonth.plan(state.records,draft.companyId,draft.year,draft.month);
+      draft.fingerprint = plan.fingerprint;
+      const format = value => Number(value).toLocaleString('zh-TW',{maximumFractionDigits:2});
+      const rows = plan.rows?.map(row => `<div class="reconcile-row"><strong>${escapeHtml(row.label)}</strong><div><small>上月</small>$${format(row.before)}</div><div><small>本月帶入</small>$${format(row.after)}</div><span>${row.kept?'保留，請確認':'清零／不帶入'}</span></div>`).join('') || '';
+      openDialog('複製上月薪資｜套用前預覽', `<form id="copyMonthForm"><h3>${escapeHtml(companyName(draft.companyId))}</h3><label for="copyTargetMonth">目標薪資月份</label><input class="field" id="copyTargetMonth" type="month" required min="2000-01" max="2100-12" value="${draft.year}-${pad2(draft.month)}"><p>來源固定為同公司的前一月。預覽與套用都不會直接儲存薪資。</p>${plan.error ? `<div class="notice warning" role="alert">${escapeHtml(plan.error)}</div>` : `<p>來源：${plan.source.year} 年 ${plan.source.month} 月。入帳日重新計算；核對狀態重設為未核對。</p><p>固定收入、勞健保與自提沿用上月；加班、獎金、副業、預扣稅、其他扣除及非固定自訂項目需重新填寫。時薪制的正常工時沿用上月，請於下一步確認。</p><div class="reconcile-list">${rows}</div>`}<div class="form-actions"><button class="btn" type="button" data-action="close-dialog">取消</button><button class="btn btn-primary" type="submit" ${plan.error?'disabled':''}>套用到新增表單</button></div></form>`,true);
+    };
+    const applyCopyMonth = () => {
+      const scope = copyMonthDraft;
+      if (!scope || !assertDraftScope({entityType:'copy-month',companyId:scope.companyId,operational:true})) return;
+      if (!$('#copyMonthForm')?.reportValidity()) return;
+      const plan = window.SalaryMateCopyMonth.plan(state.records,scope.companyId,scope.year,scope.month);
+      if (plan.error) { renderCopyMonthPreview(); return; }
+      if (plan.fingerprint !== scope.fingerprint) { renderCopyMonthPreview(); toast('上月資料已變更，請重新確認預覽後再套用。','error'); return; }
+      const draft = normalizeRecord({...plan.draft,id:newId('record'),payDate:defaultPayDate(scope.year,scope.month)});
+      ui.recordDraft = draft;
+      ui.payrollStep = 2;
+      beginDraftScope({entityType:'payroll',companyId:draft.companyId,entityId:'',payrollMonth:payrollMonthKey(draft.year,draft.month),operational:true});
+      clearOperationalSelection();
+      copyMonthDraft = null;
+      openDialog('建立薪資',recordFormHtml(draft,false),true);
+      toast('已帶入新增表單，確認本月資料後再儲存。');
+    };
+    // COPY_MONTH_END
 
     const syncOvertimeToRecord = () => {
       const month = Number(ui.overtimeMonth);
@@ -4481,6 +4510,7 @@
     document.addEventListener('submit', (event) => {
       event.preventDefault();
       if (event.target.id === 'reconciliationForm') saveReconciliation(event.submitter?.value === 'confirm');
+      if (event.target.id === 'copyMonthForm') applyCopyMonth();
       if (event.target.id === 'recordForm') saveRecordForm();
       if (event.target.id === 'companyForm') saveCompanyForm();
       else if (event.target.id === 'basicSalaryRuleForm') saveBasicSalaryRule();
@@ -4533,6 +4563,12 @@
     });
 
     document.addEventListener('change', (event) => {
+      if (event.target.id === 'copyTargetMonth' && copyMonthDraft) {
+        const [year, month] = event.target.value.split('-').map(Number);
+        copyMonthDraft.year = year; copyMonthDraft.month = month;
+        renderCopyMonthPreview();
+        return;
+      }
       if (event.target.id === 'companyFilter') {
         const companyId = String(event.target.value || '');
         if (companyId) setCurrentCompany(companyId);
