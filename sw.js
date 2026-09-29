@@ -1,5 +1,6 @@
-const CACHE_NAME = 'salarymate-shell-v4.3.1-web';
-const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './styles.css?v=4.3.0', './glass.css?v=4.3.1-web', './glass.js?v=4.3.1-web', './bootstrap.js?v=4.3.1-web', './app.js?v=4.3.1-web', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png'];
+const CACHE_NAME = 'salarymate-shell-v4.3.2-dev.1';
+const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './styles.css?v=4.3.0', './glass.css?v=4.3.2-dev.1', './glass.js?v=4.3.2-dev.1', './bootstrap.js?v=4.3.2-dev.1', './app.js?v=4.3.2-dev.1', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png'];
+APP_SHELL.push('./reconcile.js?v=4.3.2-dev.1', './reconcile.css?v=4.3.2-dev.1');
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()));
 });
