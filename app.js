@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '4.3.1-web';
+    const APP_VERSION = '4.3.2-dev.1';
     const SCHEMA_VERSION = 13;
     const STORAGE_KEY = 'salarymate_v310_state';
     const LEGACY_KEYS = {
@@ -540,6 +540,7 @@
         customDeductions: normalizeCustomItems(record.customDeductions),
         pensionSelf: numberValue(record.pensionSelf),
         sideIncome: numberValue(record.sideIncome),
+        reconciliation: window.SalaryMateReconcile.normalize(record.reconciliation),
         note: String(record.note || '')
       };
     };
@@ -1762,6 +1763,61 @@
         <tbody>${records.map((record) => `<tr class="data-row"><td><span class="month-title">${record.month} 月<small>${escapeHtml(record.payDate || '未填入帳日')}</small></span></td><td><span class="status ${companyStatus(record.companyId)}">${companyStatus(record.companyId) === 'current' ? '現任' : '歷任'}</span> ${escapeHtml(companyName(record.companyId))}</td><td class="money">$${money(gross(record))}</td><td class="money text-rose">−$${money(deductions(record) + pension(record))}</td><td class="money text-amber">+$${money(record.sideIncome)}</td><td class="money text-green">$${money(combinedNet(record))}</td><td class="actions"><button class="btn btn-small" type="button" data-action="edit-record" data-id="${escapeAttr(record.id)}">編輯</button></td></tr>`).join('')}</tbody></table></div>
       </article>`;
 
+    // RECONCILIATION_START
+    const reconciliationSource = record => {
+      const logs = overtimeForSalaryMonth(record.year,record.month,record.companyId);
+      const overtime = logs.reduce((sum,log)=>sum+overtimeAmount(log),0);
+      const leave = leaveSyncInfo(record.year,record.month,record.companyId);
+      const warnings=[];
+      if (logs.length && Math.round(overtime*100)!==Math.round(record.overtime*100)) warnings.push(`加班紀錄合計 $${money(overtime)}，薪資列入 $${money(record.overtime)}，請先核對或同步。`);
+      if (!logs.length && record.overtime) warnings.push('本月薪資有加班費，但沒有對應加班紀錄，請確認來源。');
+      if ((leave.total || leave.linkedItem) && leave.status!=='synced') warnings.push('請假扣款尚未同步或來源已變更，請到工時／請假確認。');
+      const bounds=salaryPeriodBounds(record.year,record.month,record.companyId);
+      const leaves=state.leaveRecords.filter(row=>row.companyId===record.companyId && leaveDateEntries(row).some(entry=>entry.date>=bounds.start && entry.date<=bounds.end));
+      return {warnings,logs:logs.map(log=>[log.id,log.date,log.hours,log.hourlyRate,log.type,log.customRate]),leave:[leave.total,leave.hours,leave.records,leave.status],leaves};
+    };
+    const reconciliationStatus = record => window.SalaryMateReconcile.evaluate(record,reconciliationSource(record)).status;
+    let reconciliationDraft = null;
+    const openReconciliation = id => {
+      const record = state.records.find(row=>row.id===id);
+      if (!record) return toast('薪資紀錄不存在，請重新選擇。','error');
+      const source=reconciliationSource(record);
+      const saved=window.SalaryMateReconcile.normalize(record.reconciliation);
+      reconciliationDraft={id,companyId:record.companyId,year:record.year,month:record.month,fingerprint:window.SalaryMateReconcile.fingerprint(record,source)};
+      beginDraftScope({entityType:'reconciliation',companyId:record.companyId,entityId:id,payrollMonth:payrollMonthKey(record.year,record.month),operational:true});
+      const rows=window.SalaryMateReconcile.rows(record);
+      openDialog('月結核對',`<form id="reconciliationForm"><div class="reconcile-summary"><h3>${escapeHtml(companyName(record.companyId))}｜${record.year} 年 ${record.month} 月</h3><p>輸入公司薪資單金額；差額＝公司金額－系統金額。副業不列入薪資實領。</p><p>無此項目請填 0；空白代表尚未核對。核對不會修改薪資或工時。</p><p>狀態：${escapeHtml(reconciliationStatus(record))}</p></div>${source.warnings.map(text=>`<div class="notice warning">${escapeHtml(text)}</div>`).join('')}<div class="reconcile-list">${rows.map((row,i)=>`<div class="reconcile-row"><strong>${escapeHtml(row.label)}</strong><div><small>系統金額</small>$${row.expected.toLocaleString('zh-TW',{maximumFractionDigits:2})}</div><label for="reconcile-${i}"><small>公司金額</small><input class="field" id="reconcile-${i}" data-reconcile-key="${escapeAttr(row.key)}" type="number" step="0.01" min="-10000000000" max="10000000000" inputmode="decimal" value="${saved?.actual[row.key]??''}"></label><output data-reconcile-delta="${i}">未填</output></div>`).join('')}</div><label for="reconcileReason">差異原因／核對備註</label><textarea class="field reconcile-reason" id="reconcileReason" maxlength="500">${escapeHtml(saved?.reason||'')}</textarea><p id="reconcileFeedback" role="status" aria-live="polite"></p><div class="form-actions reconcile-footer"><button class="btn" type="button" data-action="close-dialog">取消</button><button class="btn" type="submit" name="decision" value="draft">儲存核對草稿</button><button class="btn btn-primary" type="submit" name="decision" value="confirm">確認核對完成</button></div></form>`,true);
+      updateReconciliationPreview();
+    };
+    const collectReconciliation = () => {
+      const actual=Object.create(null);
+      for (const input of $$('[data-reconcile-key]')) {
+        if (input.value.trim()!=='') actual[input.dataset.reconcileKey]=Number(input.value);
+      }
+      return {actual,reason:$('#reconcileReason')?.value||'',fingerprint:reconciliationDraft?.fingerprint||'',reviewed:false,savedAt:new Date().toISOString()};
+    };
+    const updateReconciliationPreview = () => {
+      const record=state.records.find(row=>row.id===reconciliationDraft?.id);
+      if (!record || !$('#reconciliationForm')) return;
+      const result=window.SalaryMateReconcile.evaluate(record,reconciliationSource(record),collectReconciliation());
+      result.rows.forEach((row,i)=>{const output=$(`[data-reconcile-delta="${i}"]`);if(output) output.textContent=row.delta===null?'未填':`差額 ${row.delta>0?'+':''}${row.delta.toLocaleString('zh-TW',{maximumFractionDigits:2})}`;});
+      $('#reconcileFeedback').textContent=result.stale?'來源已改變，請取消後重新開啟。':!result.complete?'尚有未填項目，可先儲存草稿。':result.different?'有金額差異，請填入原因並儲存草稿。':result.blocked?'金額一致，仍需確認加班／請假來源。':'所有項目一致，可確認核對完成。';
+    };
+    const saveReconciliation = confirmed => {
+      const draft=reconciliationDraft, form=$('#reconciliationForm');
+      if (!draft || !form?.reportValidity()) return;
+      const record=state.records.find(row=>row.id===draft.id && row.companyId===draft.companyId);
+      if (!record || !assertDraftScope({entityType:'reconciliation',companyId:draft.companyId,entityId:draft.id,payrollMonth:payrollMonthKey(draft.year,draft.month),operational:true})) return;
+      const source=reconciliationSource(record);
+      if (draft.fingerprint!==window.SalaryMateReconcile.fingerprint(record,source)) return toast('來源已改變，請重新開啟核對。','error');
+      const value=collectReconciliation();
+      const result=window.SalaryMateReconcile.evaluate(record,source,value);
+      if (confirmed && !result.canConfirm) {updateReconciliationPreview();return;}
+      value.reviewed=confirmed;
+      if (!commitStateMutation(()=>{record.reconciliation=value;},'核對資料儲存失敗，原資料保持不變。')) return;
+      closeDialog();renderAll();toast(confirmed?'已完成月結核對':'已儲存核對草稿');
+    };
+    // RECONCILIATION_END
     const renderRecords = () => {
       const query = ui.search.trim().toLowerCase();
       const records = sortedRecords().filter((record) => {
@@ -1792,7 +1848,7 @@
         ...(record.customDeductions || []).map((item) => [item.name || '自訂扣項', item.amount])
       ];
       return `
-        <tr class="data-row" data-action="toggle-record" data-id="${escapeAttr(record.id)}" style="cursor:pointer"><td><span class="month-title"><button class="btn btn-ghost btn-small" type="button" aria-label="${expanded ? '收合' : '展開'}明細">${expanded ? '⌄' : '›'}</button><span>${record.year} 年 ${record.month} 月<small>${escapeHtml(record.payDate || '未填入帳日')}</small></span></span></td><td><span class="status ${companyStatus(record.companyId)}">${companyStatus(record.companyId) === 'current' ? '現任' : '歷任'}</span> ${escapeHtml(companyName(record.companyId))}${record.employmentMode === 'dispatch_hourly' ? '<small style="display:block;color:var(--brand)">派遣（時薪）快照</small>' : ''}</td><td class="money">$${money(gross(record))}</td><td class="money text-rose">−$${money(deductions(record))}</td><td class="money text-blue">−$${money(pension(record))}</td><td class="money text-amber">+$${money(record.sideIncome)}</td><td class="money text-green">$${money(combinedNet(record))}</td><td class="actions" data-stop-row><button class="btn btn-small" type="button" data-action="edit-record" data-id="${escapeAttr(record.id)}">編輯</button> <button class="btn btn-small btn-danger" type="button" data-action="delete-record" data-id="${escapeAttr(record.id)}">刪除</button></td></tr>
+        <tr class="data-row" data-action="toggle-record" data-id="${escapeAttr(record.id)}" style="cursor:pointer"><td><span class="month-title"><button class="btn btn-ghost btn-small" type="button" aria-label="${expanded ? '收合' : '展開'}明細">${expanded ? '⌄' : '›'}</button><span>${record.year} 年 ${record.month} 月<small>${escapeHtml(record.payDate || '未填入帳日')}</small></span></span></td><td><span class="status ${companyStatus(record.companyId)}">${companyStatus(record.companyId) === 'current' ? '現任' : '歷任'}</span> ${escapeHtml(companyName(record.companyId))}${record.employmentMode === 'dispatch_hourly' ? '<small style="display:block;color:var(--brand)">派遣（時薪）快照</small>' : ''}</td><td class="money">$${money(gross(record))}</td><td class="money text-rose">−$${money(deductions(record))}</td><td class="money text-blue">−$${money(pension(record))}</td><td class="money text-amber">+$${money(record.sideIncome)}</td><td class="money text-green">$${money(combinedNet(record))}</td><td class="actions" data-stop-row><button class="btn btn-small" type="button" data-action="reconcile-record" data-id="${escapeAttr(record.id)}">月結核對</button><span class="reconcile-status">${escapeHtml(reconciliationStatus(record))}</span><button class="btn btn-small" type="button" data-action="edit-record" data-id="${escapeAttr(record.id)}">編輯</button> <button class="btn btn-small btn-danger" type="button" data-action="delete-record" data-id="${escapeAttr(record.id)}">刪除</button></td></tr>
         ${expanded ? `<tr class="details-row"><td colspan="8"><div class="details-grid"><div class="breakdown"><h4 class="text-green">應發項目</h4>${earnings.filter(([, value]) => numberValue(value) !== 0).map(([name, value]) => `<div class="break-row"><span>${escapeHtml(name)}</span><b>+$${money(value)}</b></div>`).join('') || '<div class="break-row"><span>無項目</span><b>$0</b></div>'}</div><div class="breakdown"><h4 class="text-rose">扣除項目</h4>${deducts.filter(([, value]) => numberValue(value) !== 0).map(([name, value]) => `<div class="break-row"><span>${escapeHtml(name)}</span><b>−$${money(value)}</b></div>`).join('') || '<div class="break-row"><span>無項目</span><b>$0</b></div>'}${record.note ? `<div class="notice" style="margin-top:10px">備註：${escapeHtml(record.note)}</div>` : ''}</div></div></td></tr>` : ''}`;
     };
 
@@ -3560,7 +3616,7 @@
       if (!latest) return toast('目前沒有可複製的薪資紀錄', 'error');
       const month = latest.month === 12 ? 1 : latest.month + 1;
       const year = latest.month === 12 ? latest.year + 1 : latest.year;
-      const copy = normalizeRecord({ ...clone(latest), id: newId('record'), year, month, payDate: defaultPayDate(year, month), overtime: 0, bonus: 0, sideIncome: 0, note: `複製自 ${latest.year} 年 ${latest.month} 月` });
+      const copy = normalizeRecord({ ...clone(latest), reconciliation: null, id: newId('record'), year, month, payDate: defaultPayDate(year, month), overtime: 0, bonus: 0, sideIncome: 0, note: `複製自 ${latest.year} 年 ${latest.month} 月` });
       openRecordForm(copy);
       toast(`已複製到 ${year} 年 ${month} 月表單，尚未儲存`);
     };
@@ -4275,6 +4331,7 @@
         'restore-backup-file': () => $('#jsonImport')?.click(),
         'dismiss-operation-failure': () => { setOperationStatus('idle'); renderView(); },
         'add-record': () => openRecordForm(),
+        'reconcile-record': () => openReconciliation(id),
         'edit-record': () => openRecordForm(state.records.find((record) => record.id === id)),
         'delete-record': () => deleteRecord(id),
         'duplicate-record': duplicateLatestRecord,
@@ -4423,6 +4480,7 @@
 
     document.addEventListener('submit', (event) => {
       event.preventDefault();
+      if (event.target.id === 'reconciliationForm') saveReconciliation(event.submitter?.value === 'confirm');
       if (event.target.id === 'recordForm') saveRecordForm();
       if (event.target.id === 'companyForm') saveCompanyForm();
       else if (event.target.id === 'basicSalaryRuleForm') saveBasicSalaryRule();
@@ -4444,6 +4502,8 @@
         const input = $('#recordSearch');
         input?.focus();
         input?.setSelectionRange(cursor, cursor);
+      } else if (event.target.closest('#reconciliationForm')) {
+        updateReconciliationPreview();
       } else if (event.target.closest('#recordForm')) {
         updateRecordPreview();
       } else if (event.target.closest('#overtimeForm')) {
