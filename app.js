@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '4.3.2-dev.2';
+    const APP_VERSION = '4.3.2-dev.3';
     const SCHEMA_VERSION = 13;
     const STORAGE_KEY = 'salarymate_v310_state';
     const LEGACY_KEYS = {
@@ -155,6 +155,8 @@
       records: [],
       overtimeLogs: [],
       leaveRecords: [],
+      compTimeCredits: [],
+      compTimeSettlements: [],
       yearEndEstimates: [],
       salaryAdjustments: [],
       overtimeCalculator: defaultOvertimeCalculator(),
@@ -258,7 +260,7 @@
       runtimeState.operationMessage = String(message || '');
       return runtimeState.operationStatus;
     };
-    const domainRecordCount = () => state.companies.length + state.records.length + state.overtimeLogs.length + state.leaveRecords.length + state.salaryAdjustments.length + state.yearEndEstimates.length;
+    const domainRecordCount = () => state.companies.length + state.records.length + state.overtimeLogs.length + state.leaveRecords.length + state.compTimeCredits.length + state.compTimeSettlements.length + state.salaryAdjustments.length + state.yearEndEstimates.length;
     const classifyDataStatus = () => {
       if (!domainRecordCount()) return 'empty';
       if (!state.companies.length) return 'invalid';
@@ -617,6 +619,7 @@
         customHours,
         includeWeekends: record.includeWeekends === true || record.includeWeekends === 'true',
         status: ['planned', 'confirmed', 'cancelled'].includes(record.status) ? record.status : 'confirmed',
+        compTimeLinked: type === 'compensatory' && window.SalaryMateCompTime.normalizeLeaveLink(record.compTimeLinked),
         unit: durationMode === 'hours' ? 'hour' : durationMode === 'half_am' || durationMode === 'half_pm' ? 'halfday' : 'day',
         quantity: durationMode === 'hours' ? customHours : legacyQuantity || 1,
         paidRatio: clamp(record.paidRatio ?? LEAVE_TYPES[type].paidRatio, 0, 100),
@@ -634,6 +637,8 @@
       next.overtimeLogs = Array.isArray(logs) ? logs.map(normalizeOvertime) : [];
       const leaves = raw.leaveRecords || raw.leaves || [];
       next.leaveRecords = Array.isArray(leaves) ? leaves.map(normalizeLeave) : [];
+      next.compTimeCredits = Array.isArray(raw.compTimeCredits) ? raw.compTimeCredits.map(window.SalaryMateCompTime.normalizeCredit) : [];
+      next.compTimeSettlements = Array.isArray(raw.compTimeSettlements) ? raw.compTimeSettlements.map(window.SalaryMateCompTime.normalizeSettlement) : [];
       next.salaryAdjustments = Array.isArray(raw.salaryAdjustments) ? raw.salaryAdjustments.map(normalizeSalaryAdjustment) : [];
       next.yearEndEstimates = Array.isArray(raw.yearEndEstimates) ? raw.yearEndEstimates.map(normalizeYearEndEstimate) : [];
       const defaultCalc = defaultOvertimeCalculator();
@@ -981,6 +986,7 @@
       return [{ date: startDate, hours: workHours * legacyMultiplier, days: legacyMultiplier }];
     };
     const leaveHours = (record) => leaveDateEntries(record).reduce((sum, entry) => sum + entry.hours, 0);
+    const compTimeLedger = (credits = state.compTimeCredits, settlements = state.compTimeSettlements, leaves = state.leaveRecords) => window.SalaryMateCompTime.ledger({credits,settlements,leaves:leaves.map(row=>({...row,compTimeEntries:leaveDateEntries(row)})),logs:state.overtimeLogs,today:todayIso()});
     const leaveDays = (record) => leaveDateEntries(record).reduce((sum, entry) => sum + entry.days, 0);
     const leaveDateText = (record) => {
       const startDate = String(record?.startDate || record?.date || '');
@@ -1262,7 +1268,8 @@
     const taxableSalary = (record) => Math.max(0, gross(record) - Math.min(numberValue(record.mealAllowance), 3000) - pension(record));
 
     const overtimeAmount = (log) => {
-      const hours = Math.max(0, numberValue(log.hours));
+      const credited = state.compTimeCredits.filter(row => row.sourceId === log.id && row.companyId === log.companyId).reduce((sum,row)=>sum+numberValue(row.hours),0);
+      const hours = Math.max(0, numberValue(log.hours)-credited);
       const rate = Math.max(0, overtimeHourlyRate(log));
       if (!hours || !rate) return 0;
       if (log.type === 'weekday') {
@@ -1774,7 +1781,7 @@
       if ((leave.total || leave.linkedItem) && leave.status!=='synced') warnings.push('請假扣款尚未同步或來源已變更，請到工時／請假確認。');
       const bounds=salaryPeriodBounds(record.year,record.month,record.companyId);
       const leaves=state.leaveRecords.filter(row=>row.companyId===record.companyId && leaveDateEntries(row).some(entry=>entry.date>=bounds.start && entry.date<=bounds.end));
-      return {warnings,logs:logs.map(log=>[log.id,log.date,log.hours,log.hourlyRate,log.type,log.customRate]),leave:[leave.total,leave.hours,leave.records,leave.status],leaves};
+      return {warnings,logs:logs.map(log=>[log.id,log.date,log.hours,log.hourlyRate,log.type,log.customRate,state.compTimeCredits.filter(credit=>credit.sourceId===log.id).map(credit=>[credit.id,credit.hours,credit.expiresAt])]),leave:[leave.total,leave.hours,leave.records,leave.status],leaves};
     };
     const reconciliationStatus = record => window.SalaryMateReconcile.evaluate(record,reconciliationSource(record)).status;
     let reconciliationDraft = null;
@@ -1853,6 +1860,62 @@
     };
 
     const attendanceTabsHtml = () => `<div class="attendance-tabs" role="tablist" aria-label="工時與請假分類"><button class="attendance-tab ${ui.attendanceTab === 'overtime' ? 'active' : ''}" type="button" role="tab" aria-selected="${ui.attendanceTab === 'overtime'}" data-attendance-tab="overtime">加班紀錄</button><button class="attendance-tab ${ui.attendanceTab === 'leave' ? 'active' : ''}" type="button" role="tab" aria-selected="${ui.attendanceTab === 'leave'}" data-attendance-tab="leave">請假紀錄</button></div>`;
+    // COMP_TIME_START
+    const renderCompTimePanel = () => {
+      const ledger=compTimeLedger(), companyId=ui.companyFilter;
+      const rows=ledger.rows.filter(row=>companyId==='ALL'||row.credit.companyId===companyId);
+      const sum=key=>rateNumber(rows.reduce((n,row)=>n+numberValue(row[key]),0));
+      const available=rows.filter(row=>row.credit.expiresAt>=todayIso()).reduce((n,row)=>n+row.remaining,0);
+      const expired=rows.filter(row=>row.credit.expiresAt<todayIso()).reduce((n,row)=>n+row.remaining,0);
+      const settlementRows=state.compTimeSettlements.filter(row=>companyId==='ALL'||row.companyId===companyId).sort((a,b)=>b.date.localeCompare(a.date));
+      return `<article class="card card-pad"><div class="section-title"><div><h3>補休來源與結餘</h3><p>從加班紀錄轉入；已確認且勾選使用補休帳本的請假，依到期日優先扣除。</p></div></div><div class="summary-row"><span>可用 ${rateNumber(available)} 小時｜已用 ${sum('used')} 小時｜已結算 ${sum('settled')} 小時</span><b>到期未結算 ${rateNumber(expired)} 小時</b></div><p class="hint">到期日由你依公司約定輸入；逾期餘額不會自動刪除。結算金額是實際核對紀錄，薪資明細仍需個別確認。</p>${ledger.violations.length?`<div class="notice warning" role="alert">補休帳本有 ${ledger.violations.length} 筆來源或餘額異常；請先核對備份與紀錄。</div>`:''}${rows.length?`<div class="table-scroll"><table><thead><tr><th>來源加班</th><th>公司</th><th>到期</th><th>取得</th><th>使用</th><th>結算</th><th>餘額</th><th>操作</th></tr></thead><tbody>${rows.map(row=>`<tr><td>${escapeHtml(row.source?.date||row.credit.earnedAt)}</td><td>${escapeHtml(companyName(row.credit.companyId))}</td><td>${escapeHtml(row.credit.expiresAt)}${row.credit.expiresAt<todayIso()&&row.remaining?'（已到期）':''}</td><td>${rateNumber(row.credit.hours)}h</td><td>${rateNumber(row.used)}h</td><td>${rateNumber(row.settled)}h</td><td>${rateNumber(row.remaining)}h</td><td class="actions"><button class="btn btn-small" type="button" data-action="settle-comp-time" data-id="${escapeAttr(row.credit.id)}" ${row.remaining&&!row.issues.length?'':'disabled'}>記錄結算</button><button class="btn btn-small btn-danger" type="button" data-action="delete-comp-credit" data-id="${escapeAttr(row.credit.id)}" ${row.used||row.settled?'disabled':''}>撤銷轉入</button></td></tr>`).join('')}</tbody></table></div>`:'<p>尚無補休來源。到加班紀錄點「轉補休」建立。</p>'}${settlementRows.length?`<h4>結算紀錄</h4><div class="table-scroll"><table><thead><tr><th>日期</th><th>來源</th><th>時數</th><th>金額</th><th>備註</th><th>操作</th></tr></thead><tbody>${settlementRows.map(row=>`<tr><td>${escapeHtml(row.date)}</td><td>${escapeHtml(ledger.rows.find(item=>item.credit.id===row.creditId)?.credit.earnedAt||'來源待確認')}</td><td>${rateNumber(row.hours)}h</td><td>$${money(row.amount)}</td><td>${escapeHtml(row.note||'—')}</td><td><button class="btn btn-small btn-danger" type="button" data-action="delete-comp-settlement" data-id="${escapeAttr(row.id)}">撤銷</button></td></tr>`).join('')}</tbody></table></div>`:''}</article>`;
+    };
+    const openCompCredit = (id) => {
+      const log=state.overtimeLogs.find(item=>item.id===id);
+      if(!log || state.compTimeCredits.some(row=>row.sourceId===id)) return toast('來源已不存在或已轉入補休。','error');
+      beginDraftScope({entityType:'comp-time-credit',companyId:log.companyId,entityId:id,operational:true});
+      const period=salaryMonthForLog(log);
+      const pay=period&&state.records.find(row=>row.companyId===log.companyId&&row.year===period.year&&row.month===period.month);
+      openDialog('加班轉補休',`<form id="compCreditForm"><p>${escapeHtml(companyName(log.companyId))}｜${escapeHtml(log.date)}｜加班 ${rateNumber(log.hours)} 小時</p><p>轉入時數將從此筆預估加班費排除；已有薪資紀錄請先核對是否給付。</p>${pay&&numberValue(pay.overtime)>0?'<div class="notice warning">此薪資月已有加班金額，為避免同筆加班重複給付，先核對薪資明細後再轉入。</div>':''}<div class="form-grid"><label>轉入補休時數<input class="field" name="hours" type="number" min="0.5" max="${escapeAttr(log.hours)}" step="0.5" required value="${escapeAttr(log.hours)}"></label><label>到期日（依公司約定）<input class="field" name="expiresAt" type="date" min="${escapeAttr(log.date)}" required></label><label class="span-2">備註<input class="field" name="note" maxlength="160"></label></div><div class="form-actions"><button class="btn" type="button" data-action="close-dialog">取消</button><button class="btn btn-primary" type="submit" ${pay&&numberValue(pay.overtime)>0?'disabled':''}>確認轉入</button></div></form>`);
+    };
+    const saveCompCredit = () => {
+      const form=$('#compCreditForm');if(!form?.reportValidity())return;
+      const scope=ui.draftScope,log=state.overtimeLogs.find(item=>item.id===scope?.entityId);
+      if(!log || !assertDraftScope({entityType:'comp-time-credit',companyId:log.companyId,entityId:log.id,operational:true}))return;
+      const data=new FormData(form),credit=window.SalaryMateCompTime.normalizeCredit({id:newId('comp'),sourceId:log.id,companyId:log.companyId,hours:data.get('hours'),earnedAt:log.date,expiresAt:data.get('expiresAt'),note:data.get('note')});
+      const issue=window.SalaryMateCompTime.assertCredit(credit,state.overtimeLogs,state.compTimeCredits);
+      const period=salaryMonthForLog(log),pay=period&&state.records.find(row=>row.companyId===log.companyId&&row.year===period.year&&row.month===period.month);
+      if(issue||credit.earnedAt>todayIso()||pay&&numberValue(pay.overtime)>0){showValidationSummary(form,issue||(credit.earnedAt>todayIso()?'尚未發生的加班不能轉入補休。':'該月薪資已有加班金額，請先核對，避免重複給付。'));return}
+      const ok=commitStateMutation(()=>state.compTimeCredits.push(credit),'補休轉入失敗；原紀錄保持不變。');
+      if(!ok)return;closeDialog();renderAll();toast('補休來源已建立，請核對新的加班費估算。');
+    };
+    const openCompSettlement = (id) => {
+      const row=compTimeLedger().rows.find(item=>item.credit.id===id);
+      if(!row||!row.remaining||row.issues.length)return toast('沒有可結算的來源餘額。','error');
+      beginDraftScope({entityType:'comp-time-settlement',companyId:row.credit.companyId,entityId:id,operational:true});
+      openDialog('記錄補休結算',`<form id="compSettlementForm"><p>加班來源：${escapeHtml(row.credit.earnedAt)}｜剩餘 ${rateNumber(row.remaining)} 小時｜到期 ${escapeHtml(row.credit.expiresAt)}</p><p>請填實際核對的結算金額。此紀錄不會自動增加薪資明細。</p><div class="form-grid"><label>結算日期<input class="field" name="date" type="date" min="${escapeAttr(row.credit.earnedAt)}" required value="${todayIso()}"></label><label>結算時數<input class="field" name="hours" type="number" min="0.5" max="${escapeAttr(row.remaining)}" step="0.5" required value="${escapeAttr(row.remaining)}"></label><label>實際結算金額<input class="field" name="amount" type="number" min="0" step="0.01" required></label><label>核對備註<input class="field" name="note" maxlength="160"></label></div><div class="form-actions"><button class="btn" type="button" data-action="close-dialog">取消</button><button class="btn btn-primary" type="submit">保存結算</button></div></form>`);
+    };
+    const saveCompSettlement = () => {
+      const form=$('#compSettlementForm');if(!form?.reportValidity())return;
+      const scope=ui.draftScope,credit=state.compTimeCredits.find(item=>item.id===scope?.entityId);
+      if(!credit||!assertDraftScope({entityType:'comp-time-settlement',companyId:credit.companyId,entityId:credit.id,operational:true}))return;
+      const data=new FormData(form),settlement=window.SalaryMateCompTime.normalizeSettlement({id:newId('settle'),creditId:credit.id,companyId:credit.companyId,date:data.get('date'),hours:data.get('hours'),amount:data.get('amount'),note:data.get('note')});
+      if(!window.SalaryMateCompTime.validDate(settlement.date)||settlement.date<credit.earnedAt||settlement.date>todayIso()||Number(data.get('hours'))!==settlement.hours||Number(data.get('amount'))!==settlement.amount){showValidationSummary(form,'日期、時數或金額無效；結算日期不得晚於今天。');return}
+      const check=compTimeLedger(state.compTimeCredits,[...state.compTimeSettlements,settlement]);
+      if(check.violations.length){showValidationSummary(form,'結算超過可用補休時數，或來源帳本異常；資料未儲存。');return}
+      const ok=commitStateMutation(()=>state.compTimeSettlements.push(settlement),'結算儲存失敗；原資料保持不變。');
+      if(!ok)return;closeDialog();renderAll();toast('補休結算已記錄。');
+    };
+    const deleteCompCredit = id => {
+      const row=compTimeLedger().rows.find(item=>item.credit.id===id);
+      if(!row||row.used||row.settled)return toast('此來源已使用或結算，無法撤銷。','error');
+      confirm('撤銷補休轉入',`撤銷 ${row.credit.earnedAt} 的 ${rateNumber(row.credit.hours)} 小時？該筆預估加班費將重新計入。`,()=>{if(commitStateMutation(()=>state.compTimeCredits=state.compTimeCredits.filter(item=>item.id!==id),'撤銷失敗，原資料保持不變。')){closeDialog();renderAll();toast('已撤銷轉入。')}});
+    };
+    const deleteCompSettlement = id => {
+      const row=state.compTimeSettlements.find(item=>item.id===id);if(!row)return;
+      confirm('撤銷補休結算',`撤銷 ${row.date} 的 ${rateNumber(row.hours)} 小時結算紀錄？`,()=>{if(commitStateMutation(()=>state.compTimeSettlements=state.compTimeSettlements.filter(item=>item.id!==id),'撤銷失敗，原資料保持不變。')){closeDialog();renderAll();toast('已撤銷結算。')}});
+    };
+    // COMP_TIME_END
 
     const leaveAllocationsInScope = (record) => leaveAllocations(record).filter((allocation) =>
       allocation.year === Number(ui.selectedYear) && (Number(ui.leaveMonth) === 0 || allocation.month === Number(ui.leaveMonth))
@@ -2008,7 +2071,8 @@
           <article class="card metric blue"><div class="metric-label"><span>同步薪資表</span><span class="metric-icon">↻</span></div><div class="metric-value" style="font-size:18px;margin-top:14px">${ui.overtimeMonth ? `同步至 ${ui.overtimeMonth} 月薪資` : '請先選薪資月份'}</div><div class="metric-note"><button class="btn btn-small" type="button" data-action="sync-overtime" ${ui.overtimeMonth && totalPay ? '' : 'disabled'}>帶入薪資明細</button></div></article>
         </div>
         <div class="notice warning">加班金額為個人估算值；實際給付仍以薪資單、勞動契約與適用法規為準。休息日最多接受 12 小時輸入。</div>
-        ${logs.length ? `<article class="card table-shell"><div class="table-scroll"><table><thead><tr><th>加班日期</th><th>歸屬薪資月</th><th>公司</th><th>類型</th><th>時數</th><th>每日加班時薪</th><th>預估加班費</th><th>備註</th><th>操作</th></tr></thead><tbody>${logs.map((log) => { const attributed = salaryMonthForLog(log); return `<tr class="data-row"><td class="money">${escapeHtml(log.date)}</td><td><b>${attributed ? `${attributed.year} 年 ${attributed.month} 月` : '—'}</b><small style="display:block;color:var(--muted)">${escapeHtml(companyPayrollPeriodName(log.companyId))}</small></td><td>${escapeHtml(companyName(log.companyId))}</td><td><span class="status ${log.type === 'spring' || log.type === 'holiday' ? 'former' : 'current'}">${escapeHtml(overtimeTypeName(log.type))}</span></td><td class="money">${numberValue(log.hours)} 小時</td><td class="money">$${hourlyRateNumber(log.hourlyRate)}</td><td class="money text-green">$${money(overtimeAmount(log))}</td><td>${escapeHtml(log.note || '—')}</td><td class="actions"><button class="btn btn-small" type="button" data-action="edit-overtime" data-id="${escapeAttr(log.id)}">編輯</button> <button class="btn btn-small btn-danger" type="button" data-action="delete-overtime" data-id="${escapeAttr(log.id)}">刪除</button></td></tr>`; }).join('')}</tbody></table></div></article>` : emptyPanel('時', '尚無加班紀錄', '新增每日加班後，系統會依公司計薪區間自動歸入薪資月份。', '<button class="btn btn-primary" type="button" data-action="add-overtime">新增加班</button>')}`;
+        ${renderCompTimePanel()}
+        ${logs.length ? `<article class="card table-shell"><div class="table-scroll"><table><thead><tr><th>加班日期</th><th>歸屬薪資月</th><th>公司</th><th>類型</th><th>時數</th><th>每日加班時薪</th><th>預估加班費</th><th>備註</th><th>操作</th></tr></thead><tbody>${logs.map((log) => { const attributed = salaryMonthForLog(log); return `<tr class="data-row"><td class="money">${escapeHtml(log.date)}</td><td><b>${attributed ? `${attributed.year} 年 ${attributed.month} 月` : '—'}</b><small style="display:block;color:var(--muted)">${escapeHtml(companyPayrollPeriodName(log.companyId))}</small></td><td>${escapeHtml(companyName(log.companyId))}</td><td><span class="status ${log.type === 'spring' || log.type === 'holiday' ? 'former' : 'current'}">${escapeHtml(overtimeTypeName(log.type))}</span></td><td class="money">${numberValue(log.hours)} 小時</td><td class="money">$${hourlyRateNumber(log.hourlyRate)}</td><td class="money text-green">$${money(overtimeAmount(log))}</td><td>${escapeHtml(log.note || '—')}</td><td class="actions"><button class="btn btn-small" type="button" data-action="credit-comp-time" data-id="${escapeAttr(log.id)}" ${state.compTimeCredits.some(row=>row.sourceId===log.id)?'disabled':''}>轉補休</button> <button class="btn btn-small" type="button" data-action="edit-overtime" data-id="${escapeAttr(log.id)}">編輯</button> <button class="btn btn-small btn-danger" type="button" data-action="delete-overtime" data-id="${escapeAttr(log.id)}">刪除</button></td></tr>`; }).join('')}</tbody></table></div></article>` : emptyPanel('時', '尚無加班紀錄', '新增每日加班後，系統會依公司計薪區間自動歸入薪資月份。', '<button class="btn btn-primary" type="button" data-action="add-overtime">新增加班</button>')}`;
     };
 
     const renderLeavePanel = () => {
@@ -3249,6 +3313,7 @@
     };
 
     const openOvertimeForm = (log = null) => {
+      if(log&&state.compTimeCredits.some(row=>row.sourceId===log.id))return toast('這筆加班已有補休來源，請先撤銷未使用轉入，或保留原始紀錄。','error');
       if (!state.companies.length) {
         toast('請先建立至少一家公司', 'error');
         openCompanyManager();
@@ -3313,6 +3378,7 @@
         <label><span class="field-label">假別</span><select class="field-select" name="type">${typeOptions}</select></label>
         <label class="span-2"><span class="field-label">請假區段</span><select class="field-select" name="durationMode"><option value="full_day" ${draft.durationMode === 'full_day' ? 'selected' : ''}>單日整天</option><option value="half_am" ${draft.durationMode === 'half_am' ? 'selected' : ''}>單日上午半天</option><option value="half_pm" ${draft.durationMode === 'half_pm' ? 'selected' : ''}>單日下午半天</option><option value="hours" ${draft.durationMode === 'hours' ? 'selected' : ''}>按小時計</option><option value="range" ${draft.durationMode === 'range' ? 'selected' : ''}>跨日／連續日期</option></select></label>
         ${leaveDurationFieldsHtml(draft)}
+        ${draft.type==='compensatory'?`<label class="span-2"><span class="field-label">補休來源帳本</span><span class="field" style="display:flex;gap:8px;align-items:center"><input name="compTimeLinked" type="checkbox" value="true" ${draft.compTimeLinked?'checked':''}> 從已轉入的加班來源扣除（已確認後生效）</span><span class="hint">既有未連結補休仍可保持原樣；新補休請確認來源餘額與到期日。</span></label>`:''}
         <div id="leavePeriodHint" class="notice span-2"><b>薪資歸屬：</b>${escapeHtml(leaveAttributionText(draft))}</div>
         <label><span class="field-label">給薪比例</span><div style="position:relative"><input class="field" name="paidRatio" type="number" min="0" max="100" step="1" required value="${escapeAttr(draft.paidRatio)}"><span class="hint">0% 無薪、50% 半薪、100% 全薪</span></div></label>
         ${moneyInput('attendanceDeduction', '全勤／出勤扣款（獨立）', draft.attendanceDeduction)}
@@ -3337,6 +3403,7 @@
         companyId: data.get('companyId'),
         status: data.get('status'),
         type: data.get('type'),
+        compTimeLinked: data.get('compTimeLinked')==='true',
         durationMode,
         startPortion: data.get('startPortion') || 'full',
         endPortion: data.get('endPortion') || 'full',
@@ -3485,6 +3552,7 @@
       const form = $('#overtimeForm');
       if (!validateNativeForm(form)) return;
       if (!assertDraftScope({ entityType: 'overtime', companyId: draft.companyId, entityId: state.overtimeLogs.some((log) => log.id === draft.id) ? draft.id : '', operational: true })) return;
+      if(state.compTimeCredits.some(row=>row.sourceId===draft.id)){showValidationSummary(form,'這筆加班已轉入補休，無法編輯來源。');return}
       if (numberValue(draft.hourlyRate) <= 0) { validateField(form, 'hourlyRate', '每日加班時薪必須大於 0。'); return; }
       if (draft.type === 'restday' && draft.hours > 12) { validateField(form, 'hours', '休息日加班時數不可超過 12 小時。'); return; }
       const duplicate = state.overtimeLogs.some((log) => log.id !== draft.id && log.companyId === draft.companyId && log.date === draft.date && log.type === draft.type && numberValue(log.hours) === numberValue(draft.hours));
@@ -3594,6 +3662,11 @@
       if (draft.durationMode === 'hours' && leaveHours(draft) > (numberValue(getCompany(draft.companyId)?.workHoursPerDay) || 8)) { validateField(form, 'customHours', '單日小時請假不可超過公司每日標準工時。'); return; }
       const overlap = leaveOverlap(draft);
       if (overlap) { showValidationSummary(form, `與 ${leaveDateText(overlap)} 的「${leaveTypeName(overlap.type)}」紀錄重疊。請先調整日期或區段。`); return; }
+      if(draft.type==='compensatory'&&draft.status==='confirmed'&&draft.compTimeLinked){
+        const replacement=state.leaveRecords.filter(row=>row.id!==draft.id).concat(draft);
+        const checked=compTimeLedger(state.compTimeCredits,state.compTimeSettlements,replacement);
+        if(checked.violations.length){showValidationSummary(form,'補休來源不足、已到期或帳本來源異常；請檢查加班轉入與結算紀錄。');return}
+      }
       const warnings = [];
       const overtimeDates = leaveOvertimeDates(draft);
       if (overtimeDates.length) warnings.push(`${overtimeDates.join('、')} 同日已有加班紀錄`);
@@ -4118,7 +4191,7 @@
         issues,
         errors: issues.filter((issue) => issue.severity === 'error').length,
         warnings: issues.filter((issue) => issue.severity === 'warning').length,
-        recordCount: state.records.length + state.overtimeLogs.length + state.leaveRecords.length + state.salaryAdjustments.length + state.yearEndEstimates.length
+        recordCount: state.records.length + state.overtimeLogs.length + state.leaveRecords.length + state.compTimeCredits.length + state.compTimeSettlements.length + state.salaryAdjustments.length + state.yearEndEstimates.length
       };
     };
 
@@ -4173,7 +4246,7 @@
         if (!raw || !Array.isArray(raw.records) || !Array.isArray(raw.companies)) throw new Error('UNSUPPORTED_FORMAT');
         const imported = normalizeState(raw);
         setOperationStatus('idle');
-        confirm('還原備份資料', `備份包含 ${imported.companies.length} 家公司、${imported.records.length} 筆薪資、${imported.overtimeLogs.length} 筆加班、${imported.leaveRecords.length} 筆請假、${imported.salaryAdjustments.length} 筆調薪與 ${imported.yearEndEstimates.length} 筆年終設定。還原會取代目前本機資料。`, () => {
+        confirm('還原備份資料', `備份包含 ${imported.companies.length} 家公司、${imported.records.length} 筆薪資、${imported.overtimeLogs.length} 筆加班、${imported.leaveRecords.length} 筆請假、${imported.compTimeCredits.length} 筆補休來源、${imported.compTimeSettlements.length} 筆補休結算、${imported.salaryAdjustments.length} 筆調薪與 ${imported.yearEndEstimates.length} 筆年終設定。還原會取代目前本機資料。`, () => {
           const restoreCommitKey = 'restore:commit';
           if (!acquireOperationLock(restoreCommitKey)) { console.warn('DUPLICATE_SUBMIT_BLOCKED', restoreCommitKey); toast('還原正在處理，已阻止重複送出。', 'info'); return; }
           let restoreSucceeded = false;
@@ -4257,6 +4330,7 @@
     const deleteOvertime = (id) => {
       const log = state.overtimeLogs.find((item) => item.id === id);
       if (!log) return;
+      if(state.compTimeCredits.some(item=>item.sourceId===id))return toast('這筆加班已有補休來源，請先檢查來源帳本。','error');
       confirm('刪除加班紀錄', `確定刪除 ${log.date} 的 ${log.hours} 小時加班紀錄？`, () => {
         const ok = commitStateMutation(() => { state.overtimeLogs = state.overtimeLogs.filter((item) => item.id !== id); }, '刪除失敗。原本加班紀錄保持不變。', `delete-overtime:${id}`);
         if (!ok) { renderAll(); return; }
@@ -4280,6 +4354,8 @@
       const references = state.records.filter((record) => record.companyId === id).length
         + state.overtimeLogs.filter((log) => log.companyId === id).length
         + state.leaveRecords.filter((record) => record.companyId === id).length
+        + state.compTimeCredits.filter((record) => record.companyId === id).length
+        + state.compTimeSettlements.filter((record) => record.companyId === id).length
         + state.salaryAdjustments.filter((record) => record.companyId === id).length
         + state.yearEndEstimates.filter((record) => record.companyId === id).length;
       if (references) return toast(`此公司仍被 ${references} 筆紀錄使用，請改標示為歷任公司`, 'error');
@@ -4395,6 +4471,10 @@
         'new-company': () => openCompanyBasicForm(),
         'add-overtime': () => openOvertimeForm(),
         'edit-overtime': () => openOvertimeForm(state.overtimeLogs.find((log) => log.id === id)),
+        'credit-comp-time': () => openCompCredit(id),
+        'settle-comp-time': () => openCompSettlement(id),
+        'delete-comp-credit': () => deleteCompCredit(id),
+        'delete-comp-settlement': () => deleteCompSettlement(id),
         'delete-overtime': () => deleteOvertime(id),
         'add-leave': () => openLeaveForm(),
         'edit-leave': () => openLeaveForm(state.leaveRecords.find((record) => record.id === id)),
@@ -4510,6 +4590,8 @@
     document.addEventListener('submit', (event) => {
       event.preventDefault();
       if (event.target.id === 'reconciliationForm') saveReconciliation(event.submitter?.value === 'confirm');
+      if (event.target.id === 'compCreditForm') saveCompCredit();
+      if (event.target.id === 'compSettlementForm') saveCompSettlement();
       if (event.target.id === 'copyMonthForm') applyCopyMonth();
       if (event.target.id === 'recordForm') saveRecordForm();
       if (event.target.id === 'companyForm') saveCompanyForm();
@@ -4617,6 +4699,7 @@
       } else if (event.target.name === 'type' && event.target.closest('#leaveForm')) {
         const draft = collectLeaveDraft();
         draft.paidRatio = LEAVE_TYPES[draft.type]?.paidRatio ?? 0;
+        if(draft.type==='compensatory'&&!state.leaveRecords.some(row=>row.id===draft.id)) draft.compTimeLinked=true;
         openDialog(state.leaveRecords.some((record) => record.id === draft.id) ? '編輯請假紀錄' : '新增請假紀錄', leaveFormHtml(draft, state.leaveRecords.some((record) => record.id === draft.id)));
       } else if (event.target.name === 'durationMode' && event.target.closest('#leaveForm')) {
         const draft = collectLeaveDraft();
