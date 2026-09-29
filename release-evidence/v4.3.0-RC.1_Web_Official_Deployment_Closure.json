@@ -1,0 +1,27 @@
+{
+  "websiteVersion": "v4.3.0-RC.1",
+  "finalPagesDeployment": "PASS",
+  "githubActionsRunId": 36228215286,
+  "runNumber": 4,
+  "deployedCommit": "389f41d60291766be1ae99c892009f3e10fc1461",
+  "pagesSourceBranch": "stable/v4.2.0-web",
+  "liveUrl": "https://sparcgx.github.io/SalaryMate/",
+  "jobs": {
+    "build": "PASS",
+    "reportBuildStatus": "PASS",
+    "deploy": "PASS"
+  },
+  "deployEnvironmentUrl": "https://sparcgx.github.io/SalaryMate/",
+  "indexGitBlob": "f125193bac4d3fb788945f1233880855dfa30af8",
+  "indexSha256": "c5a848b306d3b1b6a47effbee1854413c17e7c2170468f9b126db6fd4a3b1686",
+  "webOfficialZipSha256": "75959fce850c37ec61fa89034fbe414a522fe0881fe28b38ed13be7e7edb20bc",
+  "schemaVersion": 13,
+  "storageKey": "salarymate_v310_state",
+  "legacyV421CurrentResidues": 0,
+  "networkTransportApis": 0,
+  "browserPersonalData": "PRESERVED",
+  "applicationStablePromotion": "NOT_AUTHORIZED",
+  "androidIosPhysicalQa": "PENDING",
+  "webOfficialPublication": "CLOSED",
+  "overall": "PASS"
+}
