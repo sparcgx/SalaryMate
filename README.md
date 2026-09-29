@@ -1,5 +1,7 @@
 # SalaryMate
 
+目前 GitHub Pages 正式網站內容：`v4.3.1-web-dev.2｜動態玻璃可見度調整`。正式入口為 <https://sparcgx.github.io/SalaryMate/>；薪資資料只保存在目前瀏覽器，不會上傳至 GitHub。
+
 ## 官方網站版
 
 **v4.3.0-RC.1｜Web Official Publication CLOSED**
