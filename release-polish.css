@@ -22,7 +22,19 @@ html[data-glass-mode] .annual-structure .card { background: rgba(255,255,255,.7)
 .annual-table-scroll table { min-width: 760px; }
 .annual-table-scroll td, .annual-table-scroll th { font-variant-numeric: tabular-nums; }
 .annual-coverage summary:focus-visible, .annual-month-detail summary:focus-visible, .annual-table-scroll:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; border-radius: 8px; }
-.toolbar .search-wrap { min-width: min(100%,16rem); flex: 1 1 26rem; }
+/* Grid keeps search sizing independent of the mobile flex direction. */
+.record-toolbar { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; }
+.record-toolbar .search-wrap { min-width: 0; width: 100%; flex: none; }
+.record-toolbar .page-actions { width: auto; }
+.record-action-buttons { display: inline-flex; flex-flow: row nowrap; align-items: center; gap: 6px; }
+.record-action-buttons .btn { flex: 0 0 auto; min-height: 40px; margin: 0; white-space: nowrap; }
+.record-actions .reconcile-status { margin: 4px 0 0; line-height: 1.4; }
+@media(max-width:820px) {
+  .record-toolbar { grid-template-columns: minmax(0,1fr); gap: 10px; }
+  .record-toolbar .page-actions { width: 100%; grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .record-toolbar .page-actions .btn { min-width: 0; min-height: 44px; white-space: normal; }
+  .record-action-buttons .btn { min-height: 44px; }
+}
 @media(max-width:700px) {
   .annual-scope, .annual-tools { width: 100%; }
   .annual-tools { justify-content: stretch; display: grid; grid-template-columns: 1fr 1fr; }
