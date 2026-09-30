@@ -1,26 +1,15 @@
 # SalaryMate
 
-目前 GitHub Pages 正式網站內容：`v4.3.1-web-dev.2｜動態玻璃可見度調整`。正式入口為 <https://sparcgx.github.io/SalaryMate/>；薪資資料只保存在目前瀏覽器，不會上傳至 GitHub。
+目前正式版本：**v4.3.2 Web Stable**（2026-09-30）。
 
-## 官方網站版
+- [GPT 工作站／正式網站](https://salarymate.sparcgx2420.chatgpt.site)
+- [GitHub Pages](https://sparcgx.github.io/SalaryMate/)
+- [發布紀錄與驗證範圍](RELEASE_GATE_v4.3.2-web_STABLE.md)
 
-**v4.3.0-RC.1｜Web Official Publication CLOSED**
+由使用者驗收 PASS 的 RC.3 晉升，保留月結核對、複製上月預覽、補休管理、年度同期比較與報表，以及手機搜尋列和橫向操作按鈕修正。正式晉升僅變更版本識別。
 
-- Website identity: `v4.3.0-RC.1`
-- Schema: `13`
-- Browser storage key: `salarymate_v310_state`
-- Data storage: current browser / device only
-- Network upload channel: none
-- RC.1 source regression: `47 / 47 PASS`
-- Chromium desktop/mobile runtime: `PASS`
-- Final GitHub Pages deployment: `PASS`
-- Final GitHub Pages Run: `36228215286` / Run #4
-- Final deployed commit: `389f41d60291766be1ae99c892009f3e10fc1461`
-- Live URL: `https://sparcgx.github.io/SalaryMate/`
-- Website payload SHA-256: `c5a848b306d3b1b6a47effbee1854413c17e7c2170468f9b126db6fd4a3b1686`
-- Web Official ZIP SHA-256: `75959fce850c37ec61fa89034fbe414a522fe0881fe28b38ed13be7e7edb20bc`
-- Legacy v4.2.1 current-release residues: `0`
+自動驗證：61 項測試與 6 項來源檢查 PASS。薪資資料保存在目前瀏覽器／裝置；Schema 13，儲存鍵 `salarymate_v310_state`。
 
-The public website uses the v4.3.0-RC.1 shared SalaryMate UI and local-browser storage contract.
+Stable／Freeze：`stable/v4.3.2-web`、`freeze/v4.3.2-web`。歷史版本與驗證資料保留於 release-evidence。
 
-Web Official publication is closed. Application Stable promotion remains blocked by Android/iOS physical acceptance; website publication does not relabel RC.1 as v4.3.0 Stable.
+本次僅為 Web／PWA Stable。Android／iOS 原生 Gate 與原生故障注入仍為 UNVERIFIED；原生資料安全 BLOCKER 仍為 OPEN。
