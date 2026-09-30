@@ -2873,7 +2873,7 @@ var BACKUP_CRYPTO_LIMITS = Object.freeze({
 });
 
 // src/native-backup.mjs
-function createBackupService(filesystem, share, directory, encoding, version = "4.3.2", crypto = { encryptBackup, decryptBackup, inspectEncryptedBackup, isEncryptedBackup }, fileSaver) {
+function createBackupService(filesystem, share, directory, encoding, version = "4.3.3-dev.1", crypto = { encryptBackup, decryptBackup, inspectEncryptedBackup, isEncryptedBackup }, fileSaver) {
   let busy = false;
   const fileName = () => `SalaryMate_v${version}_${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.salarymate`;
   const prepare = async (payload, password) => {
@@ -3061,7 +3061,7 @@ function openDataCenter({ repository: repository2, backup: backup2, app, securit
   const privacySummary = document.createElement("summary");
   privacySummary.textContent = "\u96B1\u79C1\u8207\u8CC7\u6599\u8655\u7406\u8AAA\u660E";
   const privacyCopy = document.createElement("p");
-  privacyCopy.textContent = "\u85AA\u8CC7\u8CC7\u6599\u53EA\u5728\u6B64\u88DD\u7F6E\u672C\u6A5F\u8655\u7406\uFF1BApp \u4E0D\u5EFA\u7ACB\u5E33\u865F\u3001\u4E0D\u542B\u5EE3\u544A\u6216\u5206\u6790\u8FFD\u8E64\uFF0C\u4E5F\u4E0D\u6703\u81EA\u52D5\u4E0A\u50B3\u8CC7\u6599\u3002\u53EA\u6709\u60A8\u4E3B\u52D5\u53E6\u5B58\u3001\u5206\u4EAB\u6216\u532F\u5165\u5099\u4EFD\u6642\uFF0C\u8CC7\u6599\u624D\u6703\u4EA4\u7D66\u6240\u9078\u7684\u6A94\u6848\u6216\u5206\u4EAB\u670D\u52D9\u3002";
+  privacyCopy.textContent = "薪資紀錄由本機處理，未設薪資自動上傳、帳號或廣告分析功能。網站主機可能處理 IP、連線時間與技術日誌，實際項目依主機服務政策；這與薪資內容分開。Android 本機資料庫未啟用資料庫層加密，裝置鎖定與 App 解鎖不等於資料加密。一般備份、JSON／CSV 匯出不加密；僅明確選擇密碼加密的備份提供加密保護，SHA-256 只用於完整性核對。主動分享／另存至第三方服務時，檔案由所選服務處理。可在資料管理匯出、刪除本機紀錄；外部備份須自行刪除。";
   privacyDetails.append(privacySummary, privacyCopy);
   const message = document.createElement("p");
   message.className = "data-center-message";
@@ -3489,7 +3489,7 @@ var backup = createBackupService(
   Share,
   Directory.Cache,
   Encoding.UTF8,
-  "4.3.2",
+  "4.3.3-dev.1",
   void 0,
   BackupFile
 );
@@ -3533,7 +3533,7 @@ try {
     status.textContent = "\u8CC7\u6599\u4FDD\u5B58\u5728\u76EE\u524D\u700F\u89BD\u5668\uFF1B\u8207\u624B\u6A5F App \u4E0D\u540C\u6B65";
   }
   const script = document.createElement("script");
-  script.src = "./app.js?v=4.3.2";
+  script.src = "./app.js?v=4.3.3-dev.1";
   script.onload = async () => {
     try {
       if (repository) {
