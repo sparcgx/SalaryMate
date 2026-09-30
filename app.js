@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '4.3.2';
+    const APP_VERSION = '4.3.3-dev.1';
     const SCHEMA_VERSION = 13;
     const STORAGE_KEY = 'salarymate_v310_state';
     const LEGACY_KEYS = {
@@ -1332,7 +1332,7 @@
     };
 
     const overtimeTypeName = (type) => ({
-      weekday: '平日', restday: '休息日', weekend: '休息日', holiday: '星期天', spring: '春節', custom: '自訂倍率'
+      weekday: '平日', restday: '休息日', weekend: '休息日', holiday: '約定假日', spring: '春節約定', custom: '自訂倍率'
     })[type] || '加班';
 
     const filteredRecords = () => {
@@ -2391,7 +2391,7 @@
           <div class="summary-row"><span>預扣稅</span><b class="text-rose">−$${money(result.withholding)}</b></div>
           <div class="summary-grand"><span>預估實領</span><strong>$${money(result.netBonus)}</strong></div>
         </article>
-        <div class="notice"><b>公式：</b>（計算基數 × 固定月數＋計算基數 × 績效月數＋額外調整）× 年資比例。門檻與預扣率可自行調整。</div>`;
+        <div class="notice"><b>公式：</b>（計算基數 × 固定月數＋計算基數 × 績效月數＋額外調整）× 年資比例。門檻與預扣率可自行調整。此為既有公司規則試算，非通用法定扣繳門檻。實際扣繳須依所得年度、居住者身分、給付類型、扣繳方式與適用表格確認；預扣不等於年度應納稅額。請按薪資單填入實際預扣稅。</div>`;
     };
 
     const yearEndGradeRowsHtml = (grades) => normalizeYearEndGrades(grades).map((grade, index) => `
@@ -2421,8 +2421,8 @@
               <label><span class="field-label">本次績效等級</span><select class="field-select" name="selectedGradeId">${gradeOptions}</select></label>
               <label><span class="field-label">額外加減金額</span><input class="field" name="extraAdjustment" type="number" step="1" value="${escapeAttr(draft.extraAdjustment)}"></label>
               <label><span class="field-label">年資比例</span><span class="hourly-check"><input name="prorateByEmployment" type="checkbox" ${draft.prorateByEmployment ? 'checked' : ''}> 未滿一年依到職日比例計算</span></label>
-              <label><span class="field-label">預扣稅門檻</span><input class="field" name="withholdingThreshold" type="number" min="0" step="1" value="${escapeAttr(draft.withholdingThreshold)}"></label>
-              <label><span class="field-label">預扣稅率</span><input class="field" name="withholdingRate" type="number" min="0" max="100" step="0.1" value="${escapeAttr(draft.withholdingRate)}"><span class="hint">%</span></label>
+              <label><span class="field-label">自訂預扣稅門檻</span><input class="field" name="withholdingThreshold" type="number" min="0" step="1" value="${escapeAttr(draft.withholdingThreshold)}"></label>
+              <label><span class="field-label">自訂預扣稅率</span><input class="field" name="withholdingRate" type="number" min="0" max="100" step="0.1" value="${escapeAttr(draft.withholdingRate)}"><span class="hint">%</span></label>
             </div>
             <div class="form-group" style="margin-top:14px"><div class="group-head"><strong>績效級距</strong><span class="soft-badge">可自行變更</span></div><div class="grade-rule-list">${yearEndGradeRowsHtml(draft.gradeRules)}</div><div class="form-actions"><button class="btn btn-small" type="button" data-action="add-yearend-grade">＋ 新增級距</button></div></div>
             <label style="display:block;margin-top:14px"><span class="field-label">備註</span><textarea class="field-textarea" name="note" maxlength="240">${escapeHtml(draft.note)}</textarea></label>
@@ -2593,10 +2593,10 @@
           <div class="salary-rule-list">
             ${salaryRuleRow('基本薪資', salaryBasisText(profile), salaryProfileSourceText(profile), `<button class="btn btn-small" type="button" data-action="edit-basic-salary-rule" data-id="${escapeAttr(company.id)}">編輯</button>`)}
             ${salaryRuleRow('固定收入', `${fixedItems.length + (numberValue(profile.mealAllowance) ? 1 : 0) + (numberValue(profile.positionAllowance) ? 1 : 0)} 項／$${money(fixedTotal)}`, '伙食、職務加給與其他每月固定收入；會帶入之後新建薪資。', `<button class="btn btn-small" type="button" data-action="edit-fixed-income-rule" data-id="${escapeAttr(company.id)}">編輯</button>`)}
-            ${salaryRuleRow('加班規則', '1 / 1.34 / 1.67 / 2 / 2.67；春節 2.5', '沿用既有加班核心；每日加班仍保存獨立時薪快照。')}
+            ${salaryRuleRow('加班規則', '1 / 1.34 / 1.67 / 2 / 2.67；春節 2.5', '倍率為既有／公司約定試算。星期幾不等於法定日別；請依班表確認平日、休息日、例假或國定假日。1.34／1.67 為現有近似倍率；2.0／春節 2.5 為自訂約定，非通用法定標準。請核對工資基礎、出勤條件及公司給付方式。')}
             ${salaryRuleRow('獎金', '一般獎金＝每月薪資交易', '年終規則不放在一般獎金；Year-End 保持獨立並移至進階設定。')}
             ${salaryRuleRow('加項／扣項', `預設扣項 $${money(deductionsTotal)}`, '固定收入屬規則；單次自訂加項／扣項仍在每月薪資明細建立。', `<button class="btn btn-small" type="button" data-action="edit-default-deduction-rule" data-id="${escapeAttr(company.id)}">預設扣項</button>`)}
-            ${salaryRuleRow('稅務', '總金額 > 86,001 才預扣 5%', '顯示既有核心規則摘要；此頁不建立第二套稅務公式。')}
+            ${salaryRuleRow('稅務', '既有試算：總金額 > 86,001 時估列 5%', '此為既有公司規則試算，非通用法定扣繳門檻。實際扣繳須依所得年度、居住者身分、給付類型、扣繳方式與適用表格確認；預扣不等於年度應納稅額。請按薪資單填入實際預扣稅。')}
           </div>
         </article>
         <div class="notice"><b>歷史保護：</b>基本薪資與固定收入修改會以今天為生效日建立／更新既有 salaryAdjustments 薪資快照；已存在的薪資單、每日加班與 Snapshot / Lock 不會被重算。</div>
@@ -2875,7 +2875,7 @@
         <button class="color-theme-card ${key === currentTheme ? 'active' : ''}" type="button" role="radio" aria-checked="${key === currentTheme}" data-action="set-color-theme" data-theme="${escapeAttr(key)}" style="--swatch:${escapeAttr(theme.color)};--swatch-2:${escapeAttr(theme.accent)}">
           <span class="color-swatch" aria-hidden="true"></span><strong>${escapeHtml(theme.name)}</strong>${key === currentTheme ? '<span class="theme-check" aria-hidden="true">✓</span>' : ''}
         </button>`).join('');
-      return `${window.SalaryMateGlass?.settingsHtml() || ''}<div class="interface-intro"><div><h4>選擇最適合當下工作的介面</h4><p>版面與配色會分開記憶，只改變呈現方式，不會更動薪資、時薪或歷史紀錄。</p></div><span class="soft-badge">${escapeHtml(INTERFACE_MODES[currentMode].name)}</span></div>
+      return `<div class="notice"><button class="btn" type="button" data-action="open-legal">授權、隱私與試算說明</button></div>${window.SalaryMateGlass?.settingsHtml() || ''}<div class="interface-intro"><div><h4>選擇最適合當下工作的介面</h4><p>版面與配色會分開記憶，只改變呈現方式，不會更動薪資、時薪或歷史紀錄。</p></div><span class="soft-badge">${escapeHtml(INTERFACE_MODES[currentMode].name)}</span></div>
         <div class="interface-mode-grid" role="radiogroup" aria-label="介面模式">${choices}</div>
         <section class="color-theme-section" aria-labelledby="colorThemeTitle"><div class="color-theme-head"><div><h4 id="colorThemeTitle">介面配色</h4><p>全部四種版面模式皆可自由搭配，切換版面不會重設顏色。</p></div><span class="soft-badge">${escapeHtml(COLOR_THEMES[currentTheme].name)}</span></div><div class="color-theme-grid" role="radiogroup" aria-label="介面配色">${themes}</div></section>
         <div class="structure-guide"><h4>功能已依工作目的重新分層</h4><div class="structure-grid">
@@ -3408,7 +3408,7 @@
 
     const overtimeFormHtml = (draft, editing) => {
       const company = getCompany(draft.companyId);
-      return `<form id="overtimeForm"><input type="hidden" name="companyId" value="${escapeAttr(draft.companyId)}"><div class="form-grid"><label><span class="field-label">加班日期 *</span><input class="field" name="date" type="date" required value="${escapeAttr(draft.date)}"></label><div class="payroll-context-lock"><span>${editing ? '紀錄公司' : '目前公司'}</span><strong>${escapeHtml(company?.name || '公司資料需要確認')}</strong></div><div id="overtimePeriodHint" class="notice span-2"><b>薪資歸屬：</b>${escapeHtml(overtimeAttributionText(draft))}</div><label class="span-2"><span class="field-label">加班類型</span><select class="field-select" name="type"><option value="weekday" ${draft.type === 'weekday' ? 'selected' : ''}>平日｜前 2 小時 1.34×，之後 1.67×</option><option value="restday" ${draft.type === 'restday' ? 'selected' : ''}>休息日｜1.34×／1.67×／2.67×</option><option value="holiday" ${draft.type === 'holiday' ? 'selected' : ''}>星期天｜2.0×</option><option value="spring" ${draft.type === 'spring' ? 'selected' : ''}>春節｜2.5×</option><option value="custom" ${draft.type === 'custom' ? 'selected' : ''}>自訂固定倍率</option></select></label><label><span class="field-label">加班時數 *</span><input class="field" name="hours" type="number" min="0.5" max="${draft.type === 'restday' ? 12 : 24}" step="0.5" required value="${escapeAttr(draft.hours)}"></label><label><span class="field-label">每日加班時薪 *</span><input class="field" name="hourlyRate" type="number" min="0" step="0.001" inputmode="decimal" required value="${escapeAttr(roundHourlyRate(draft.hourlyRate).toFixed(3))}"><span class="hint">派遣公司只在新增時建議帶入基本時薪；此數值會獨立保存在本筆紀錄，日後公司加薪或減薪不會回溯修改。</span></label><label id="customRateField" class="span-2" ${draft.type === 'custom' ? '' : 'hidden'}><span class="field-label">自訂倍率</span><input class="field" name="customRate" type="number" min="0" step="0.01" value="${escapeAttr(draft.customRate)}"></label><label class="span-2"><span class="field-label">備註／事由</span><input class="field" name="note" maxlength="160" value="${escapeAttr(draft.note)}"></label></div><div class="live-total"><span>預估本次加班費</span><strong id="overtimeLiveTotal">$${money(overtimeAmount(draft))}</strong></div><div class="form-actions"><button class="btn" type="button" data-action="close-dialog">取消</button><button class="btn btn-primary" type="submit">${editing ? '儲存修改' : '新增紀錄'}</button></div></form>`;
+      return `<form id="overtimeForm"><input type="hidden" name="companyId" value="${escapeAttr(draft.companyId)}"><div class="form-grid"><label><span class="field-label">加班日期 *</span><input class="field" name="date" type="date" required value="${escapeAttr(draft.date)}"></label><div class="payroll-context-lock"><span>${editing ? '紀錄公司' : '目前公司'}</span><strong>${escapeHtml(company?.name || '公司資料需要確認')}</strong></div><div id="overtimePeriodHint" class="notice span-2"><b>薪資歸屬：</b>${escapeHtml(overtimeAttributionText(draft))}</div><p class="notice span-2">倍率為既有／公司約定試算。星期幾不等於法定日別；請依班表確認平日、休息日、例假或國定假日。1.34／1.67 為現有近似倍率；2.0／春節 2.5 為自訂約定，非通用法定標準。請核對工資基礎、出勤條件及公司給付方式。</p><label class="span-2"><span class="field-label">加班類型</span><select class="field-select" name="type"><option value="weekday" ${draft.type === 'weekday' ? 'selected' : ''}>平日｜前 2 小時 1.34×，之後 1.67×</option><option value="restday" ${draft.type === 'restday' ? 'selected' : ''}>休息日｜1.34×／1.67×／2.67×</option><option value="holiday" ${draft.type === 'holiday' ? 'selected' : ''}>約定假日｜自訂 2.0×</option><option value="spring" ${draft.type === 'spring' ? 'selected' : ''}>春節約定｜自訂 2.5×</option><option value="custom" ${draft.type === 'custom' ? 'selected' : ''}>自訂固定倍率</option></select></label><label><span class="field-label">加班時數 *</span><input class="field" name="hours" type="number" min="0.5" max="${draft.type === 'restday' ? 12 : 24}" step="0.5" required value="${escapeAttr(draft.hours)}"></label><label><span class="field-label">每日加班時薪 *</span><input class="field" name="hourlyRate" type="number" min="0" step="0.001" inputmode="decimal" required value="${escapeAttr(roundHourlyRate(draft.hourlyRate).toFixed(3))}"><span class="hint">派遣公司只在新增時建議帶入基本時薪；此數值會獨立保存在本筆紀錄，日後公司加薪或減薪不會回溯修改。</span></label><label id="customRateField" class="span-2" ${draft.type === 'custom' ? '' : 'hidden'}><span class="field-label">自訂倍率</span><input class="field" name="customRate" type="number" min="0" step="0.01" value="${escapeAttr(draft.customRate)}"></label><label class="span-2"><span class="field-label">備註／事由</span><input class="field" name="note" maxlength="160" value="${escapeAttr(draft.note)}"></label></div><div class="live-total"><span>預估本次加班費</span><strong id="overtimeLiveTotal">$${money(overtimeAmount(draft))}</strong></div><div class="form-actions"><button class="btn" type="button" data-action="close-dialog">取消</button><button class="btn btn-primary" type="submit">${editing ? '儲存修改' : '新增紀錄'}</button></div></form>`;
     };
 
     const collectOvertimeDraft = () => {
@@ -4559,6 +4559,7 @@
         'duplicate-record': duplicateLatestRecord,
         'manage-companies': () => selectPrimaryTab('companies'),
         'open-interface-settings': openInterfaceSettings,
+        'open-legal': () => openDialog('授權、隱私與試算說明', window.SalaryMateLegal?.html || '<p>說明尚未載入，請重新開啟。</p>', true),
         'save-company': saveCompanyForm,
         'edit-company': () => openCompanyManager(getCompany(id)),
         'delete-company': () => deleteCompany(id),

@@ -1,14 +1,15 @@
-const CACHE_NAME = 'salarymate-shell-v4.3.2';
-const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './styles.css?v=4.3.0', './glass.css?v=4.3.2', './glass.js?v=4.3.2', './bootstrap.js?v=4.3.2', './app.js?v=4.3.2', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png'];
-APP_SHELL.push('./reconcile.js?v=4.3.2', './reconcile.css?v=4.3.2');
-APP_SHELL.push('./copy-month.js?v=4.3.2');
-APP_SHELL.push('./comp-time.js?v=4.3.2');
-APP_SHELL.push('./annual-analysis.js?v=4.3.2', './annual-analysis.css?v=4.3.2', './release-polish.css?v=4.3.2');
+const CACHE_NAME = 'salarymate-compliance-dev-v4.3.3-dev.1';
+const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './styles.css?v=4.3.0', './glass.css?v=4.3.3-dev.1', './glass.js?v=4.3.3-dev.1', './bootstrap.js?v=4.3.3-dev.1', './app.js?v=4.3.3-dev.1', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png'];
+APP_SHELL.push('./reconcile.js?v=4.3.3-dev.1', './reconcile.css?v=4.3.3-dev.1');
+APP_SHELL.push('./copy-month.js?v=4.3.3-dev.1');
+APP_SHELL.push('./comp-time.js?v=4.3.3-dev.1');
+APP_SHELL.push('./annual-analysis.js?v=4.3.3-dev.1', './annual-analysis.css?v=4.3.3-dev.1', './release-polish.css?v=4.3.3-dev.1');
+APP_SHELL.push('./legal-data.js?v=4.3.3-dev.1', './legal.html', './THIRD_PARTY_NOTICES.txt');
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('salarymate-shell-') && key !== CACHE_NAME).map(key => caches.delete(key)))).then(() => self.clients.claim()));
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('salarymate-compliance-dev-') && key !== CACHE_NAME).map(key => caches.delete(key)))).then(() => self.clients.claim()));
 });
 self.addEventListener('fetch', event => {
   const request = event.request;
