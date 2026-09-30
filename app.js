@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '4.3.2-dev.3';
+    const APP_VERSION = '4.3.2-dev.4';
     const SCHEMA_VERSION = 13;
     const STORAGE_KEY = 'salarymate_v310_state';
     const LEGACY_KEYS = {
@@ -2440,11 +2440,53 @@
       </section>`;
     };
 
+    // ANNUAL_ANALYSIS_START
+    const annualMonthChoices = new Map();
+    const annualAnalysisData = () => {
+      const year=Number(ui.selectedYear), month=annualMonthChoices.get(year)||(year===new Date().getFullYear()?new Date().getMonth()+1:12);
+      const data=window.SalaryMateAnnual.analyze(state.records,{year,throughMonth:month,companyId:ui.companyFilter});
+      const companyMatch=id=>ui.companyFilter==='ALL'||id===ui.companyFilter;
+      data.scopeName=ui.companyFilter==='ALL'?'全部公司':companyName(ui.companyFilter);
+      data.monthly=data.current.map((row,index)=>{
+        const logs=state.overtimeLogs.filter(log=>{const period=salaryMonthForLog(log);return companyMatch(log.companyId)&&period?.year===year&&period?.month===row.month});
+        const leaves=state.leaveRecords.filter(leave=>companyMatch(leave.companyId)).map(leave=>({leave,allocation:leaveAllocationForMonth(leave,year,row.month)})).filter(item=>item.allocation);
+        const settlements=state.compTimeSettlements.filter(item=>companyMatch(item.companyId)&&Number(item.date.slice(0,4))===year&&Number(item.date.slice(5,7))===row.month);
+        return {...row,previous:data.previous[index],overtimeHours:logs.reduce((n,log)=>n+numberValue(log.hours),0),overtimeEstimate:logs.reduce((n,log)=>n+overtimeAmount(log),0),creditHours:state.compTimeCredits.filter(item=>logs.some(log=>log.id===item.sourceId&&log.companyId===item.companyId)).reduce((n,item)=>n+numberValue(item.hours),0),leaveConfirmed:leaves.filter(item=>item.leave.status==='confirmed').reduce((n,item)=>n+item.allocation.hours,0),leavePlanned:leaves.filter(item=>item.leave.status==='planned').reduce((n,item)=>n+item.allocation.hours,0),settlementHours:settlements.reduce((n,item)=>n+numberValue(item.hours),0),settlementAmount:settlements.reduce((n,item)=>n+numberValue(item.amount),0)};
+      });
+      return data;
+    };
+    const annualMoney = value => '$'+Number(value).toLocaleString('zh-TW',{maximumFractionDigits:2});
+    const annualPercent = value => value===null?'無適用占比':value.toFixed(1)+'%';
+    const annualCoverageText = data => `未登錄月份：${data.year} 年 ${data.missingCurrent.join('、')||'無'}；${data.year-1} 年 ${data.missingPrevious.join('、')||'無'}。共同有紀錄月份：${data.common.join('、')||'無'}。`;
+    const annualMonthlyTable = data => `<div class="table-scroll"><table><caption>月度同期與工時摘要</caption><thead><tr><th>薪資月</th><th>${data.year} 應發</th><th>${data.year} 淨入帳</th><th>${data.year-1} 淨入帳</th><th>同期差額</th><th>加班／轉補休 h</th><th>確認／預計請假 h</th><th>補休結算金額</th></tr></thead><tbody>${data.monthly.map(row=>`<tr><td>${row.month} 月</td><td>${row.count?annualMoney(row.gross):'未登錄'}</td><td>${row.count?annualMoney(row.combined):'未登錄'}</td><td>${row.previous.count?annualMoney(row.previous.combined):'未登錄'}</td><td>${row.count&&row.previous.count?annualMoney(window.SalaryMateAnnual.amount(row.combined-row.previous.combined)):'—'}</td><td>${rateNumber(row.overtimeHours)}／${rateNumber(row.creditHours)}</td><td>${rateNumber(row.leaveConfirmed)}／${rateNumber(row.leavePlanned)}</td><td>${annualMoney(row.settlementAmount)}</td></tr>`).join('')}</tbody></table></div>`;
+    const annualStructureHtml = data => `<div class="annual-structure"><article class="card"><h4>主業實領／副業淨收入</h4><div class="summary-row"><span>主業實領</span><b>${annualMoney(data.totals.mainNet)}｜${annualPercent(data.netShares[0])}</b></div><div class="summary-row"><span>副業淨收入</span><b>${annualMoney(data.totals.side)}｜${annualPercent(data.netShares[1])}</b></div><p class="hint">以主業實領＋副業淨收入為分母；負值或總額為零不計占比。</p></article><article class="card"><h4>主業應發：固定／變動收入</h4><div class="summary-row"><span>本薪、津貼與公司固定加項</span><b>${annualMoney(data.totals.fixed)}｜${annualPercent(data.grossShares[0])}</b></div><div class="summary-row"><span>加班、獎金與其他加項</span><b>${annualMoney(data.totals.variable)}｜${annualPercent(data.grossShares[1])}</b></div><p class="hint">以主業應發為分母；副業與補休結算紀錄不加進此項。</p></article></div>`;
+    const annualReportHtml = data => `<section class="annual-report"><h2>${data.year} 年整合報表</h2><p>${escapeHtml(data.scopeName)}｜1～${data.throughMonth} 月｜薪資歸屬年度｜產生 ${escapeHtml(todayIso())}</p><p>${escapeHtml(annualCoverageText(data))}</p><table><caption>已登錄收入摘要</caption><tbody><tr><th>主業應發</th><td>${annualMoney(data.totals.gross)}</td><th>扣除（含勞退自提）</th><td>${annualMoney(data.totals.deductions)}</td></tr><tr><th>主業實領</th><td>${annualMoney(data.totals.mainNet)}</td><th>副業淨收入</th><td>${annualMoney(data.totals.side)}</td></tr><tr><th>淨入帳合計</th><td>${annualMoney(data.totals.combined)}</td><th>前一年已登錄同期</th><td>${annualMoney(data.prior.combined)}</td></tr><tr><th>共同月份差額</th><td>${data.delta===null?'無可比較資料':annualMoney(data.delta)}</td><th>共同月份增幅</th><td>${data.growth===null?'無適用增幅':data.growth.toFixed(1)+'%'}</td></tr></tbody></table>${annualStructureHtml(data)}${annualMonthlyTable(data)}<p>缺少薪資紀錄不等於零收入。加班與請假依公司計薪區間歸屬；補休結算依實際結算日期月份列示，屬核對備註金額，未額外加入收入合計。工時資料尚未同步薪資時，兩者金額可能不同。</p></section>`;
+    const renderAnnualAnalysis = () => {
+      const data=annualAnalysisData();
+      return `<article class="card card-pad annual-analysis"><div class="annual-scope"><div><h3>年度同期比較與收入結構</h3><p>${data.year} 對 ${data.year-1}｜${escapeHtml(data.scopeName)}</p></div><label for="annualThroughMonth">比較到<select class="field-select" id="annualThroughMonth">${Array.from({length:12},(_,i)=>`<option value="${i+1}" ${data.throughMonth===i+1?'selected':''}>${i+1} 月</option>`).join('')}</select></label></div><div class="summary-row"><span>本年已登錄 ${annualMoney(data.totals.combined)}｜前一年同期 ${annualMoney(data.prior.combined)}</span><b>共同月份差額 ${data.delta===null?'—':annualMoney(data.delta)}${data.growth===null?'':`（${data.growth>=0?'+':''}${data.growth.toFixed(1)}%）`}</b></div><div class="notice">${escapeHtml(annualCoverageText(data))}增幅只比較兩年共同有紀錄的月份；前期淨入帳非正值時不計增幅。</div>${annualStructureHtml(data)}${annualMonthlyTable(data)}<div class="form-actions"><button class="btn" type="button" data-action="preview-annual-report">預覽整合報表</button><button class="btn btn-primary" type="button" data-action="export-annual-report">下載整合 CSV</button></div></article>`;
+    };
+    const previewAnnualReport = () => openDialog('年度整合報表',annualReportHtml(annualAnalysisData())+`<div class="form-actions"><button class="btn" type="button" data-action="close-dialog">關閉</button><button class="btn btn-primary" type="button" data-action="download-annual-print">下載列印版／PDF 用</button></div>`,true);
+    const downloadAnnualPrint = () => {
+      const data=annualAnalysisData();
+      const html=`<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SalaryMate ${data.year} 年整合報表</title><style>body{font-family:system-ui,sans-serif;margin:24px;color:#172d29;font-size:14px}table{width:100%;border-collapse:collapse;margin:16px 0}td,th{padding:8px;text-align:right;border-bottom:1px solid #cbd8d4}th:first-child,td:first-child{text-align:left}caption{text-align:left;font-weight:bold;font-size:16px}.annual-structure{display:grid;grid-template-columns:1fr 1fr;gap:24px}.summary-row{display:flex;justify-content:space-between;gap:12px;margin:12px 0}.hint{color:#49605b}button{padding:10px 18px;font-size:16px}@media print{button{display:none}body{margin:0}table{font-size:10px}tr{break-inside:avoid}thead{display:table-header-group}}@page{size:A4 landscape;margin:12mm}</style></head><body><button onclick="window.print()">列印／另存 PDF</button>${annualReportHtml(data)}</body></html>`;
+      downloadBlob(html,'text/html;charset=utf-8',`SalaryMate_${data.year}_01-${pad2(data.throughMonth)}_report.html`);
+      toast('已下載列印版；開啟後可列印或另存 PDF。');
+    };
+    const exportAnnualReport = () => {
+      const data=annualAnalysisData();
+      const rows=[['SalaryMate 年度整合月報',APP_VERSION],['公司範圍',data.scopeName],['薪資年度',data.year],['月份範圍',`1～${data.throughMonth}`],['缺漏／共同月份',annualCoverageText(data)],['共同月份淨入帳差額',data.delta],['共同月份增幅百分比',data.growth],[],['薪資年份','薪資月份','薪資筆數','主業應發','薪資扣除含自提','主業實領','副業淨收入','淨入帳合計','固定應發','變動應發','前一年薪資筆數','前一年淨入帳','同期差額','加班紀錄時數','其中轉入補休時數','預估加班費','已確認請假時數','預計請假時數','補休結算時數（日期月份）','補休結算金額（未另加收入）']];
+      data.monthly.forEach(row=>rows.push([data.year,row.month,row.count,row.count?row.gross:null,row.count?row.deductions:null,row.count?row.mainNet:null,row.count?row.side:null,row.count?row.combined:null,row.count?row.fixed:null,row.count?row.variable:null,row.previous.count,row.previous.count?row.previous.combined:null,row.count&&row.previous.count?window.SalaryMateAnnual.amount(row.combined-row.previous.combined):null,row.overtimeHours,row.creditHours,row.overtimeEstimate,row.leaveConfirmed,row.leavePlanned,row.settlementHours,row.settlementAmount]));
+      downloadBlob(window.SalaryMateAnnual.csv(rows),'text/csv;charset=utf-8',`SalaryMate_${data.year}_01-${pad2(data.throughMonth)}_integrated.csv`);
+      toast('已匯出目前範圍的年度整合報表。');
+    };
+    // ANNUAL_ANALYSIS_END
     const renderTax = () => {
       const stats = taxStats();
       return `
         <section class="view" aria-labelledby="taxTitle">
           <div class="page-head"><div><h2 id="taxTitle">年度所得與扣繳對帳</h2><p>彙整各發薪公司薪資所得、預扣稅與勞退自提，供申報前核對。</p></div><button class="btn" type="button" onclick="window.print()">列印此頁</button></div>
+          ${renderAnnualAnalysis()}
+          <div class="section-title"><div><h3>全年所得與扣繳摘要</h3><p>${ui.selectedYear} 年全部月份；公司篩選相同，上方同期比較依指定截止月計算。</p></div></div>
           <div class="metric-grid three">
             <article class="card metric"><div class="metric-label"><span>估算薪資所得</span><span class="metric-icon">50</span></div><div class="metric-value">$${money(stats.taxable)}</div><div class="metric-note">已扣伙食免稅額與勞退自提</div></article>
             <article class="card metric blue"><div class="metric-label"><span>已預扣所得稅</span><span class="metric-icon">稅</span></div><div class="metric-value">$${money(stats.tax)}</div><div class="metric-note">申報時可供核對的扣繳金額</div></article>
@@ -4492,6 +4534,9 @@
         'delete-salary-adjustment': () => deleteSalaryAdjustment(id),
         'export-json': exportJson,
         'export-csv': exportCsv,
+        'preview-annual-report': previewAnnualReport,
+        'download-annual-print': downloadAnnualPrint,
+        'export-annual-report': exportAnnualReport,
         'export-leave-csv': exportLeaveCsv,
         'export-attendance-csv': exportAttendanceCsv,
         'data-health': openDataHealthReport,
@@ -4645,6 +4690,13 @@
     });
 
     document.addEventListener('change', (event) => {
+      if(event.target.id==='annualThroughMonth'){
+        const month=Number(event.target.value);
+        if(Number.isInteger(month)&&month>=1&&month<=12)annualMonthChoices.set(Number(ui.selectedYear),month);
+        renderView();
+        $('#annualThroughMonth')?.focus();
+        return;
+      }
       if (event.target.id === 'copyTargetMonth' && copyMonthDraft) {
         const [year, month] = event.target.value.split('-').map(Number);
         copyMonthDraft.year = year; copyMonthDraft.month = month;
