@@ -2873,7 +2873,7 @@ var BACKUP_CRYPTO_LIMITS = Object.freeze({
 });
 
 // src/native-backup.mjs
-function createBackupService(filesystem, share, directory, encoding, version = "4.3.2-RC.3", crypto = { encryptBackup, decryptBackup, inspectEncryptedBackup, isEncryptedBackup }, fileSaver) {
+function createBackupService(filesystem, share, directory, encoding, version = "4.3.2", crypto = { encryptBackup, decryptBackup, inspectEncryptedBackup, isEncryptedBackup }, fileSaver) {
   let busy = false;
   const fileName = () => `SalaryMate_v${version}_${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.salarymate`;
   const prepare = async (payload, password) => {
@@ -3489,7 +3489,7 @@ var backup = createBackupService(
   Share,
   Directory.Cache,
   Encoding.UTF8,
-  "4.3.2-RC.3",
+  "4.3.2",
   void 0,
   BackupFile
 );
@@ -3533,7 +3533,7 @@ try {
     status.textContent = "\u8CC7\u6599\u4FDD\u5B58\u5728\u76EE\u524D\u700F\u89BD\u5668\uFF1B\u8207\u624B\u6A5F App \u4E0D\u540C\u6B65";
   }
   const script = document.createElement("script");
-  script.src = "./app.js?v=4.3.2-RC.3";
+  script.src = "./app.js?v=4.3.2";
   script.onload = async () => {
     try {
       if (repository) {
