@@ -1,0 +1,40 @@
+{
+  "version": "4.3.2-RC.3",
+  "scope": "Browser preview with synthetic test company and salary; not native iOS/Android device testing",
+  "mobile": {
+    "viewportWidth": 390,
+    "documentScrollWidth": 390,
+    "toolbarHeight": 124.796875,
+    "searchHeight": 44.796875,
+    "actionButtonHeights": [
+      44,
+      44,
+      44
+    ],
+    "actionButtonTop": [
+      488.265625,
+      488.265625,
+      488.265625
+    ],
+    "status": "PASS"
+  },
+  "desktop": {
+    "viewportWidth": 1366,
+    "documentScrollWidth": 1366,
+    "toolbarHeight": 68,
+    "searchHeight": 42,
+    "actionButtonHeights": [
+      40,
+      40,
+      40
+    ],
+    "actionButtonTop": [
+      414.40625,
+      414.40625,
+      414.40625
+    ],
+    "status": "PASS"
+  },
+  "syntheticRecordCreation": "PASS",
+  "nativeDeviceAcceptance": "PENDING"
+}
