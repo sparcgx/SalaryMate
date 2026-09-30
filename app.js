@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '4.3.2-RC.2';
+    const APP_VERSION = '4.3.2-RC.3';
     const SCHEMA_VERSION = 13;
     const STORAGE_KEY = 'salarymate_v310_state';
     const LEGACY_KEYS = {
@@ -1879,7 +1879,7 @@
       return `
         <section class="view" aria-labelledby="recordsTitle">
           <div class="page-head"><div><h2 id="recordsTitle">各月薪資明細</h2><p>每家公司、每個月份保留一份完整薪資拆解。</p></div></div>
-          <div class="card toolbar">
+          <div class="card toolbar record-toolbar">
             <div class="search-wrap"><span class="search-mark">⌕</span><label class="sr-only" for="recordSearch">搜尋薪資紀錄</label><input id="recordSearch" class="field" type="search" value="${escapeAttr(ui.search)}" placeholder="搜尋公司、備註、月份或實領金額"></div>
             <div class="page-actions"><button class="btn" type="button" data-action="duplicate-record" ${state.records.length ? '' : 'disabled'}>複製上月薪資</button><button class="btn btn-primary" type="button" data-action="add-record">＋ 新增薪資</button></div>
           </div>
@@ -1898,7 +1898,7 @@
         ...(record.customDeductions || []).map((item) => [item.name || '自訂扣項', item.amount])
       ];
       return `
-        <tr class="data-row" data-action="toggle-record" data-id="${escapeAttr(record.id)}" style="cursor:pointer"><td><span class="month-title"><button class="btn btn-ghost btn-small" type="button" aria-label="${expanded ? '收合' : '展開'} ${record.year} 年 ${record.month} 月明細" aria-expanded="${expanded}" aria-controls="record-details-${escapeAttr(record.id)}">${expanded ? '⌄' : '›'}</button><span>${record.year} 年 ${record.month} 月<small>${escapeHtml(record.payDate || '未填入帳日')}</small></span></span></td><td><span class="status ${companyStatus(record.companyId)}">${companyStatus(record.companyId) === 'current' ? '現任' : '歷任'}</span> ${escapeHtml(companyName(record.companyId))}${record.employmentMode === 'dispatch_hourly' ? '<small style="display:block;color:var(--brand)">派遣（時薪）快照</small>' : ''}</td><td class="money">$${money(gross(record))}</td><td class="money text-rose">−$${money(deductions(record))}</td><td class="money text-blue">−$${money(pension(record))}</td><td class="money text-amber">+$${money(record.sideIncome)}</td><td class="money text-green">$${money(combinedNet(record))}</td><td class="actions" data-stop-row><button class="btn btn-small" type="button" data-action="reconcile-record" data-id="${escapeAttr(record.id)}">月結核對</button><span class="reconcile-status">${escapeHtml(reconciliationStatus(record))}</span><button class="btn btn-small" type="button" data-action="edit-record" data-id="${escapeAttr(record.id)}">編輯</button> <button class="btn btn-small btn-danger" type="button" data-action="delete-record" data-id="${escapeAttr(record.id)}">刪除</button></td></tr>
+        <tr class="data-row" data-action="toggle-record" data-id="${escapeAttr(record.id)}" style="cursor:pointer"><td><span class="month-title"><button class="btn btn-ghost btn-small" type="button" aria-label="${expanded ? '收合' : '展開'} ${record.year} 年 ${record.month} 月明細" aria-expanded="${expanded}" aria-controls="record-details-${escapeAttr(record.id)}">${expanded ? '⌄' : '›'}</button><span>${record.year} 年 ${record.month} 月<small>${escapeHtml(record.payDate || '未填入帳日')}</small></span></span></td><td><span class="status ${companyStatus(record.companyId)}">${companyStatus(record.companyId) === 'current' ? '現任' : '歷任'}</span> ${escapeHtml(companyName(record.companyId))}${record.employmentMode === 'dispatch_hourly' ? '<small style="display:block;color:var(--brand)">派遣（時薪）快照</small>' : ''}</td><td class="money">$${money(gross(record))}</td><td class="money text-rose">−$${money(deductions(record))}</td><td class="money text-blue">−$${money(pension(record))}</td><td class="money text-amber">+$${money(record.sideIncome)}</td><td class="money text-green">$${money(combinedNet(record))}</td><td class="actions record-actions" data-stop-row><div class="record-action-buttons"><button class="btn btn-small" type="button" data-action="reconcile-record" data-id="${escapeAttr(record.id)}">月結核對</button><button class="btn btn-small" type="button" data-action="edit-record" data-id="${escapeAttr(record.id)}">編輯</button> <button class="btn btn-small btn-danger" type="button" data-action="delete-record" data-id="${escapeAttr(record.id)}">刪除</button></div><span class="reconcile-status">${escapeHtml(reconciliationStatus(record))}</span></td></tr>
         ${expanded ? `<tr class="details-row" id="record-details-${escapeAttr(record.id)}"><td colspan="8"><div class="details-grid"><div class="breakdown"><h4 class="text-green">應發項目</h4>${earnings.filter(([, value]) => numberValue(value) !== 0).map(([name, value]) => `<div class="break-row"><span>${escapeHtml(name)}</span><b>+$${money(value)}</b></div>`).join('') || '<div class="break-row"><span>無項目</span><b>$0</b></div>'}</div><div class="breakdown"><h4 class="text-rose">扣除項目</h4>${deducts.filter(([, value]) => numberValue(value) !== 0).map(([name, value]) => `<div class="break-row"><span>${escapeHtml(name)}</span><b>−$${money(value)}</b></div>`).join('') || '<div class="break-row"><span>無項目</span><b>$0</b></div>'}${record.note ? `<div class="notice" style="margin-top:10px">備註：${escapeHtml(record.note)}</div>` : ''}</div></div></td></tr>` : ''}`;
     };
 
