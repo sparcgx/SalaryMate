@@ -1,9 +1,9 @@
-const CACHE_NAME = 'salarymate-shell-v4.3.2-RC.3';
-const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './styles.css?v=4.3.0', './glass.css?v=4.3.2-RC.3', './glass.js?v=4.3.2-RC.3', './bootstrap.js?v=4.3.2-RC.3', './app.js?v=4.3.2-RC.3', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png'];
-APP_SHELL.push('./reconcile.js?v=4.3.2-RC.3', './reconcile.css?v=4.3.2-RC.3');
-APP_SHELL.push('./copy-month.js?v=4.3.2-RC.3');
-APP_SHELL.push('./comp-time.js?v=4.3.2-RC.3');
-APP_SHELL.push('./annual-analysis.js?v=4.3.2-RC.3', './annual-analysis.css?v=4.3.2-RC.3', './release-polish.css?v=4.3.2-RC.3');
+const CACHE_NAME = 'salarymate-shell-v4.3.2';
+const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './styles.css?v=4.3.0', './glass.css?v=4.3.2', './glass.js?v=4.3.2', './bootstrap.js?v=4.3.2', './app.js?v=4.3.2', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png'];
+APP_SHELL.push('./reconcile.js?v=4.3.2', './reconcile.css?v=4.3.2');
+APP_SHELL.push('./copy-month.js?v=4.3.2');
+APP_SHELL.push('./comp-time.js?v=4.3.2');
+APP_SHELL.push('./annual-analysis.js?v=4.3.2', './annual-analysis.css?v=4.3.2', './release-polish.css?v=4.3.2');
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()));
 });
