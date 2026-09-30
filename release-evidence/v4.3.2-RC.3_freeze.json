@@ -1,0 +1,39 @@
+{
+  "version": "4.3.2-RC.3",
+  "baselineCommit": "0ed6280bf736116a47d3143d21e60800814f8631",
+  "scope": "Two user-reported payroll layout fixes; Web RC, native gates UNVERIFIED, data safety blocker OPEN",
+  "approvedChanges": [
+    "Compact responsive payroll search toolbar",
+    "Horizontal reconciliation/edit/delete buttons with status beneath",
+    "Release version and asset cache identity"
+  ],
+  "assets": {
+    "dist/annual-analysis.css": "ca575844e53114e68d01b1f377a0cfb8def6683711ede3cbaeb4b87ddbc9f867",
+    "dist/annual-analysis.js": "d440898ec46919521e0e07bfb8b35f253be6d74164f5fda2ca17a6cef0ac92a9",
+    "dist/app.js": "fd10afcbb5983fa84853a16e9c0d2516bc844f9dc25431ee1d53e43638adaa04",
+    "dist/bootstrap.js": "89e38d7881f7e6337bf62d59b93ef321b09ca462ec923d514048e71db8ebdf23",
+    "dist/comp-time.js": "4bb8806a8b578c080e9f4049c4f03ed0e988eaf766658b37b81903b42770f555",
+    "dist/copy-month.js": "264418d1196009b72c3ba381520f83d27f6ca1b762b32a834de87c1694972a46",
+    "dist/dev/v4.3.1-dev.1/app.js": "264341c4b61d0971b61041e29b478c3b2544e438ed7089894958a8dd6dd0cc52",
+    "dist/dev/v4.3.1-dev.1/bootstrap.js": "ddee7583c395ce7660a03b4e21499fceb8fabcdb7e4b7106b9c6327c78796db3",
+    "dist/dev/v4.3.1-dev.1/icons/app-icon.svg": "81c230e5437fe041faa3d9bf673d0da55f9d23aaee7c40ad16d7f9ce4b8f0f06",
+    "dist/dev/v4.3.1-dev.1/icons/icon-192.png": "4688c9f2e1db290be5a7f377075e7cced909546a09ba3b95a729bee74c6b950d",
+    "dist/dev/v4.3.1-dev.1/icons/icon-512.png": "c7513317fff6a936f67b2fbed768da55d65d771349bbe250baa9066f0d0457b8",
+    "dist/dev/v4.3.1-dev.1/icons/icon-maskable-512.png": "7b0e00ae8ca8de1b5da96aa40e90b5d612467ad408daac2ae51e0dc3d47e4b86",
+    "dist/dev/v4.3.1-dev.1/index.html": "901f7fff6a4e0aaf828f9956d8df9c8e2fe2566ca3fb267441b9c952d67d9d7a",
+    "dist/dev/v4.3.1-dev.1/styles.css": "ab108c7095d6d6191cfd665c5249c545b1f0015b33aea854940d1bb3d047c8d7",
+    "dist/glass.css": "5e68400096a74593f69038306965ffbd1f2cdb060151a2af0d7e5c9e806dacbb",
+    "dist/glass.js": "0d6d02163930ad1463a48b7d348393ef6f9e54df156be0cfaae00239896cf7cc",
+    "dist/icons/app-icon.svg": "81c230e5437fe041faa3d9bf673d0da55f9d23aaee7c40ad16d7f9ce4b8f0f06",
+    "dist/icons/icon-192.png": "4688c9f2e1db290be5a7f377075e7cced909546a09ba3b95a729bee74c6b950d",
+    "dist/icons/icon-512.png": "c7513317fff6a936f67b2fbed768da55d65d771349bbe250baa9066f0d0457b8",
+    "dist/icons/icon-maskable-512.png": "7b0e00ae8ca8de1b5da96aa40e90b5d612467ad408daac2ae51e0dc3d47e4b86",
+    "dist/index.html": "4600168167e7af8dac39c42df736bacc681702679add12222eb5049f8e479a5e",
+    "dist/manifest.webmanifest": "e9fdecc8e9be969bb5df7b37ec2127dadf92b926e655612eaac8f931d9a36c9f",
+    "dist/reconcile.css": "b268a10e2f4139fa0f55396bed0b537b50c2fa6f352a07f49b125b9baac7b2cc",
+    "dist/reconcile.js": "3f425c5b7630c9757bbefa8dafb3dad384213ef24485754ee6633a5f06faebc7",
+    "dist/release-polish.css": "424f3ab517c681706686a196dab3fe0027b1ae86b471c1e0ad98bb27bf93568b",
+    "dist/styles.css": "ab108c7095d6d6191cfd665c5249c545b1f0015b33aea854940d1bb3d047c8d7",
+    "dist/sw.js": "dde2e61c3d4a1a5f5210a97c5bbc748e8bd639cace8b80960c79c9f210b3edbc"
+  }
+}

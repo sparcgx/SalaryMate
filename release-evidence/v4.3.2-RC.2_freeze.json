@@ -1,0 +1,43 @@
+{
+  "version": "4.3.2-RC.2",
+  "baselineCommit": "b887d8bb62f71731e40adeec33f5163b867cf6b9",
+  "scope": "Web release candidate; not Stable; native gates UNVERIFIED and data safety blocker OPEN",
+  "approvedChanges": [
+    "Backup schema/collection validation",
+    "Comp-time source integrity and company-scoped validation",
+    "CSV formula hardening",
+    "Annual calculation caching and one-pass aggregation",
+    "IME input and accessible annual UI",
+    "Versioned PWA cache-first assets",
+    "Release identity"
+  ],
+  "assets": {
+    "dist/annual-analysis.css": "ca575844e53114e68d01b1f377a0cfb8def6683711ede3cbaeb4b87ddbc9f867",
+    "dist/annual-analysis.js": "d440898ec46919521e0e07bfb8b35f253be6d74164f5fda2ca17a6cef0ac92a9",
+    "dist/app.js": "d9b97b73c89606365dbf5408aa3fce3ba5296fda848af3e487b1647e064a6e65",
+    "dist/bootstrap.js": "95ed25461bc1cd68547b43972668e33344e9e8bd9f556a15a35384e99f1dadca",
+    "dist/comp-time.js": "4bb8806a8b578c080e9f4049c4f03ed0e988eaf766658b37b81903b42770f555",
+    "dist/copy-month.js": "264418d1196009b72c3ba381520f83d27f6ca1b762b32a834de87c1694972a46",
+    "dist/dev/v4.3.1-dev.1/app.js": "264341c4b61d0971b61041e29b478c3b2544e438ed7089894958a8dd6dd0cc52",
+    "dist/dev/v4.3.1-dev.1/bootstrap.js": "ddee7583c395ce7660a03b4e21499fceb8fabcdb7e4b7106b9c6327c78796db3",
+    "dist/dev/v4.3.1-dev.1/icons/app-icon.svg": "81c230e5437fe041faa3d9bf673d0da55f9d23aaee7c40ad16d7f9ce4b8f0f06",
+    "dist/dev/v4.3.1-dev.1/icons/icon-192.png": "4688c9f2e1db290be5a7f377075e7cced909546a09ba3b95a729bee74c6b950d",
+    "dist/dev/v4.3.1-dev.1/icons/icon-512.png": "c7513317fff6a936f67b2fbed768da55d65d771349bbe250baa9066f0d0457b8",
+    "dist/dev/v4.3.1-dev.1/icons/icon-maskable-512.png": "7b0e00ae8ca8de1b5da96aa40e90b5d612467ad408daac2ae51e0dc3d47e4b86",
+    "dist/dev/v4.3.1-dev.1/index.html": "901f7fff6a4e0aaf828f9956d8df9c8e2fe2566ca3fb267441b9c952d67d9d7a",
+    "dist/dev/v4.3.1-dev.1/styles.css": "ab108c7095d6d6191cfd665c5249c545b1f0015b33aea854940d1bb3d047c8d7",
+    "dist/glass.css": "5e68400096a74593f69038306965ffbd1f2cdb060151a2af0d7e5c9e806dacbb",
+    "dist/glass.js": "0d6d02163930ad1463a48b7d348393ef6f9e54df156be0cfaae00239896cf7cc",
+    "dist/icons/app-icon.svg": "81c230e5437fe041faa3d9bf673d0da55f9d23aaee7c40ad16d7f9ce4b8f0f06",
+    "dist/icons/icon-192.png": "4688c9f2e1db290be5a7f377075e7cced909546a09ba3b95a729bee74c6b950d",
+    "dist/icons/icon-512.png": "c7513317fff6a936f67b2fbed768da55d65d771349bbe250baa9066f0d0457b8",
+    "dist/icons/icon-maskable-512.png": "7b0e00ae8ca8de1b5da96aa40e90b5d612467ad408daac2ae51e0dc3d47e4b86",
+    "dist/index.html": "8c973d575d84744d443cf7a668780f9f40eb4831193659aeab51e41ec5b2e941",
+    "dist/manifest.webmanifest": "25ae1b6b2f2b9ec9044685f4ba97a2806aedf0fc81f213ec25a007349b915870",
+    "dist/reconcile.css": "b268a10e2f4139fa0f55396bed0b537b50c2fa6f352a07f49b125b9baac7b2cc",
+    "dist/reconcile.js": "3f425c5b7630c9757bbefa8dafb3dad384213ef24485754ee6633a5f06faebc7",
+    "dist/release-polish.css": "b7e1c85349f3d2ce0be59da9c291e60aefbd36adaa6ec902d7643d3b3383c6e8",
+    "dist/styles.css": "ab108c7095d6d6191cfd665c5249c545b1f0015b33aea854940d1bb3d047c8d7",
+    "dist/sw.js": "1cbba7c5bfd4ab3cce59af4a9b9734407ec58a75f0394c019e311b337e4c7498"
+  }
+}

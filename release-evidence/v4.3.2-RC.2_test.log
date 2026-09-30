@@ -1,0 +1,382 @@
+TAP version 13
+# Subtest: 同期只取指定截止月、公司及兩年共同有紀錄月份
+ok 1 - 同期只取指定截止月、公司及兩年共同有紀錄月份
+  ---
+  duration_ms: 2.171609
+  type: 'test'
+  ...
+# Subtest: 未登錄不當作零，明確零收入仍是有效紀錄
+ok 2 - 未登錄不當作零，明確零收入仍是有效紀錄
+  ---
+  duration_ms: 0.418739
+  type: 'test'
+  ...
+# Subtest: 固定／變動以應發為分母，主副業以淨入帳為分母
+ok 3 - 固定／變動以應發為分母，主副業以淨入帳為分母
+  ---
+  duration_ms: 0.272082
+  type: 'test'
+  ...
+# Subtest: 前期零或負收入不計增幅，負組成不計占比
+ok 4 - 前期零或負收入不計增幅，負組成不計占比
+  ---
+  duration_ms: 0.617412
+  type: 'test'
+  ...
+# Subtest: 全部公司合計可切回單家公司，分析不改資料
+ok 5 - 全部公司合計可切回單家公司，分析不改資料
+  ---
+  duration_ms: 0.306312
+  type: 'test'
+  ...
+# Subtest: 金額保留兩位小數，無可比資料時差額為空
+ok 6 - 金額保留兩位小數，無可比資料時差額為空
+  ---
+  duration_ms: 0.330769
+  type: 'test'
+  ...
+# Subtest: CSV 支援中文、引號、換行並防止前置空白公式注入
+ok 7 - CSV 支援中文、引號、換行並防止前置空白公式注入
+  ---
+  duration_ms: 0.356677
+  type: 'test'
+  ...
+# Subtest: 來源重複與跨公司不可轉入，必須有有效到期日
+ok 8 - 來源重複與跨公司不可轉入，必須有有效到期日
+  ---
+  duration_ms: 0.660295
+  type: 'test'
+  ...
+# Subtest: 確認補休按到期先後扣除，未連結及取消紀錄不扣帳本
+ok 9 - 確認補休按到期先後扣除，未連結及取消紀錄不扣帳本
+  ---
+  duration_ms: 6.626084
+  type: 'test'
+  ...
+# Subtest: 到期後不供請假，未用額顯示待結算且仍可人工記錄結算
+ok 10 - 到期後不供請假，未用額顯示待結算且仍可人工記錄結算
+  ---
+  duration_ms: 0.444417
+  type: 'test'
+  ...
+# Subtest: 跨公司、超額、重複結算與來源遺失有異常
+ok 11 - 跨公司、超額、重複結算與來源遺失有異常
+  ---
+  duration_ms: 0.397668
+  type: 'test'
+  ...
+# Subtest: JSON 往返保留來源及結算，舊補休紀錄預設不連結
+ok 12 - JSON 往返保留來源及結算，舊補休紀錄預設不連結
+  ---
+  duration_ms: 1.214244
+  type: 'test'
+  ...
+# Subtest: 跨年度只取同公司前一月，不取別家公司最新紀錄
+ok 13 - 跨年度只取同公司前一月，不取別家公司最新紀錄
+  ---
+  duration_ms: 0.537354
+  type: 'test'
+  ...
+# Subtest: 沒有前一月或來源多筆時阻止套用
+ok 14 - 沒有前一月或來源多筆時阻止套用
+  ---
+  duration_ms: 0.102161
+  type: 'test'
+  ...
+# Subtest: 同公司目標月份重複阻止，不受其他公司同月影響
+ok 15 - 同公司目標月份重複阻止，不受其他公司同月影響
+  ---
+  duration_ms: 0.15554
+  type: 'test'
+  ...
+# Subtest: 固定項目保留，變動收入與扣項清除，核對重設
+ok 16 - 固定項目保留，變動收入與扣項清除，核對重設
+  ---
+  duration_ms: 0.168349
+  type: 'test'
+  ...
+# Subtest: 預覽及修改草稿不改來源，來源變更可辨識
+ok 17 - 預覽及修改草稿不改來源，來源變更可辨識
+  ---
+  duration_ms: 0.280144
+  type: 'test'
+  ...
+# Subtest: 拒絕無效月份與年份；保留時薪工時供下一步確認
+ok 18 - 拒絕無效月份與年份；保留時薪工時供下一步確認
+  ---
+  duration_ms: 0.252873
+  type: 'test'
+  ...
+# Subtest: default is fine; all three native radio choices are labelled
+ok 19 - default is fine; all three native radio choices are labelled
+  ---
+  duration_ms: 2.46955
+  type: 'test'
+  ...
+# Subtest: each mode switches immediately and survives a new page session
+ok 20 - each mode switches immediately and survives a new page session
+  ---
+  duration_ms: 2.961437
+  type: 'test'
+  ...
+# Subtest: untrusted or obsolete stored values fall back without rewriting data
+ok 21 - untrusted or obsolete stored values fall back without rewriting data
+  ---
+  duration_ms: 2.993154
+  type: 'test'
+  ...
+# Subtest: invalid values and unrelated form changes are ignored
+ok 22 - invalid values and unrelated form changes are ignored
+  ---
+  duration_ms: 0.800814
+  type: 'test'
+  ...
+# Subtest: unavailable storage and failed writes do not crash or imply persistence
+ok 23 - unavailable storage and failed writes do not crash or imply persistence
+  ---
+  duration_ms: 0.782526
+  type: 'test'
+  ...
+# Subtest: reduced motion overrides effects but preserves the chosen preference
+ok 24 - reduced motion overrides effects but preserves the chosen preference
+  ---
+  duration_ms: 0.69693
+  type: 'test'
+  ...
+# Subtest: reduced transparency disables pointer glints and is explained
+ok 25 - reduced transparency disables pointer glints and is explained
+  ---
+  duration_ms: 0.847433
+  type: 'test'
+  ...
+# Subtest: pointer listener exists only for active high motion on a fine pointer
+ok 26 - pointer listener exists only for active high motion on a fine pointer
+  ---
+  duration_ms: 0.931407
+  type: 'test'
+  ...
+# Subtest: pointer work is frame-throttled and cleared when leaving or changing modes
+ok 27 - pointer work is frame-throttled and cleared when leaving or changing modes
+  ---
+  duration_ms: 0.932608
+  type: 'test'
+  ...
+# Subtest: switching spotlight cards removes stale highlights
+ok 28 - switching spotlight cards removes stale highlights
+  ---
+  duration_ms: 1.751969
+  type: 'test'
+  ...
+# Subtest: touch creates one local wave; rapid taps and mode changes clean it up
+ok 29 - touch creates one local wave; rapid taps and mode changes clean it up
+  ---
+  duration_ms: 0.900321
+  type: 'test'
+  ...
+# Subtest: tap feedback respects system preferences, visibility and protected controls
+ok 30 - tap feedback respects system preferences, visibility and protected controls
+  ---
+  duration_ms: 2.278958
+  type: 'test'
+  ...
+# Subtest: cross-tab updates sync only the appearance key; clear returns to default
+ok 31 - cross-tab updates sync only the appearance key; clear returns to default
+  ---
+  duration_ms: 0.877527
+  type: 'test'
+  ...
+# Subtest: settings sync when the existing dialog renders; observer scope is local
+ok 32 - settings sync when the existing dialog renders; observer scope is local
+  ---
+  duration_ms: 2.158299
+  type: 'test'
+  ...
+# Subtest: actual app settings include glass controls; switching leaves loaded payroll untouched
+ok 33 - actual app settings include glass controls; switching leaves loaded payroll untouched
+  ---
+  duration_ms: 26.839327
+  type: 'test'
+  ...
+# Subtest: RC：Schema 13 載入與所有主要頁面不改寫原始薪資
+ok 34 - RC：Schema 13 載入與所有主要頁面不改寫原始薪資
+  ---
+  duration_ms: 11.190804
+  type: 'test'
+  ...
+# Subtest: RC：整合 CSV 與列印 HTML 下載遵循公司、年份、截止月且不重複計入補休結算
+ok 35 - RC：整合 CSV 與列印 HTML 下載遵循公司、年份、截止月且不重複計入補休結算
+  ---
+  duration_ms: 8.75559
+  type: 'test'
+  ...
+# Subtest: RC：JSON 備份確認前不寫入，還原與重新啟動保留核對、來源及結算
+ok 36 - RC：JSON 備份確認前不寫入，還原與重新啟動保留核對、來源及結算
+  ---
+  duration_ms: 12.767078
+  type: 'test'
+  ...
+# Subtest: RC：損毀備份與寫入失敗時保持現有資料，恢復寫入後可重試
+ok 37 - RC：損毀備份與寫入失敗時保持現有資料，恢復寫入後可重試
+  ---
+  duration_ms: 7.703095
+  type: 'test'
+  ...
+# Subtest: RC：核對確認保存，切換公司後舊草稿不得保存
+ok 38 - RC：核對確認保存，切換公司後舊草稿不得保存
+  ---
+  duration_ms: 7.336703
+  type: 'test'
+  ...
+# Subtest: RC：報表中的公司名稱經 HTML 跳脫及 CSV 公式防護
+ok 39 - RC：報表中的公司名稱經 HTML 跳脫及 CSV 公式防護
+  ---
+  duration_ms: 4.746315
+  type: 'test'
+  ...
+# Subtest: RC2：較新 Schema 備份拒絕還原，未知資料與現有資料不被覆寫
+ok 40 - RC2：較新 Schema 備份拒絕還原，未知資料與現有資料不被覆寫
+  ---
+  duration_ms: 7.242469
+  type: 'test'
+  ...
+# Subtest: RC2：本機較新 Schema 啟動失敗時保留原始位元組
+ok 41 - RC2：本機較新 Schema 啟動失敗時保留原始位元組
+  ---
+  duration_ms: 2.326729
+  type: 'test'
+  ...
+# Subtest: RC2：重複識別碼、非陣列與空白資料列備份拒絕且不改寫
+ok 42 - RC2：重複識別碼、非陣列與空白資料列備份拒絕且不改寫
+  ---
+  duration_ms: 16.357084
+  type: 'test'
+  ...
+# Subtest: RC2：薪資、請假、出勤 CSV 皆防止前置空白與 BOM 公式文字
+ok 43 - RC2：薪資、請假、出勤 CSV 皆防止前置空白與 BOM 公式文字
+  ---
+  duration_ms: 6.72578
+  type: 'test'
+  ...
+# Subtest: RC2：無來源、重複來源與未發生補休不列入目前可用時數
+ok 44 - RC2：無來源、重複來源與未發生補休不列入目前可用時數
+  ---
+  duration_ms: 3.185428
+  type: 'test'
+  ...
+# Subtest: RC2：異常補休不扣加班費，年度轉補休時數與工時估算一致
+ok 45 - RC2：異常補休不扣加班費，年度轉補休時數與工時估算一致
+  ---
+  duration_ms: 9.951618
+  type: 'test'
+  ...
+# Subtest: RC2：他公司異常補休不阻擋正常公司的結算
+ok 46 - RC2：他公司異常補休不阻擋正常公司的結算
+  ---
+  duration_ms: 4.620729
+  type: 'test'
+  ...
+# Subtest: RC2：年度重複讀取一致，還原更新後重新計算，不沿用舊快取
+ok 47 - RC2：年度重複讀取一致，還原更新後重新計算，不沿用舊快取
+  ---
+  duration_ms: 10.165374
+  type: 'test'
+  ...
+# Subtest: RC2：中文組字期間不重繪搜尋欄，確認後篩選並保留游標
+ok 48 - RC2：中文組字期間不重繪搜尋欄，確認後篩選並保留游標
+  ---
+  duration_ms: 5.583341
+  type: 'test'
+  ...
+# Subtest: RC2：候選執行資產與逐檔 SHA-256 凍結清單一致
+ok 49 - RC2：候選執行資產與逐檔 SHA-256 凍結清單一致
+  ---
+  duration_ms: 3.1868
+  type: 'test'
+  ...
+# Subtest: RC：PWA 安裝完整快取所有功能模組與入口
+ok 50 - RC：PWA 安裝完整快取所有功能模組與入口
+  ---
+  duration_ms: 1.916702
+  type: 'test'
+  ...
+# Subtest: RC：PWA 啟用只刪除 SalaryMate 舊快取，保留目前與其他應用快取
+ok 51 - RC：PWA 啟用只刪除 SalaryMate 舊快取，保留目前與其他應用快取
+  ---
+  duration_ms: 1.46175
+  type: 'test'
+  ...
+# Subtest: RC：PWA 斷線讀快取／導航入口，成功請求更新快取且略過跨站與寫入請求
+ok 52 - RC：PWA 斷線讀快取／導航入口，成功請求更新快取且略過跨站與寫入請求
+  ---
+  duration_ms: 6.580456
+  type: 'test'
+  ...
+# Subtest: RC2：目前版本快取命中免網路，根目錄與 GitHub 子路徑皆適用
+ok 53 - RC2：目前版本快取命中免網路，根目錄與 GitHub 子路徑皆適用
+  ---
+  duration_ms: 2.112842
+  type: 'test'
+  ...
+# Subtest: RC2：版本資產缺快取才下載，舊版或其他路徑不能誤中目前版本
+ok 54 - RC2：版本資產缺快取才下載，舊版或其他路徑不能誤中目前版本
+  ---
+  duration_ms: 5.275427
+  type: 'test'
+  ...
+# Subtest: 薪資實領不包含副業，自訂項目與自提均納入
+ok 55 - 薪資實領不包含副業，自訂項目與自提均納入
+  ---
+  duration_ms: 0.289999
+  type: 'test'
+  ...
+# Subtest: 未填不可視為零或完成
+ok 56 - 未填不可視為零或完成
+  ---
+  duration_ms: 0.453971
+  type: 'test'
+  ...
+# Subtest: 完整一致才可確認，差一分仍有差異
+ok 57 - 完整一致才可確認，差一分仍有差異
+  ---
+  duration_ms: 0.413932
+  type: 'test'
+  ...
+# Subtest: 修改薪資、公司、月份或來源會使核對失效
+ok 58 - 修改薪資、公司、月份或來源會使核對失效
+  ---
+  duration_ms: 0.456574
+  type: 'test'
+  ...
+# Subtest: 未同步提示阻止完成，但仍可保存草稿
+ok 59 - 未同步提示阻止完成，但仍可保存草稿
+  ---
+  duration_ms: 0.268767
+  type: 'test'
+  ...
+# Subtest: JSON 往返保留核對，缺少核對資料的舊備份可載入
+ok 60 - JSON 往返保留核對，缺少核對資料的舊備份可載入
+  ---
+  duration_ms: 0.296668
+  type: 'test'
+  ...
+# Subtest: 拒絕無效數值，零與負數有效；核對不改薪資
+ok 61 - 拒絕無效數值，零與負數有效；核對不改薪資
+  ---
+  duration_ms: 0.212734
+  type: 'test'
+  ...
+1..61
+# tests 61
+# suites 0
+# pass 61
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 242.895751
+
+PASS: same site, consistent web version, existing payroll storage and schema
+PASS: RC1 assets outside approved fixes unchanged; storage/security bootstrap and base CSS preserved
+PASS: every HTML/PWA asset exists; glass assets are cached and loaded in order
+PASS: motion/transparency/unsupported-browser fallbacks and keyboard focus styles present
+NOTE: Web source gate only; native Android/iOS and data-safety blocker remain open.
