@@ -1,8 +1,8 @@
-const CACHE='salarymate-v5-full-5.0.0-dev.2-R67';
+const CACHE='salarymate-v5-full-5.0.0-dev.2-R69';
 const BASE=new URL('./',self.location.href);
-const LOCALES=['./i18n-en.js?v=5.0.0-dev.2-R67','./i18n.js?v=5.0.0-dev.2-R67'];
-const STOCKS=['./google-drive.js?v=5.0.0-dev.2-R67','./google-drive-ui.js?v=5.0.0-dev.2-R67','./backup.js?v=5.0.0-dev.2-R67','./stocks.js?v=5.0.0-dev.2-R67','./stocks-integrations.js?v=5.0.0-dev.2-R67','./stocks-ui.js?v=5.0.0-dev.2-R67'];
-const SHELL=['./','./index.html','./styles.css?v=5.0.0-dev.2-R67','./bootstrap.js?v=5.0.0-dev.2-R67','./app.js?v=5.0.0-dev.2-R67','./reconcile.js?v=5.0.0-dev.2-R67','./copy-month.js?v=5.0.0-dev.2-R67','./comp-time.js?v=5.0.0-dev.2-R67','./annual-analysis.js?v=5.0.0-dev.2-R67','./legal-data.js?v=5.0.0-dev.2-R67','./legal.html','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./art/jingyu-hd2d-r62.webp'];
+const LOCALES=['./i18n-en.js?v=5.0.0-dev.2-R69','./i18n.js?v=5.0.0-dev.2-R69'];
+const STOCKS=['./google-drive.js?v=5.0.0-dev.2-R69','./google-drive-ui.js?v=5.0.0-dev.2-R69','./backup.js?v=5.0.0-dev.2-R69','./stocks.js?v=5.0.0-dev.2-R69','./stocks-integrations.js?v=5.0.0-dev.2-R69','./stocks-ui.js?v=5.0.0-dev.2-R69'];
+const SHELL=['./','./index.html','./styles.css?v=5.0.0-dev.2-R69','./bootstrap.js?v=5.0.0-dev.2-R69','./app.js?v=5.0.0-dev.2-R69','./reconcile.js?v=5.0.0-dev.2-R69','./copy-month.js?v=5.0.0-dev.2-R69','./comp-time.js?v=5.0.0-dev.2-R69','./annual-analysis.js?v=5.0.0-dev.2-R69','./legal-data.js?v=5.0.0-dev.2-R69','./legal.html','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./art/jingyu-hd2d-r62.webp','./art/jingyu-flight-r68.png'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll([...SHELL,...STOCKS,...LOCALES])).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('salarymate-v5-full-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{const url=new URL(e.request.url);if(e.request.method!=='GET'||url.origin!==BASE.origin||!url.pathname.startsWith(BASE.pathname))return;e.respondWith(fetch(e.request).then(r=>{if(r.ok){const copy=r.clone();e.waitUntil(caches.open(CACHE).then(c=>c.put(e.request,copy)));}return r;}).catch(()=>caches.match(e.request).then(c=>c||(e.request.mode==='navigate'?caches.match(new URL('index.html',BASE).href):Response.error()))));});

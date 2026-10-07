@@ -28,6 +28,11 @@ for(const match of scripts){
     if(!source.includes(marker))throw new Error('Missing HD-2D companion asset declaration');
     const bytes=await readFile(path.join(base,companionPath));
     source=source.replace(marker,()=>"const HD2D_COMPANION_SRC = 'data:image/webp;base64,"+bytes.toString('base64')+"';");
+    const flightPath='./art/jingyu-flight-r68.png';
+    const flightMarker="const HD2D_FLIGHT_SRC = '"+flightPath+"';";
+    if(!source.includes(flightMarker))throw new Error('Missing HD-2D flight asset declaration');
+    const flightBytes=await readFile(path.join(base,flightPath));
+    source=source.replace(flightMarker,()=>"const HD2D_FLIGHT_SRC = 'data:image/png;base64,"+flightBytes.toString('base64')+"';");
   }
   if(name==='i18n-en.js')source+='\nObject.assign(window.SalaryMateEnglish,'+JSON.stringify({
     '單一 HTML 版':'Single HTML edition',
