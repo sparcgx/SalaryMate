@@ -57,3 +57,109 @@
   window.addEventListener('resize',schedule);document.addEventListener('toggle',schedule,true);
   window.SalaryMateScrollbars=Object.freeze({refresh});schedule();
 })();
+
+// R67: a finite, on-demand flight. No timers, observers or storage work while idle.
+(() => {
+  let active = null;
+  const stop = () => {
+    if (!active) return;
+    const flight = active;
+    active = null;
+    if (flight.animation) {
+      flight.animation.onfinish = null;
+      flight.animation.oncancel = null;
+      flight.animation.cancel();
+    }
+    window.clearTimeout(flight.timer);
+    flight.cleanups.forEach(cleanup => cleanup());
+    flight.layer?.remove();
+    flight.button.classList.remove('jingyu-away', 'jingyu-greeting');
+    flight.button.setAttribute('aria-pressed', 'false');
+  };
+  const fly = button => {
+    if (active) { stop(); return; }
+    const art = button?.querySelector('.v5-companion-art');
+    if (!art || !button.isConnected || document.hidden || document.body.dataset.interfaceStyle !== 'pixel' || document.querySelector('dialog[open]')) return;
+    const home = art.getBoundingClientRect();
+    if (home.width <= 0 || home.height <= 0) return;
+    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    const flight = { button, cleanups: [], layer: null, animation: null, timer: null };
+    active = flight;
+    const finish = () => { if (active === flight) stop(); };
+    const listen = (target, event, handler = finish) => {
+      if (!target?.addEventListener) return;
+      target.addEventListener(event, handler, { passive: true });
+      flight.cleanups.push(() => target.removeEventListener(event, handler));
+    };
+    listen(document, 'visibilitychange', () => { if (document.hidden) finish(); });
+    listen(document, 'keydown', event => { if (event.key === 'Escape') finish(); });
+    for (const event of ['pagehide', 'resize', 'scroll', 'beforeprint']) listen(window, event);
+    for (const event of ['resize', 'scroll']) listen(window.visualViewport, event);
+    listen(reduced, 'change');
+    const greet = () => {
+      button.classList.add('jingyu-greeting');
+      const message = document.createElement('span');
+      message.className = 'sr-only';
+      message.setAttribute('role', 'status');
+      button.append(message);
+      message.textContent = window.SalaryMateI18n?.text('晶羽向你打招呼') || '晶羽向你打招呼';
+      flight.layer = message;
+      flight.timer = window.setTimeout(finish, 1800);
+    };
+    if (reduced?.matches || typeof art.animate !== 'function' || !art.complete || !art.naturalWidth) { greet(); return; }
+
+    const viewport = window.visualViewport;
+    const width = viewport?.width || window.innerWidth;
+    const height = viewport?.height || window.innerHeight;
+    const left = viewport?.offsetLeft || 0, top = viewport?.offsetTop || 0;
+    const size = Math.min(80, width * .19, height * .19);
+    if (size < 24) { greet(); return; }
+    // Reserve room for rotation, the phone safe area, and the bottom menu.
+    const radius = size * .66;
+    const minX = left + 12 + radius, maxX = Math.max(minX, left + width - 12 - radius);
+    const minY = top + Math.min(40, height * .08) + radius;
+    const maxY = Math.max(minY, top + height - Math.min(100, height * .18) - radius);
+    const homePoint = { x: home.left + home.width / 2, y: home.top + home.height / 2, scale: home.width / size, angle: 0 };
+    const transform = point => `translate3d(${(point.x - size / 2).toFixed(2)}px,${(point.y - size / 2).toFixed(2)}px,0) rotate(${point.angle}deg) scale(${point.scale})`;
+    const points = [homePoint], clockwise = Math.random() > .5;
+    const quadrants = clockwise ? [[1,0],[1,1],[0,1],[0,0]] : [[0,1],[1,1],[1,0],[0,0]];
+    for (const [right, bottom] of quadrants) {
+      const x = minX + (maxX - minX) * (right * .5 + .08 + Math.random() * .34);
+      const y = minY + (maxY - minY) * (bottom * .5 + .08 + Math.random() * .34);
+      points.push({ x, y, scale: 1, angle: x > points.at(-1).x ? 8 : -8 });
+    }
+    points.push(homePoint);
+    const layer = document.createElement('div');
+    layer.className = 'jingyu-flight-layer';
+    layer.setAttribute('aria-hidden', 'true');
+    const actor = document.createElement('div');
+    actor.className = 'jingyu-flight-actor';
+    actor.style.width = actor.style.height = `${size}px`;
+    actor.style.transform = transform(homePoint);
+    const image = document.createElement('img');
+    image.className = 'jingyu-flight-art';
+    image.src = art.currentSrc || art.src;
+    image.alt = '';
+    image.draggable = false;
+    actor.append(image);
+    for (let index = 0; index < 3; index++) {
+      const spark = document.createElement('i');
+      spark.className = 'jingyu-flight-spark';
+      actor.append(spark);
+    }
+    layer.append(actor);
+    document.body.append(layer);
+    flight.layer = layer;
+    button.classList.add('jingyu-away');
+    button.setAttribute('aria-pressed', 'true');
+    try {
+      flight.animation = actor.animate(points.map((point, index) => ({
+        transform: transform(point), offset: index / (points.length - 1), easing: 'cubic-bezier(.4,0,.6,1)'
+      })), { duration: 6000, fill: 'forwards', iterations: 1 });
+      flight.animation.onfinish = finish;
+      flight.animation.oncancel = finish;
+      flight.timer = window.setTimeout(finish, 6300);
+    } catch { finish(); }
+  };
+  window.SalaryMateCompanion = Object.freeze({ fly, stop });
+})();

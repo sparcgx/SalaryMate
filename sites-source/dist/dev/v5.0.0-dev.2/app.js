@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0-dev.2-R65';
+    const APP_VERSION = '5.0.0-dev.2-R67';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -319,8 +319,9 @@
     const interfaceBaseStyle = value => { const style = normalizeInterfaceStyle(value); return INTERFACE_STYLES[style].baseStyle || style; };
     const HD2D_COMPANION_SRC = './art/jingyu-hd2d-r62.webp';
     const hd2dCompanion = (variant = 'heading') => {
-      const kind = ['home','heading','quiet','toast','preview'].includes(variant) ? variant : 'heading';
+      const kind = ['home','heading','quiet','toast','preview','interactive'].includes(variant) ? variant : 'heading';
       if (kind !== 'preview' && interfaceBaseStyle(ui.interfaceStyle) !== 'pixel') return '';
+      if (kind === 'interactive') return `<button type="button" class="v5-companion v5-companion--interactive" data-action="jingyu-fly" aria-label="晶羽：點一下飛行，再點停止" aria-pressed="false" title="點一下，晶羽陪你飛一圈"><img class="v5-companion-art" src="${HD2D_COMPANION_SRC}" width="128" height="128" alt="" decoding="async" draggable="false"></button>`;
       return `<span class="v5-companion v5-companion--${kind}" aria-hidden="true"><img class="v5-companion-art" src="${HD2D_COMPANION_SRC}" width="128" height="128" alt="" decoding="async" draggable="false">${kind === 'home' ? '<span class="v5-companion-name">晶羽</span>' : ''}</span>`;
     };
     const normalizeSurfaceOpacity = value => value === 'transparent' ? 'translucent' : ['translucent','frosted','dynamic','multi-dynamic'].includes(value) ? value : 'frosted';
@@ -345,6 +346,7 @@
       return theme;
     };
     const applyInterfaceStyle = (value = ui.interfaceStyle) => {
+      window.SalaryMateCompanion?.stop();
       const style = normalizeInterfaceStyle(value);
       ui.interfaceStyle = style;
       const baseStyle = interfaceBaseStyle(style);
@@ -2949,7 +2951,7 @@
       $$('.v5-stats>div>span,.stock-stat>span',root).forEach((node,i)=>add(node,['wallet','investment','tax','check'][i%4]));
       if (root?.id === 'mainContent') {
         const brand = $('#topbarCompanion');
-        if (brand && !brand.firstChild && interfaceBaseStyle(ui.interfaceStyle) === 'pixel') brand.innerHTML = hd2dCompanion('heading');
+        if (brand && !brand.firstChild && interfaceBaseStyle(ui.interfaceStyle) === 'pixel') brand.innerHTML = hd2dCompanion('interactive');
       }
       if (root?.id === 'mainContent' && interfaceBaseStyle(ui.interfaceStyle) === 'pixel') {
         const empty = ui.tab !== 'dashboard' ? $('.stock-empty,.card.empty,.v5-quiet-empty',root) : null;
@@ -3034,7 +3036,7 @@
     const renderV5Settings = () => {
       const c=currentCompany();
       const settingRow=(title,detail,action,label='開啟',extra='')=>`<div class="v5-setting-row"><div><h3>${title}</h3><p>${detail}</p></div>${v5Button(label,action,extra)}</div>`;
-      return `<section class="view">${v5Title('設定')}<div class="v5-settings-columns"><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">工作與公司</span></summary><div class="v5-settings-content">${settingRow('公司管理',c?`${userHtml(c.name)} · 共 ${state.companies.length} 家公司`:'建立任職公司與薪資基礎','manage-companies')}${settingRow('薪資規則','本薪、津貼、扣項與計薪區間','company-salary-rules','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}${settingRow('特休與假別','到職日、假別額度與每日標準工時','v5-leave-settings','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">顯示與操作</span></summary><div class="v5-settings-content"><label class="v5-language-setting"><span>介面語言</span><select class="field-select" data-language-preference><option value="auto">跟隨系統</option><option value="zh">繁體中文</option><option value="en">English</option></select></label>${settingRow('版面設定',escapeHtml(INTERFACE_STYLES[normalizeInterfaceStyle(ui.interfaceStyle)].name)+' · 介面風格、文字與密度、重點色','open-interface-settings','調整')}</div></details></div><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">資料管理</span></summary><div class="v5-settings-content">${settingRow('備份全部資料','一般 JSON 或密碼加密備份，包含薪資與全部投資資料','export-json','下載')}${settingRow('匯入備份','一般、加密或 SmartPortfolio 備份；可選覆蓋或新增','restore-backup-file','選擇檔案')}${settingRow('自己的 Google Drive','<span data-google-summary>'+escapeHtml(window.SalaryMateCloud?.summary()||'儲存至自己的 Google Drive，可選密碼加密')+'</span>','open-google-drive','開啟')}${settingRow('匯出報表','薪資、請假及出勤分析 CSV','v5-export-options','選擇報表')}${settingRow('資料檢查','檢查公司關聯、重複紀錄與補休餘額','data-health','檢查')}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">說明</span></summary><div class="v5-settings-content">${settingRow('授權、隱私與試算','資料保存方式、授權文字與試算範圍','open-legal','閱讀')}<p class="hint">v5.0.0-dev.2-R65 · 全介面開發版<br>v5 資料獨立保存。可手動匯入薪資備份，原版本的資料仍保留。</p><details class="v5-cleanup"><summary>清除這個版本的資料</summary><p class="hint">請先匯出備份；只清除目前 v5 完整版的資料。</p>${v5Button('清除本機資料','clear-data')}</details></div></details></div></div></section>`;
+      return `<section class="view">${v5Title('設定')}<div class="v5-settings-columns"><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">工作與公司</span></summary><div class="v5-settings-content">${settingRow('公司管理',c?`${userHtml(c.name)} · 共 ${state.companies.length} 家公司`:'建立任職公司與薪資基礎','manage-companies')}${settingRow('薪資規則','本薪、津貼、扣項與計薪區間','company-salary-rules','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}${settingRow('特休與假別','到職日、假別額度與每日標準工時','v5-leave-settings','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">顯示與操作</span></summary><div class="v5-settings-content"><label class="v5-language-setting"><span>介面語言</span><select class="field-select" data-language-preference><option value="auto">跟隨系統</option><option value="zh">繁體中文</option><option value="en">English</option></select></label>${settingRow('版面設定',escapeHtml(INTERFACE_STYLES[normalizeInterfaceStyle(ui.interfaceStyle)].name)+' · 介面風格、文字與密度、重點色','open-interface-settings','調整')}</div></details></div><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">資料管理</span></summary><div class="v5-settings-content">${settingRow('備份全部資料','一般 JSON 或密碼加密備份，包含薪資與全部投資資料','export-json','下載')}${settingRow('匯入備份','一般、加密或 SmartPortfolio 備份；可選覆蓋或新增','restore-backup-file','選擇檔案')}${settingRow('自己的 Google Drive','<span data-google-summary>'+escapeHtml(window.SalaryMateCloud?.summary()||'儲存至自己的 Google Drive，可選密碼加密')+'</span>','open-google-drive','開啟')}${settingRow('匯出報表','薪資、請假及出勤分析 CSV','v5-export-options','選擇報表')}${settingRow('資料檢查','檢查公司關聯、重複紀錄與補休餘額','data-health','檢查')}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">說明</span></summary><div class="v5-settings-content">${settingRow('授權、隱私與試算','資料保存方式、授權文字與試算範圍','open-legal','閱讀')}<p class="hint">v5.0.0-dev.2-R67 · 全介面開發版<br>v5 資料獨立保存。可手動匯入薪資備份，原版本的資料仍保留。</p><details class="v5-cleanup"><summary>清除這個版本的資料</summary><p class="hint">請先匯出備份；只清除目前 v5 完整版的資料。</p>${v5Button('清除本機資料','clear-data')}</details></div></details></div></div></section>`;
     };
     const renderV5Companies = () => `<div class="v5-breadcrumb"><button type="button" data-tab="settings">設定</button><span>／ 公司管理</span></div>${renderCompanies()}`;
     const openV5LeaveSettings = id => {
@@ -3093,6 +3095,7 @@
     const deleteInvestment = id => confirm('刪除投資收入','確定刪除這筆收入？其他紀錄不受影響。',()=>{if(commitStateMutation(()=>{state.investmentRecords=state.investmentRecords.filter(r=>r.id!==id);})){closeDialog();renderAll();toast('已刪除');}},'刪除');
 
     const renderView = () => {
+      window.SalaryMateCompanion?.stop();
       const renderers = { dashboard: renderV5Home, investment: renderV5Investment, records: renderV5Salary, calendar: renderV5Calendar, overtime: renderV5Attendance, hourly: renderV5Tools, tax: renderV5Annual, settings: renderV5Settings, companies: renderV5Companies };
       document.body.dataset.page = ui.tab;
       const globalState = renderAppStatePanel();
@@ -3185,6 +3188,7 @@
       : setTimeout(callback, 0);
 
     const openDialog = (title, body, wide = false, footer = '') => {
+      window.SalaryMateCompanion?.stop();
       const dialog = $('#appDialog');
       const opening = !dialog.open;
       if (opening) {
@@ -5227,6 +5231,7 @@
       const action = actionButton.dataset.action;
       const id = actionButton.dataset.id;
       const actions = {
+        'jingyu-fly': () => window.SalaryMateCompanion?.fly(actionButton),
         'pick-company': () => { closeCompanyPicker(true); setCurrentCompany(id); },
         'picker-edit-company': () => { closeCompanyPicker(true); openCompanyBasicForm(getCompany(id)); },
         'picker-delete-company': () => { closeCompanyPicker(true); deleteCompany(id); },

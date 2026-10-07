@@ -2554,5 +2554,8 @@ globalThis.SalaryMateEnglish={
   "晶羽": "Jingyu",
   "晶羽夥伴、藍金角框與水晶光暈": "Jingyu companion, blue-and-gold frames and crystal light",
   "台股・美股・ETF": "Taiwan · US · ETFs",
-  "年損益 · 持股累計至今": "gains/losses · holdings to date"
+  "年損益 · 持股累計至今": "gains/losses · holdings to date",
+  "晶羽：點一下飛行，再點停止": "Jingyu: tap to fly, tap again to stop",
+  "點一下，晶羽陪你飛一圈": "Tap to send Jingyu on a short flight",
+  "晶羽向你打招呼": "Jingyu says hello"
 };
