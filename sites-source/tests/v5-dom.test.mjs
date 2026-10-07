@@ -1,0 +1,77 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import * as core from '../dist/dev/v5.0.0-dev.1/core.js';
+const { JSDOM } = await import(process.env.SALARYMATE_DOM_MODULE || '/tmp/salarymate-v5-qa/node_modules/jsdom/lib/api.js');
+const html = fs.readFileSync(new URL('../dist/dev/v5.0.0-dev.1/index.html', import.meta.url),'utf8');
+const app = fs.readFileSync(new URL('../dist/dev/v5.0.0-dev.1/app.js', import.meta.url),'utf8').replace(/^import[^\n]+\n/,'');
+function boot(initial) {
+  const dom=new JSDOM(html,{url:'https://example.test/dev/v5.0.0-dev.1/',runScripts:'outside-only'}), w=dom.window;
+  Object.assign(w,core);w.scrollTo=()=>{};
+  w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};
+  w.HTMLDialogElement.prototype.close=function(){this.open=false;};
+  w.URL.createObjectURL=()=> 'blob:fixture';w.URL.revokeObjectURL=()=>{};
+  const downloads=[];w.HTMLAnchorElement.prototype.click=function(){downloads.push(this.download);};
+  if(initial)w.localStorage.setItem(core.KEY,JSON.stringify(initial));
+  w.localStorage.setItem('salarymate_v310_state','v4-untouched');
+  w.eval(app);
+  const q=s=>w.document.querySelector(s), click=s=>{assert.ok(q(s),`missing ${s}`);q(s).click();}, value=(s,v)=>{q(s).value=v;q(s).dispatchEvent(new w.Event('input',{bubbles:true}));}, submit=s=>q(s).dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+  return {w,q,click,value,submit,downloads,close:()=>w.close(),state:()=>JSON.parse(w.localStorage.getItem(core.KEY))};
+}
+test('End-to-end DOM: new overtime, reload, annual leave, cancel, company isolation',()=>{
+  const b=boot();
+  assert.ok(b.q('.calendar-grid'));assert.equal(b.q('.calendar-grid .selected').dataset.date,core.dateKey());
+  b.click('[data-action="add-ot"]');assert.ok(b.q('#editor').open);
+  b.value('#entryDate','2026-10-01');b.value('#entryHours','3');b.value('#entryRate','250');
+  b.value('#entryNote','<img id="injected" src=x onerror=alert(1)>');
+  b.submit('#entryForm');
+  assert.equal(b.state().entries.length,1);assert.equal(b.state().entries[0].hours,3);
+  assert.equal(b.q('#editor').open,false);assert.ok(b.q('.summary-strip').textContent.includes('1,005'));
+  assert.equal(b.q('#injected'),null);assert.equal(b.w.localStorage.getItem('salarymate_v310_state'),'v4-untouched');
+  b.click('[data-view="settings"]');b.value('#quotaHours','80');b.submit('#quotaForm');
+  assert.equal(b.state().companies[0].quotas[2026],80);
+  b.click('[data-view="calendar"]');b.click('[data-action="add"]');b.click('[data-kind="leave"]');
+  b.value('#entryHours','4');b.submit('#entryForm');
+  assert.equal(b.state().entries.length,2);assert.equal(core.leaveBalance(b.state(),b.state().companies[0].id,'2026','2026-10-02').available,76);
+  const id=b.state().entries.find(e=>e.kind==='leave').id;b.click(`[data-action="edit"][data-id="${id}"]`);b.click('[data-action="cancel-entry"]');
+  assert.equal(b.state().entries.find(e=>e.id===id).status,'cancelled');
+  assert.equal(core.leaveBalance(b.state(),b.state().companies[0].id,'2026').available,80);
+  b.click('[data-view="settings"]');b.click('[data-action="add-company"]');b.value('#newCompanyName','第二間公司');b.submit('#newCompanyForm');
+  assert.equal(b.state().companies.length,2);b.click('[data-view="calendar"]');
+  assert.equal(b.q('.agenda .entry-item'),null);
+  const saved=b.state();b.close();const reloaded=boot(saved);assert.equal(reloaded.state().entries.length,2);assert.equal(reloaded.q('#companySelect').options.length,2);reloaded.close();
+});
+test('Form errors preserve input, over-quota leave never persists, settings snapshots',()=>{
+  let s=core.initialState();s.companies[0].quotas[2026]=4;s.companies[0].hourlyRate=200;
+  const b=boot(s);b.click('[data-action="add-leave"]');b.value('#entryDate','2026-10-01');b.value('#entryHours','8');b.submit('#entryForm');
+  assert.ok(b.q('#entryError').textContent.includes('超過設定額度'));assert.ok(b.q('#editor').open);assert.equal(b.q('#entryHours').value,'8');assert.equal(b.state().entries.length,0);
+  b.value('#entryHours','4');b.submit('#entryForm');assert.equal(b.state().entries.length,1);
+  b.click('[data-action="add"]');b.value('#entryHours','2');b.submit('#entryForm');
+  b.click('[data-view="settings"]');b.value('#hourlyRate','500');b.submit('#companyForm');
+  assert.equal(b.state().entries.find(e=>e.kind==='overtime').hourlyRate,200);
+  b.click('[data-view="calendar"]');b.click('[data-action="add"]');b.value('#entryNote','保留這段未儲存輸入');
+  b.w.localStorage.setItem(core.KEY,JSON.stringify({...b.state(),external:true}));
+  b.submit('#entryForm');assert.ok(b.q('#entryError').textContent.includes('另一分頁'));assert.equal(b.q('#entryNote').value,'保留這段未儲存輸入');b.close();
+});
+test('Backup preview and confirmed restore, invalid import leaves prior data untouched',async()=>{
+  const b=boot();b.click('[data-view="settings"]');b.click('[data-action="export"]');assert.equal(b.downloads.length,1);
+  let s=core.initialState();s.companies[0].name='備份公司';s=core.putEntry(s,{id:'restore1',companyId:s.companies[0].id,date:'2026-10-01',kind:'leave',leaveType:'病假',hours:2,status:'confirmed',note:'test'});
+  const file={size:1000,text:async()=>core.backup(s)};
+  Object.defineProperty(b.q('#backupInput'),'files',{configurable:true,value:[file]});
+  b.q('#backupInput').dispatchEvent(new b.w.Event('change'));await new Promise(r=>setImmediate(r));
+  assert.ok(b.q('#utility').open);assert.ok(b.q('.restore-summary').textContent.includes('1 筆'));assert.equal(b.state(),null);
+  b.click('[data-action="restore"]');assert.equal(b.state().companies[0].name,'備份公司');assert.equal(b.downloads.length,2);
+  const saved=JSON.stringify(b.state());Object.defineProperty(b.q('#backupInput'),'files',{configurable:true,value:[{size:10,text:async()=>'{bad'}]});
+  b.q('#backupInput').dispatchEvent(new b.w.Event('change'));await new Promise(r=>setImmediate(r));
+  assert.equal(b.q('#utilityTitle').textContent,'無法匯入');assert.equal(JSON.stringify(b.state()),saved);b.close();
+});
+test('Keyboard date navigation, month picker, filters and accessible field labels',()=>{
+  const b=boot();const selected=b.q('[data-action="day"][aria-pressed="true"]');const oldDate=selected.dataset.date;
+  selected.dispatchEvent(new b.w.KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}));
+  assert.notEqual(b.q('[aria-pressed="true"][data-action="day"]').dataset.date,oldDate);
+  b.click('[data-action="pick-month"]');b.value('#selectedMonth','2024-02');b.submit('#monthForm');
+  assert.ok(b.q('[data-date="2024-02-29"]'));b.click('[data-view="records"]');b.click('[data-filter="annual"]');
+  assert.ok(b.q('[data-filter="annual"]').classList.contains('active'));b.click('[data-action="add"]');
+  for(const input of b.w.document.querySelectorAll('#entryForm input,#entryForm select,#entryForm textarea'))assert.ok(input.labels.length,`missing label ${input.id}`);
+  b.close();
+});

@@ -1,0 +1,2578 @@
+個人薪資與投資管理|Personal Salary & Investment Manager
+薪資與投資|Salary & Investments
+首頁|Home
+薪資|Payroll
+日曆|Calendar
+投資|Investments
+年度|Annual
+設定|Settings
+新增|Add
+主要功能|Main navigation
+主要內容|Main content
+跳到主要內容|Skip to main content
+資料保存在此裝置|Data is saved on this device
+本機資料|Local data
+全介面重製開發版|Development version
+授權與隱私|Licenses & Privacy
+選擇薪資備份檔|Choose a backup file
+請啟用 JavaScript 以使用 SalaryMate。|Enable JavaScript to use SalaryMate.
+一|Mon
+二|Tue
+三|Wed
+四|Thu
+五|Fri
+六|Sat
+日|Sun
+一般 8 小時|Normally 8 hours
+一般 JSON 或密碼加密備份，包含薪資與全部投資資料|Plain JSON or password-encrypted backup, including all payroll and investment data
+一般、加密或 SmartPortfolio 備份；可選覆蓋或新增|Plain, encrypted or SmartPortfolio backups; overwrite matches or add a copy
+一般使用只保留 6 個入口；特殊薪資週期、年度加薪與年終規則移至進階設定。|Six main sections. Custom pay periods, annual raises and year-end rules are in advanced settings.
+一般字體與舒適間距|Regular text with comfortable spacing
+一般獎金|Regular bonus
+一鍵更新使用 TWSE／TPEx 最近收盤價、Nasdaq 最新可取得行情及 Frankfurter 參考匯率，不保證即時。只傳送市場與股票代號，不傳送持股、交易及帳戶資料。各檔顯示價格日期與來源；失敗時保留原價格。交易日匯率仍由成交明細填寫，不會被行情更新改寫。新臺幣損益採移動平均成本；買入費稅加入成本，賣出費稅從收入扣除。未實現損益含匯率影響，不預扣未來賣出費稅。期初持股不視為現金支出。同日依交易時間及登記順序計算。資料只保存在此裝置，可於設定匯出 JSON 備份。|Quotes use recent TWSE/TPEx closes, available Nasdaq prices and Frankfurter reference FX rates; they may be delayed. Only markets and symbols are sent, never holdings, transactions or accounts. Each quote shows its date and source; failed updates keep previous values. Trade FX rates are entered per transaction and remain unchanged. TWD profit uses moving-average cost, including purchase costs and deducting sale costs. Unrealized profit includes currency movements and excludes future selling costs. Opening balances are not cash outflows. Same-day entries follow trade time and entry order. Data stays on this device; export a JSON backup in Settings.
+一鍵更新股價|Update all prices
+上一月|Previous month
+上午半天止|Through morning
+上午半天|Morning half-day
+上午|Morning
+上方加班費試算仍可獨立使用；若要分析真實時薪，請先新增目前年度的薪資紀錄。|The overtime calculator works independently. Add payroll records for the selected year to analyze effective hourly income.
+上月資料已變更，請重新確認預覽後再套用。|Last month's data changed. Review the preview again before applying.
+上月|Last month
+下一月|Next month
+下一步|Next
+下午半天起|From afternoon
+下午半天|Afternoon half-day
+下午|Afternoon
+下載列印版／PDF 用|Download printable / PDF version
+下載原始備份|Download original backup
+下載備份|Download backup
+下載 CSV|Download CSV
+下載|Download
+不可大於|must not exceed
+不可小於|must be at least
+不含另外登錄的加班時數|Excludes separately logged overtime
+不含未實現損益|Excludes unrealized profit
+不支援此 SmartPortfolio 備份版本。|This SmartPortfolio backup version is not supported.
+不支援的備份格式。|Unsupported backup format.
+不支援的加密備份版本或格式。|Unsupported encrypted backup version or format.
+不是有效的 SmartPortfolio 備份。|This is not a valid SmartPortfolio backup.
+不會當作 0 元|Not treated as zero
+不會被重算。|will not be recalculated.
+不設管理上限|No managed limit
+不設上限|Unlimited
+不重新計算。|will not be recalculated.
+並非原交易日匯率；新臺幣成本／損益屬換算估計。|not the original trade-date FX rate; TWD cost and profit are estimates.
+主業實領工作時薪|Net salary per working hour
+主業實領＋副業|Net salary + other income
+主業實領|Net salary
+主業應發總額|Total gross salary
+主業應發|Gross salary
+事假、病假、曠職或遲到達門檻時，每次依設定金額扣款。|Apply the configured deduction when personal leave, sick leave, absence or lateness reaches the threshold.
+事假|Personal leave
+交易匯率|Trade FX rate
+交易已加入交易紀錄，可按年度查看。|Transactions are in the ledger and can be viewed by year.
+交易幣別|Trade currency
+交易紀錄|Transactions
+交易類型|Transaction type
+交易|Trade
+今天的紀錄|Today's records
+今天還沒有加班或請假紀錄。|No overtime or leave recorded today.
+今天|Today
+介面與版面|Appearance & Layout
+仍要儲存此筆請假紀錄嗎？|Save this leave record anyway?
+仍要儲存|Save anyway
+代扣|Withheld
+代號、名稱或帳戶|Symbol, name or account
+代號|Symbol
+以下舊買賣僅留存，不計入本版持股或損益。|These archived trades do not affect current holdings or profit.
+以下金額會跟著薪資與倍率即時更新|Amounts update with the salary and multiplier inputs
+以備份完全取代本機資料及偏好設定；不在備份中的現有資料也會移除。|Replace all local data and preferences with this backup. Current records absent from the backup will be removed.
+以摘要先確認是否有特殊制度，再進入個別編輯。|Review special arrangements in the summary, then edit each rule.
+以目前參數推估，適合做趨勢與方案比較|An estimate using current inputs, for comparing trends and scenarios
+任職狀態|Employment status
+份備份|backups
+休息日加班時數不可超過 12 小時。|Rest-day overtime cannot exceed 12 hours.
+休息日第 9 小時起|Rest day: hour 9 onward
+休息日|Rest day
+伙食、職務加給與其他每月固定收入；會帶入之後新建薪資。|Meal, position and other fixed monthly allowances are used for newly created payroll records.
+伙食津貼|Meal allowance
+伙食|Meals
+估值匯率|Valuation FX rate
+估算薪資所得|Estimated salary income
+作業失敗。原本資料保持不變。|Operation failed. Existing data is unchanged.
+你的薪資與工作紀錄|Your salary and work records
+使用到職週期前，請先填寫到職日。|Enter an employment start date before using an anniversary cycle.
+使用密碼加密（選用）|Password encryption (optional)
+使用提醒：|Notes:
+使用狀態|Usage status
+使用數|Used
+使用中|Active
+使用|Used
+來回通勤|Round-trip commute
+來源固定為同公司的前一月。預覽與套用都不會直接儲存薪資。|The source is the previous month at the same company. Previewing or applying does not save payroll automatically.
+來源已不存在或已轉入補休。|The source no longer exists or has already been converted to time off.
+來源已改變，請取消後重新開啟。|The source changed. Cancel and reopen this form.
+來源已改變，請重新開啟核對。|The source changed. Reopen the reconciliation.
+來源日期比現有價格舊，保留原價格。|The source date is older than the current quote. The current price is kept.
+來源加班|Source overtime
+來源待確認|Source needs review
+來源|Source
+來自 SmartPortfolio|From SmartPortfolio
+例假日／約定假日|Regular / agreed holiday
+例如：00878、定存利息|e.g. 00878, deposit interest
+例如：1 股變 2 股填 2；2 股併 1 股填 0.5。|e.g. enter 2 for a 2-for-1 split, or 0.5 for a 1-for-2 reverse split.
+例如：200|e.g. 200
+例如：2330、0050、AAPL|e.g. 2330, 0050, AAPL
+例如：A 公司|e.g. Company A
+例如：全勤、輪班津貼|e.g. Attendance or shift allowance
+例如：全勤獎金、輪班津貼|e.g. Attendance bonus or shift allowance
+例如：含績效獎金、專案結算|e.g. Includes performance bonus or project payment
+例如：回診、家庭安排|e.g. Follow-up appointment or family plans
+例如：產線支援|e.g. Production line support
+例如：證券帳戶 A|e.g. Brokerage account A
+依公司薪資區間內的週一至週五、每日標準工時與已確認請假估算|Estimated from weekdays in the company pay period, standard daily hours and confirmed leave
+依到職日自動試算|Calculate from employment start date
+依到職日與現有規則估算|Estimated from start date and current rules
+依各檔價格日期|Based on each quote's date
+依每筆時薪與加班類型計算|Calculated using each entry's hourly rate and overtime type
+依公司|By company
+保存結算|Save settlement
+保留原價格。|Previous price retained.
+保留原投資收入紀錄|Keep existing investment income records
+保留原資料，另建公司及股票帳戶副本。總覽會同時計入兩份資料。|Keep existing data and create separate company and investment account copies. Totals will include both copies.
+保留完整說明與圖表，以清楚卡片層級呈現。|Full descriptions and charts in clearly organized cards.
+保留，請確認|Kept; please review
+修改後會保存，並以目前選取月份的薪資紀錄重新計算|Changes are saved and recalculated using payroll records for the selected month
+修改進階規則只影響後續歸屬／新建薪資；已存在的薪資單、年終紀錄、Snapshot|Advanced rules affect future allocations and new payroll records; existing payroll, year-end records and snapshots
+個人投資收入請至投資頁查看與匯出。|View and export personal investment income on the Investments page.
+個人投資收入|Personal investment income
+個人收入，不受公司篩選影響|Personal income, independent of company filters
+個共同月份|common months
+個其他項目／|other items /
+個可比較月份；本年|comparable months; this year has
+個工作日|working days
+個月未登錄|months without records
+個月份需要確認|months need review
+個月＋績效級距|months + performance multiplier
+個月|months
+個欄位需要確認。|fields need review.
+個薪資月份的連動金額或來源已變更|payroll months have changed linked amounts or sources
+倍率、時數及薪資基數皆可自訂。本頁提供個人核對與情境比較，實際加班費仍以薪資單、勞動契約與適用規定為準。|Multipliers, hours and salary basis are configurable for personal checks and comparisons. Actual overtime pay depends on payroll, employment terms and applicable rules.
+倍率加班費|Overtime pay by multiplier
+倍率為既有／公司約定試算。星期幾不等於法定日別；請依班表確認平日、休息日、例假或國定假日。1.34／1.67 為現有近似倍率；2.0／春節 2.5 為自訂約定，非通用法定標準。請核對工資基礎、出勤條件及公司給付方式。|Multipliers are estimates based on existing or company arrangements. A weekday does not determine the legal day type; check your roster. 1.34/1.67 are approximations, and 2.0/2.5 during Lunar New Year are custom arrangements, not universal legal rates. Verify the wage basis, attendance conditions and employer payment rules.
+倍率與累積時數皆可修改；右側自動彙總本期試算薪資|Edit multipliers and total hours; the summary updates automatically
+倍率|Multiplier
+倍|times
+假別提醒：|Leave notes:
+假別時數分布|Hours by leave type
+假別額度已超出|Leave allowance exceeded
+假別額度管理|Leave allowance management
+假別額度總覽|Leave allowance overview
+假別|Leave type
+偏好設定沿用目前裝置。|Current device preferences are kept.
+健保自負額|Health insurance contribution
+健保|Health insurance
+備份中有多筆資料對應同一紀錄，請先檢查來源。|Multiple backup entries match one record. Check the source first.
+備份中有重複股票帳戶。|The backup contains duplicate investment accounts.
+備份價格|Backup quote
+備份全部資料|Back up all data
+備份包含|Backup contains
+備份含重複識別碼，請先檢查來源。|The backup contains duplicate IDs. Check the source.
+備份密碼（至少 8 個字元）|Backup password (at least 8 characters)
+備份密碼|Backup password
+備份已匯入|backup imported
+備份有重複的交易識別碼。|The backup contains duplicate transaction IDs.
+備份有重複的持股識別碼或標的。|The backup contains duplicate holding IDs or instruments.
+備份檔案內容已損毀或不是有效 JSON。|The backup is damaged or is not valid JSON.
+備份檔案無法讀取。|The backup file could not be read.
+備份檔案超過 45 MB。|The backup exceeds 45 MB.
+備份檔（最多 10 MB）|Backup file (up to 10 MB)
+備份無法讀取。|Unable to read the backup.
+備份缺少持股、交易或支援的資料版本（1|The backup is missing holdings, transactions or a supported schema version (1
+備份缺少關聯資料，無法安全合併。|Linked data is missing from the backup, so it cannot be safely merged.
+備份資料已匯入|Backup data imported
+備份資料結構不完整。|The backup structure is incomplete.
+備份超過 10 MB，請先確認檔案。|The backup exceeds 10 MB. Check the file.
+備份過大，無法加密。|The backup is too large to encrypt.
+備用 USD|Fallback USD
+備註（選填）|Notes (optional)
+備註|Notes
+僅已取消|Cancelled only
+僅已確認|Confirmed only
+僅自訂額度時套用|Applies to custom allowances only
+僅預計|Planned only
+價格日期|Quote date
+優先依紀錄識別碼比對；無相同識別碼時，再依公司名稱、薪資年月、股票帳戶等欄位辨識。|Records are matched by ID first, then by fields such as company name, payroll month and investment account.
+儲存修改|Save changes
+已儲存|Saved
+原副業收入|Legacy side income
+未核對|Not reconciled
+需重新核對|Reconciliation needed
+待補資料|Missing information
+有差異|Difference found
+待確認來源|Sources need review
+已核對|Reconciled
+待確認|Pending review
+相同月份|Same months
+已登錄|Recorded
+更新：|Updated:
+刪除本年度試算|Delete this year's estimate
+此紀錄已不存在，請重新開啟。|This record no longer exists. Reopen the form.
+修改後不足以支應已使用或已結算的補休，請調整時數或到期日。|The change would leave insufficient credit for used or settled time off. Adjust the hours or expiry date.
+補休儲存失敗；原紀錄保持不變。|Could not save time off. Existing records are unchanged.
+補休來源已更新，請核對新的加班費估算。|Time-off credit updated. Review the revised overtime estimate.
+年的年終試算設定將被刪除。已登錄的薪資與獎金不受影響。|year-end estimate will be deleted. Existing payslips and bonuses are unchanged.
+刪除失敗，原資料保持不變。|Could not delete. Existing data is unchanged.
+編輯資料|Edit data
+編輯匯入資料|Edit imported data
+可編輯目前持股與帳務紀錄。原始備份保留當時內容。|Edit current holdings and ledger entries here. The original backup remains as it was imported.
+刪除匯入資料|Delete imported data
+將刪除此份匯入紀錄、|This will delete the import archive,
+檔相關股票及|related stocks and
+筆交易，包含匯入後新增的交易。原始備份留存也會移除。|transactions, including those added after import. The archived backup will also be removed.
+匯入資料已刪除。|Imported data deleted.
+股票資料格式不正確。|Invalid stock data format.
+股票代號、名稱或識別碼不正確。|Invalid stock ticker, name or ID.
+股票市場或幣別不正確。|Invalid stock market or currency.
+同一帳戶已有這個股票代號。|This ticker already exists in the same account.
+請完整填寫股價、價格日期與換算匯率。|Enter the price, price date and conversion rate.
+交易識別碼、股票、日期或時間不正確。|Invalid transaction ID, stock, date or time.
+不支援的股票交易類型。|Unsupported stock transaction type.
+匯率必須大於 0，費用與稅額不可為負數。|Exchange rate must be positive. Fees and taxes cannot be negative.
+新臺幣匯率必須為 1。|TWD exchange rate must be 1.
+股數必須大於 0，成交價不可為負數。|Shares must be positive. Trade price cannot be negative.
+期初持股請直接填寫含費用的平均成本。|For opening positions, enter average cost including fees.
+股息金額不正確，費稅不可超過股息。|Invalid dividend amount. Fees and taxes cannot exceed the dividend.
+分割／合併比例必須大於 0，費用及稅額應為 0。|Split ratio must be positive, with zero fees and taxes.
+交易參照不存在的股票。|The transaction references a missing stock.
+的賣出股數超過當時持股。請先補登買入，或調整同日交易時間。|sale exceeds shares held at the time. Add missing purchases or adjust transaction times.
+沒有持股，無法登記分割／合併。|No shares held. A split or consolidation cannot be recorded.
+數值過大，無法安全計算。|The value is too large to calculate safely.
+股價或匯率數值過大。|The price or exchange rate is too large.
+補休結算請按原加班日工資與剩餘時段倍率核對；本工具的紀錄與估算不代表雇主已確認或完成給付。|Check time-off settlements against pay on the original overtime date and the multipliers for remaining hours. Records and estimates do not establish employer approval or payment.
+扣繳適用條件|Withholding conditions
+隱私與備份|Privacy and backups
+薪資紀錄由本機處理，未設薪資自動上傳、帳號或廣告分析功能。網站主機可能處理 IP、連線時間與技術日誌，實際項目依主機服務政策；這與薪資內容分開。Android 本機資料庫未啟用資料庫層加密，裝置鎖定與 App 解鎖不等於資料加密。一般備份、JSON／CSV 匯出不加密；僅明確選擇密碼加密的備份提供加密保護，SHA-256 只用於完整性核對。主動分享／另存至第三方服務時，檔案由所選服務處理。可在資料管理匯出、刪除本機紀錄；外部備份須自行刪除。|Payroll records are processed locally, without automatic payroll uploads, accounts or advertising analytics. The hosting provider may process IP addresses, connection times and technical logs under its policies, separately from payroll data. The Android local database is not encrypted at the database level; device and app locks are not data encryption. Standard backups and JSON/CSV exports are unencrypted. Only explicitly password-encrypted backups provide encryption; SHA-256 checks integrity only. Files shared or saved to third-party services are handled by those services. Export or delete local records in Data management; delete external backups separately.
+本機資料可在資料管理匯出與清除。清除瀏覽器資料或解除安裝可能使本機資料遺失。一般備份可被取得檔案的人讀取；請妥善保管。|Export or clear local data in Data management. Clearing browser data or uninstalling may erase local records. Anyone with a standard backup file can read it; store it securely.
+官方參考|Official references
+勞動基準法|Labor Standards Act
+財政部扣繳申報專區|Ministry of Finance withholding guidance
+第三方授權|Third-party licenses
+以下列出本專案依賴及建置工具的授權；不表示所有工具均包含於網站或 APK。原生間接依賴仍須按正式建置產物比對。第三方名稱不代表對本產品背書。|The following licenses cover project dependencies and build tools; not all tools are shipped in the website or APK. Native transitive dependencies must be checked against release builds. Third-party names do not imply endorsement.
+完整第三方授權文字（可離線閱讀）|Full third-party license text (available offline)
+找不到同公司的原始加班紀錄。|Original overtime entry for this company was not found.
+到期日不得早於加班日期。|Expiry cannot be before the overtime date.
+轉換時數超過來源加班時數。|Transferred hours exceed the source overtime hours.
+這筆加班已有補休來源，請先處理原紀錄。|This overtime entry already has a time-off credit. Review the original credit first.
+補休來源識別碼重複或遺失。|Time-off credit ID is duplicated or missing.
+同筆加班有重複的補休來源。|Multiple credits reference the same overtime entry.
+原始加班識別碼重複。|Duplicate source overtime ID.
+結算識別碼重複或遺失。|Settlement ID is duplicated or missing.
+事件|Event
+日期或時數無效|Invalid date or hours
+未命名|Unnamed
+扣除合計（含自提）|Total deductions (including voluntary pension)
+薪資實領（不含副業）|Take-home pay (excluding side income)
+請選擇有效的目標月份。|Select a valid target month.
+目標月份已有薪資紀錄，請查看既有紀錄或選擇其他月份；不會覆蓋。|A payslip exists for the target month. View it or select another month. It will not be overwritten.
+上月有多筆薪資紀錄，請先整理後再複製。|Last month has multiple payslips. Review them before copying.
+月沒有薪資紀錄，請改選月份或直接新增薪資。|has no payslip. Choose another month or add a new payslip.
+複製自|Copied from
+月；本月變動項目請重新確認|; review variable items for this month
+個人薪資與投資管理：薪資、加班、特休與請假日曆、年度收入及公司設定。|Personal salary and investment management: payroll, overtime, leave calendar, annual income and company settings.
+語言|Language
+月|Month
+年|Year
+天|days
+時|h
+筆|entries
+家|companies
+檔|instruments
+元|TWD
+前|before
+共|Total
+第|No.
+對|vs.
+由|From
+有|Has
+的|of
+將|Will
+將從|From
+特|AL
+事|PL
+病|SL
+生|ML
+公|Official
+薪|Pay
+假|Leave
+淨|Net
+真|Real
+升|Raise
+現|Current
+差|Diff.
+稅|Tax
+退|Pension
+另|Extra
+第 9～10 小時|Hours 9–10
+薪資與加班試算|Payroll and overtime estimates
+小時無可用補休來源|hours have no available time-off credit
+／股|/ share
+申請|request
+範圍|range
+年終試算已刪除。|Bonus estimate deleted.
+年年終試算設定已儲存|bonus estimate saved
+上方分析不受表格的狀態篩選影響；出勤率只扣除「已確認」請假，「預計」只保留額度，「已取消」不列入。預定工時以計薪區間內週一至週五及公司每日標準工時推估，尚未排除國定假日、排班差異或其他未登錄出勤事件。跨日請假與薪資扣款仍沿用 公司的計薪區間拆分；普通病假的全勤獎金自 2026|The analysis above ignores the table's status filter. Attendance deducts only confirmed leave; planned leave reserves allowance and cancelled leave is excluded. Planned hours assume Monday–Friday and company daily hours, without excluding holidays or shift differences. Multi-day leave and payroll deductions follow company pay periods. For ordinary sick leave, attendance bonuses from 2026
+儲存公司設定|Save company settings
+儲存加班|Save overtime
+儲存固定收入|Save fixed income
+儲存基本薪資|Save base salary
+儲存失敗。原本公司資料保持不變。|Save failed. Company data is unchanged.
+儲存失敗。原本資料保持不變，請重新嘗試。|Save failed. Existing data is unchanged; please retry.
+儲存失敗，請重新整理後再試。|Save failed. Refresh and retry.
+儲存後以今天（|After saving, today's date (
+儲存收入|Save income
+儲存本年度試算|Save this year's estimate
+儲存核對草稿|Save reconciliation draft
+儲存為本月獨立快照|Save an independent snapshot for this month
+儲存薪資週期|Save pay period
+儲存設定|Save settings
+儲存調薪修改|Save raise changes
+儲存請假前確認|Review before saving leave
+儲存請假|Save leave
+儲存預設扣項|Save default deductions
+儲存|Save
+元允許建立，但儲存前會再次提醒。|is allowed; you will be reminded before saving.
+先備份全部資料|Back up all data first
+先建立你的公司|Set up your company
+先建立公司|Create a company first
+先新增任職公司，再建立第一筆月度薪資；系統不會自動放入示範資料。|Add a company, then your first monthly payroll record. No sample data is added automatically.
+入帳日期|Payment date
+入帳日未填|Payment date missing
+內容過長，請縮短後再試。|The text is too long. Shorten it and retry.
+全介面開發版|Development version
+全公司共用|Shared across companies
+全勤獎金|Attendance bonus
+全勤／出勤扣款|Attendance deductions
+全勤|Perfect attendance
+全年依各公司預設區間歸屬|Full year, allocated to each company's pay periods
+全年度平均|Annual average
+全年所得與扣繳摘要|Annual income and withholding summary
+全年薪資區間|Full-year pay periods
+全年|Full year
+全部交易|All transactions
+全部公司|All companies
+全部取代|Replace everything
+全部固定薪資|Total fixed salary
+全部年度紀錄|Records from all years
+全部年度|All years
+全部月份|All months
+全部狀態|All statuses
+全部紀錄|All records
+兩次密碼不一致，請重新確認。|The passwords do not match. Please check them.
+公假|Official leave
+公傷病假|Occupational injury leave
+公募基金（手動淨值）|Mutual fund (manual NAV)
+公募基金|Mutual fund
+公司、薪資、投資收入、股票與交易紀錄、加班、請假、年終試算、調薪歷程與試算設定都會刪除。建議先匯出 JSON 備份。|All companies, payroll, investment income, stocks, transactions, overtime, leave, year-end estimates, raises and calculator settings will be deleted. Export a JSON backup first.
+公司名稱|Company name
+公司基本資料已更新|Company details updated
+公司尚未設定第一天上班日，無法檢查|The company has no employment start date; unable to check
+公司已建立並設為目前公司|Company created and set as current
+公司已建立；目前公司未切換|Company created; current company unchanged
+公司已新增|Company added
+公司建立失敗。資料尚未建立。|Unable to create the company. No data was added.
+公司最初預設薪資組合|Initial company salary defaults
+公司核定週期|Company-approved cycle
+公司管理|Companies
+公司範圍|Company scope
+公司篩選|Company filter
+公司約定 2.0 倍|Company-agreed 2.0×
+公司自訂週期；既有歷史薪資單不回算。|Custom company pay period; historical payroll is not recalculated.
+公司自訂額度週期|Custom company allowance cycle
+公司自訂額度|Custom company allowance
+公司自訂|Company custom
+公司與月份已鎖定；建立後成為獨立薪資快照，日後規則修改不回寫此筆。|Company and month are locked. This becomes an independent payroll snapshot; later rule changes do not rewrite it.
+公司表單尚未準備完成。請重新開啟後再試一次。|The company form is not ready. Reopen it and retry.
+公司計薪區間與扣款規則|Company pay period and deduction rules
+公司詳細設定|Detailed company settings
+公司詳細資料|Company details
+公司識別、目前生效基本薪資與到職日。|Company identity, effective base salary and employment start date.
+公司資料不存在，請重新整理公司管理。|Company data is missing. Refresh the Companies page.
+公司資料已刪除|Company deleted
+公司資料已更新|Company updated
+公司資料需要確認。請返回公司管理重新開啟固定收入設定。|Company data needs review. Reopen fixed income settings from Companies.
+公司資料需要確認。請返回公司管理重新開啟薪資規則。|Company data needs review. Reopen salary rules from Companies.
+公司資料需要確認。請返回公司管理重新開啟預設扣項。|Company data needs review. Reopen default deductions from Companies.
+公司資料需要確認|Company data needs review
+公司起始薪資設定|Initial company salary settings
+公司金額－系統金額。投資收入不列入薪資實領。|Employer amount minus calculated amount. Investment income is excluded from net salary.
+公司金額|Employer amount
+公司預設|Company defaults
+公司／假別|Company / leave type
+公司|Company
+公式|Formula
+共同月份增幅百分比|Growth % in common months
+共同月份增幅|Growth in common months
+共同月份淨入帳差額|Net income difference in common months
+共同月份差額|Difference in common months
+共同有紀錄月份|Months recorded in both years
+其中轉入補休時數|Hours converted to time off
+其他假別|Other leave
+其他公司|Other company
+其他固定加項|Other fixed earnings
+其他固定收入|Other fixed income
+其他固定薪資|Other fixed salary
+其他市場請手動輸入名稱。|Enter the name manually for other markets.
+其他市場|Other markets
+其他扣除|Other deductions
+其他扣項|Other deductions
+其他投資收入|Other investment income
+其他收入|Other income
+其他特殊規則只顯示目前資料模型已支援項目，不建立「新增任意規則」、公式編輯器或 Schema 14。|Only currently supported special rules are displayed. Arbitrary rules and formula editing are not available.
+其他特殊規則|Other special rules
+其他薪資、加班、假別與進階規則沿用安全預設，後續可在公司詳細資料中調整。|Other salary, overtime, leave and advanced rules use defaults that you can adjust in Company details.
+其他調整|Other adjustment
+其他預設扣除|Other default deductions
+其他|Other
+再次輸入密碼|Confirm password
+出勤分析 CSV|Attendance analysis CSV
+出勤分析說明|Attendance analysis notes
+出勤扣款（元）|Attendance deduction (TWD)
+出勤扣款|Attendance deduction
+出勤與特休設定|Attendance & annual leave settings
+分割比例|Split ratio
+分割／合併|Split / reverse split
+分鐘|minutes
+切換目前公司、查看公司資料，或用最少欄位建立新公司。|Switch the current company, view details or add a new company.
+列印此頁|Print this page
+列印／另存 PDF|Print / Save as PDF
+利息|Interest
+刪除公司|Delete company
+刪除加班紀錄|Delete overtime record
+刪除失敗。原本公司資料保持不變。|Delete failed. Company data is unchanged.
+刪除失敗。原本加班紀錄保持不變。|Delete failed. Overtime records are unchanged.
+刪除失敗。原本薪資紀錄保持不變。|Delete failed. Payroll records are unchanged.
+刪除失敗。原本調薪紀錄保持不變。|Delete failed. Raise records are unchanged.
+刪除失敗。原本請假紀錄保持不變。|Delete failed. Leave records are unchanged.
+刪除投資收入|Delete investment income
+刪除股票|Delete stock
+刪除薪資紀錄|Delete payroll record
+刪除調薪紀錄|Delete raise record
+刪除請假紀錄|Delete leave record
+刪除這筆薪資|Delete this payroll record
+刪除|Delete
+到期日由你依公司約定輸入；逾期餘額不會自動刪除。結算金額是實際核對紀錄，薪資明細仍需個別確認。|Enter the expiry date agreed with your company. Expired balances are not deleted automatically. Settlement amounts are verified records; confirm payroll separately.
+到期日（依公司約定）|Expiry date (company agreement)
+到期未結算|Expired, unsettled
+到期|Expires
+到職年資|Length of service
+到職日、假別額度與每日標準工時|Start date, leave allowances and standard daily hours
+到職日格式不正確，請重新選擇日期。|Invalid start date. Select it again.
+到職日自動|Automatic from start date
+到職日|Employment start date
+到職週年基準|Anniversary basis
+到職週年額度|Anniversary allowance
+到職週年制|Anniversary cycle
+到職週年|Employment anniversary
+到職|Started
+券商／帳戶（選填）|Broker / account (optional)
+前 2 小時|First 2 hours
+前一年已登錄同期|Recorded same period last year
+前一年淨入帳|Previous-year net income
+前一年薪資筆數|Previous-year payroll entries
+前往公司管理|Go to Companies
+前期已登錄|Recorded in prior period
+前期非正值或無共同紀錄時不計增幅|Growth is unavailable when the prior amount is non-positive or there are no common records
+前段加班|Earlier overtime hours
+前，下一次增加日為|; next increase on
+剩餘成本|Remaining cost
+剩餘數會隨已確認與預計紀錄更新|Balances update with confirmed and planned records
+剩餘數|Remaining
+剩餘|Remaining
+副業收入|Other income
+副業|Other work
+加密備份內容不完整。|The encrypted backup is incomplete.
+加密備份已匯出|Encrypted backup exported
+加密備份格式不正確。|Invalid encrypted backup format.
+加密備份格式或大小不正確。|Invalid encrypted backup format or size.
+加密密碼至少需要 8 個字元。|The encryption password must have at least 8 characters.
+加班、獎金與其他加項|Overtime, bonuses and other earnings
+加班來源|Overtime source
+加班基準時薪|Overtime hourly basis
+加班日期|Overtime date
+加班時數|Overtime hours
+加班時薪除數|Hourly-rate divisor
+加班紀錄儲存失敗。原本資料保持不變。|Overtime could not be saved. Existing data is unchanged.
+加班紀錄合計|Total recorded overtime
+加班紀錄已刪除|Overtime record deleted
+加班紀錄已新增|Overtime record added
+加班紀錄已更新|Overtime record updated
+加班紀錄時數|Recorded overtime hours
+加班紀錄|Overtime records
+加班累積時數|Accumulated overtime hours
+加班與請假分開記錄，共用公司計薪區間與薪資月份。|Overtime and leave are recorded separately, using the same company pay periods and payroll months.
+加班規則|Overtime rules
+加班費快速試算|Quick overtime calculator
+加班費試算已重設|Overtime calculator reset
+加班費試算|Overtime calculator
+加班費，完成薪資欄位後再儲存|overtime pay; complete the payroll fields before saving
+加班費|Overtime pay
+加班資料不完整|Incomplete overtime data
+加班轉補休|Convert overtime to time off
+加班金額為個人估算值；實際給付仍以薪資單、勞動契約與適用法規為準。休息日最多接受 12 小時輸入。|Overtime pay is a personal estimate; actual payment follows payroll, employment terms and applicable law. Rest-day entries allow up to 12 hours.
+加班類型|Overtime type
+加班／薪資計算區間|Overtime / payroll period
+加班／轉補休 h|Overtime / time-off hours
+加班|Overtime
+加級|Grade increase
+加薪紀錄|Raise history
+加項／扣項|Earnings / deductions
+加項|Earnings
+勞保自負額|Labor insurance contribution
+勞保|Labor insurance
+勞退個人自提|Voluntary pension contribution
+勞退自提|Voluntary pension
+勾選後會納入名義時薪、加班基準與請假扣薪計算|Include in contractual hourly rate, overtime basis and leave deductions
+包含公司、薪資、加班、請假及全部投資資料。|Includes companies, payroll, overtime, leave and all investment data.
+匯入 SmartPortfolio 備份|Import SmartPortfolio backup
+匯入 SmartPortfolio|Import SmartPortfolio
+匯入備份|Import backup
+匯入副本|Imported copy
+匯入失敗。現有資料保持不變。|Import failed. Existing data is unchanged.
+匯入後持有股數|Shares held after import
+匯入方式不正確。|Invalid import method.
+匯入方式|Import method
+匯入時以備份／指定匯率換算|Converted using the backup or specified FX rate
+匯入未儲存，原資料保持不變。|Import was not saved. Existing data is unchanged.
+匯入紀錄|Import history
+匯入|Import
+匯出 CSV|Export CSV
+匯出交易|Export transactions
+匯出報表|Export reports
+匯出完整備份|Export complete backup
+匯出持股|Export holdings
+匯出薪資 CSV|Export payroll CSV
+匯率查詢失敗，股價與匯率皆保留。|FX lookup failed. Both the previous quote and FX rate are kept.
+匯率：1 交易幣別|FX: 1 unit of trade currency
+匯率|FX rate
+區間與每次扣款金額由任職公司預設；本期次數與變動調整仍可在此修改|The company sets the period and deduction per event. Edit this period's count and adjustments here.
+區間說明|Period details
+原公司|Original company
+原副業收入|Migrated other income
+原因|Reason
+原始備份.json|Original_backup.json
+原始資料保留|Original data retained
+原幣平均成本|Average cost in original currency
+原有收入仍保留在下方，不會自動轉成持股。已在股票交易簿登記的股息／損益，請勿再次手動新增。|Existing income records remain below and are not converted into holdings. Do not enter dividends or profit here again if already recorded in the stock ledger.
+原紀錄|Original record
+參考股價|Reference price
+取得|Earned
+取消編輯|Cancel editing
+取消|Cancel
+另留存|Also archived:
+另見投資頁|See Investments
+另有|Also:
+只作薪資月基數預覽；每月仍保存時薪與正常工時快照。|A preview of the monthly salary basis; each payroll keeps its own hourly-rate and regular-hours snapshot.
+只在缺少原交易匯率／匯入持股快照時使用。|Used only for missing trade FX rates or imported opening balances.
+只影響新薪資|Only affects new payroll
+只整理既有公司可支援設定；不提供任意公式或 Rule Engine。|Only supported company settings are available. Custom formulas are not supported.
+只有公司特殊制度放在這裡；一般薪資規則維持 CM-03 六個入口。|Special company arrangements are shown here; regular payroll settings remain in the main salary rules.
+只有完全沒有薪資、加班、請假、調薪與年終引用的公司才能刪除。|A company can be deleted only when no payroll, overtime, leave, raise or year-end records refer to it.
+可切換年度，或登記一筆交易。|Choose another year or add a transaction.
+可支配淨入帳|Net disposable income
+可橫向捲動的股票明細|Horizontally scrollable stock table
+可用特休|Available annual leave
+可用|Available
+可繼續使用，仍有提醒|Ready to use, with notes to review
+可自行調整|Adjustable
+可自行變更|Customizable
+可至公司設定建立管理額度|Set a managed allowance in company settings
+台股、美股與 ETF|Taiwan stocks, US stocks and ETFs
+台股|Taiwan stocks
+各公司依各自預設區間歸入|Companies allocate records using their own pay periods to
+各公司額度規則不同，請分公司查看|Allowances differ by company. View each company separately.
+各月薪資明細|Monthly payroll details
+各發薪公司核對表|Payroll reconciliation by company
+合併後的補休來源或餘額不一致，請檢查加班、請假與補休紀錄。|Merged time-off sources or balances are inconsistent. Check overtime, leave and time-off records.
+合計 10 小時|10 hours total
+合計 8 小時|8 hours total
+合計|Total
+同一公司及月份有多筆薪資，請使用「新增為獨立副本」或先檢查來源。|Multiple payroll records exist for one company and month. Add an independent copy or check the source.
+同公司、同年月已有薪資紀錄，請改用編輯|Payroll already exists for this company and month. Edit the existing record.
+同公司、同生效日已有調薪紀錄。請編輯既有紀錄或改用其他日期。|A raise already exists for this company and effective date. Edit it or use another date.
+同公司同月份有重複薪資|Duplicate payroll for the same company and month
+同日已有加班紀錄|Overtime already recorded on this date
+同月份有多家公司時會自動合併加總|Multiple companies in the same month are totaled automatically
+同月份有多家公司，請先選擇試算公司|Multiple companies have records this month. Choose a company.
+同期差額|Same-period difference
+同步前請先在上方選擇一家公司|Select a company above before syncing
+同步加班費|Sync overtime pay
+同步失敗。原本薪資扣項保持不變。|Sync failed. Payroll deductions are unchanged.
+同步失敗。原本薪資資料保持不變。|Sync failed. Payroll data is unchanged.
+同步會新增或更新一筆有連動標記的自訂扣項，不會重複累加。|Sync adds or updates one linked deduction without accumulating duplicates.
+同步至|Sync to
+同步薪資表|Sync payroll
+名稱|Name
+名義合約時薪|Contractual hourly rate
+名義時薪與真實時薪月度趨勢|Monthly contractual and effective hourly rates
+名義時薪|Contractual hourly rate
+含勞健保、稅額、其他扣項及勞退自提|Includes insurance, tax, other deductions and voluntary pension
+含買入費稅|Includes purchase fees and tax
+喪假|Bereavement leave
+單位：TWD|Unit: TWD
+單日小時請假不可超過公司每日標準工時。|Hourly leave cannot exceed the company's standard daily hours.
+固定 1 天，每月自動重置|1 day, resets monthly
+固定倍率|Fixed multiplier
+固定加給與津貼|Fixed premiums and allowances
+固定加項|Fixed earnings
+固定年終月數|Fixed year-end bonus months
+固定年終與績效級距可分開設定|Set fixed year-end bonus and performance bands separately
+固定年終|Fixed year-end bonus
+固定應發|Fixed gross pay
+固定收入、勞健保與自提沿用上月；加班、獎金、副業、預扣稅、其他扣除及非固定自訂項目需重新填寫。時薪制的正常工時沿用上月，請於下一步確認。|Fixed income, insurance and pension carry over from last month. Re-enter overtime, bonuses, other income, withholding and variable items. Hourly staff's regular hours carry over; confirm them in the next step.
+固定收入屬規則；單次自訂加項／扣項仍在每月薪資明細建立。|Fixed income is a default rule. Add one-off earnings and deductions to individual payroll records.
+固定收入已更新；單次加項與歷史薪資不受影響|Fixed income updated; one-off earnings and historical payroll are unchanged
+固定收入更新|Fixed income update
+固定收入|Fixed income
+固定月數＋計算基數|Fixed months + calculation basis
+固定與本月收入|Fixed and current-month income
+固定薪資合計|Total fixed salary
+固定薪資基礎|Fixed salary basis
+固定薪資總額|Total fixed salary
+固定薪資|Fixed salary
+固定|Fixed
+國定假日 1 倍／10 小時|National holiday: 1× / 10 hours
+國定假日 1 倍／8 小時|National holiday: 1× / 8 hours
+國定假日 1 倍|National holiday: 1×
+基本時薪必須大於 0。|The base hourly rate must be greater than zero.
+基本時薪|Base hourly rate
+基本月薪不可小於 0。|Base monthly salary cannot be negative.
+基本月薪為 0 元；允許儲存，但請確認這是預期設定。|Base monthly salary is zero. You can save, but please confirm this is intended.
+基本月薪目前為 0 元。|Base monthly salary is currently zero.
+基本月薪|Base monthly salary
+基本薪資已更新；歷史薪資保持不變|Base salary updated; historical payroll is unchanged
+基本薪資更新|Base salary update
+基本薪資與固定收入修改會以今天為生效日建立／更新既有 salaryAdjustments 薪資快照；已存在的薪資單、每日加班與 Snapshot|Base salary and fixed income changes create or update a salary snapshot effective today; existing payroll, daily overtime and snapshots
+基本薪資|Base salary
+基本資料編輯|Edit basic details
+基本資料|Basic details
+填入公司核定額度|Enter the company-approved allowance
+填入第一天上班日後，系統才會啟用特休年資與額度計算。|Enter the first working day to enable annual leave calculations.
+填公司名稱、到職日與基本薪資，就能開始登記。|Enter a company name, start date and base salary to begin.
+多少 TWD|TWD amount
+大字|Large text
+天超過目前可用|days exceeds the available
+天預計請假，已先保留|days of planned leave reserved
+天，依「|days, based on “
+天，剩餘|days, remaining
+天；本期自|days; this period starts
+天；本次申請|days; this request is
+套用公司起始薪資|Using the company's initial salary
+套用公司|Apply company
+套用到新增表單|Apply to new record
+套用前預覽|Preview before applying
+套用|Apply
+婚假|Marriage leave
+存在找不到公司的紀錄|Some records refer to missing companies
+完成薪資登記後顯示|Available after recording payroll
+完成|Done
+完整 JSON 備份已匯出|Complete JSON backup exported
+完整交易履歷重算|Recalculate from full trade history
+完整公司設定|Full company settings
+完整履歷重算|Full history recalculation
+完整快照|Full snapshot
+完整還原|Full restore
+家公司尚未設定第一天上班日|companies have no employment start date
+家公司|companies
+家庭照顧假|Family care leave
+家，請確認基本時薪與預設正常工時|companies; check hourly rates and default regular hours
+密碼不會被儲存。忘記密碼將無法還原這份備份，請妥善保管。|Your password is not stored. Keep it safe; a forgotten password cannot be recovered.
+密碼不正確，或備份檔案已損毀。請重新輸入密碼。|Incorrect password or damaged backup. Enter the password again.
+實收股息|Net dividends received
+實收金額（TWD）|Net amount received (TWD)
+實收金額（新臺幣）|Net amount received (TWD)
+實收|Received
+實際入帳|Actual payment
+實際年終、績效與扣繳方式仍以公司制度、薪資單及適用規定為準。|Actual year-end bonuses, performance pay and withholding follow company policies, payroll and applicable rules.
+實際結算金額|Actual settlement amount
+寫入現有薪資紀錄，並取代原加班費欄位。|Update the existing payroll record and replace its overtime amount.
+將以備份完整取代|The backup will replace
+將以時薪與正常工時建立薪資基礎；|The salary basis uses hourly rate and regular hours;
+將依公司每日標準工時換算特休天數與扣薪。|Annual leave days and deductions use the company's standard daily hours.
+將清空薪資與累積時數，並恢復 1／1.34／1.67／2／2.67／2.5 倍率。其他薪資與加班紀錄不受影響。|Clear calculator salary and hours, and restore the 1/1.34/1.67/2/2.67/2.5 multipliers. Payroll and overtime records are unchanged.
+小時」換算月基數。|hours” as the monthly basis.
+小時加班差額比較|hour overtime difference comparison
+小時加班紀錄？|hours of overtime?
+小時合計|hours total
+小時結算紀錄？|hours of settlement?
+小時請假|Hourly leave
+小時（8＋2＋1）|hours (8 + 2 + 1)
+小時（8＋2）|hours (8 + 2)
+小時（本篩選）|hours (current filter)
+小時）。實際月薪以每月薪資明細的正常工時快照為準。|hours). Actual monthly pay uses the regular hours saved in that payroll record.
+小時？該筆預估加班費將重新計入。|hours? The estimated overtime pay will be included again.
+小時|hours
+尚有未儲存變更。要放棄變更嗎？|You have unsaved changes. Discard them?
+尚有未填項目，可先儲存草稿。|Some fields are empty. You can save a draft.
+尚未到職|Not started yet
+尚未匯入備份。|No backups imported yet.
+尚未啟用|Not enabled
+尚未填入帳日|Payment date missing
+尚未建立任職公司|No employer added
+尚未建立公司。新增後即可開始記錄薪資、加班與請假。|No company yet. Add one to record payroll, overtime and leave.
+尚未建立公司|No company yet
+尚未建立薪資紀錄|No payroll records yet
+尚未建立該月薪資明細|No payroll record for this month
+尚未指定公司|No company selected
+尚未有符合的薪資紀錄|No matching payroll records
+尚未登記|Not recorded
+尚未發生的加班不能轉入補休。|Future overtime cannot be converted to time off.
+尚未設定|Not configured
+尚無加班紀錄|No overtime records
+尚無可比資料|No comparable data
+尚無已生效調薪|No effective raise yet
+尚無年度對帳資料|No annual reconciliation data
+尚無時間價值分析資料|No time-value analysis data
+尚無相符請假紀錄|No matching leave records
+尚無補休來源。到加班紀錄點「轉補休」建立。|No time-off credits. Convert an overtime entry to create one.
+尚無觀察股票|No stocks on the watchlist
+尚無調薪紀錄|No raise records
+展開 ＋|Expand +
+展開|Expand
+工作日曆|Work calendar
+工作與公司|Work & Companies
+工時與請假分類|Work hours and leave types
+工時／出勤管理|Work hours & Attendance
+差異原因／核對備註|Difference reason / reconciliation notes
+差額|Difference
+已下載列印版；開啟後可列印或另存 PDF。|Printable version downloaded. Open it to print or save as PDF.
+已儲存核對草稿|Reconciliation draft saved
+已切換為「|Switched to “
+已刪除|Deleted
+已到期）|expired)
+已匯出 12 個月出勤分析|Exported 12-month attendance analysis
+已匯出目前範圍的年度整合報表。|Annual report for the current scope exported.
+已匯出|Exported
+已取消|Cancelled
+已同步，金額一致|Synced; amounts match
+已同步|Synced
+已套用「|Applied “
+已完成月結核對|Monthly reconciliation complete
+已完成|Completed
+已定價持股市值|Market value of quoted holdings
+已實現損益＋股票實收股息|Realized profit + net stock dividends
+已實現損益＋實收股息|Realized profit + net dividends
+已實現損益TWD|Realized P&L (TWD)
+已實現損益 TWD|Realized P&L (TWD)
+已實現損益|Realized P&L
+已帶入新增表單，確認本月資料後再儲存。|Applied to the new record form. Check this month's details before saving.
+已帶入名稱|Name found:
+已帶入|Applied
+已建立公司的時薪基礎請使用「完整公司設定」維護，避免改變既有薪資快照。|Manage an existing company's hourly-rate basis in Full company settings to preserve historical payroll snapshots.
+已扣伙食免稅額與勞退自提|After meal exemption and voluntary pension
+已扣股息費用與稅額|After dividend fees and tax
+已撤銷結算。|Settlement removed.
+已撤銷轉入。|Conversion removed.
+已更新|Updated
+已有 SmartPortfolio 匯入資料；為避免重複持股，本次尚未匯入。|already has SmartPortfolio data. Import stopped to prevent duplicate holdings.
+已有交易的股票不可更換幣別；不同帳戶可分開建立同一股票。|Currency cannot change once transactions exist. Add the same stock under a separate account if needed.
+已有交易紀錄，無法更換幣別；請另建股票。|Currency cannot change once transactions exist. Create another stock entry.
+已有相同公司名稱；不同任職期間仍可儲存。|A company with this name exists; you may save a separate employment period.
+已有相同公司名稱；若是不同任職期間仍可繼續建立。|A company with this name exists; continue if this is a different employment period.
+已檢查紀錄|Records checked
+已生效|Effective
+已用|Used
+已登錄收入摘要|Recorded income summary
+已登記|Recorded
+已確認與預計分開呈現|Confirmed and planned leave shown separately
+已確認請假時數|Confirmed leave hours
+已確認請假|Confirmed leave
+已確認|Confirmed
+已結算|Settled
+已自動轉入舊版 v2 瀏覽器資料|Legacy v2 browser data migrated
+已計入成本或實收，不再重複扣除|Already included in cost or net proceeds; not deducted twice
+已設定|Configured
+已超額|Exceeded by
+已預扣所得稅|Income tax withheld
+已預留|Reserved
+市值由高到低|Market value: high to low
+市值TWD|Market value (TWD)
+市值 TWD|Market value (TWD)
+市值|Market value
+市場|Market
+帳戶|Account
+帶入本期加班|Use this period's overtime
+帶入薪資區間加班|Use overtime from this pay period
+帶入薪資明細|Apply to payroll details
+帶入薪資紀錄|Apply to payroll record
+幣別|Currency
+平均加班|Average overtime
+平均成本原幣|Average cost, original currency
+平均成本|Average cost
+平日|Weekday
+年交易|transactions
+年份|Year
+年全部月份；公司篩選相同，上方同期比較依指定截止月計算。|all months; the same company filter applies. The comparison above uses the selected cutoff month.
+年實收|net received
+年年終試算設定已儲存|year-end estimate saved
+年度、目前公司篩選結果|Selected year and current company filter
+年度加薪設定儲存失敗。原本資料保持不變。|Unable to save the annual raise. Existing data is unchanged.
+年度加薪設定資料需要確認。公司資料不存在，請重新選擇公司。|Review the annual raise. The company is missing; select it again.
+年度加薪|Annual raise
+年度可支配淨入帳|Annual net disposable income
+年度同期比較與收入結構|Year-over-year comparison & income breakdown
+年度實收|Annual net received
+年度所得與扣繳對帳|Annual income and withholding reconciliation
+年度對帳|Annual reconciliation
+年度扣除結構|Annual deductions
+年度收入合計|Total annual income
+年度整合 CSV|Annual report CSV
+年度整合報表|Annual report
+年度整合月報|Annual monthly report
+年度總覽|Annual overview
+年度調薪|Annual raise
+年收入總覽|annual income overview
+年整合報表|annual report
+年每月損益|monthly profit
+年每月淨入帳|monthly net income
+年相同月份範圍|same month range
+年篩選|year filter
+年終條件|Year-end bonus inputs
+年終規則不放在一般獎金；Year-End 保持獨立並移至進階設定。|Year-end rules are separate from regular bonuses and are available in advanced settings.
+年終規則儲存失敗。原本資料保持不變。|Unable to save year-end rules. Existing data is unchanged.
+年終規則有尚未儲存的變更。要放棄變更並切換公司嗎？|Year-end rules have unsaved changes. Discard them and switch company?
+年終規則資料需要確認。公司資料不存在，請重新選擇公司。|Review the year-end rules. The company is missing; select it again.
+年終規則資料需要確認。請檢查績效級距名稱與倍率。|Check the performance-band names and multipliers in the year-end rules.
+年終規則|Year-end rules
+年終設定|Year-end settings
+年終試算|Year-end calculator
+年終|Year-end bonus
+年股票股息|stock dividends
+年股息|dividends
+年薪資淨入帳|net salary
+年資比例。門檻與預扣率可自行調整。此為既有公司規則試算，非通用法定扣繳門檻。實際扣繳須依所得年度、居住者身分、給付類型、扣繳方式與適用表格確認；預扣不等於年度應納稅額。請按薪資單填入實際預扣稅。|tenure proportion. Thresholds and withholding rates are configurable company estimates, not universal statutory thresholds. Actual withholding depends on tax year, residency, payment type, method and applicable tables. Withholding is not final annual tax; enter the actual payroll withholding.
+年資比例|Tenure proportion
+底薪／時薪換算底薪|Base pay / hourly equivalent
+底薪／本薪|Base salary
+延伸時間價值分析（選用）|Extended time-value analysis (optional)
+建立任職公司與薪資基礎|Set up your employer and salary basis
+建立公司|Create company
+建立前最後檢查|Final review before creating
+建立後可先放入觀察清單，再登記買入；股數以「股」為單位，支援零股與小數股。|Add a stock to the watchlist, then record a purchase. Quantities are in shares, including odd lots and fractional shares.
+建立流程期間公司固定；如需切換公司，請先取消草稿。|The company stays fixed during creation. Cancel the draft before switching companies.
+建立第一家公司後會自動設為目前公司。|The first company becomes your current company automatically.
+建立第一家公司|Create your first company
+建立薪資快照，只影響之後新增的薪資預設；既有薪資紀錄不回溯修改。|Create a salary snapshot for future payroll defaults. Existing payroll records are not changed.
+建立薪資進度，第|Payroll setup, step
+建立薪資|Create payroll
+彙整各發薪公司薪資所得、預扣稅與勞退自提，供申報前核對。|Review salary income, withholding and voluntary pension by employer before filing.
+待填金額與匯率|Enter amount and FX rate
+待更新股價|Price update needed
+待更新|Update needed
+待核對（|Needs review (
+待確認提醒|Notes to review
+待補齊股價|Missing prices
+待設定|Not set
+後 1 小時|Next 1 hour
+後 6 小時|Next 6 hours
+後段加班|Later overtime hours
+從加班紀錄轉入；已確認且勾選使用補休帳本的請假，依到期日優先扣除。|Converted from overtime. Confirmed leave linked to this ledger uses credits by earliest expiry first.
+從應發薪資到實際入帳，同步掌握目前任職年資。|Track gross salary, net payment and current length of service.
+從補休帳本扣除（確認後生效）|Deduct from time-off balance when confirmed
+快照方式保留原持股與均價。舊買賣僅留存，不計入本版歷史損益；原現金股息仍依實收日匯入。|Snapshot mode preserves shares and average cost. Old trades are archived and excluded from historical profit; cash dividends retain their payment dates.
+快速建立|Quick setup
+應發總額|Gross total
+應發薪資項目|Gross pay items
+應發項目|Earnings
+應發|Gross pay
+成交價／匯率|Trade price / FX
+成交價|Trade price
+我了解全部取代會移除目前資料|I understand that replacing everything removes current data
+我已核對匯入方式、持股與匯率說明|I have reviewed the import method, holdings and FX notes
+我的持股|My holdings
+所得對帳|Income reconciliation
+所有金額皆可自行輸入|All amounts can be entered manually
+所有項目一致，可確認核對完成。|All items match. You can confirm reconciliation.
+手動價格|Manual price
+手動|Manual
+手續費（交易幣別）|Fee (trade currency)
+手續費|Fee
+打開日曆|Open calendar
+扣款規則備註|Deduction rule notes
+扣款計算|Deduction calculation
+扣款試算合計|Estimated deductions
+扣款|Deduction
+扣除勞健保、扣款與自提後|After insurance, deductions and voluntary pension
+扣除含勞退自提|Deductions including voluntary pension
+扣除含自提|Deductions including pension
+扣除總額|Total deductions
+扣除費用後的實收；已實現虧損可填負數。|Net amount after costs; realized losses may be negative.
+扣除賣出費稅與買入成本|After selling costs and purchase cost
+扣除項目|Deductions
+扣除（含勞退自提）|Deductions (including voluntary pension)
+扣項|Deductions
+找不到公司。系統沒有切換到其他公司。|Company not found. No other company was selected.
+找不到公司，請重新整理後再試|Company not found. Refresh and retry.
+找不到指定公司。請回公司管理重新選擇目前公司。|The selected company was not found. Choose a current company in Companies.
+找不到目前年度與月份的薪資紀錄|No payroll record for the selected year and month
+找不到這個代號，請確認市場與代號，或手動輸入名稱。|Symbol not found. Check the market and symbol, or enter the name manually.
+投入時間|Time spent
+投資功能|Investment features
+投資工作區|Investment workspace
+投資收入已儲存|Investment income saved
+投資收入未儲存，原資料保持不變。|Investment income was not saved. Existing data is unchanged.
+投資收入（舊欄位）|Investment income (legacy field)
+投資收入|Investment income
+投資資料已變更，請重新選擇備份檔核對。|Investment data changed. Select the backup again to review.
+拆分薪資單中的各類扣除|Breakdown of payroll deductions
+持有成本TWD|Book cost (TWD)
+持有成本 TWD|Book cost (TWD)
+持有成本|Book cost
+持有股數|Shares held
+持續追蹤|Track progress
+持股快照＋歷史留存|Holdings snapshot + archived history
+持股或交易的識別碼、代號、名稱、類別不完整。|Holding or transaction ID, symbol, name or category is incomplete.
+持股累計至今|Holdings to date
+持股總市值|Total market value
+持股總覽|Holdings overview
+持股配置|Allocation
+持股|Holdings
+指定開始／結束日|Custom start / end day
+按日曆月份|Calendar month
+授權、隱私與試算說明|Licenses, Privacy & Calculation Notes
+授權、隱私與試算|Licenses, Privacy & Calculations
+排序|Sort
+推估出勤時數|Estimated attendance hours
+推估出勤率|Estimated attendance rate
+推估工作日|Estimated working days
+提醒|Notes
+換算基本月薪|Equivalent monthly base pay
+換算底薪|Equivalent base pay
+換算月基本薪資|Equivalent monthly base salary
+損益依|Profit based on
+損益分析|Profit analysis
+損益由高到低|Profit: high to low
+搜尋公司、備註、月份或實領金額|Search company, notes, month or net pay
+搜尋月份、金額或備註|Search month, amount or notes
+搜尋股票或帳戶|Search stock or account
+搜尋薪資紀錄|Search payroll records
+搜尋薪資|Search payroll
+撤銷失敗，原資料保持不變。|Unable to remove the entry. Existing data is unchanged.
+撤銷補休結算|Remove time-off settlement
+撤銷補休轉入|Remove time-off conversion
+撤銷轉入|Remove conversion
+撤銷|Remove
+操作正在處理或剛完成，已阻止重複送出。|The operation is in progress or just completed. Duplicate submission blocked.
+操作範圍已變更，為避免寫入錯誤公司，請重新開啟表單。|The working context changed. Reopen the form to avoid saving to the wrong company.
+操作|Actions
+支出|Outflow
+收入明細|Income details
+收入筆數|Income entries
+收入總覽|Income overview
+收入類型|Income type
+收合|Collapse
+放大文字、欄位與操作按鈕，長時間使用更清楚。|Larger text, fields and buttons for easier reading.
+整合加班費、年終與每年加薪紀錄；每日加班時薪採每筆獨立快照，不會因調薪回溯變動。|Overtime pay, year-end bonuses and raises in one place. Each overtime entry keeps its own hourly-rate snapshot; later raises do not change it.
+整天|Full day
+文字放大 25%，按鈕與間距一起加大|25% larger text with larger buttons and spacing
+文字與密度|Text size & density
+新增公司|Add company
+新增到 SmartPortfolio 帳戶；薪資、公司與既有投資紀錄會保留。匯入持股、交易及現金股息；收益目標、提醒與介面設定保留於原檔。檔案不會上傳到行情服務。|Import holdings, trades and cash dividends into the SmartPortfolio account. Payroll, companies and existing investment data are kept. Income targets, alerts and preferences stay in the original file. The file is not uploaded to the market service.
+新增加班|Add overtime
+新增固定加項|Add fixed earning
+新增固定收入|Add fixed income
+新增或查看薪資|Add or view payroll
+新增投資收入|Add investment income
+新增收入|Add income
+新增月度薪資|Add monthly payroll
+新增每日加班後，系統會依公司計薪區間自動歸入薪資月份。|Daily overtime is assigned to a payroll month using the company's pay period.
+新增每日加班|Add daily overtime
+新增為獨立副本|Add an independent copy
+新增為獨立帳戶副本|Add a separate account copy
+新增第一筆後，系統會依生效日建立薪資成長歷程。|Add the first entry to build a salary history by effective date.
+新增第一筆薪資|Add your first payroll record
+新增第二家公司後不會自動切換目前公司。|Adding another company does not change the current company.
+新增紀錄|Add record
+新增級距|Add band
+新增股票|Add stock
+新增至獨立帳戶副本；總覽會同時計入原資料及副本的持股與收入。|Add to a separate account copy. Totals include holdings and income from both the original and the copy.
+新增薪資時可按月份修改|Adjust for each month when adding payroll
+新增薪資紀錄後，這裡會依公司自動彙整。|Payroll records are summarized here by company once added.
+新增薪資|Add payroll
+新增調薪紀錄|Add raise record
+新增調薪|Add raise
+新增請假或調整月份、狀態與公司篩選條件。|Add leave or change the month, status and company filters.
+新增請假紀錄|Add leave record
+新增請假|Add leave
+新增／查看|Add / View
+新股數|New share count
+新進起薪|Starting salary
+既有公司|Existing companies
+既有薪資不可在編輯時移轉到其他公司。|Existing payroll cannot be moved to another company while editing.
+既有薪資與加班紀錄不受影響。|Existing payroll and overtime records are unchanged.
+既有試算：總金額|Current estimate: total
+日期、時數或金額無效；結算日期不得晚於今天。|Invalid date, hours or amount. The settlement date cannot be in the future.
+日期／時間|Date / time
+日期|Date
+明細|Details
+星期六／休息日|Saturday / rest day
+星期天 10 小時|Sunday: 10 hours
+星期天 8 小時|Sunday: 8 hours
+星期天／國定假日 1 倍／春節|Sunday / national holiday 1× / Lunar New Year
+星期天|Sunday
+春節 10 小時|Lunar New Year: 10 hours
+春節 2.5|Lunar New Year 2.5×
+春節 8 小時|Lunar New Year: 8 hours
+春節加班|Lunar New Year overtime
+春節約定|Lunar New Year agreement
+春節|Lunar New Year
+是近似倍率，2.0／春節 2.5 為公司約定試算。星期幾不等於法定日別，請依班表與薪資單確認。|are approximate multipliers; 2.0 and Lunar New Year 2.5 are company estimates. The weekday does not determine the legal day type; check the roster and payroll.
+時估列 5%|estimated at 5%
+時數|Hours
+時薪制|Hourly pay
+時薪底薪換算|Hourly pay equivalent
+時薪計算基礎|Hourly-rate basis
+時薪|Hourly rate
+時間價值診斷|Time-value analysis
+時間與生活成本參數|Time and living-cost inputs
+時間（同日排序）|Time (same-day order)
+時間|Time
+晉升調薪|Promotion raise
+普通病假預設半薪；目前未設管理上限，仍會列入出勤與用量分析。全勤／出勤扣款請依公司薪資單輸入。|Sick leave defaults to half pay with no managed cap, and is included in attendance and usage analysis. Enter attendance deductions according to payroll.
+普通病假|Sick leave
+暖陽橘|Amber
+曆年制（每年 1|Calendar-year cycle (each January 1
+曆年 1|Calendar year: January 1
+曆年|Calendar year
+更新價格未儲存，原資料保持不變。|Price updates were not saved. Existing data is unchanged.
+更新手動股價|Update manual prices
+更新未完成，原價格保留|Update incomplete; previous prices kept
+最多保留小數後三碼|Up to three decimal places
+最近一筆淨入帳|Latest net payment
+最近生效|Latest effective date
+最近薪資紀錄|Recent payroll records
+最近薪資|Recent payroll
+最近|Recent
+月。入帳日重新計算；核對狀態重設為未核對。|month. Payment date is recalculated; reconciliation resets to unchecked.
+月份沒有該日期時自動使用月底；若自訂區間未涵蓋某一天，該筆工時會保持未歸屬，不會偷偷套用標準週期。|Use month-end if the day does not exist. Work outside custom periods remains unassigned; it does not silently use a standard period.
+月份範圍|Month range
+月份總覽|Month overview
+月份／入帳日|Month / payment date
+月份|Month
+月加班|monthly overtime
+月實際入帳|actual monthly payment
+月已登錄|month recorded
+月底|Month-end
+月度同期與工時摘要，可左右捲動|Monthly comparison and hours; scroll horizontally
+月度同期與工時摘要|Monthly comparison & hours
+月度收入趨勢|Monthly income trend
+月度時薪趨勢|Monthly hourly-rate trend
+月應發|monthly gross pay
+月明細|monthly details
+月曆|Calendar
+月標準工時|Standard monthly hours
+月生理假每月額度 1 天，本次|menstrual leave allowance is 1 day monthly; this request is
+月真實時薪|monthly effective hourly rate
+月結核對|Monthly reconciliation
+月薪制|Monthly salary
+月薪資區間加班費|overtime pay in the monthly pay period
+月薪資區間|monthly pay period
+月薪資實際區間|actual monthly pay period
+月薪資明細移除連動扣項|monthly payroll: remove linked deduction
+月薪資移入；日期暫記原薪資月份 1 日，可編輯實際入帳日。|migrated from payroll; date defaults to the first of the payroll month. Edit the actual payment date as needed.
+月薪資|monthly payroll
+月請假扣款|monthly leave deductions
+有多筆相同資料，無法判定覆蓋對象。請使用「新增為獨立副本」。|Multiple matches prevent a safe overwrite. Choose an independent copy.
+有晚於期初日期的交易，請調整日期後再匯入。|has trades after the opening date. Adjust the date before importing.
+有金額差異，請填入原因並儲存草稿。|Amounts differ. Enter a reason and save a draft.
+期初成本（非現金支出）|Opening cost (not a cash outflow)
+期初持股日期|Opening balance date
+期初持股；原買賣僅留存，不重複計入。|opening balance; original trades are archived, not counted twice.
+期初持股|Opening holdings
+期初日期不可晚於今天。|The opening date cannot be in the future.
+未分帳戶|Unassigned account
+未勾選時，下載一般 JSON 備份。|Leave unchecked to download a plain JSON backup.
+未取得有效股價與日期|No valid price and date received
+未命名公司|Unnamed company
+未填入帳日|Payment date missing
+未填|Not entered
+未實現損益TWD|Unrealized P&L (TWD)
+未實現損益 TWD|Unrealized P&L (TWD)
+未實現損益|Unrealized P&L
+未指定|Not selected
+未指定公司|No company selected
+未標示|Not specified
+未滿一年依到職日比例計算|Prorate from start date for less than one year
+未登記月份不當作零收入|Unrecorded months are not treated as zero income
+未登記|Not recorded
+未登錄月份|Unrecorded months
+未登錄|Not recorded
+未發現孤兒資料、重複薪資月份、無效日期、失效連動或額度超用。|No orphan records, duplicate payroll months, invalid dates, broken links or exceeded allowances found.
+未設上限|No limit
+未設定目前公司|No current company set
+未設定公司|No company set
+未設定職稱|No position set
+未設定|Not configured
+未重複新增扣項|No duplicate deduction added
+本功能用於個人預估|For personal estimates
+本年其他收入|Other income this year
+本年實收股息|Net dividends this year
+本年已實現損益|Realized P&L this year
+本年投資所得|Investment income this year
+本年記錄費稅|Recorded fees and tax this year
+本月加班|Overtime this month
+本月加項|This month's earnings
+本月工時／請假計算區間|This month's work / leave period
+本月帶入|Apply to this month
+本月扣項與其他|This month's deductions & other items
+本月扣項|This month's deductions
+本月換算底薪會隨基本時薪與正常工時即時更新；儲存後不會因公司日後調薪而回溯變動。|This month's base pay updates from the hourly rate and regular hours. Once saved, later salary changes do not alter it.
+本月正常工時|Regular hours this month
+本月薪資有加班費，但沒有對應加班紀錄，請確認來源。|Payroll includes overtime pay without matching overtime records. Check its source.
+本月試算薪資總額|Estimated salary this month
+本月資料|This month's data
+本月|This month
+本期扣款次數；次數在加班費試算頁輸入。|Deduction event count, entered in the overtime calculator.
+本期扣款次數|Deduction events this period
+本期淨入帳|Net income this period
+本期額度|Allowance this period
+本機記帳|Local ledger
+本機資料來自較新版本，請更新程式後再開啟。現有資料未變更。|Local data comes from a newer version. Update the app before opening it. Existing data is unchanged.
+本機資料已清除|Local data cleared
+本次加班費試算|Overtime estimate
+本次時薪（元）|Hourly rate for this entry (TWD)
+本次沒有更新價格|No prices updated
+本次績效等級|Performance grade
+本次|This entry
+本版平均成本納入買入費稅，因此可能高於 SmartPortfolio 原顯示均價。|This app includes purchase costs in average cost, which may exceed the average shown in SmartPortfolio.
+本範圍天數|Days in this scope
+本範圍時數|Hours in this scope
+本薪、津貼、加班、獎金及自訂加項|Base salary, allowances, overtime, bonuses and custom earnings
+本薪、津貼、扣項與假別規則。|Base salary, allowances, deductions and leave rules.
+本薪、津貼、扣項與計薪區間|Base salary, allowances, deductions and pay period
+本薪、津貼與固定加項|Base salary, allowances and fixed earnings
+本薪／底薪|Base salary
+本薪|Base salary
+查無薪資紀錄|No payroll records found
+查看 SmartPortfolio 匯入紀錄|View SmartPortfolio imports
+查看全部|View all
+查看收入|View income
+查看日曆|View calendar
+查看明細|View details
+查看月度明細與工時摘要|Monthly details & hours
+查看未更新項目（|View items not updated (
+查看／編輯|View / Edit
+查看|View
+查詢名稱|Look up name
+查詢完成；保留你剛輸入的名稱。|Lookup complete. Your manually entered name is kept.
+查詢期間投資資料已變更，請重新更新股價。|Investment data changed during lookup. Update prices again.
+核定額度（小時）|Approved allowance (hours)
+核定／試算額度|Approved / estimated allowance
+核對備註|Reconciliation notes
+核對資料儲存失敗，原資料保持不變。|Reconciliation could not be saved. Existing data is unchanged.
+核心指標|Key figures
+格式不正確，請重新輸入。|Invalid format. Enter the value again.
+標準工時＋加班）|regular hours + overtime)
+標準工時|Standard hours
+標準週期；1 日|Standard cycle; day 1
+標準週期|Standard pay period
+標準|Standard
+標的／名稱|Instrument / name
+標的|Instrument
+檔持股缺少手動股價，尚無完整市值與未實現損益。|holdings have no manual quote; total market value and unrealized profit are incomplete.
+檔持股|holdings
+檔標的、|instruments,
+檔相同 SmartPortfolio 標的及其|matching SmartPortfolio instruments and their
+檔相同標的|matching instruments
+檔缺少股價；此為部分市值|instruments lack quotes; this is a partial market value
+檔股票及|stocks and
+檢查公司關聯、重複紀錄與補休餘額|Check company references, duplicate records and time-off balances
+檢查完成|Check complete
+檢查|Check
+次月 15 日|15th of next month
+次月|Next month
+正在切換到「|Switching to “
+正在加密備份|Encrypting backup
+正在安全儲存|Saving
+正在安全處理|Processing
+正在安全讀取本機薪資資料|Reading local payroll data
+正在安全讀取目前裝置資料|Reading this device's data
+正在查詢股票名稱|Looking up stock name
+正在準備備份|Preparing backup
+正在解鎖|Unlocking
+正在讀取並驗證備份檔案|Reading and validating backup
+正在讀取與核對|Reading and checking
+正在讀取薪資資料|Reading payroll data
+正在重新讀取本機薪資資料|Reloading local payroll data
+正常工時必須大於 0。|Regular hours must be greater than zero.
+正常工時須大於 0 且不超過 744 小時。|Regular hours must be above zero and no more than 744.
+正常工時，四捨五入至元|regular hours, rounded to whole TWD
+正常工時|Regular hours
+此來源已使用或結算，無法撤銷。|This credit has been used or settled and cannot be removed.
+此假別使用到職週年週期，但公司尚未設定第一天上班日；儲存時會提醒確認。|This leave type uses an anniversary cycle, but the company has no start date. You will be reminded when saving.
+此公司仍被|This company is referenced by
+此動作會移除這筆資料並重新計算持股與損益。確定刪除？|Delete this record and recalculate holdings and profit?
+此區間沒有可計算的工作日。請勾選納入週末或調整日期。|No working days in this range. Include weekends or adjust the dates.
+此月份尚未建立請假扣款連動|No linked leave deduction for this month
+此月份沒有可同步的加班費|No overtime pay to sync this month
+此月份沒有已確認的請假扣款可同步|No confirmed leave deductions to sync this month
+此欄位|This field
+此瀏覽器無法使用加密備份，請使用新版瀏覽器及 HTTPS 網址。|Encryption is unavailable in this browser. Use a modern browser and an HTTPS address.
+此為既有公司規則試算，非通用法定扣繳門檻。實際扣繳須依所得年度、居住者身分、給付類型、扣繳方式與適用表格確認；預扣不等於年度應納稅額。請按薪資單填入實際預扣稅。|This estimate uses company rules, not universal statutory withholding thresholds. Withholding depends on the tax year, residency, payment type, method and applicable tables. It is not final annual tax. Enter actual withholding from payroll.
+此筆歸屬|This entry belongs to
+此範圍尚無紀錄|No records in this scope
+此範圍尚無薪資紀錄。可切換年度或截止月，或到「薪資」新增紀錄。|No payroll in this scope. Change the year or cutoff month, or add a record in Payroll.
+此薪資月已有加班金額，為避免同筆加班重複給付，先核對薪資明細後再轉入。|This payroll month already contains overtime pay. Check payroll before converting to avoid counting the same overtime twice.
+此處僅依輸入金額彙整|Summarized from entered amounts only
+此試算工作台可帶入公司固定薪資；不會改動每日加班紀錄的獨立時薪|This calculator can use company fixed salary without changing the hourly rates stored in individual overtime records
+此調薪快照不會回溯修改既有薪資或每日加班時薪；請假扣薪仍會依請假日期套用當時生效薪資。|This raise snapshot does not alter saved payroll or overtime hourly rates. Leave deductions use the salary effective on the leave date.
+步，共 3 步|of 3 steps
+歷任公司|Former company
+歷任|Former
+歷史保護|Historical data protection
+歸屬年份|Payroll year
+歸屬月份|Payroll month
+歸屬結果|Allocation result
+歸屬薪資月份|Assigned payroll month
+歸屬薪資月|Assigned payroll month
+歸屬|Assigned to
+每個曆月 1 天|1 day per calendar month
+每個曆月|Each calendar month
+每家公司、每個月份保留一份完整薪資拆解。|One complete payroll breakdown per company and month.
+每家公司|Each company
+每年加薪紀錄|Annual raise history
+每日來回通勤|Daily round-trip commute
+每日加班時薪必須大於 0。|The overtime hourly rate must be greater than zero.
+每日加班時薪|Daily overtime hourly rate
+每日標準工時|Standard daily hours
+每日準備／備勤|Daily preparation / standby
+每日|Daily
+每月 1 日|1st of each month
+每月倍率與時數試算|Monthly multipliers & hours
+每月固定基本薪資|Fixed monthly base salary
+每月固定|Fixed monthly
+每月工作天數|Working days per month
+每月應發薪資與實際入帳比較圖|Monthly gross salary and actual payment chart
+每月推估出勤率|Estimated monthly attendance rate
+每月時間代價|Monthly time cost
+每月正常工時|Regular monthly hours
+每月淨入帳|Monthly net income
+每月約增加|Estimated monthly increase
+每月自動重置|Resets monthly
+每月薪資交易|Monthly payroll records
+每月通勤開銷|Monthly commuting cost
+每月預設正常工時必須大於 0。|Default monthly regular hours must be greater than zero.
+每月預設正常工時|Default monthly regular hours
+每月預設|Monthly default
+每檔股票可使用不同日期及匯率。留空股價代表「尚未定價」，不會把成本當作市值。|Each stock may use a different date and FX rate. A blank price means unquoted; cost is not used as market value.
+每次扣款金額|Deduction per event
+每筆獨立保存，後續調薪不回寫。|Saved independently for each entry; future raises do not rewrite it.
+每筆都是生效日起的新薪資快照|Each entry is a salary snapshot from its effective date
+每股成交價|Trade price per share
+每股價格|Price per share
+比較到|Compare through
+永久清除|Delete permanently
+沒有可結算的來源餘額。|No available credit balance to settle.
+沒有符合條件的持股|No matching holdings
+沿用既有 Year-End 設定與試算核心。|Uses existing year-end settings and calculations.
+沿用既有 salaryAdjustments；不建立第二套年度加薪資料。|Uses the existing salary-adjustment history.
+派遣公司時薪設定不完整|Incomplete hourly staffing-company settings
+派遣底薪（|Hourly base pay (
+派遣時薪制以「|Hourly pay uses “
+派遣時薪制會以「基本時薪|Hourly pay uses “base hourly rate
+派遣時薪快照|Hourly-rate snapshot
+派遣薪資快照不完整|Incomplete hourly payroll snapshot
+派遣薪資|Hourly staff payroll
+派遣（時薪）快照|Hourly staff snapshot
+派遣（時薪）|Hourly staff
+派遣時薪|Hourly staff rate
+流程狀態|Workflow status
+海洋藍|Blue
+涵蓋公司月份|Company-month coverage
+淨入帳合計|Total net income
+淨入帳|Net income
+清空|Clear
+清除全部本機資料|Clear all local data
+清除失敗。原本資料保持不變。|Clear failed. Existing data is unchanged.
+清除本機資料|Clear local data
+清除這個版本的資料|Clear data for this version
+清零／不帶入|Reset / do not copy
+準備／備勤|Preparation / standby
+無可比較資料|No comparable data
+無此項目請填 0；空白代表尚未核對。核對不會修改薪資或工時。|Enter 0 for items that do not apply. Blank means unchecked. Reconciliation does not change payroll or work hours.
+無法切換公司。目前仍使用「|Unable to switch company. Still using “
+無法刪除|Cannot delete
+無法安全讀取本機薪資資料。系統沒有把讀取失敗當成空白資料，也不會自動覆寫現有儲存內容。|Local payroll data could not be read safely. Read failures are not treated as empty data, and existing storage is not overwritten.
+無法讀取|Unable to read
+無資料|No data
+無適用占比|Share unavailable
+無適用增幅|Growth unavailable
+無項目|No items
+無|None
+特休自動試算尚未啟用|Automatic annual leave calculation is not enabled
+特休與假別設定|Annual leave & leave settings
+特休與假別|Annual leave & leave types
+特休設定已儲存|Annual leave settings saved
+特休設定未儲存，原資料保持不變。|Annual leave settings were not saved. Existing data is unchanged.
+特休試算|Annual leave estimate
+特休選「自動試算」時仍依到職週年；此選項套用於所有公司自訂額度。|Automatic annual leave still follows employment anniversaries. This option applies to all custom company allowances.
+特休額度方式|Annual leave allowance method
+特休額度|Annual leave allowance
+特休|Annual leave
+特殊薪資週期、年度加薪、年終規則與其他特殊公司制度已集中至「進階設定」；一般薪資規則仍維持這 6 個入口。|Custom pay periods, annual raises, year-end rules and special arrangements are in Advanced settings. Regular salary rules remain in the six main sections.
+特殊薪資週期已儲存|Custom pay period saved
+特殊薪資週期|Custom pay period
+特殊週期、年度加薪、年終規則及既有特殊制度。|Custom periods, annual raises, year-end rules and existing special arrangements.
+狀態|Status
+獎金／本月加項|Bonus / this month's earnings
+獎金／紅利|Bonus / profit sharing
+獎金|Bonus
+現任公司會成為新增薪資與請假紀錄的預設值；每日加班時薪獨立保存|The current company is the default for new payroll and leave. Overtime hourly rates are saved per entry.
+現任公司|Current employer
+現任|Current
+現有資料保持不變。|Existing data is unchanged.
+現金流TWD|Cash flow (TWD)
+現金流 TWD|Cash flow (TWD)
+現金股息|Cash dividend
+生效後只成為新薪資明細的預設快照。|Once effective, this becomes the default snapshot for new payroll only.
+生效方式|Effective method
+生效日期格式不正確，請重新選擇。|Invalid effective date. Select it again.
+生效日期|Effective date
+生效日|Effective date
+生理假每個曆月可使用 1 天|Menstrual leave allows 1 day per calendar month
+生理假|Menstrual leave
+產生|Generated
+用相同時薪比較平日、休息日、星期天、國定假日與春節|Compare weekday, rest-day, Sunday, national holiday and Lunar New Year pay at the same hourly rate
+申報時可供核對的扣繳金額|Withholding amount for filing reconciliation
+當月正常工時」換算底薪，並保留每月快照。|regular hours for the month” to calculate base pay, keeping a monthly snapshot.
+病假|Sick leave
+登記交易|Record transaction
+登記本月薪資，或調整搜尋條件。|Record this month's payroll or change your search.
+登記股息|Record dividend
+登記買入並更新股價後，顯示持股占比。|Record a purchase and update prices to see allocation.
+登記買入|Record purchase
+登記|Record
+發薪公司|Paying employer
+的交易日期或類型不正確。|has an invalid transaction date or type.
+的交易金額或股數不正確。|has an invalid transaction amount or share quantity.
+的價格沒有日期，保留原檔但不作為目前估值。|has no quote date. The original is retained but excluded from current valuation.
+的匯率不正確。|has an invalid FX rate.
+的履歷與持股／均價不一致，請改用「持股快照＋歷史留存」。|has history that does not match shares or average cost. Use holdings snapshot + archived history.
+的工作相關時間。|of work-related time.
+的持股或價格不正確。|has invalid shares or prices.
+的數值間隔不正確，請重新輸入。|has an invalid number increment. Enter it again.
+的股息費稅超過總額。|has dividend fees and tax exceeding the gross amount.
+的買賣履歷不完整，請改用「持股快照＋歷史留存」。|has incomplete trade history. Use holdings snapshot + archived history.
+目前使用中的公司|Current company
+目前使用這家公司的薪資與工作紀錄。|Using this company's payroll and work records.
+目前公司內容已更新，這份舊草稿不會被儲存。請重新開啟表單。|Company data changed. This stale draft will not be saved. Reopen the form.
+目前公司尚未設定|Current company not set
+目前公司已切換為「|Current company changed to “
+目前公司已變更。薪資尚未建立，請取消後重新開始。|Current company changed. Payroll was not created. Cancel and start again.
+目前公司已變更，為避免寫入錯誤公司，請取消草稿後重新開始。|Current company changed. Cancel the draft and restart to avoid saving to the wrong company.
+目前公司已變更，請取消草稿後重新建立|Current company changed. Cancel and recreate the draft.
+目前公司或資料已變更，請重新選擇備份。|Current company or data changed. Select the backup again.
+目前公司沒有可複製的薪資紀錄，請先新增薪資。|The current company has no payroll to copy. Add payroll first.
+目前公司設定資料需要確認。請前往公司管理選擇唯一的目前公司。|Review company settings. Select exactly one current company in Companies.
+目前公司設定需要確認|Current company settings need review
+目前公司資料需要確認。薪資尚未建立，請回公司管理重新選擇目前公司。|Review the current company. Payroll was not created. Select the company again in Companies.
+目前公司資料需要確認。請回公司管理重新選擇目前公司。|Review the current company. Select it again in Companies.
+目前公司|Current company
+目前可用|Currently available
+目前尚未取得自動特休額度；下一個計算節點為|No automatic annual leave earned yet; next calculation date:
+目前已使用「|Currently using “
+目前已是「|Already set to “
+目前持有|Currently held
+目前持股估值|Current holding valuation
+目前採公司自訂額度|Using custom company allowance
+目前搜尋條件沒有相符結果。|No results match the current search.
+目前支援台股與美股，請手動更新。|Automatic updates support Taiwan and US stocks. Update this instrument manually.
+目前有尚未儲存的變更。請先儲存或放棄變更，再執行匯入。|You have unsaved changes. Save or discard them before importing.
+目前有尚未儲存的變更，請先儲存或取消後再切換公司|Save or cancel your changes before switching companies
+目前有尚未儲存的變更，請先儲存或取消|Save or cancel your current changes first
+目前未設管理上限；已確認與預計用量仍會分開統計，給薪比例可自行修改。|No managed cap is set. Confirmed and planned usage are counted separately; the pay ratio is adjustable.
+目前步驟|Current step
+目前沒有其他公司。|No other companies available.
+目前沒有可自動更新的台股或美股。|No Taiwan or US stocks available for automatic updates.
+目前沒有可顯示的假別額度；可至公司設定建立管理規則。|No leave allowances to display. Set rules in company settings.
+目前瀏覽器資料|Current browser data
+目前無法安全讀取資料。現有儲存內容尚未變更。|Data cannot be read safely. Existing storage is unchanged.
+目前生效固定薪資|Current effective fixed salary
+目前範圍尚無請假時數可分析。|No leave hours to analyze in this scope.
+目前自動週年基準為|Current automatic anniversary basis:
+目前薪資來源|Current salary source
+目前裝置尚未建立 SalaryMate 資料。|No SalaryMate data on this device yet.
+目前計算區間|Current calculation period
+目前設定|Current settings
+目前資料已變更，請重新選擇備份檔。|Current data changed. Select the backup again.
+目前選取範圍的平均結構|Average breakdown for the selected scope
+目前離線，原有價格保持不變。|You are offline. Previous prices are kept.
+目前|Current
+目標公司不存在，資料尚未變更。|The target company does not exist. Data is unchanged.
+目標薪資月份|Target payroll month
+相同日期、公司、類型與時數的加班紀錄已存在。請調整內容或編輯既有紀錄。|Overtime with the same date, company, type and hours already exists. Change the entry or edit the existing record.
+相同紀錄更新為備份內容，其餘資料保留；備份中新的紀錄會加入。|Update matching records from the backup, keep other records and add new entries.
+相同資料如何處理？|How should matching data be handled?
+相容設定|Compatibility settings
+相較平日差額（10h）|Difference from weekday pay (10h)
+相較平日差額（8h）|Difference from weekday pay (8h)
+真實代價時薪|Effective hourly rate after time costs
+石墨灰|Graphite
+石墨|Graphite
+確定刪除這筆收入？其他紀錄不受影響。|Delete this income entry? Other records are unchanged.
+確定刪除「|Delete “
+確定刪除|Delete
+確定|Confirm
+確認」3 個步驟後再建立薪資。|Confirm” steps before creating payroll.
+確認加入投資資料|Confirm investment import
+確認匯入|Confirm import
+確認同步|Confirm sync
+確認後可在請假紀錄預覽並帶入薪資扣項。|After confirming, preview leave deductions and apply them to payroll.
+確認核對完成|Confirm reconciliation
+確認薪資欄位後再儲存|Check payroll fields before saving
+確認解除|Confirm unlink
+確認轉入|Confirm conversion
+確認還原後，所有本機資料會由這份備份取代。|After confirmation, this backup replaces all local data.
+確認重設|Confirm reset
+確認／預計請假 h|Confirmed / planned leave hours
+確認|Confirm
+移除固定加項|Remove fixed earning
+移除固定收入|Remove fixed income
+移除績效等級|Remove performance grade
+移除自訂項目|Remove custom item
+稅務|Tax
+稅額／扣繳（交易幣別）|Tax / withholding (trade currency)
+稅額|Tax
+空白月份以 0 顯示|Empty months shown as zero
+第一天上班日（到職日）|First working day (employment start date)
+筆來源或餘額異常；請先核對備份與紀錄。|credit or balance issues; check backups and records.
+筆加班紀錄|overtime records
+筆加班、|overtime entries,
+筆帳務紀錄；覆蓋|ledger entries; replacing
+筆投資收入、|investment income entries,
+筆現有帳務紀錄；包含匯入後手動新增的交易。其他標的保留。|existing ledger entries, including trades added after import. Other instruments are kept.
+筆紀錄使用，請改標示為歷任公司|records; mark it as a former company instead
+筆紀錄|records
+筆美股紀錄使用匯入匯率|US stock entries use import FX rate
+筆股票紀錄|stock entries
+筆自訂倍率請手動補入|custom-multiplier entries need manual input
+筆舊買賣履歷，不會重複增加持股。|archived trades, which do not add holdings twice.
+筆薪資紀錄|payroll records
+筆薪資|payroll entries
+筆請假紀錄（含全部狀態）|leave records (all statuses)
+筆請假|leave entries
+筆，異常來源不列入可用餘額，請至加班紀錄核對。|entries. Invalid sources are excluded from the available balance; check overtime records.
+筆，請確認日期、時數與基準時薪|entries; check dates, hours and hourly rates
+筆，請確認生效日與調整後薪資|entries; check effective dates and adjusted salaries
+筆，請確認該月基本時薪與正常工時|entries; check monthly hourly rates and regular hours
+筆，請編輯日期區間或請假量|entries; edit the date range or leave amount
+筆／|entries /
+等級|Grade
+等級名稱|Grade name
+管理原則：|Management notes:
+篩選|Filter
+系統不會自動使用第一家公司。請從下方公司清單選擇「設為目前公司」。|Select “Set as current” from the company list below to continue.
+系統金額|Calculated amount
+紀錄|Record
+紀錄公司|Company
+紀錄筆數|Record count
+紀錄重疊。請先調整日期或區段。|records overlap. Adjust the dates or time segments first.
+紀錄？若已同步薪資，連動狀態會顯示需更新。|record? If linked to payroll, the link will be marked for updating.
+約|Approx.
+納入時薪|Included in hourly pay
+納入週六、週日|Include Saturdays and Sundays
+累積時數|Accumulated hours
+累積調整|Cumulative adjustments
+累計已實現＋股息|Total realized gains + dividends
+終|Bonus
+結束日|End day
+結束日區段|End-day segment
+結束日必須是 1|End day must be 1
+結束日期|End date
+結束日期不可早於開始日期。|End date cannot be before start date.
+結束日期格式不正確，請重新選擇。|Invalid end date. Select it again.
+結算|Settlement
+結算儲存失敗；原資料保持不變。|Could not save the settlement. Existing data is unchanged.
+結算日期|Settlement date
+結算時數|Settled hours
+結算紀錄|Settlement records
+結算超過可用補休時數，或來源帳本異常；資料未儲存。|Settlement exceeds available time off, or the source ledger needs review. Nothing was saved.
+給薪比例|Paid percentage
+給薪比例（%）|Paid percentage (%)
+給薪與扣款設定|Pay and deduction settings
+綠色|Green
+緊湊|Compact
+編輯|Edit
+編輯公司|Edit company
+編輯公司基本資料|Edit company details
+編輯公司預設|Edit company defaults
+編輯加班紀錄|Edit overtime
+編輯基本資料|Edit details
+編輯投資收入|Edit investment income
+編輯股票|Edit stock
+編輯股票紀錄|Edit stock transaction
+編輯薪資明細|Edit payslip
+編輯調薪紀錄|Edit pay raise
+編輯請假紀錄|Edit leave
+縮短間距並提高資訊密度，適合經常查帳與輸入。|Tighter spacing shows more records for frequent review and entry.
+總額度|Total allowance
+績效|Performance
+績效月數|Performance months
+績效月數＋額外調整）|performance months + additional adjustments)
+績效獎金|Performance bonus
+績效級距|Performance grades
+績效調薪|Performance raise
+缺少紀錄不當作零收入；增幅僅比較兩年共同有紀錄的月份。|Missing records are not treated as zero income. Growth compares only months with records in both years.
+缺少薪資紀錄不等於零收入。加班與請假依公司計薪區間歸屬；補休結算依實際結算日期月份列示，屬核對備註金額，未額外加入收入合計。工時資料尚未同步薪資時，兩者金額可能不同。|Missing payslips are not zero income. Overtime and leave follow company pay periods. Time-off settlements are shown by settlement month for reference and are not added to income totals. Work-log and payroll amounts may differ until synchronized.
+缺漏／共同月份|Missing / comparable months
+美股|US stocks
+美股資料缺少匯率，請輸入匯入換算用的 USD|US stock data is missing an exchange rate. Enter the import conversion rate for USD
+翡翠綠|Emerald
+職位|Position
+職務|Role
+職務加給|Role allowance
+職務加給（計入時薪）|Role allowance (included in hourly pay)
+職稱／職位|Job title / position
+職務加給與下列固定加項會自動帶入新薪資紀錄，並納入薪資時薪分析及請假扣薪的固定薪資基礎；每日加班時薪仍由每筆紀錄獨立保存。|Role allowance and recurring additions are applied to new payslips and the fixed-pay basis for hourly analysis and leave deductions. Each overtime entry keeps its own hourly rate.
+股|shares
+股價日期不可晚於今天。|Price date cannot be in the future.
+股價更新中|Updating prices
+股價與來源|Price and source
+股息|Dividends
+股息總額|Gross dividend
+股息總額（扣費稅前）|Gross dividend (before fees and taxes)
+股息與收入|Dividends & income
+股息＋原投資收入，不含買賣損益|Dividends + other income, excluding trading gains
+股息／配息|Dividends / distributions
+股數|Shares
+股數／平均成本|Shares / average cost
+股數／金額|Shares / amount
+股票|Stock
+股票交易簿中的股息|Dividends recorded in the stock ledger
+股票代號|Ticker
+股票投資|Stock investments
+股票紀錄|Stock transactions
+股票紀錄需要確認|Stock records need review
+股票股價尚未補齊|Some stock prices are missing
+股票資料已儲存|Stock data saved
+股票資料未儲存，原資料保持不變。|Stock data was not saved. Existing data is unchanged.
+股票／ETF 名稱|Stock / ETF name
+股票／帳戶|Stock / account
+股；總成本保持不變。|shares; total cost stays the same.
+自動估算依到職週期，結果請核對公司核定額度。修改標準工時會影響按天登記的請假換算。|Automatic estimates follow your employment anniversary. Check the result against your company's allowance. Changing daily hours affects conversion of leave recorded in days.
+自動保存|Autosaved
+自行加入固定加項|Add recurring income items
+自訂倍率|Custom multiplier
+自訂加項|Custom additions
+自訂固定倍率|Custom fixed multiplier
+自訂天數|Custom days
+自訂小時|Custom hours
+自訂扣款備註|Custom deduction note
+自訂扣項|Custom deductions
+自訂結束日|Custom end day
+自訂計算基數|Custom calculation base
+自訂計算基數不可小於 0。|Custom calculation base cannot be negative.
+自訂試算|Custom estimate
+自訂金額|Custom amount
+自訂開始日|Custom start day
+自訂預扣稅率|Custom withholding rate
+自訂預扣稅門檻|Custom withholding threshold
+自訂額度|Custom allowance
+至少保留一個績效級距|Keep at least one performance grade
+與|and
+舊副業收入|Legacy side income
+舊股數|Previous shares
+舊資料已讀取，但無法安全完成轉換保存。原始舊資料未刪除，請先匯出備份或重新嘗試。|Legacy data was read but could not be migrated safely. The original data is retained. Export a backup or try again.
+莓果紅|Berry
+薪資、請假及出勤分析 CSV|Payroll, leave and attendance CSV
+薪資列入|Included in payroll
+薪資區間加班時數|Overtime hours in pay period
+薪資基礎|Pay basis
+薪資實領|Take-home pay
+薪資年份|Payroll year
+薪資年度|Payroll year
+薪資建立失敗。資料尚未建立，原本資料保持不變。|Could not create the payslip. Existing data is unchanged.
+薪資應發：固定／變動收入|Gross pay: fixed / variable income
+薪資成長與試算|Pay growth and estimates
+薪資扣款連動已解除，請假紀錄仍保留|Payroll deduction unlinked. Leave records are retained.
+薪資扣款連動：|Payroll deduction link:
+薪資扣除|Payroll deductions
+薪資扣除含自提|Deductions including voluntary pension
+薪資扣除總額|Total payroll deductions
+薪資扣除項目|Payroll deduction items
+薪資明細 CSV|Payslips CSV
+薪資明細存在，尚未同步|Payslip exists, not yet synchronized
+薪資月|Pay month
+薪資月份|Pay month
+薪資歸屬年度|Payroll year
+薪資歸屬與試算說明|Pay periods and calculation notes
+薪資歸屬：|Pay period:
+薪資淨入帳|Net pay received
+薪資筆數|Payslip count
+薪資紀錄|Payslips
+薪資紀錄不存在，請重新選擇。|Payslip not found. Select it again.
+薪資紀錄已刪除|Payslip deleted
+薪資紀錄已新增|Payslip added
+薪資紀錄已更新|Payslip updated
+薪資紀錄？|payslip?
+薪資規則|Payroll rules
+薪資試算功能|Pay estimates
+薪資週期|Pay cycle
+薪資週期資料需要確認。公司資料不存在，請返回公司管理重新開啟設定。|Pay-cycle settings need review. Company not found; reopen settings from Companies.
+藍色|Blue
+行情回傳格式不正確。|Invalid market-data response.
+行情服務暫時無法使用（|Market-data service is unavailable (
+行情查詢逾時或已取消，原價格保持不變。|Price lookup timed out or was cancelled. Existing prices are unchanged.
+補休|Compensatory leave
+補休來源|Time-off credit
+補休來源不足、已到期或帳本來源異常；請檢查加班轉入與結算紀錄。|Time-off credits are insufficient, expired or invalid. Check overtime transfers and settlements.
+補休來源已建立，請核對新的加班費估算。|Time-off credit created. Review the updated overtime estimate.
+補休來源或餘額異常|Time-off source or balance needs review
+補休來源與結餘|Time-off credits and balances
+補休帳本|Time-off ledger
+補休帳本有|Time-off ledger has
+補休結算|Time-off settlement
+補休結算已記錄。|Time-off settlement saved.
+補休結算時數（日期月份）|Settled time-off hours (by settlement month)
+補休結算金額|Time-off settlement amount
+補休結算金額（未另加收入）|Time-off settlement (not added to income)
+補休轉入失敗；原紀錄保持不變。|Time-off transfer failed. Existing records are unchanged.
+複製上月|Copy last month
+複製上月薪資|Copy last month's payslip
+覆蓋|Replace
+覆蓋相同標的與交易|Replace matching assets and transactions
+覆蓋相同資料|Replace matching records
+規則定義與每月交易分離；既有薪資快照不回溯修改。|Rules apply to future entries. Existing payslip snapshots remain unchanged.
+規則／交易分離：|Rules and entries:
+觀察清單|Watchlist
+觀察／已出清|Watching / closed
+觀察／已出清股票|Watchlist and closed positions
+解鎖並預覽|Unlock and preview
+解鎖加密備份|Unlock encrypted backup
+解除薪資連動|Unlink payroll
+解除請假扣款連動|Unlink leave deductions
+解除連動失敗。原本薪資扣項保持不變。|Could not unlink. Existing payroll deductions are unchanged.
+計入時薪|Included in hourly pay
+計算區間|Calculation period
+計算基數|Calculation base
+計算方式與適用範圍|Methods and scope
+計薪區間|Pay period
+計薪區間與扣款規則|Pay periods and deduction rules
+計薪方式|Pay type
+記加班|Log overtime
+記請假|Log leave
+記錄已收到的股息、配息、利息或已實現損益。|Record dividends, distributions, interest or realized gains you have received.
+記錄結算|Record settlement
+記錄補休結算|Record time-off settlement
+設為目前公司|Set as current
+試算|Estimate
+試算情境|Estimate scenario
+試算提醒|Estimate notes
+試算明細|Estimate details
+試算與調薪|Estimates & raises
+試算金額|Estimated amount
+該月薪資已有加班金額，請先核對，避免重複給付。|This payslip already includes overtime pay. Review it to avoid double counting.
+說明|Help
+說明尚未載入，請重新開啟。|Help has not loaded. Reopen it.
+調整|Adjust
+調整假別與額度|Adjust leave types and allowances
+調整假別額度|Adjust leave allowances
+調整原因|Reason for adjustment
+調整後伙食津貼|New meal allowance
+調整後其他固定加項|New recurring additions
+調整後固定薪資|New fixed pay
+調整後基本時薪|New hourly rate
+調整後基本時薪必須大於 0。|New hourly rate must be greater than zero.
+調整後本薪|New base salary
+調整後職務加給|New role allowance
+調薪|Pay raise
+調薪只影響之後新增的薪資預設，不改寫既有薪資或每日加班時薪|Raises apply to future payslips. Existing payslips and overtime rates stay unchanged.
+調薪後薪資|Pay after raise
+調薪歷程|Pay history
+調薪紀錄只會成為生效日之後「新增薪資明細」與年終試算的預設值；請假扣薪依請假日套用當時薪資。既有薪資與每筆每日加班時薪都保留原始快照。|Raises set defaults for new payslips and bonus estimates after the effective date. Leave deductions use pay effective on the leave date. Existing payslips and overtime rates keep their original snapshots.
+調薪紀錄已刪除|Pay raise deleted
+調薪紀錄已新增|Pay raise added
+調薪紀錄已更新|Pay raise updated
+調薪資料不完整|Pay-raise details are incomplete
+請假|Leave
+請假區段|Leave segment
+請假天數與半天會依此換算時數，預設 8 小時。|Full and half days use these hours for conversion. Default: 8 hours.
+請假扣款尚未同步或來源已變更，請到工時／請假確認。|Leave deductions are not synchronized or their source has changed. Review them in Work & Leave.
+請假扣款連動|Linked leave deductions
+請假扣款連動需要更新|Linked leave deductions need updating
+請假扣薪|Leave deductions
+請假扣薪試算|Leave deduction estimate
+請假扣薪＋出勤扣款（工時／出勤連動）|Leave + attendance deductions (linked to work logs)
+請假日期或時數無法計算|Cannot calculate leave dates or hours
+請假日期／狀態|Leave date / status
+請假時數|Leave hours
+請假時間|Leave time
+請假狀態|Leave status
+請假紀錄|Leave records
+請假紀錄 CSV|Leave records CSV
+請假紀錄儲存失敗。原本資料保持不變。|Could not save leave. Existing data is unchanged.
+請假紀錄已刪除|Leave deleted
+請假紀錄已新增|Leave added
+請假紀錄已更新|Leave updated
+請假紀錄本身不會刪除。|The leave record will be retained.
+請假資料已變更，請重新同步|Leave data changed. Synchronize again.
+請假量|Leave amount
+請假／全勤扣款|Leave / attendance deductions
+請先儲存目前的試算變更。|Save your estimate changes first.
+請先匯出備份；只清除目前 v5 完整版的資料。|Export a backup first. Only data for the current v5 edition will be cleared.
+請先在公司管理設定唯一的目前公司。系統不會自動改用第一家公司。|Select one current company in Companies to continue.
+請先在公司管理設為目前公司|Set a current company in Companies first
+請先在公司管理設為目前公司，再建立薪資|Set a current company in Companies before adding a payslip
+請先建立任職公司|Add your employer first
+請先建立公司，才能依薪資基礎進行年終試算。|Add a company before estimating a year-end bonus.
+請先建立公司，才能記錄年度加薪。|Add a company before recording a pay raise.
+請先建立或選擇公司|Add or select a company first
+請先建立至少一家公司|Add at least one company first
+請先新增一檔股票，再登記交易。|Add a stock before recording a transaction.
+請先新增股票。|Add a stock first.
+請先核對或同步。|Reconcile or synchronize first.
+請先設定公司到職日與特休規則。|Set your employment start date and annual leave rules first.
+請先選擇單一公司與薪資月份|Select one company and pay month first
+請先選擇目前公司，再複製上月薪資。|Select a current company before copying last month's payslip.
+請先選擇要同步的月份|Select a month to synchronize
+請先選擇要同步的薪資月份|Select a pay month to synchronize
+請先選擇要帶入的月份|Select a month to import
+請先選薪資月份|Select a pay month first
+請在上方先選擇單一公司與薪資月份，即可預覽已確認請假的扣薪、出勤扣款，並安全同步至薪資自訂扣項。|Select one company and pay month above to preview deductions for confirmed leave and attendance, then synchronize them with payroll.
+請填實際交易匯率；TWD 固定為 1。|Enter the actual transaction exchange rate. TWD is fixed at 1.
+請填實際核對的結算金額。此紀錄不會自動增加薪資明細。|Enter the confirmed settlement amount. This does not automatically add pay to a payslip.
+請填寫有效密碼。|Enter a valid password.
+請填寫有效的期初持股日期。|Enter a valid opening-position date.
+請完成「月份|Complete the month
+請新增薪資紀錄，或調整上方年度與公司篩選。|Add a payslip or adjust the year and company filters above.
+請登記已發生的交易；日期不可晚於今天。|Record completed transactions only. The date cannot be in the future.
+請確認公司資料|Review company details
+請確認日期、名稱與實收金額。|Check the date, name and net amount received.
+請確認日期、標準工時與特休額度。|Check the date, daily working hours and annual leave allowance.
+請確認日期區間；目前沒有可計算的工作日|Check the date range; it contains no working days
+請稍後重試。|Try again later.
+請設定到職日或公司額度|Set a start date or company allowance
+請設定第一天上班日|Set your first day of employment
+請輸入|Enter
+請輸入公司名稱。|Enter a company name.
+請輸入固定收入名稱，或將金額清為 0。|Enter a recurring income name or set its amount to zero.
+請輸入大於 0 的基本時薪。|Enter an hourly rate greater than zero.
+請輸入大於 0 的正常工時。|Enter regular hours greater than zero.
+請選擇一家公司設為目前公司|Select one company as current
+請選擇匯入方式。|Select an import method.
+請選擇日期以判斷薪資月份|Select a date to determine the pay month
+請選擇重複資料處理方式。|Choose how to handle duplicates.
+變動應發|Variable gross pay
+變動薪資調整|Variable pay adjustment
+變更只套用之後的工時／請假歸屬與新建薪資預覽；既有薪資單不重算。|Changes apply to future work and leave attribution and new payslip previews. Existing payslips are not recalculated.
+變更計薪區間後，既有加班與請假紀錄會立即依新規則重新歸屬薪資月份；跨日請假也會重新拆分，但原始日期不會被修改。已同步的請假扣項若金額改變，系統會提示重新同步。|Changing pay periods reassigns existing overtime and leave to pay months, including multi-day leave. Original dates stay unchanged. You will be prompted to synchronize again if linked deductions change.
+買入|Buy
+買入筆數|Buy count
+費率不會自動套用，請依成交或入帳明細填寫。賣出會按移動平均成本計算損益。|Enter fees and taxes from your transaction statement. Sales use moving-average cost to calculate gains.
+費用與稅額不可為負數。|Fees and taxes cannot be negative.
+費用＋稅額|Fees + taxes
+費用／稅額|Fees / taxes
+費稅後實收|Net after fees and taxes
+資料仍保留，但快速登記與新建薪資會保持鎖定，直到你明確選擇目前公司。|Your data is retained. Select a current company to enable quick entry and new payslips.
+資料保存方式、授權文字與試算範圍|Data storage, licensing and calculation scope
+資料儲存失敗|Could not save data
+資料完整性健檢|Data integrity check
+資料寫入失敗|Could not write data
+資料尚未成功保存。資料尚未變更，請先匯出備份後再試一次。|Data could not be saved and remains unchanged. Export a backup, then try again.
+資料引用|Data references
+資料檢查|Data check
+資料狀態良好|Data looks healthy
+資料獨立保存。可手動匯入薪資備份，原版本的資料仍保留。|Data is stored separately. You can import a payroll backup; the original version's data is retained.
+資料管理|Data management
+資料範圍|Data scope
+資料與計算方式|Data and methods
+資料讀取失敗|Could not read data
+資料讀取失敗。現有儲存內容尚未變更。|Could not read data. Stored data is unchanged.
+資料載入中|Loading data
+資料錯誤|Data error
+資料需要確認。|Data needs review.
+賣出|Sell
+賣出筆數|Sell count
+起|From
+起僅得按請假日數比例扣發，實際結果仍以公司薪資單及適用規定為準。|onward, deductions are proportional to leave days. Check the actual payslip and applicable rules.
+起始固定薪資|Starting fixed pay
+起生效|effective from
+起生效的薪資快照|pay snapshot effective from
+起至|through
+超額|Over allowance
+跨公司共用|Shared across companies
+跨日請假最多可輸入 366 天。|Multi-day leave is limited to 366 days.
+跨計薪區間，自動拆分為：|Spans pay periods; automatically split into:
+較前次|vs. previous
+較名義時薪|vs. nominal hourly pay
+較小字體、縮短列高，顯示更多紀錄|Smaller text and shorter rows show more records
+輸入代號後自動查詢，也可手動填寫名稱。|Enter a ticker to look up its name, or enter the name manually.
+輸入公司薪資單金額；差額|Enter amounts from your payslip; difference
+輸入匯出時設定的密碼。解鎖後會先預覽，尚不會變更資料。|Enter the password used when exporting. You can preview the unlocked backup before making changes.
+輸入自己的實際資料，這裡不會預先放入示範持股。|Add your own holdings and transactions to get started.
+轉入時數將從此筆預估加班費排除；已有薪資紀錄請先核對是否給付。|Transferred hours are excluded from the overtime estimate. Check existing payslips for prior payment.
+轉入補休時數|Hours to transfer
+轉補休|Convert to time off
+近似倍率 1.34／1.67|Approximate multipliers 1.34 / 1.67
+近似倍率 1.34／1.67／2.67|Approximate multipliers 1.34 / 1.67 / 2.67
+返回|Back
+返回修改|Back to edit
+這不是 SmartPortfolio 備份格式。|This is not a SmartPortfolio backup.
+這些是提醒，不會阻止儲存。|These reminders do not prevent saving.
+這份備份來自較新版本，請更新程式後再還原。|This backup is from a newer version. Update the app before restoring it.
+這份備份已經匯入，已阻止重複新增。|This backup has already been imported. Duplicate import was blocked.
+這天還沒有紀錄。|No entries for this day.
+這家公司在這個薪資月份已有薪資紀錄。請查看既有紀錄或選擇其他月份。|A payslip already exists for this company and month. View it or select another month.
+這是個人記帳與核對工具，不是正式報稅試算。伙食津貼、勞退自提、副業所得與各類獎金的實際課稅認定，請以公司扣繳憑單與申報年度規定為準。|This is a personal bookkeeping tool. For tax treatment of allowances, voluntary pension contributions, side income and bonuses, refer to your withholding statement and the rules for the filing year.
+這是公司層級的預設扣項；單次扣項仍在每月薪資明細輸入，既有薪資紀錄不回寫。|These are company-level deduction defaults. Enter one-off deductions on each payslip. Existing payslips stay unchanged.
+這是記帳損益，不是年化報酬或報稅試算。手動收入未計入此股票交易分析，請見「股息與收入」。|This shows bookkeeping gains, not annualized returns or tax estimates. Manually entered income appears under Dividends & income and is excluded here.
+這檔股票已有交易。請保留歷史，或先處理相關交易再刪除。|This stock has transactions. Keep its history or remove the related transactions first.
+這筆加班已有補休來源，請先撤銷未使用轉入，或保留原始紀錄。|This overtime entry has a time-off credit. Remove the unused transfer first, or keep the original entry.
+這筆加班已有補休來源，請先檢查來源帳本。|This overtime entry already has a time-off credit. Check the ledger first.
+這筆加班已轉入補休，無法編輯來源。|This overtime entry was converted to time off. Remove the unused transfer before editing its source.
+這裡只設定每月固定收入；單次加項與一般獎金仍在每月薪資明細輸入。|Set recurring monthly income here. Enter one-off additions and bonuses on each payslip.
+通勤與備勤|Commute & on-call time
+通勤費與額外時間使名義與真實時薪相差約|Commute costs and extra time create an hourly pay difference of about
+連動原則：|Linking rules:
+連動方式：|Linking method:
+連續多天|Multiple days
+週一|Mon
+週二|Tue
+週三|Wed
+週四|Thu
+週五|Fri
+週六|Sat
+週日|Sun
+進行中（預計＋確認）|Active (planned + confirmed)
+進階規則：|Advanced rules:
+進階設定|Advanced settings
+進階設定已提供獨立編輯入口；這裡保留舊流程相容性。|Advanced settings can be edited separately. This entry supports the previous workflow.
+選擇備份還原|Restore a backup
+選擇公司核定額度時使用。|Used for a company-approved allowance.
+選擇加薪紀錄公司|Select a company for the pay raise
+選擇報表|Select a report
+選擇帶入薪資月份|Select a pay month to import
+選擇年終試算公司|Select a company for the bonus estimate
+選擇日期|Select date
+選擇智投資 SmartPortfolio 匯出的完整 JSON 備份。會先預覽，確認後才加入投資資料。|Select a complete JSON backup exported from SmartPortfolio. Review the preview before importing investment data.
+選擇檔案|Choose file
+選擇試算公司|Select company
+選用|Optional
+部分新臺幣成本／損益採匯入匯率估計，請核對原交易匯率。|Some TWD costs and gains use the import exchange rate. Verify the original transaction rates.
+部分舊買賣僅留存，以下損益只含本版已計入的帳務紀錄。|Some legacy trades are archived only. Gains below include only entries accounted for in this edition.
+配置只含已有股價的持股，尚非完整組合。|Allocation includes only priced holdings and may be incomplete.
+配色|Color theme
+重新同步|Synchronize again
+重新讀取|Reload
+重置。|reset.
+重置方式|Reset rule
+重置）|reset)
+重設加班費試算|Reset overtime estimate
+重設試算|Reset estimate
+重點色|Accent color
+金額|Amount
+金額一致，仍需確認加班／請假來源。|Amounts match. Review overtime and leave sources as well.
+錯誤|Error
+開啟|Open
+開啟薪資規則|Open payroll rules
+開啟進階設定|Open advanced settings
+開始日|Start day
+開始日區段|Start-day segment
+開始日必須是 1|Start day must be 1
+開始日期|Start date
+開始日期格式不正確，請重新選擇。|Invalid start date. Select it again.
+閱讀|Read
+關閉|Close
+降低陰影與裝飾，讓文字、金額與資料成為焦點。|Reduced shadows and decoration keep figures and records clear.
+限制：|Limitations:
+隱形成本|Hidden costs
+需要確認|Needs review
+需要處理資料錯誤|Data errors need attention
+需要選擇目前公司|Select a current company
+需設定到職日|Set a start date
+靛青紫|Indigo
+非工作日|Non-working day
+非目前公司；查看不會切換操作中的公司。|Not the current company. Viewing it does not change your active company.
+非破壞性檢查，不會修改或刪除任何紀錄|Read-only check; no records are modified or deleted
+頁面分類|Pages
+項|items
+項目|Item
+項目名稱|Item name
+項／|items /
+預估加班費|Estimated overtime pay
+預估可支配淨入帳|Estimated disposable income
+預估實領|Estimated take-home pay
+預估實領年終|Estimated net bonus
+預估扣薪|Estimated deduction
+預估月基本薪資：|Estimated monthly base pay:
+預估發放總額|Estimated gross payment
+預估總額扣除預扣稅|Estimated gross payment minus withholding
+預估請假扣薪|Estimated leave deduction
+預定|Planned
+預定工時|Planned hours
+預扣所得稅|Income tax withheld
+預扣稅|Withholding tax
+預扣稅額|Tax withheld
+預留|Reserved
+預留特休|Reserved annual leave
+預覽 SmartPortfolio 匯入|Preview SmartPortfolio import
+預覽並同步扣款|Preview and synchronize
+預覽備份匯入|Preview backup import
+預覽報表|Preview report
+預覽請假扣款連動|Preview linked leave deductions
+預覽：|Preview:
+預計|Planned
+預計先保留、確認列為已用；自訂額度可在公司設定調整|Planned leave reserves allowance; confirmed leave uses it. Adjust allowances in company settings.
+預計入帳日|Expected payment date
+預計到職|Expected start
+預計寫入薪資自訂扣項|Amount to add to payroll deductions
+預計請假時數|Planned leave hours
+預計請假會先保留額度、已確認會列入已用；生理假固定每個曆月 1 天並於每月重置，其他不設上限假別仍保留用量分析。這是公司內部管理設定，不會取代實際人事制度。|Planned leave reserves allowance; confirmed leave counts as used. Menstrual leave resets monthly at one day. Unlimited leave types still track usage. Confirm these settings against your company's actual policies.
+預設|Default
+預設伙食津貼|Default meal allowance
+預設健保自負額|Default health insurance contribution
+預設勞保自負額|Default labor insurance contribution
+預設基本時薪|Default hourly rate
+預設扣項|Default deductions
+預設扣項已更新；既有薪資保持不變|Default deductions updated. Existing payslips are unchanged.
+預設本薪|Default base salary
+預設職務加給|Default role allowance
+預設隱藏；展開後可分析通勤與備勤時間成本|Expand to analyze commute and on-call time costs
+額外加減金額|Additional adjustment
+額度|Allowance
+額度偏低|Low allowance
+額度方式|Allowance method
+額度正常|Allowance available
+額度週期|Allowance cycle
+類型|Type
+顯示目前年度與公司篩選下的最近 6 筆|Latest 6 records for the selected year and company
+顯示與操作|Display & controls
+餘額|Balance
+首頁|Home
+點日期查看紀錄。虛線代表預計請假；薪資歸屬依公司計薪區間。|Select a date to view entries. Dashed outlines indicate planned leave. Payroll attribution follows company pay periods.
+編輯補休來源|Edit time-off credit
+編輯補休結算|Edit time-off settlement
+刪除年終試算|Delete bonus estimate
+介面語言|Interface language
+跟隨系統|System language
+繁體中文|Traditional Chinese
+語言切換|Language
+管理匯入資料|Manage imported data
+刪除此批匯入|Delete this import
+儲存修改|Save changes
+
+除息日期|Ex-dividend date
+現金股利|Cash dividend
+現金股利（每股）|Cash dividend per share
+每股|Per share
+入帳日期／時間|Payment date / time
+入帳日期 *|Payment date *
+刪除紀錄|Delete record
+以股票交易幣別填寫，未提供可留空。|Enter the amount in the stock currency. Leave blank if unknown.
+依實際配息明細填寫總額，實收會再扣除費用與稅額。|Enter the gross amount from your dividend statement. Fees and tax are deducted to calculate net income.
+除息日期必須是有效日期，且不可晚於入帳日期。|Enter a valid ex-dividend date on or before the payment date.
+每股現金股利必須是非負數。|Cash dividend per share must be zero or greater.
+
+表格橫向捲動|Horizontal table scrolling
+已看過薪資單，所有金額都相同？可直接完成，不必逐格輸入。|All amounts match your payslip? Mark the review complete without entering each amount.
+金額皆相同，核對完成|All amounts match — complete review
+官方配息公告|Official dividend announcements
+查詢官方公告|Check official announcements
+帶入公告值|Use announced values
+選擇配息期別|Select a dividend event
+依股票代號查詢除息日期與每股現金股利。|Look up announced ex-dividend dates and cash dividends per share.
+官方公告查詢目前支援台股股票與 ETF；其他市場請依發行人公告填寫。|Official lookup supports Taiwan stocks and ETFs. For other markets, enter values from the issuer announcement.
+正在查詢官方配息公告…|Checking official dividend announcements…
+此期間查無官方配息公告，原欄位保留。|No official dividend announcement found for this period. Existing values are retained.
+官方公告查詢失敗，原欄位保留。|Official lookup failed. Existing values are retained.
+官方公告服務暫時無法使用，原資料保留。|Official announcements are temporarily unavailable. Existing data is retained.
+公告年份不正確|Invalid announcement year
+股息總額仍依實際入帳明細填寫。|Enter the gross dividend from your actual payment statement.
+公告發放日|Announced payment date
+金額待公告|Amount not yet announced
+除息日尚未到，請於實際入帳後登記|The ex-dividend date is in the future. Record the dividend after payment.
+TWSE ETF 收益分配|TWSE ETF distributions
+TPEx ETF 收益分配|TPEx ETF distributions
+TWSE 除權息預告|TWSE dividend announcements
+TPEx 除權息預告|TPEx dividend announcements
+TWSE 除息歷史|TWSE dividend history
+暫時無法取得，已保留其他可用公告。| is temporarily unavailable. Other available announcements are shown.
+發放|Payment
+官方公告|Official announcement
+
+部分個股除息明細暫時無法取得。|Some stock dividend details are temporarily unavailable.
+
+自動帶入官方配息|Fill from official announcements automatically
+依入帳日期自動匹配最近一期公告；可切換期別。|Automatically match the latest event as of the payment date. You can select another event.
+尚無可匹配的公告，或公告有多個金額，請選擇期別或手動填寫。|No matching event, or conflicting amounts. Select an event or enter the details manually.
+費率不會自動套用，請依成交或入帳明細填寫。賣出會按先進先出（FIFO）計算損益。|Enter fees and taxes from your statement. Sales use first-in, first-out (FIFO) cost.
+股數／剩餘均價|Shares / remaining average cost
+剩餘持股均價|Remaining average cost
+FIFO 剩餘成本|Remaining FIFO cost
+FIFO 成本|FIFO cost
+批次交易|Batch transactions
+每批最多 100 筆。先輸入並核對，全部通過後一次儲存；股數以「股」為單位。|Enter up to 100 transactions, review them, then save the entire batch. Enter quantities in shares.
+從 Excel 貼上買賣|Paste trades from Excel
+欄位順序：類型、日期、時間、股票代號、股數、成交價、手續費、稅額、匯率、帳戶。用 Tab 分隔；類型填買入／賣出或 buy／sell。日期填 YYYY-MM-DD，時間可留空。同代號有多個帳戶時須填帳戶。|Column order: type, date, time, symbol, shares, price, fee, tax, FX, account. Separate with tabs. Use buy or sell, YYYY-MM-DD dates, and optional HH:mm times. Specify the account if a symbol has multiple accounts.
+貼上交易資料|Paste transaction data
+加入草稿|Add to draft
+新增一筆|Add a row
+預覽核對|Preview and review
+確認整批儲存|Save entire batch
+每批請輸入 1～100 筆交易。|Enter 1–100 transactions per batch.
+日期／入帳日期|Trade / payment date
+配息公告查詢中，請稍候再核對。|Dividend announcements are loading. Please wait before reviewing.
+投資資料已變更，請重新開啟批次交易。|Investment data has changed. Reopen batch transactions.
+整本帳簿的持有成本變動|Change in total ledger holding cost
+整本帳簿的已實現損益變動|Change in total ledger realized gain
+補登舊交易也會重算後續賣出的 FIFO 成本。儲存後可在交易紀錄逐筆編輯或刪除。|Backdated entries also recalculate FIFO costs for later sales. After saving, edit or delete each entry in transaction history.
+筆與現有資料或本批交易相同；確認仍要新增|match existing or batch entries; confirm that you want to add them
+交易內容已變更，請重新預覽核對。|Transactions changed. Preview and review again.
+請先確認重複交易。|Please confirm the duplicate entries first.
+批次交易未儲存，原資料保持不變。|Batch not saved. Your original data is unchanged.
+請先貼上交易資料。|Paste transaction data first.
+金額與股數請填數字。|Enter numeric amounts and share quantities.
+請使用指定的欄位順序。|Use the specified column order.
+類型請填買入或賣出。|Use buy or sell for the type.
+找不到唯一的股票／帳戶，請先新增股票或填寫帳戶。|No unique instrument/account match. Add the instrument or specify its account.
+日期不正確或晚於今天。|Invalid or future date.
+時間請填 HH:mm。|Enter time as HH:mm.
+股數與成交價不可留空。|Shares and price are required.
+請核對配息期別，股息總額依實際入帳明細填寫。|Review the dividend event and enter the gross total from your payment statement.
+手動填寫|Entered manually
+完整履歷採 FIFO 重算，歷史損益與剩餘均價可能不同於原備份的移動平均結果。|Full history is recalculated using FIFO. Past gains and remaining average cost may differ from the backup's moving-average results.
+一鍵更新使用 TWSE／TPEx 最近收盤價、Nasdaq 最新可取得行情及 Frankfurter 參考匯率，不保證即時。只傳送市場與股票代號，不傳送持股、交易及帳戶資料。各檔顯示價格日期與來源；失敗時保留原價格。交易日匯率仍由成交明細填寫，不會被行情更新改寫。新臺幣損益採先進先出（FIFO）；依股票與帳戶，先扣除最早買入的持股。買入費稅加入該批成本，賣出費稅從收入扣除。未實現損益含匯率影響，不預扣未來賣出費稅。期初持股不視為現金支出。同日依交易時間及登記順序計算。資料只保存在此裝置，可於設定匯出 JSON 備份。|Quotes use recent TWSE/TPEx closes, available Nasdaq prices and Frankfurter reference FX rates; they may be delayed. Only markets and symbols are sent, never holdings, transactions or accounts. Each quote shows its date and source; failed updates keep previous values. Trade FX rates are entered per transaction and remain unchanged. TWD profit uses FIFO cost, including purchase costs and deducting sale costs. Unrealized profit includes currency movements and excludes future selling costs. Opening balances are not cash outflows. Same-day entries follow trade time and entry order. Data stays on this device; export a JSON backup in Settings.
+複製|Duplicate
+稅額／扣繳|Tax / withholding
+核對|Review
+官方未提供發放日，請核對期別。|No official payment date is available. Please check the event.
+相同交易列|Duplicate rows
+確認仍要新增|Confirm adding these entries
+台股／ETF 預計配息|Expected Taiwan stock / ETF dividends
+預計配息|Expected dividends
+更新預計配息|Refresh expected dividends
+配息更新中…|Updating dividends…
+恢復已刪除項目|Restore deleted entries
+依官方公告自動加入 · 尚未計入收入|Added from official announcements · Not included in income
+已知預計金額|Known estimated amount
+預計配息合計|Total expected dividends
+筆待確認|entries to check
+預計發放日|Expected payment date
+現金股利／股|Cash dividend / share
+計息股數|Eligible shares
+預計金額（費稅前）|Expected gross amount
+公告／狀態|Announcement / status
+待公告|Not yet announced
+待補持股資料|Holdings history needed
+依目前持股暫估|Based on current holdings
+依除息前持股|Based on pre-ex-date holdings
+已手動調整|Manually adjusted
+公告有差異，請核對|Conflicting announcements; please review
+待確認入帳|Awaiting receipt confirmation
+登記入帳|Record receipt
+目前沒有待領配息；有持股與官方公告時會自動加入。|No expected dividends yet. Entries appear automatically when holdings and official announcements are available.
+部分公告尚未更新|Some announcements could not be refreshed
+未除息以目前股數暫估，已除息依除息前持股估算；實際金額仍以入帳明細為準。未公布的日期或金額不會推估。刪除後不會被自動加回。|Before the ex-date, amounts use current holdings. After the ex-date, they use pre-ex-date holdings. Confirm actual amounts from your statement. Unannounced dates and amounts stay unknown. Deleted entries are not added back automatically.
+預計配息未儲存，原資料保持不變。|Expected dividends were not saved. Existing data is unchanged.
+預計配息未儲存，請重新更新。|Expected dividends were not saved. Please refresh again.
+目前沒有需要查詢的台股／ETF 持股。|There are no eligible Taiwan stock / ETF holdings to check.
+編輯預計配息|Edit expected dividend
+除息|Ex-dividend
+修改後保留你的調整；恢復官方值可重新依公告與持股自動更新。|Your changes will be retained. Restore official values to resume updates from announcements and holdings.
+恢復官方值|Restore official values
+刪除預計配息|Delete expected dividend
+此期預計配息將從清單移除，之後更新不會自動加回。|This dividend event will be removed and will not be added back by automatic updates.
+股票不存在。|The instrument no longer exists.
+已恢復官方值|Official values restored
+將重新顯示已刪除且尚未入帳的預計配息。|Restore deleted expected dividends that have not been received.
+預計配息內容已變更，請重新開啟。|The expected dividend changed. Reopen the form.
+此期配息已有入帳紀錄，請編輯原紀錄。|A receipt already exists for this event. Edit the existing entry.
+預計配息公告格式不正確。|Invalid expected dividend announcement format.
+預計配息公告日期或金額不正確。|Invalid expected dividend date or amount.
+預計配息調整格式不正確。|Invalid expected dividend adjustment format.
+預計配息調整日期或金額不正確。|Invalid expected dividend adjustment date or amount.
+可能已有入帳紀錄|A receipt may already exist
+核對原紀錄|Review existing receipt
+自己的 Google Drive | My Google Drive
+儲存至自己的 Google Drive，可選密碼加密 | Save to your Google Drive, with optional password encryption
+Google Drive 自動儲存已開啟 | Google Drive automatic saving is on
+Google Drive 已連線 | Google Drive connected
+尚未連線 | Not connected
+自動儲存未開啟 | Automatic saving is off
+本次開啟期間自動加密儲存 | Encrypted automatic saving for this session
+本次開啟期間自動儲存 | Automatic saving for this session
+最近儲存 | Last saved
+薪資、加班、請假與投資備份由瀏覽器直接傳送到你選擇的 Google 帳戶。網站伺服器不接收備份內容。 | Your browser sends payroll, overtime, leave and investment backups directly to your selected Google account. The website server does not receive backup contents.
+連線 Google Drive | Connect Google Drive
+中斷連線 | Disconnect
+撤銷授權 | Revoke access
+首次連線設定 | First-time setup
+使用自己的 Google Cloud 專案；只需設定一次，之後在這個瀏覽器直接連線。 | Use your own Google Cloud project. Set it up once to connect directly from this browser.
+在 Google Cloud 建立專案並啟用 Google Drive API。 | Create a Google Cloud project and enable the Google Drive API.
+設定 Google Auth Platform 的品牌資訊、目標對象與資料存取權，加入 drive.file 權限。測試模式須加入自己的 Google 帳戶。 | Configure Branding, Audience and Data Access in Google Auth Platform and add the drive.file scope. In testing mode, add your Google account as a test user.
+建立「網頁應用程式」OAuth 用戶端，將下列網址加入「已授權的 JavaScript 來源」。請只填網域來源，不包含頁面路徑。 | Create a Web application OAuth client and add the origin below to Authorized JavaScript origins. Use only the origin, without a page path.
+已授權的 JavaScript 來源 | Authorized JavaScript origin
+開啟 Google Cloud 設定 | Open Google Cloud setup
+Google 官方設定說明 | Google setup guide
+Google OAuth 用戶端 ID | Google OAuth client ID
+只需用戶端 ID，不需要密鑰、Google 密碼或 API 金鑰。此設定只保存在目前瀏覽器，不會放進備份。 | Only a client ID is needed. Do not provide a client secret, Google password or API key. This setting stays in this browser and is excluded from backups.
+刪除連線設定 | Remove connection settings
+儲存連線設定 | Save connection settings
+儲存一份 | Save a backup
+自動儲存設定 | Automatic saving
+停止自動儲存 | Stop automatic saving
+備份存放於 Google Drive 的「個人薪資與投資管理」資料夾。每次儲存都新增一份，方便保留各裝置的版本；不會自動合併或取代本機資料。 | Backups are saved in this app’s folder in Google Drive. Each save creates a new copy to preserve versions from different devices. Local data is never automatically merged or replaced.
+目前沒有雲端備份。可先儲存一份，或重新整理清單。 | No cloud backups yet. Save a backup or refresh the list.
+一般備份 | Unencrypted backup
+編輯名稱 | Rename
+載入更多 | Load more
+本機仍保留離線資料。關閉頁面或授權到期後須重新連線；關閉頁面期間不會同步。一般備份可直接讀取，加密備份需自行保管密碼。只要求本工具建立或你明確授權的檔案權限。 | Offline data remains on this device. Reconnect after closing the page or when access expires. Nothing syncs while the page is closed. Unencrypted backups are readable; keep encrypted backup passwords safe. Access is limited to files created by this tool or explicitly granted to it.
+管理 Google 帳戶的第三方連線 | Manage third-party access to your Google account
+雲端備份清單已更新 | Cloud backup list updated
+連線設定已儲存，請點擊連線 Google Drive。 | Settings saved. Select Connect Google Drive.
+儲存到 Google Drive | Save to Google Drive
+先儲存目前資料；之後每次資料變更會在 10 秒後儲存一份新備份。僅本次開啟頁面期間有效。 | Save the current data first, then save a new backup 10 seconds after changes. Active only for this page session.
+儲存目前已儲存的公司、薪資、加班、請假與全部投資資料。 | Back up all saved company, payroll, overtime, leave and investment data.
+Google 帳戶 | Google account
+備份名稱 | Backup name
+在瀏覽器完成加密後，才上傳至 Google Drive。 | Encrypt in the browser before uploading to Google Drive.
+密碼不會寫入裝置儲存或送到伺服器。自動加密期間只暫存於目前頁面的記憶體；停止自動儲存、斷線或關閉頁面即清除。 | The password is never written to device storage or sent to a server. During automatic encryption it stays only in page memory and is cleared when automatic saving stops, you disconnect or the page closes.
+儲存並啟用 | Save and enable
+自動儲存已開啟 | Automatic saving enabled
+備份已儲存至自己的 Google Drive | Backup saved to your Google Drive
+自動儲存已停止 | Automatic saving stopped
+編輯雲端備份名稱 | Rename cloud backup
+雲端備份名稱已更新 | Cloud backup renamed
+已中斷連線，雲端備份仍保留 | Disconnected. Cloud backups are retained.
+撤銷 Google 授權 | Revoke Google access
+停止本工具的 Google Drive 存取；已存放的雲端備份與本機資料仍保留。 | Remove this tool's access to Google Drive. Existing cloud backups and local data are retained.
+Google 授權已撤銷 | Google access revoked
+移除此瀏覽器的 Google 用戶端 ID 並停止自動儲存；雲端備份與本機資料仍保留。 | Remove the client ID from this browser and stop automatic saving. Cloud backups and local data are retained.
+連線設定已刪除 | Connection settings removed
+刪除雲端備份 | Delete cloud backup
+這份備份將移到 Google Drive 垃圾桶，本機資料不受影響。 | Move this backup to Google Drive trash. Local data is unaffected.
+雲端備份已移到垃圾桶 | Cloud backup moved to trash
+Google 連線設定已變更，請重新連線。 | Google connection settings changed. Please reconnect.
+Google Drive 操作失敗。 | Google Drive operation failed.
+Google 連線需要 HTTPS 網站或 localhost；直接開啟 HTML 檔案時，請改用網站版或下載備份。 | Google connection requires an HTTPS website or localhost. When opening an HTML file directly, use the website edition or download a backup instead.
+Google 登入元件載入失敗，請檢查網路後重試。 | Google sign-in could not load. Check your connection and retry.
+Google 連線已取消。 | Google connection cancelled.
+請填寫有效的 Google OAuth 用戶端 ID。 | Enter a valid Google OAuth client ID.
+請等目前操作完成。 | Wait for the current operation to finish.
+無法儲存連線設定，請確認瀏覽器允許本機儲存。 | Cannot save connection settings. Check that browser storage is allowed.
+已阻止非 Google Drive 的資料傳輸。 | Blocked data transfer to a destination outside Google Drive.
+Google 授權已過期，請重新連線。 | Google access expired. Please reconnect.
+Google Drive 拒絕存取。請確認已啟用 Drive API、授予檔案權限，且雲端空間足夠。 | Google Drive denied access. Check that Drive API is enabled, file access is granted and storage is available.
+找不到這份雲端備份，請重新整理清單。 | Cloud backup not found. Refresh the list.
+Google Drive 暫時限制請求，請稍後重試。 | Google Drive rate limit reached. Try again later.
+Google Drive 暫時無法完成操作，請重新整理清單後再試。 | Google Drive cannot complete this operation. Refresh the list before retrying.
+連線中斷或逾時。上傳結果尚未確認，請重新整理雲端清單；本機資料仍保留。 | Connection interrupted or timed out. Upload completion is unconfirmed. Refresh the cloud list; local data is retained.
+請先完成 Google 連線設定。 | Complete Google connection setup first.
+Google 登入元件尚未就緒，請稍後重試。 | Google sign-in is not ready. Try again shortly.
+Google 授權未完成，請重新連線。 | Google authorization incomplete. Please reconnect.
+Google 視窗已關閉或遭封鎖，請允許彈出視窗後重試。 | The Google window was closed or blocked. Allow popups and retry.
+尚未授予 Google Drive 檔案權限，未傳送任何備份。 | Google Drive file permission was not granted. No backup was sent.
+無法確認 Google 帳戶，請重新連線。 | Cannot verify the Google account. Please reconnect.
+Google 授權未完成，請檢查用戶端 ID 與授權來源網址。 | Google authorization incomplete. Check the client ID and authorized origin.
+連線已中斷。如需撤銷授權，請到 Google 帳戶的第三方連線設定。 | Disconnected. To revoke access, open third-party connections in your Google account.
+撤銷結果未確認，請到 Google 帳戶的第三方連線設定檢查。 | Revocation could not be confirmed. Check third-party connections in your Google account.
+這不是此帳戶的個人薪資與投資管理備份。 | This is not a Personal Payroll and Investment Management backup owned by this account.
+請先重新整理雲端備份清單。 | Refresh the cloud backup list first.
+備份名稱請填寫 1 至 160 個字元。 | Enter a backup name between 1 and 160 characters.
+Google Drive 未提供上傳位置，請重試。 | Google Drive did not provide an upload destination. Try again.
+重新整理 | Refresh
+薪資與投資資料在瀏覽器本機處理，網站伺服器不接收備份內容。選擇 Google Drive 時，瀏覽器透過 Google 官方授權直接讀寫使用者自己的 Drive；Google 會處理帳戶授權與雲端檔案。每次儲存新增一份備份，可選在瀏覽器先以密碼加密。自動儲存須自行開啟，只在頁面開啟且授權有效期間運作。存取憑證與自動加密密碼只暫存於頁面記憶體，不寫入備份或本機儲存；中斷連線、授權到期或關閉頁面會清除。用戶端 ID 僅存於目前瀏覽器。 | Payroll and investment data is processed in the browser. The website server does not receive backup contents. When Google Drive is selected, the browser uses Google's authorization to read and write the user's own Drive directly. Google handles authorization and cloud files. Each save creates a backup, optionally encrypted in the browser. Automatic saving requires an explicit choice and works only while the page is open and authorization is valid. Access tokens and automatic encryption passwords stay only in page memory, never in backups or persistent browser storage, and are cleared on disconnect, expiry or page close. The client ID is stored only in this browser.
+網站主機可能處理 IP、連線時間與技術日誌，實際項目依主機服務政策。股價、名稱與配息查詢會將公開股票代號傳至網站的行情服務，不包含薪資、持股數量或交易內容。Google Drive 備份不經過該服務。一般 JSON／CSV 備份沒有加密，SHA-256 只用於完整性核對；只有選用密碼加密的備份提供內容加密。Android 本機資料庫未啟用資料庫層加密。刪除本機資料不會刪除雲端備份；雲端備份可在本工具移到 Google Drive 垃圾桶，並可在 Google 帳戶撤銷授權。 | The website host may process IP addresses, connection times and technical logs under its policies. Quote, name and dividend lookups send public stock identifiers to the site's market service, without payroll, holding quantities or transaction contents. Drive backups do not pass through that service. Plain JSON/CSV backups are not encrypted; SHA-256 checks integrity only. Content encryption is available only when password encryption is selected. The Android local database does not use database-level encryption. Deleting local data does not delete cloud backups. This tool can move cloud backups to Google Drive trash, and access can be revoked in the Google account.
+確認 Google 帳戶失敗 | Checking your Google account failed
+建立備份上傳失敗 | Starting backup upload failed
+傳送備份內容失敗 | Uploading backup contents failed
+建立備份資料夾失敗 | Creating the backup folder failed
+修改雲端備份失敗 | Updating the cloud backup failed
+讀取備份清單失敗 | Loading cloud backups failed
+讀取雲端備份失敗 | Reading cloud backup failed
+此 OAuth 用戶端 ID 所屬的 Google Cloud 專案尚未啟用 Google Drive API。請在同一個專案啟用 API，稍後重新連線。 | The Google Cloud project for this OAuth client ID has not enabled the Google Drive API. Enable it in the same project, then reconnect.
+Google 授權缺少 drive.file 檔案權限。請在 Google Auth Platform 加入該權限後，重新連線並同意授權。 | Google authorization lacks the drive.file permission. Add the scope in Google Auth Platform, then reconnect and grant access.
+目前的 OAuth 用戶端無權讀取這份檔案。請確認使用建立備份時相同的 Google Cloud 專案及 Google 帳戶。 | This OAuth client cannot access the file. Use the same Google Cloud project and Google account used to create the backup.
+這個 Google 帳戶沒有修改該檔案的權限。請確認所選帳戶與備份擁有者相同。 | This Google account cannot modify the file. Confirm it owns the backup.
+這個 Google 帳戶的雲端容量不足，請到 Google Drive 檢查儲存空間。 | This Google account is out of storage. Check available space in Google Drive.
+Google Drive 請求額度暫時不足，請稍後重試，並檢查該 Cloud 專案的 API 配額。 | Google Drive request quota is temporarily exhausted. Try later and check the project's API quota.
+Google 帳戶或所屬組織限制了 Drive 存取，請檢查帳戶與管理員政策。 | Your Google account or organization restricts Drive access. Check account and administrator policies.
+Google Drive 拒絕存取。請先確認 OAuth 用戶端 ID 所屬專案已啟用 Drive API，並已授予 drive.file 權限。 | Google Drive denied access. Confirm Drive API is enabled in the OAuth client's project and drive.file access was granted.
+Google 原因代碼 | Google reason code
+未提供 | Not supplied
+
+版面設定 | Layout settings
+介面風格 | Interface style
+動態霧面玻璃 | Animated frosted glass
+半透明面板，背景柔和流動 | Translucent panels with gentle background motion
+經典卡片 | Classic cards
+灰底白卡，區塊層次更明確 | White cards on a gray background
+深色 | Dark
+深色底與柔和文字，適合低光環境 | Dark surfaces and soft text for low light
+介面風格、文字與密度、重點色 | Style, text density and accent color
+介面風格已儲存 | Interface style saved
+馬卡龍糖果風格 | Macaron candy
+薄荷藍、奶油黃與手繪紙感 | Mint blue, butter yellow and handpainted paper
+奇幻 HD-2D 風格 | Fantasy HD-2D
+粉色 | Pink
+奇幻場景、藍金選單與像素光影 | Fantasy scenes, blue-and-gold menus and pixel lighting
+
+背景設定 | Background settings
+點選場景立即套用，會記住這次選擇。 | Select a scene to apply it immediately. Your choice is saved.
+奇幻峽谷 | Fantasy Canyon
+群山、瀑布與古老城鎮 | Mountains, waterfalls and an ancient town
+秘境森林 | Enchanted Forest
+翠綠林海與發光溪流 | Emerald woods and a glowing stream
+夕陽港灣 | Sunset Harbor
+琥珀晚霞與寧靜海港 | Amber skies and a peaceful harbor
+極光雪城 | Aurora Castle
+靛藍雪夜與青綠極光 | Snowy indigo nights and teal aurora
+天空浮島 | Sky Islands
+雲海、浮島與金色遺跡 | Floating islands, clouds and golden ruins
+背景已儲存 | Background saved
+
+欄位背景透明度 | Panel transparency
+透明 | Transparent
+半透明 | Translucent
+霧面 | Frosted
+背景清晰穿透 | Show the background clearly
+保留淡色底，背景仍可見 | A light tint with the background visible
+模糊背景，文字更清楚 | Blur the background for clearer text
+欄位背景透明度已儲存 | Panel transparency saved
+
+公司清單|Companies
+
+更新|Update
+更新中…|Updating…
+批次|Batch
+選項|Options
+股票清單|Stocks
+找股票|Find stocks
+全部市場|All exchanges
+全部分類|All categories
+只看收藏|Favorites only
+加入收藏|Add to favorites
+取消收藏|Remove from favorites
+收藏優先|Favorites first
+漲幅由高到低|Daily change: high to low
+代號、名稱或分類|Symbol, name or category
+交易所|Exchange
+分類|Category
+產業分類|Industry
+自訂分類|Custom category
+類別|Type
+自動|Auto
+股票圖示|Stock icon
+自動圖示|Automatic icon
+代號圖示|Symbol icon
+自訂圖片|Custom image
+上傳圖示|Upload icon
+移除圖片|Remove image
+搜尋台股／ETF|Find Taiwan stocks / ETFs
+股票代號、名稱或產業|Symbol, name or industry
+輸入台股代號、名稱或產業|Taiwan symbol, name or industry
+留空使用官方分類|Leave blank for official industry
+例如：長期投資、高股息|For example: Long-term, Dividends
+PNG、JPG、WebP，最多 2 MB；儲存在個人備份。|PNG, JPG or WebP, up to 2 MB; included in your backup.
+輸入代號查詢官方分類，也可自行設定。|Look up official classifications by symbol, or enter your own.
+請選擇 2 MB 以內的 PNG、JPG 或 WebP 圖片。|Choose a PNG, JPG or WebP image up to 2 MB.
+正在處理圖片…|Processing image…
+圖片無法讀取。|Unable to read this image.
+圖示已就緒，儲存股票後生效。|Icon ready. Save the stock to apply.
+上市、上櫃與 ETF，依最近收盤成交量排序。加入清單後可登記買入。|Listed and OTC stocks / ETFs, sorted by latest closing volume. Add a stock before recording a purchase.
+正在取得官方股票清單…|Loading the official stock directory…
+部分官方資料暫時無法取得，搜尋結果可能不完整。|Some official sources are unavailable; results may be incomplete.
+找不到符合條件的股票，請換關鍵字或手動新增。|No matching stocks. Try another search or add one manually.
+股價依來源日期顯示；紅色上漲、綠色下跌。漲跌為當日行情，不是持股損益。|Prices reflect each source date. Red means up and green means down. Daily price changes are separate from portfolio gains.
+漲跌待更新|Daily change unavailable
+尚無行情|No quote
+沒有符合條件的股票|No matching stocks
+尚未新增股票|No stocks added yet
+手動新增|Add manually
+已加入|Added
+加入|Add
+筆結果|results
+顯示前|Showing first
+上櫃|OTC
+上市|Listed
+半導體|Semiconductors
+電腦及週邊設備|Computers and peripherals
+光電|Optoelectronics
+通信網路|Communications
+電子零組件|Electronic components
+電子通路|Electronics distribution
+資訊服務|IT services
+其他電子|Other electronics
+金融保險|Finance and insurance
+水泥|Cement
+食品|Food
+塑膠|Plastics
+紡織纖維|Textiles
+電機機械|Machinery
+電器電纜|Electrical and cable
+玻璃陶瓷|Glass and ceramics
+造紙|Paper
+鋼鐵|Steel
+橡膠|Rubber
+汽車|Automotive
+建材營造|Construction
+航運|Shipping
+觀光餐旅|Tourism and hospitality
+貿易百貨|Trading and retail
+綜合|Conglomerates
+化學|Chemicals
+生技醫療|Biotechnology and healthcare
+油電燃氣|Oil, electricity and gas
+文化創意|Culture and creative
+農業科技|Agricultural technology
+電子商務|E-commerce
+綠能環保|Green energy
+數位雲端|Digital and cloud
+運動休閒|Sports and leisure
+居家生活|Home and living
+公司基本資料|Company profile
+ETF 基本資料|ETF profile
+股票收藏格式不正確。|Invalid stock favorite data.
+股票分類內容過長。|Stock classification is too long.
+股票類別不正確。|Invalid instrument type.
+股票圖示格式不正確。|Invalid stock icon setting.
+股票圖示必須是有效圖片。|The stock icon must be a valid image.
+股票基本資料格式不正確。|Invalid stock profile data.
+股票漲跌格式不正確。|Invalid daily price change.
+收藏未儲存，請再試一次。|Unable to save this favorite. Please try again.
+查詢只傳送市場、股票代號或搜尋字詞，不傳送持股、交易及帳戶資料。|Lookups send only the market, symbol or search terms. Holdings, transactions and account details are not sent.
+
+繽紛手繪|Colorful Doodles
+奶油暖陽|Cream & Sunshine
+晚霧星紫|Violet Dusk
+彩鉛日常|Pencil Journal
+清爽工作室|Fresh Studio
+亮彩標記、俐落粗框與圓線圖示|Bright markers, bold borders and rounded icons
+奶油底色、杏桃圓角與溫暖留白|Cream surfaces, peach corners and warm open space
+深紫暮色、柔光邊框與清晰數字|Deep violet, soft glowing edges and clear figures
+溫白紙感、彩鉛細線與柔和彩標|Warm paper, pencil outlines and soft highlights
+藍白分區、便箋重點與整齊欄位|Blue and white sections, note highlights and aligned fields
+點選預覽立即套用。配色、圖示與欄位外觀會一起更新。|Choose a preview to apply its colors, icons and field styling.
+五種圖像風格|Five illustrated styles
+原有風格|Original styles
+繽紛貼紙、層疊厚框與彩色光暈|Colorful stickers, layered bold frames and vivid halos
+香檳金邊、珍珠浮雕與杏桃光澤|Champagne edges, pearl embossing and peach luster
+紫夜星軌、極光流動與寶石光邊|Violet orbits, flowing auroras and jewel-like edges
+層疊畫紙、彩鉛描邊與拼貼裝飾|Layered drawing paper, pencil outlines and collage details
+藍金幾何、立體面板與晶透亮邊|Blue and gold geometry, raised panels and crystalline edges
+五種華麗風格|Five ornate styles
+點選預覽立即套用華麗風格，可搭配重點色與透明度。|Choose an ornate preview, then customize the accent color and transparency.
+馬卡龍糖果・華麗版|Macaron Candy · Ornate
+奇幻 HD-2D・華麗版|Fantasy HD-2D · Ornate
+珍珠糖霜、緞帶漸層與層疊糖果框|Pearl frosting, ribbon gradients and layered candy frames
+藍金雙層框、寶石徽章與流動光點|Blue and gold frames, jewel emblems and drifting lights
+糖果與奇幻・華麗版|Candy & Fantasy · Ornate
+
+每筆保留小數，依公司與薪資月加總後四捨五入 | Keep decimals; round the total for each company and payroll month
+單筆顯示金額僅供參考；總額使用未取整金額計算。 | Individual displayed amounts are for reference; totals use unrounded amounts.
+
+淨值 | NAV
+淨值未提供 | NAV not provided
+淨值暫時無法更新 | NAV update unavailable
+按更新查詢 | Select Update to query
+公告溢價 | Published premium
+公告折價 | Published discount
+公告平價 | Published at par
+更新失敗，保留上次資料 | Update failed; last data retained
+折溢價依淨值日期公告，非即時 | Premium/discount is published for the NAV date, not live
+ETF 淨值資料格式不正確。 | Invalid ETF NAV data.
+ETF 淨值狀態不正確。 | Invalid ETF NAV status.
+
+每日公告淨值 | Daily published NAV
+盤中預估淨值 | Intraday estimated NAV
+盤中更新 | Intraday update
+台股已收盤 | Taiwan market closed
+台股尚未開盤 | Taiwan market not open
+非交易時段 | Outside trading hours
+資料已過期 | Data is stale
+盤中淨值暫時無法更新 | Intraday NAV update unavailable
+此 ETF 尚未支援盤中淨值 | Intraday NAV is not supported for this ETF
+按更新查詢盤中淨值 | Select Update to query intraday NAV
+預估溢價 | Estimated premium
+預估折價 | Estimated discount
+預估平價 | Estimated at par
+對照市價 | Matching market price
+台北時間 | Taipei time
+群益投信 | Capital Investment Trust
+富邦投信 | Fubon Asset Management
+淨值為估計值，以每日公告為準。 | NAV is an estimate; use the daily publication for the final value.
+盤中淨值自動更新：開啟 | Auto intraday NAV: on
+盤中淨值自動更新：關閉 | Auto intraday NAV: off
+更新盤中淨值 | Update intraday NAV
+盤中每 60 秒查詢 · 台北時間 | Query every 60 seconds during trading hours · Taipei time
+盤中淨值更新中… | Updating intraday NAV…
+部分盤中淨值未更新 | Some intraday NAVs were not updated
+盤中淨值已查詢 | Intraday NAV queried
+盤中淨值更新未完成，保留上次資料。 | Intraday NAV update incomplete; last data retained.
+盤中淨值未儲存，原資料保持不變。 | Intraday NAV was not saved; original data retained.
+盤中淨值未儲存，請重新更新。 | Intraday NAV was not saved; try updating again.
+ETF 盤中淨值資料格式不正確。 | Invalid intraday ETF NAV data.
+ETF 盤中淨值狀態不正確。 | Invalid intraday ETF NAV status.
+盤中預估淨值目前支援群益、富邦投信公布的台幣 ETF。自動查詢於台北時間平日 09:00～13:30、投資頁可見且未開啟編輯視窗時進行，每 60 秒查詢一次。非交易日或來源未更新時仍可能查無資料；超過 3 分鐘會標示過期。折溢價及對照市價採投信同批資料，收盤後僅供參考。預估淨值獨立保存，不會改寫每日公告、持股市值或交易成本。 | Intraday estimated NAV currently supports TWD ETFs published by Capital and Fubon. Queries run every 60 seconds on weekdays from 09:00 to 13:30 Taipei time, while the investment page is visible and no editor is open. Data may be unavailable on non-trading days or when the issuer has not updated it. Estimates older than three minutes are marked stale. Premium/discount and market price come from the same issuer update; after market close they are for reference. Estimated NAV is saved separately from daily publications, portfolio market values and transaction costs.
+薪資計算|Pay calculation
+公司預設加班時薪|Company default overtime hourly rate
+職務津貼|Position allowance
+夜班津貼|Night shift allowance
+自定義固定項目|Custom fixed earnings
+自定義項目名稱|Custom earning name
+移除自定義薪資項目|Remove custom earning
+例如：全勤獎金|For example: attendance bonus
+基本月薪＋伙食津貼＋職務津貼＋夜班津貼＋自定義固定項目，再除以 240。|Base monthly pay + meal, position and night shift allowances + custom fixed earnings, divided by 240.
+換算基本月薪＋固定津貼，再除以正常工時。|Converted monthly base pay + fixed allowances, divided by regular hours.
+以上固定項目會帶入新建薪資，並計入加班與請假扣薪基準。單次加項請在每月薪資明細輸入。|These fixed earnings populate new payroll records and count toward overtime and leave deduction bases. Enter one-time earnings in monthly payroll details.
+薪資變更自今天起生效；既有薪資單與已儲存的加班時薪保持不變。|Pay changes take effect today. Existing payroll records and saved overtime hourly rates are preserved.
+建立公司的起始薪資設定。|Set up the company's initial pay profile.
+津貼金額不可小於 0。|Allowance amounts cannot be negative.
+請為自定義薪資項目填寫名稱。|Enter a name for the custom earning.
+公司薪資計算更新|Company pay calculation updated
+本薪、津貼與自定義固定項目集中在薪資計算；特殊薪資週期、年度加薪與年終規則在進階設定。|Base pay, allowances and custom fixed earnings are edited together under Pay calculation. Advanced settings contain special payroll periods, annual raises and year-end rules.
+基本月薪、伙食津貼、職務津貼、夜班津貼與自定義固定項目。|Base monthly pay, meal, position and night shift allowances, and custom fixed earnings.
+特殊薪資週期、年度加薪、年終規則與其他特殊公司制度已集中至「進階設定」。|Special payroll periods, annual raises, year-end rules and other special company policies are under Advanced settings.
+當日公司薪資基準：|Company pay basis on this date:
+帶入公司基準|Use company pay basis
+可依公司核定時薪調整；手動輸入後不隨日期自動改寫。|You can adjust this to the company-approved hourly rate. A manually entered rate is preserved when the date changes.
+扣半薪|Half-pay deduction
+扣全薪|Full-pay deduction
+本次扣薪比例|Deduction percentage for this leave
+病假、生理假預設扣半薪；事假、家庭照顧假預設扣全薪。|Sick and menstrual leave default to half-pay deductions; personal and family care leave default to full-pay deductions.
+最新淨值（預估）|Latest NAV (estimated)
+最新淨值|Latest NAV
+可自訂名稱與金額，帶入之後新建的薪資明細；每月仍可個別調整。|Set custom names and amounts to populate new payroll records. Each month can still be adjusted individually.
+自訂加項／扣項|Custom earnings / deductions
+自訂加項名稱|Custom earning name
+自訂扣項名稱|Custom deduction name
+例如：交通津貼|For example: transport allowance
+例如：福利金、宿舍費|For example: welfare contribution or housing fee
+移除自訂加項|Remove custom earning
+移除自訂扣項|Remove custom deduction
+固定加項合計|Total fixed earnings
+預設扣項合計|Total default deductions
+＋ 新增加項|+ Add earning
+＋ 新增扣項|+ Add deduction
+這裡的固定加項與公司薪資計算共用，會計入加班及請假扣薪基準。|These fixed earnings share the company pay profile and count toward overtime and leave deduction bases.
+扣項會減少薪資淨額，不會改變加班時薪。|Deductions reduce net pay and do not change the overtime hourly rate.
+固定加項變更自今天起生效；扣項帶入之後新建的薪資。既有薪資紀錄保留原值。|Fixed earning changes take effect today. Deductions populate new payroll records. Existing payroll records retain their saved values.
+儲存加項／扣項|Save earnings / deductions
+金額不可小於 0。|Amounts cannot be negative.
+請輸入自訂項目名稱。|Enter a name for the custom item.
+自訂固定加項更新|Custom fixed earnings updated
+自訂加項／扣項已儲存；既有薪資保持不變|Custom earnings and deductions saved; existing payroll records are preserved
+固定收入、固定扣項、勞健保與自提沿用上月；|Fixed earnings, fixed deductions, labor and health insurance, and voluntary pension contributions carry over from the previous month;
+
+市場資料連動 | Market data sync
+正在同步… | Syncing…
+資料已同步 | Data synced
+部分資料已更新 | Partially updated
+更新未完成 | Update incomplete
+等待首次同步 | Awaiting first sync
+匯率尚未更新 | Exchange rate not updated
+匯率參考日較舊 | Older exchange-rate reference date
+匯率參考日近期 | Recent exchange-rate reference date
+台股：TWSE 最新成交／TWSE、TPEx 收盤 · 美股：Nasdaq 最新可用行情 · 基金：手動維護公布淨值 | Taiwan: TWSE latest trades / TWSE and TPEx closing prices · US: latest available Nasdaq quotes · Funds: manually maintained published NAV
+上次同步 | Last synced
+尚未完成首次同步 | First sync pending
+匯率基準 | Exchange-rate date
+檔已更新 | instruments updated
+持股估值採用已保存價格： | Holdings are valued using saved prices:
+檔近期 | recent
+檔逾 24 小時 | older than 24 hours
+檔時間待確認 | with unconfirmed timestamps
+檔手動 | manual
+停用個股連動 | Disable quote sync
+啟用個股連動 | Enable quote sync
+每 5 分鐘自動更新 | Auto-update every 5 minutes
+匯率每 5 分鐘更新 | Update FX every 5 minutes
+自動更新已暫停 | Auto-update paused
+立即更新 | Update now
+手動價格／淨值 | Manual prices / NAV
+行情更新模式 | Price update mode
+每 5 分鐘自動取得最新行情 | Fetch latest quotes every 5 minutes
+手動維護價格／淨值 | Maintain prices / NAV manually
+選擇手動維護後可編輯價格、日期與匯率，自動更新會保留這些值。基金採手動公布淨值；留空價格代表尚未定價。 | Choose manual mode to edit the price, date and exchange rate. Automatic updates preserve these values. Fund NAV is maintained manually; a blank price means unpriced.
+更新失敗，已保留上次匯率與價格。 | Update failed. Previous exchange rates and prices are preserved.
+部分來源未更新，保留各檔上次成功資料。 | Some sources could not be updated. Their last successful values are preserved.
+查詢期間資料或編輯狀態已變更，請重新更新。 | Data or editing state changed during the request. Please update again.
+市場連動設定未儲存，請再試一次。 | Market sync settings were not saved. Please try again.
+市場連動設定不正確。 | Invalid market sync settings.
+參考匯率格式不正確。 | Invalid reference exchange rate.
+市場同步筆數不正確。 | Invalid market sync counts.
+市場同步時間不正確。 | Invalid market sync timestamp.
+市場同步狀態不正確。 | Invalid market sync status.
+行情更新模式不正確。 | Invalid price update mode.
+行情時間格式不正確。 | Invalid market timestamp.
+行情更新已取消，原資料保持不變。 | Market update cancelled. Existing data is unchanged.
+行情時間較舊，保留最新成交價。 | The quote is older. The latest saved trade price is preserved.
+匯率暫時無法更新，保留上次資料。 | The exchange rate could not be updated. Its previous value is preserved.
+TWSE 最新成交 | TWSE latest trade
+市場資料每 5 分鐘自動查詢，也可立即更新。台股優先採 TWSE 最新成交，未取得成交時使用 TWSE／TPEx 收盤資料；美股採 Nasdaq 最新可用行情，匯率採 Frankfurter 參考值，不保證即時。手動模式與基金保留自行填寫的價格。停用個股連動後僅更新參考匯率；關閉自動更新仍可立即更新。投資頁隱藏、離線或正在編輯時暫停自動查詢。查詢只傳送市場與股票代號，不傳送持股、交易、薪資或帳戶資料。來源失敗、日期較舊或編輯期間收到回應時，保留原資料。 | Market data refreshes every 5 minutes or on demand. Taiwan quotes use the latest TWSE trade, falling back to TWSE / TPEx closing data. US quotes use the latest available Nasdaq data and FX uses Frankfurter reference rates; real-time delivery is not guaranteed. Manual prices and fund NAV are preserved. Disabling quote sync updates only reference FX. Pausing automatic updates still allows Update now. Automatic requests pause while the investment page is hidden, offline or being edited. Requests contain only markets and symbols, never holdings, transactions, salaries or account details. Failed, older or conflicting responses preserve saved data.
+交易匯率與成本不會被行情更新改寫。新臺幣損益採先進先出（FIFO）；買入費稅加入成本，賣出費稅從收入扣除。資料只保存在此裝置，可於設定匯出 JSON 備份。盤中預估淨值支援群益、富邦投信公布的台幣 ETF，與股價一起查詢，顯示來源時間；預估值獨立保存，不會改寫每日公告或持股市值。 | Market updates never change transaction exchange rates or costs. TWD gains use FIFO; buy fees are included in cost and sell fees are deducted from proceeds. Data stays on this device and can be exported as a JSON backup in Settings. Intraday estimated NAV supports TWD ETFs published by Capital and Fubon, refreshes with quotes and shows the source timestamp. Estimates are saved separately from daily NAV and do not change holdings valuation.
+目前離線，保留上次匯率與價格。 | Offline. Previous exchange rates and prices are preserved.
+行情時間 | Quote time
+預估淨值時間 | Estimated NAV time
+淨值日期 | NAV date
+華麗風格 | Ornate styles
+
+彩色印章、手繪粗框與跳色標籤 | Ink stamps, bold hand-drawn frames and colorful tabs
+圓潤浮雕、香檳細邊與暖杏圓角 | Soft relief, champagne rims and rounded apricot tabs
+銀紫星軌、極光光暈與夜色晶框 | Silver-violet orbits, aurora glow and midnight crystal frames
+紙張層疊、彩鉛索引與筆記格線 | Layered paper, colored pencil tabs and notebook rules
+藍圖格線、俐落折角與金色刻度 | Blueprint grids, crisp corners and gold accents
+珍珠糖霜、粉彩緞邊與夾心按鈕 | Pearl icing, pastel ribbons and layered candy buttons
+藍金角框、寶石徽章與浮雕選單 | Blue-gold corner frames, jewel emblems and embossed menus
+背景與效果 | Background and effects
+靜態霧面，模糊背景 | Still frosted panels with a blurred background
+動態 | Animated
+霧面搭配柔和流光 | Frosted panels with a gentle flowing glow
+多樣式動態效果 | Varied animation effects
+依風格變換光暈、光點與紋理 | Theme-matched halos, light particles and textures
+動態效果只套用背景；開啟減少動態效果時會停止動畫。 | Only the background moves. Animations stop when Reduce Motion is enabled.
+背景與效果已儲存 | Background and effects saved
+點選預覽立即套用華麗風格，可搭配重點色與背景效果。 | Select a preview to apply an ornate style, then choose an accent color and background effect.
+動畫效果 | Animation effect
+柔和流光 | Gentle flow
+柔和色光緩慢流動 | Soft colored light drifts slowly
+極光流幕 | Aurora curtains
+多彩光幕交錯飄移 | Colorful light curtains drift across one another
+星光粒子 | Starlight particles
+細緻光點緩緩上升 | Fine points of light rise gently
+流星光軌 | Meteor trails
+流星光束斜向劃過 | Meteor beams glide diagonally across the background
+環形光波 | Orbit waves
+層疊光環緩慢擴散 | Layered rings of light expand slowly
+幾何光格 | Geometric light grid
+幾何光網平滑移動 | A geometric light grid moves smoothly
+選擇後立即套用，並記住這次選擇。 | Applied immediately and remembered for next time.
+從選單挑選喜歡的動畫 | Choose an animation from the menu
+流光、光環、粒子與流星層疊 | Layered flowing light, orbit rings, particles and meteors
+流光、光環、粒子與流星層疊演出，配色跟隨目前風格。 | Flowing light, orbit rings, particles and meteors play together in your current theme colors.
+動畫效果已儲存 | Animation effect saved
+選單滑入、切換與點選動畫 | Menu slide-in, selection and press animations
+選單光感動畫與多層背景特效 | Menu glow animations and layered background effects
+主選單、分頁與展開選單會套用動態回饋。 | The main menu, tabs and expanded menus respond with motion.
+選單加入光感動態，背景保留流光、光環、粒子與流星層次。 | Menus gain a soft animated glow, with flowing light, rings, particles and meteors in the background.
+動態模式會套用選單動畫；開啟減少動態效果時會停止動畫。 | Dynamic modes animate menus. Animations stop when Reduce Motion is enabled.
+展開市場資訊|Expand market info
+收合市場資訊|Collapse market info
+個股連動|Stock price linking
+連動：開|Quotes: on
+連動：關|Quotes: off
+自動：開|Auto: on
+自動：關|Auto: off
+備份含無效日期，請使用 YYYY-MM-DD 格式。 | The backup contains an invalid date. Use YYYY-MM-DD.
+
+收盤 | Close
+最新價 | Latest
+價格 | Price
+漲跌 | Change
+行情 | Quotes
+
+晶羽 | Jingyu
+晶羽夥伴、藍金角框與水晶光暈 | Jingyu companion, blue-and-gold frames and crystal light
+
+台股・美股・ETF | Taiwan · US · ETFs
+年損益 · 持股累計至今 | gains/losses · holdings to date

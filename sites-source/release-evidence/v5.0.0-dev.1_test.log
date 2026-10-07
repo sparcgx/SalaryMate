@@ -1,0 +1,24 @@
+✔ End-to-end DOM: new overtime, reload, annual leave, cancel, company isolation (259.835086ms)
+✔ Form errors preserve input, over-quota leave never persists, settings snapshots (54.270167ms)
+✔ Backup preview and confirmed restore, invalid import leaves prior data untouched (32.995738ms)
+✔ Keyboard date navigation, month picker, filters and accessible field labels (54.925913ms)
+✔ Calendar: Monday start, leap years and full weeks (0.254712ms)
+✔ Annual leave: used, planned, future confirmed and cancelled are distinguished (1.200935ms)
+✔ Company and year isolation (0.563797ms)
+✔ Editing, cancelling and reactivating recompute balance without double counting (0.39918ms)
+✔ Quota guard includes booked leave and preserves prior state on failure (0.523547ms)
+✔ Unknown quota is distinct from zero, other leave does not consume annual leave (0.513852ms)
+✔ Confirmed monthly overtime excludes cancelled/planned; unknown rates stay unknown (0.558971ms)
+✔ Changing current rate never rewrites historical amounts (0.225659ms)
+✔ Reject invalid hours, dates, statuses and more than 24 hours daily (0.576336ms)
+✔ Backup round trip, invalid backup and structural rejection (0.63235ms)
+✔ Local storage failures do not advance state; unrelated keys untouched (0.250516ms)
+✔ Concurrent tab writes are rejected and corrupt data is not overwritten (0.334292ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 832.499935

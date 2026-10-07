@@ -1,0 +1,10 @@
+Use case: stylized-concept.
+Asset type: original wide 16:9 landscape raster background for a fantasy-inspired salary planning website.
+Primary request: an elegant HD-2D fantasy canyon panorama with richly crafted pixel-art surface details integrated into high-definition cinematic atmospheric depth. Create a new original scene, not a game screenshot or reproduction.
+Scene/backdrop: layered sandstone canyon cliffs frame the far left and far right edges, receding into distant cloud banks and mist. Broad dark teal dusk sky, warm golden sun shafts illuminating cliff edges, sparse subtly pixel-art textured desert foliage, a few tiny floating glints. Deep luminous teal shadows and amber-gold rock highlights.
+Composition/framing: very wide landscape 16:9. Cliffs and intricate detail concentrated around the outer edges and lower corners. Keep the broad center half low-detail, softly atmospheric and dark teal for readable data panels overlaid later. Strong cinematic depth, foreground texture, layered distant silhouettes, fine mist. View across an expansive canyon rather than looking down. Balanced, sophisticated RPG elegance.
+Style/medium: polished HD-2D game-environment illustration, carefully pixelated rock and foliage details, crisp tiny stepped edges in foreground texture, cinematic lighting and depth-of-field in distance. Neither flat retro tile art nor photorealistic photography.
+Lighting/mood: contemplative dusk, quiet adventure, soft atmospheric bloom, warm rim light and subtle sunbeams.
+Constraints: exactly one image. No characters, no people, no monsters, no creatures, no weapons, no text, no lettering, no numbers, no logos, no UI, no panels, no borders, no watermarks, no recognizable game assets. Opaque full canvas.
+
+Generation mode: built-in image_gen; exactly one generation; no reference image supplied to generation. Screenshot inspected for style inspiration only.

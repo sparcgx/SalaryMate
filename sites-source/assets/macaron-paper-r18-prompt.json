@@ -1,0 +1,15 @@
+{
+  "use_case": "illustration-story",
+  "asset_type": "SalaryMate macaron handpainted website background",
+  "mode": "built-in image_gen",
+  "generation_count": 1,
+  "source_references": [
+    "/workspace/scratch/48f8e9b0d640/upload/01-image.png",
+    "/workspace/scratch/48f8e9b0d640/upload/02-image.png",
+    "/workspace/scratch/48f8e9b0d640/upload/03-image.png",
+    "/workspace/scratch/48f8e9b0d640/upload/04-image.png"
+  ],
+  "prompt": "Use case: illustration-story\nAsset type: decorative raster background for the SalaryMate financial website, designed for readable UI overlays.\nPrimary request: create exactly ONE original wide landscape 16:9 background on white to very light ivory watercolor paper. Inspired by the inspected reference images: extremely pale mint/aqua and butter-yellow washes, soft round handpainted Japanese shrine travel illustration mood, playful friendly simplicity, faint colored-pencil grain. This is an original composition using their palette and texture, not a reproduction.\nScene/backdrop: nearly blank cream-white paper; the middle 80 percent remains very quiet and visually empty, with only an extremely subtle paper grain. Put delicate pastel watercolor washes mostly along the outer edges. A few tiny pale yellow stars and small fluffy friendly clouds may hug the margins. A small smiling cream-yellow moon sits at the far upper-right margin. At the bottom-right edge only, include a small softly painted mint/aqua shrine roof and gate suggestion, partially cropped by the edge, with soft butter-yellow accents. All decorative elements stay faint and small; nothing competes with overlaid financial panels.\nStyle/medium: cheerful handpainted watercolor and dry colored pencil, soft imperfect edges, restrained pigment, delicate paper grain. Flat 2D illustration with plenty of white space.\nComposition/framing: landscape 16:9, use the full canvas, central 80 percent blank. Edge motifs feel airy and incidental rather than a border frame.\nColor palette: white paper, very light ivory, pale aqua, mint, butter yellow. Very low contrast.\nText: none.\nConstraints: no text, labels, lettering, logos, watermark, numbers, UI, dashboard panels, people or other characters; only the tiny smiling moon has a face. No large focal object, no 3D candy, no glossy plastic rendering, no dark outlines, no saturated colors. Generate one single image only.",
+  "source_output": "/workspace/scratch/48f8e9b0d640/generated_images/exec-5e89179b-ba99-4234-a2ed-e918eee174cc.png",
+  "notes": "All four supplied reference images inspected. References informed palette and texture only. Single original image generated; no retries or variants."
+}

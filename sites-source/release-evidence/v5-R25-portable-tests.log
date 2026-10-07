@@ -1,0 +1,24 @@
+✔ R13 privacy: no Drive traffic before user intent; OAuth is narrow, token stays in memory and account is shown (738.936825ms)
+✔ R13 Drive CRUD and restore: upload directly, preserve immutable versions, rename/trash, preview merge without modifying local data (887.94188ms)
+✔ R13 encrypted upload: password never sent or persisted; wrong-password restore leaves local data intact (754.139521ms)
+✔ R13 auto-save is session-only, debounces real changes, stops after auth loss, and never overwrites cloud files (663.051916ms)
+✔ R13 application integration: successful company edits trigger auto backup through the existing storage hook (550.121719ms)
+✔ R13 auth and endpoint safeguards: denied grant, unexpected upload host, missing files and 403 cannot send a backup or change local data (812.53974ms)
+✔ R13 cloud list treats names as text; revoke clears session and changing settings never uploads local data (501.377556ms)
+✔ R13 local file edition gives an actionable Google origin requirement and keeps offline backups working (357.12369ms)
+✔ R13 English: cloud setup and save forms are translated without changing stored business data (422.233853ms)
+✔ R14 Google 403 explains exact step and service-disabled code, without exposing response message or changing local data (357.277669ms)
+✔ R14 Google 403 distinguishes scope, storage and unknown reasons while leaving backups unchanged (487.585323ms)
+✔ Portable market: file-origin preflight and public quote/name lookup work without credentials (7.694391ms)
+✔ Portable market: unrelated origins, paths, methods and credential preflight are rejected (1.079217ms)
+✔ Portable market: original origin restriction, validation and rate limit remain effective (8.693748ms)
+✔ Single HTML: embedded resources, local-file navigation, language and encrypted backup round-trip (1067.53519ms)
+✔ Single HTML: live buttons send only public instrument identifiers to the portable route (465.439329ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6857.829632

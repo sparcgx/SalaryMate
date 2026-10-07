@@ -1,0 +1,16 @@
+{
+  "name": "salarymate-static-preview",
+  "version": "4.3.2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "test": "node --test --test-isolation=none tests/glass.test.mjs tests/reconcile.test.mjs tests/copy-month.test.mjs tests/comp-time.test.mjs tests/annual-analysis.test.mjs tests/rc-integration.test.mjs tests/rc2-fixes.test.mjs tests/stable432-freeze-pwa.test.mjs && node tests/stable432-site-gate.mjs",
+    "test:rc": "node scripts/rc3-regression.mjs",
+    "test:stable": "node scripts/stable432-regression.mjs",
+    "test:compliance": "node --test --test-isolation=none tests/glass.test.mjs tests/reconcile.test.mjs tests/copy-month.test.mjs tests/comp-time.test.mjs tests/annual-analysis.test.mjs tests/rc-integration.test.mjs tests/rc2-fixes.test.mjs"
+  },
+  "devDependencies": {
+    "vite": "^8.2.2"
+  }
+}

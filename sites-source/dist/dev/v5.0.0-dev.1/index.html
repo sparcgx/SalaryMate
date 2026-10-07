@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="記加班、安排請假、查看特休。SalaryMate 個人工作日曆。">
+  <title>SalaryMate · 工作日曆</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2320242a'/%3E%3Cpath d='M10 10h12M10 16h12M10 22h7' stroke='white' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css?v=5.0.0-dev.1">
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要內容</a>
+  <header class="app-header">
+    <a href="./" class="brand" aria-label="SalaryMate 首頁">SalaryMate<span>個人工作日曆</span></a>
+    <div class="workspace"><label for="companySelect" class="sr-only">目前公司</label><select id="companySelect"></select><span class="version">v5.0 開發版</span></div>
+  </header>
+  <div class="app-shell">
+    <nav class="navigation" aria-label="主要功能">
+      <button type="button" data-view="calendar" aria-current="page">日曆</button>
+      <button type="button" data-view="records">紀錄</button>
+      <button type="button" data-view="settings">設定</button>
+      <span class="local-note">資料保存在此裝置</span>
+    </nav>
+    <div id="notice" role="alert" hidden></div>
+    <main id="main" tabindex="-1"></main>
+    <footer class="app-footer"><span>SalaryMate <span class="mono">5.0.0-dev.1</span></span><button type="button" data-action="about">使用與隱私說明</button></footer>
+  </div>
+  <dialog id="editor" aria-labelledby="editorTitle"><form id="entryForm"></form></dialog>
+  <dialog id="utility" aria-labelledby="utilityTitle"><div id="utilityBody"></div></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <input id="backupInput" type="file" accept=".json,application/json" hidden>
+  <noscript><p class="fatal">請啟用 JavaScript 以使用工作日曆。資料只會儲存於此裝置。</p></noscript>
+  <script type="module" src="./app.js?v=5.0.0-dev.1"></script>
+</body>
+</html>

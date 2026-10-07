@@ -1,0 +1,9 @@
+    const duplicateLatestRecord = () => {
+      const latest = sortedRecords(state.records)[0];
+      if (!latest) return toast('目前沒有可複製的薪資紀錄', 'error');
+      const month = latest.month === 12 ? 1 : latest.month + 1;
+      const year = latest.month === 12 ? latest.year + 1 : latest.year;
+      const copy = normalizeRecord({ ...clone(latest), reconciliation: null, id: newId('record'), year, month, payDate: defaultPayDate(year, month), overtime: 0, bonus: 0, sideIncome: 0, note: `複製自 ${latest.year} 年 ${latest.month} 月` });
+      openRecordForm(copy);
+      toast(`已複製到 ${year} 年 ${month} 月表單，尚未儲存`);
+    };

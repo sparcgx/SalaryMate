@@ -1,0 +1,72 @@
+{
+  "baseline": {
+    "version": "20c25f66c1c01a4d2199b217ed22c312a4423dd7",
+    "unit": "ms",
+    "method": "one warmup; median of three; synthetic local fixtures; no browser or network",
+    "fixture": {
+      "stocks": 30,
+      "transactions": 3000,
+      "forecastDates": 20,
+      "backupRows": 600,
+      "salaryRows": 7200
+    },
+    "timings": {
+      "portfolio": 8.89,
+      "stockView": 20.52,
+      "forecasts": 84.56,
+      "backupMerge": 865.74,
+      "annual": 80.86
+    }
+  },
+  "optimized": {
+    "version": "v5.0.0-dev.2-R57",
+    "unit": "ms",
+    "method": "one warmup; median of three; synthetic local fixtures; no browser or network",
+    "fixture": {
+      "stocks": 30,
+      "transactions": 3000,
+      "forecastDates": 20,
+      "backupRows": 600,
+      "salaryRows": 7200
+    },
+    "timings": {
+      "portfolio": 7.85,
+      "stockView": 6.85,
+      "forecasts": 11.73,
+      "backupMerge": 5.65,
+      "annual": 51.76
+    }
+  },
+  "comparison": [
+    {
+      "module": "portfolio",
+      "before_ms": 8.89,
+      "after_ms": 7.85,
+      "reduction_percent": 11.7
+    },
+    {
+      "module": "stockView",
+      "before_ms": 20.52,
+      "after_ms": 6.85,
+      "reduction_percent": 66.6
+    },
+    {
+      "module": "forecasts",
+      "before_ms": 84.56,
+      "after_ms": 11.73,
+      "reduction_percent": 86.1
+    },
+    {
+      "module": "backupMerge",
+      "before_ms": 865.74,
+      "after_ms": 5.65,
+      "reduction_percent": 99.3
+    },
+    {
+      "module": "annual",
+      "before_ms": 80.86,
+      "after_ms": 51.76,
+      "reduction_percent": 36.0
+    }
+  ]
+}

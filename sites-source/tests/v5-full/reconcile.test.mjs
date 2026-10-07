@@ -1,0 +1,17 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const context={window:{}};
+vm.runInNewContext(fs.readFileSync(new URL('../../dist/dev/v5.0.0-dev.2/reconcile.js',import.meta.url),'utf8'),context);
+const api=context.window.SalaryMateReconcile;
+const record=()=>({id:'r1',companyId:'A',year:2026,month:9,baseSalary:40000,mealAllowance:3000,overtime:2000,laborIns:1000,healthIns:500,pensionSelf:1000,sideIncome:9000,customEarnings:[{id:'a',name:'津貼',amount:500}],customDeductions:[{id:'b',name:'請假',amount:300}]});
+const source={warnings:[],logs:[],leave:[0,0,0,'synced']};
+const completed=(r,s=source)=>({actual:Object.fromEntries(api.rows(r).map(x=>[x.key,x.expected])),fingerprint:api.fingerprint(r,s),reviewed:true,reason:'',savedAt:'2026-09-29'});
+test('薪資實領不包含副業，自訂項目與自提均納入',()=>{const rows=api.rows(record());assert.equal(rows.find(r=>r.key==='net').expected,42700);assert.equal(rows.find(r=>r.key==='gross').expected,45500);});
+test('未填不可視為零或完成',()=>{const r=record();assert.equal(api.evaluate(r,source).status,'未核對');const d=completed(r);delete d.actual.healthIns;assert.equal(api.evaluate(r,source,d).status,'待補資料');assert.equal(api.evaluate(r,source,d).canConfirm,false);});
+test('完整一致才可確認，差一分仍有差異',()=>{const r=record(),d=completed(r);assert.equal(api.evaluate(r,source,d).status,'已核對');d.actual.net+=.01;assert.equal(api.evaluate(r,source,d).status,'有差異');assert.equal(api.evaluate(r,source,d).canConfirm,false);});
+test('修改薪資、公司、月份或來源會使核對失效',()=>{const r=record(),d=completed(r);for(const changed of [{...r,baseSalary:41000},{...r,companyId:'B'},{...r,month:10}])assert.equal(api.evaluate(changed,source,d).status,'需重新核對');assert.equal(api.evaluate(r,{...source,logs:[['changed']]},d).status,'需重新核對');});
+test('未同步提示阻止完成，但仍可保存草稿',()=>{const r=record(),s={...source,warnings:['未同步']};assert.equal(api.evaluate(r,s,completed(r,s)).status,'待確認來源');assert.equal(api.evaluate(r,s,completed(r,s)).canConfirm,false);});
+test('JSON 往返保留核對，缺少核對資料的舊備份可載入',()=>{const r=record();r.reconciliation=completed(r);const restored=JSON.parse(JSON.stringify(r));restored.reconciliation=api.normalize(restored.reconciliation);assert.equal(api.evaluate(restored,source).status,'已核對');assert.equal(api.normalize(undefined),null);});
+test('拒絕無效數值，零與負數有效；核對不改薪資',()=>{const r=record(),before=JSON.stringify(r);const d=api.normalize({actual:{a:NaN,b:Infinity,c:'0',d:0,e:-2}});assert.equal(d.actual.a,undefined);assert.equal(d.actual.c,undefined);assert.equal(d.actual.d,0);assert.equal(d.actual.e,-2);api.evaluate(r,source,completed(r));assert.equal(JSON.stringify(r),before);});

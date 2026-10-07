@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const ctx={window:{}};vm.runInNewContext(fs.readFileSync(new URL('../dist/comp-time.js',import.meta.url),'utf8'),ctx);
+const api=ctx.window.SalaryMateCompTime;
+const logs=[{id:'ot1',companyId:'A',date:'2026-01-02',hours:8},{id:'ot2',companyId:'A',date:'2026-01-03',hours:4},{id:'other',companyId:'B',date:'2026-01-02',hours:8}];
+const credits=[{id:'c1',sourceId:'ot1',companyId:'A',earnedAt:'2026-01-02',expiresAt:'2026-06-30',hours:4},{id:'c2',sourceId:'ot2',companyId:'A',earnedAt:'2026-01-03',expiresAt:'2026-04-30',hours:4}];
+const ledger=(extra={})=>api.ledger({credits,logs,leaves:[],settlements:[],today:'2026-03-01',...extra});
+test('來源重複與跨公司不可轉入，必須有有效到期日',()=>{assert(api.assertCredit({...credits[0],id:'new'},logs,credits));assert(api.assertCredit({...credits[0],id:'new',sourceId:'other'},logs,[]));assert(api.assertCredit({...credits[0],expiresAt:'2025-01-01'},logs,[]));assert(!api.assertCredit({...credits[0],id:'c1'},logs,credits));});
+test('確認補休按到期先後扣除，未連結及取消紀錄不扣帳本',()=>{const leaves=[{id:'legacy',companyId:'A',type:'compensatory',status:'confirmed',compTimeLinked:false,compTimeEntries:[{date:'2026-02-01',hours:7}]},{id:'use',companyId:'A',type:'compensatory',status:'confirmed',compTimeLinked:true,compTimeEntries:[{date:'2026-02-01',hours:5}]},{id:'cancelled',companyId:'A',type:'compensatory',status:'cancelled',compTimeLinked:true,compTimeEntries:[{date:'2026-02-01',hours:3}]}];const x=ledger({leaves});assert.equal(x.violations.length,0);assert.equal(x.rows[0].used,1);assert.equal(x.rows[1].used,4);assert.equal(x.totals.available,3);});
+test('到期後不供請假，未用額顯示待結算且仍可人工記錄結算',()=>{const leave={id:'late',companyId:'A',type:'compensatory',status:'confirmed',compTimeLinked:true,compTimeEntries:[{date:'2026-07-01',hours:5}]};assert(ledger({leaves:[leave]}).violations.length);const x=ledger({today:'2026-07-01'});assert.equal(x.totals.expired,8);const settled=ledger({today:'2026-07-01',settlements:[{id:'s1',companyId:'A',creditId:'c1',date:'2026-07-01',hours:3,amount:1500}]});assert.equal(settled.totals.settled,3);assert.equal(settled.totals.expired,5);});
+test('跨公司、超額、重複結算與來源遺失有異常',()=>{assert(ledger({settlements:[{id:'s',companyId:'B',creditId:'c1',date:'2026-03-01',hours:1}]}).violations.length);assert(ledger({settlements:[{id:'s',companyId:'A',creditId:'c1',date:'2026-03-01',hours:5}]}).violations.length);assert(ledger({logs:[]}).violations.length);});
+test('JSON 往返保留來源及結算，舊補休紀錄預設不連結',()=>{const snapshot=JSON.parse(JSON.stringify({credits,settlements:[{id:'s',companyId:'A',creditId:'c1',date:'2026-02-01',hours:1,amount:300}]}));const x=ledger(snapshot);assert.equal(x.totals.settled,1);assert.equal(api.normalizeLeaveLink(undefined),false);assert.equal(api.normalizeLeaveLink('true'),true);});

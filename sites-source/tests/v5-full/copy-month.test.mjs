@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const context={window:{}};
+vm.runInNewContext(fs.readFileSync(new URL('../../dist/dev/v5.0.0-dev.2/copy-month.js',import.meta.url),'utf8'),context);
+const api=context.window.SalaryMateCopyMonth;
+const record=()=>({id:'old',companyId:'A',year:2025,month:12,baseSalary:45000,mealAllowance:3000,laborIns:1200,pensionSelf:1000,overtime:4000,bonus:10000,taxWithheld:2000,otherDeduction:400,sideIncome:5000,reconciliation:{reviewed:true},customEarnings:[{id:'fixed',name:'固定津貼',sourceType:'company-fixed',amount:500},{id:'gift',name:'節慶',amount:3000}],customDeductions:[{id:'leave',name:'請假',sourceType:'leave-payroll',sourceKey:'leave:A:2025-12',amount:800}]});
+test('跨年度只取同公司前一月，不取別家公司最新紀錄',()=>{const r=record();const plan=api.plan([r,{...r,id:'other',companyId:'B',year:2026,month:5}],'A',2026,1);assert.equal(plan.source.id,'old');assert.equal(plan.draft.year,2026);assert.equal(plan.draft.month,1);assert.equal(api.next(2025,12).year,2026);});
+test('沒有前一月或來源多筆時阻止套用',()=>{const r=record();assert(api.plan([r],'A',2026,2).error);assert(api.plan([r,{...r,id:'duplicate'}],'A',2026,1).error);assert(api.plan([r],'B',2026,1).error);});
+test('同公司目標月份重複阻止，不受其他公司同月影響',()=>{const r=record();const target={...r,id:'target',year:2026,month:1};assert(api.plan([r,target],'A',2026,1).error);assert(!api.plan([r,{...target,companyId:'B'}],'A',2026,1).error);});
+test('固定項目保留，變動收入與扣項清除，核對重設',()=>{const p=api.plan([record()],'A',2026,1);assert.equal(p.draft.baseSalary,45000);assert.equal(p.draft.laborIns,1200);assert.equal(p.draft.pensionSelf,1000);for(const key of ['overtime','bonus','taxWithheld','otherDeduction','sideIncome'])assert.equal(p.draft[key],0);assert.equal(p.draft.customEarnings.length,1);assert.equal(p.draft.customDeductions.length,0);assert.equal(p.draft.reconciliation,null);assert.equal(p.draft.id,'');assert.equal(p.draft.payDate,'');assert(p.rows.some(r=>r.label==='扣項：請假'&&r.before===800&&r.after===0));});
+test('預覽及修改草稿不改來源，來源變更可辨識',()=>{const r=record(),original=JSON.stringify(r),p=api.plan([r],'A',2026,1);p.draft.customEarnings[0].amount=9;assert.equal(JSON.stringify(r),original);r.baseSalary=46000;assert.notEqual(api.plan([r],'A',2026,1).fingerprint,p.fingerprint);});
+test('拒絕無效月份與年份；保留時薪工時供下一步確認',()=>{const r={...record(),employmentMode:'dispatch_hourly',baseHourlyRate:250,regularHours:160};for(const [y,m] of [[2026,0],[2026,13],[NaN,1],[1999,12]])assert(api.plan([r],'A',y,m).error);const p=api.plan([r],'A',2026,1);assert.equal(p.draft.baseHourlyRate,250);assert.equal(p.draft.regularHours,160);});

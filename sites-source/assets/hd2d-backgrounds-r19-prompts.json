@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "generation_date": "2026-10-04",
+  "provenance": {
+    "mode": "built-in",
+    "tool": "tools.image_gen__imagegen",
+    "calls": 4,
+    "execution": "One parallel Promise.allSettled batch; exactly one request per distinct scene.",
+    "retries": 0,
+    "variants": 0,
+    "references_used": false,
+    "postprocessing": "None. Tool-generated PNG originals copied to destination unchanged.",
+    "validation": "Each rendered output visually inspected; subject, wide composition, quiet center, and absence of text/UI/characters checked."
+  },
+  "assets": [
+    {
+      "name": "enchanted-forest",
+      "path": "/workspace/scratch/48f8e9b0d640/r19-assets/fantasy-enchanted-forest.png",
+      "original_path": "/workspace/scratch/48f8e9b0d640/generated_images/exec-8f19660b-c841-4914-84e9-d0661469964b.png",
+      "width": 1672,
+      "height": 941,
+      "format": "PNG",
+      "request": {
+        "prompt": "Use case: stylized-concept\nAsset type: standalone background for a personal salary and investment web app's Fantasy HD-2D theme.\nPrimary request: An enchanted emerald forest, luminous turquoise stream winding between mossy pixel-art rocks, ancient stone arches and ruined columns tucked near the sides, layered ferns and glowing tiny highlights. The middle opens into spacious mist and a calm river clearing.\nStyle/medium: original premium HD-2D JRPG landscape, finely detailed pixel-art terrain in layered diorama-like depth, painterly cinematic atmosphere, subtle tilt-shift, crisp tiny pixel highlights, high craft and inviting fantasy mood.\nComposition/framing: wide 16:9 landscape, preferably 2048x1152; full bleed continuous environment. Detailed edges and expansive quiet center that will sit behind dark navy interface panels. Do not draw those panels. Strong sense of depth and delicate atmosphere; no focal clutter in central 55 percent.\nColor palette: deep emerald, moss, dark teal, luminous turquoise, gentle mint highlights.\nConstraints: one complete scene, not a collage; no text, no logos, no watermark, no characters, no people, no UI, no borders.",
+        "transparent_background": false
+      },
+      "output_hint": "Generated images are saved to /workspace/scratch/48f8e9b0d640/generated_images as /workspace/scratch/48f8e9b0d640/generated_images/exec-8f19660b-c841-4914-84e9-d0661469964b.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "name": "sunset-port",
+      "path": "/workspace/scratch/48f8e9b0d640/r19-assets/fantasy-sunset-port.png",
+      "original_path": "/workspace/scratch/48f8e9b0d640/generated_images/exec-3a13f0b2-949b-419e-b65d-fbb1d511a721.png",
+      "width": 1672,
+      "height": 941,
+      "format": "PNG",
+      "request": {
+        "prompt": "Use case: stylized-concept\nAsset type: standalone background for a personal salary and investment web app's Fantasy HD-2D theme.\nPrimary request: A warm coastal fantasy port at sunset, small ancient quays and charming pixel-art roofs framing the far left and right edges, a quiet blue sea in the middle distance and spacious amber sky. Subtle tiny golden harbor lights; no people and no boats dominating the center.\nStyle/medium: original premium HD-2D JRPG landscape, finely detailed pixel-art terrain in layered diorama-like depth, painterly cinematic atmosphere, subtle tilt-shift, crisp tiny pixel highlights, high craft and inviting fantasy mood.\nComposition/framing: wide 16:9 landscape, preferably 2048x1152; full bleed continuous environment. Detailed edges and expansive quiet center that will sit behind dark navy interface panels. Do not draw those panels. Strong sense of depth and delicate atmosphere; no focal clutter in central 55 percent.\nColor palette: amber and peach sunset sky, deep blue sea, warm terracotta, dark indigo shadows.\nConstraints: one complete scene, not a collage; no text, no logos, no watermark, no characters, no people, no UI, no borders.",
+        "transparent_background": false
+      },
+      "output_hint": "Generated images are saved to /workspace/scratch/48f8e9b0d640/generated_images as /workspace/scratch/48f8e9b0d640/generated_images/exec-3a13f0b2-949b-419e-b65d-fbb1d511a721.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "name": "aurora-castle",
+      "path": "/workspace/scratch/48f8e9b0d640/r19-assets/fantasy-aurora-castle.png",
+      "original_path": "/workspace/scratch/48f8e9b0d640/generated_images/exec-0bb2f8f8-3831-4ecc-849a-a2de2137bc99.png",
+      "width": 1672,
+      "height": 941,
+      "format": "PNG",
+      "request": {
+        "prompt": "Use case: stylized-concept\nAsset type: standalone background for a personal salary and investment web app's Fantasy HD-2D theme.\nPrimary request: An indigo winter landscape with a snowy fairytale castle toward an outer third, snow-coated pixel-art pine silhouettes around the edges, a vast still frozen lake in the center and teal aurora ribbons above. Ancient masonry, delicate tiny icy highlights, calm open space.\nStyle/medium: original premium HD-2D JRPG landscape, finely detailed pixel-art terrain in layered diorama-like depth, painterly cinematic atmosphere, subtle tilt-shift, crisp tiny pixel highlights, high craft and inviting fantasy mood.\nComposition/framing: wide 16:9 landscape, preferably 2048x1152; full bleed continuous environment. Detailed edges and expansive quiet center that will sit behind dark navy interface panels. Do not draw those panels. Strong sense of depth and delicate atmosphere; no focal clutter in central 55 percent.\nColor palette: deep indigo, navy, icy lavender snow, luminous teal aurora, restrained silver highlights.\nConstraints: one complete scene, not a collage; no text, no logos, no watermark, no characters, no people, no UI, no borders.",
+        "transparent_background": false
+      },
+      "output_hint": "Generated images are saved to /workspace/scratch/48f8e9b0d640/generated_images as /workspace/scratch/48f8e9b0d640/generated_images/exec-0bb2f8f8-3831-4ecc-849a-a2de2137bc99.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "name": "sky-islands",
+      "path": "/workspace/scratch/48f8e9b0d640/r19-assets/fantasy-sky-islands.png",
+      "original_path": "/workspace/scratch/48f8e9b0d640/generated_images/exec-ad80790b-ebe2-4310-8a70-6197f8fbd42b.png",
+      "width": 1672,
+      "height": 941,
+      "format": "PNG",
+      "request": {
+        "prompt": "Use case: stylized-concept\nAsset type: standalone background for a personal salary and investment web app's Fantasy HD-2D theme.\nPrimary request: Bright cyan skies and magnificent floating sky islands, ancient golden stone ruins on grassy islands framing the sides, soft white cloud layers dropping into vast depth. Central open sky is spacious and calm, islands have intricate tiny pixel-art vegetation and highlights.\nStyle/medium: original premium HD-2D JRPG landscape, finely detailed pixel-art terrain in layered diorama-like depth, painterly cinematic atmosphere, subtle tilt-shift, crisp tiny pixel highlights, high craft and inviting fantasy mood.\nComposition/framing: wide 16:9 landscape, preferably 2048x1152; full bleed continuous environment. Detailed edges and expansive quiet center that will sit behind dark navy interface panels. Do not draw those panels. Strong sense of depth and delicate atmosphere; no focal clutter in central 55 percent.\nColor palette: clear cyan, azure, pale cream clouds, warm golden ruins, emerald grass, subtle navy depth.\nConstraints: one complete scene, not a collage; no text, no logos, no watermark, no characters, no people, no UI, no borders.",
+        "transparent_background": false
+      },
+      "output_hint": "Generated images are saved to /workspace/scratch/48f8e9b0d640/generated_images as /workspace/scratch/48f8e9b0d640/generated_images/exec-ad80790b-ebe2-4310-8a70-6197f8fbd42b.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    }
+  ]
+}
