@@ -10,8 +10,8 @@ export function createPortableMarket(handleMarket) {
   return async request=>{
     const url=new URL(request.url),target=routes.get(url.pathname),origin=request.headers.get('origin');
     if(!target)return new Response('Not found',{status:404});
-    // Local HTML files have an opaque origin. Other websites keep the original restriction.
-    if(origin!=='null'&&origin!==url.origin)return new Response('Origin not allowed',{status:403});
+    // Allow local HTML, this host, and the owner's exact GitHub Pages origin only.
+    if(origin!=='null'&&origin!==url.origin&&origin!=='https://sparcgx.github.io')return new Response('Origin not allowed',{status:403});
     const cors={'access-control-allow-origin':origin,'access-control-allow-methods':'POST, OPTIONS','access-control-allow-headers':'Content-Type','access-control-max-age':'3600','vary':'Origin','cache-control':'no-store','x-content-type-options':'nosniff'};
     if(request.method==='OPTIONS'){
       const method=request.headers.get('access-control-request-method');
