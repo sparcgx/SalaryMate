@@ -2576,30 +2576,3 @@ TWSE 最新成交 | TWSE latest trade
 
 台股・美股・ETF | Taiwan · US · ETFs
 年損益 · 持股累計至今 | gains/losses · holdings to date
-台股大盤 | Taiwan indices
-指數 | Index
-選擇台股指數 | Select Taiwan index
-加權指數 | TAIEX
-連線後顯示今日走勢 | Connect to view today's chart
-已收盤 | Market closed
-資料較舊 | Older data
-已連線 | Connected
-等待指數資料 | Waiting for index data
-尚未連線 | Not connected
-連線中… | Connecting…
-重新連線中… | Reconnecting…
-金鑰或權限無效 | Invalid key or permissions
-連線未完成 | Connection failed
-來源：Fugle | Source: Fugle
-部分日內資料未取得；已保留收到的指數資料。 | Some intraday data is unavailable; received index data is retained.
-最後行情已超過 90 秒，請核對來源時間。 | Last quote is over 90 seconds old; check the source time.
-即時連線 | Live connection
-金鑰只供本次頁面使用，直接連到 Fugle；不存入備份。重新開啟需再次輸入。 | The key connects directly to Fugle for this page session only. It is excluded from backups; enter it again after reopening.
-取得免費行情金鑰 | Get a free market data key
-官方即時市況 | Official live market
-持股更新 | Holdings updates
-重連 | Reconnect
-中斷 | Disconnect
-連線 | Connect
-區間低點 | Range low
-區間高點 | Range high

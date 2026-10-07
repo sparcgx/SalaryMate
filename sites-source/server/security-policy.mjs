@@ -13,7 +13,7 @@ export function salaryMateCsp({scriptHashes=[],marketOrigin='',portable=false}={
     "style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style",
     "img-src 'self' data: blob:",
     "font-src 'self' data:",
-    `connect-src 'self'${marketOrigin?' '+marketOrigin:''} https://api.fugle.tw wss://api.fugle.tw https://www.googleapis.com https://oauth2.googleapis.com https://accounts.google.com/gsi/`,
+    `connect-src 'self'${marketOrigin?' '+marketOrigin:''} https://www.googleapis.com https://oauth2.googleapis.com https://accounts.google.com/gsi/`,
     "frame-src https://accounts.google.com/gsi/",
     "form-action 'self' https://accounts.google.com",
     `worker-src ${portable?"'none'":"'self'"}`,

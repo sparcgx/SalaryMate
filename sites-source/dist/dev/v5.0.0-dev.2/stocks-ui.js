@@ -14,7 +14,7 @@
     const tone=n=>n>0?'stock-profit':n<0?'stock-loss':'';
     const types={buy:'買入',sell:'賣出',dividend:'現金股息',split:'分割／合併',opening:'期初持股'};
     const markets={TW:'台股',US:'美股',OTHER:'其他市場'};
-    const view={tab:'overview',search:'',filter:'all',sort:'value',exchange:'',category:'',favorites:false,refreshing:false,quoteResult:null,forecastBusy:false,forecastErrors:[],marketIssue:'',lastMarketAttempt:0,marketExpanded:false,holdingsControlsOpen:false};
+    const view={tab:'overview',search:'',filter:'all',sort:'value',exchange:'',category:'',favorites:false,refreshing:false,quoteResult:null,forecastBusy:false,forecastErrors:[],marketIssue:'',lastMarketAttempt:0,marketExpanded:false};
     const MARKET_INTERVAL=300000;
     let marketTimer,marketController;
     let catalogController,catalogSequence=0,catalogItems=[];
@@ -110,29 +110,6 @@
       }).join('');
       return `<div class="stock-stats">${stat('本年已實現損益',signed(m.yearRealized),'扣除賣出費稅與買入成本',tone(m.yearRealized))}${stat('本年實收股息',money(m.yearDividends),'已扣股息費用與稅額')}${stat('本年投資所得',signed(m.yearRealized+m.yearDividends),'已實現損益＋實收股息',tone(m.yearRealized+m.yearDividends))}${stat('本年記錄費稅',money(m.yearFees),'已計入成本或實收，不再重複扣除')}</div><section class="stock-panel"><div class="stock-panel-head"><h3>${api.year()} 年每月損益</h3><span>單位：TWD</span></div>${table(['月份','買入筆數','賣出筆數','已實現損益','實收股息','合計'],rows)}<p class="stock-footnote">這是記帳損益，不是年化報酬或報稅試算。手動收入未計入此股票交易分析，請見「股息與收入」。</p></section>`;
     }
-    const indices=root.SalaryMateIndices.create(()=>updateIndexCard());
-    const indexTime=at=>at?new Date(at).toLocaleString('zh-TW',{timeZone:'Asia/Taipei',hour12:false}):'—';
-    function indexChart(s){
-      const ps=s.points;if(!ps.length)return '<p class="stock-index-empty">連線後顯示今日走勢</p>';
-      const values=ps.map(p=>p.value);if(s.previous)values.push(s.previous);
-      let low=Math.min(...values),high=Math.max(...values);const pad=Math.max((high-low)*.08,high*.0001);low-=pad;high+=pad;
-      const start=ps[0].at,end=Math.max(start+60000,ps.at(-1).at),x=t=>58+(t-start)/(end-start)*614,y=v=>18+(high-v)/(high-low)*164;
-      const points=ps.map(p=>`${x(p.at).toFixed(2)},${y(p.value).toFixed(2)}`).join(' ');
-      const time=t=>new Date(t).toLocaleTimeString('zh-TW',{timeZone:'Asia/Taipei',hour:'2-digit',minute:'2-digit',hour12:false});
-      return `<svg class="stock-index-chart ${tone(s.change)}" viewBox="0 0 700 216" role="img" aria-label="${esc(s.name)} ${esc(s.date)}"><title>${esc(s.name)} · ${esc(s.date)} · ${num(ps.at(-1).value)}</title>${[low,(low+high)/2,high].map(v=>`<line x1="58" y1="${y(v)}" x2="672" y2="${y(v)}" class="index-grid"/>`).join('')}${s.previous?`<line x1="58" y1="${y(s.previous)}" x2="672" y2="${y(s.previous)}" class="index-reference"/>`:''}<polyline points="${points}"/><circle cx="${x(ps.at(-1).at)}" cy="${y(ps.at(-1).value)}" r="3"/></svg><div class="stock-index-axis"><span>${time(start)}</span><span>${time(ps.at(-1).at)}</span></div><div class="stock-index-range"><span>區間低點</span> ${num(Math.min(...ps.map(p=>p.value)))} · <span>區間高點</span> ${num(Math.max(...ps.map(p=>p.value)))}</div>`;
-    }
-    function indexMetrics(s){
-      const state=s.status==='connected'?(s.closed?'已收盤':s.stale?'資料較舊':s.at?'已連線':'等待指數資料'):{disconnected:'尚未連線',connecting:'連線中…',reconnecting:'重新連線中…',paused:'已暫停','auth-error':'金鑰或權限無效',error:'連線未完成'}[s.status];
-      return `<div class="stock-index-reading"><strong class="${tone(s.change)}">${s.value==null?'—':num(s.value)}</strong><span class="${tone(s.change)}">${s.change==null?'漲跌待更新':`${s.change>0?'+':''}${num(s.change)} (${s.percent>0?'+':''}${num(s.percent)}%)`}</span><span class="stock-badge">${state}</span></div>${indexChart(s)}<p class="stock-index-time"><span>行情時間</span> ${esc(indexTime(s.at))} <span>台北時間</span> · <span>來源：Fugle</span></p>${s.partial?'<p class="hint">部分日內資料未取得；已保留收到的指數資料。</p>':''}${s.stale&&!s.closed?'<p class="hint">最後行情已超過 90 秒，請核對來源時間。</p>':''}`;
-    }
-    function indexCard(){const s=indices.snapshot();return `<section class="stock-panel stock-index-panel" data-index-card><div class="stock-panel-head"><h3>台股大盤</h3><div class="stock-row-actions"><button class="btn btn-small" type="button" data-stock="index-retry">重連</button><button class="btn btn-small" type="button" data-stock="index-disconnect">中斷</button></div></div><div class="stock-index-body"><label class="stock-index-picker"><span>指數</span><select class="field-select" id="stockIndexSymbol" aria-label="選擇台股指數">${s.catalog.map(x=>`<option value="${esc(x.symbol)}"${x.symbol===s.symbol?' selected':''}>${esc(x.name)}</option>`).join('')}</select></label><div data-index-values>${indexMetrics(s)}</div><details class="stock-index-connect"${s.hasKey?'':' open'}><summary>即時連線</summary><form id="stockIndexConnectForm" autocomplete="off"><label><span class="field-label">Fugle API Key</span><input class="field" type="password" name="indexKey" required maxlength="1024" autocomplete="off" spellcheck="false" autocapitalize="off" aria-describedby="stockIndexKeyHint"></label><button class="btn btn-primary" type="submit">連線</button></form><p id="stockIndexKeyHint" class="hint">金鑰只供本次頁面使用，直接連到 Fugle；不存入備份。重新開啟需再次輸入。</p><a href="https://developer.fugle.tw/docs/pricing/" target="_blank" rel="noopener noreferrer">取得免費行情金鑰</a><span class="hint"> · </span><a href="https://mis.twse.com.tw/stock/index?lang=zhHant" target="_blank" rel="noopener noreferrer">官方即時市況</a></details></div></section>`;}
-    function updateIndexCard(){
-      const card=root.document.querySelector('[data-index-card]');if(!card)return;
-      const s=indices.snapshot(),values=card.querySelector('[data-index-values]'),select=card.querySelector('#stockIndexSymbol');
-      if(values){values.innerHTML=indexMetrics(s);root.SalaryMateI18n.apply?.(values);}
-      if(select){const key=s.catalog.map(x=>x.symbol+':'+x.name).join('|');if(select.dataset.catalog!==key){select.innerHTML=s.catalog.map(x=>`<option value="${esc(x.symbol)}">${esc(x.name)}</option>`).join('');select.dataset.catalog=key;select.value=s.symbol;}}
-    }
-    function syncIndexVisibility(){indices.setActive(!!root.document.querySelector('[data-index-card]')&&!root.document.hidden&&root.navigator?.onLine!==false);}
     function render(legacy) {
       queueForecasts();
       const m=model(),held=m.holdings.filter(s=>s.quantity>0),income=m.yearDividends+api.legacyTotal();
@@ -154,7 +131,7 @@
       const imports=p().smartImports?.length?`<div class="stock-import-access">${btn('查看 SmartPortfolio 匯入紀錄','archives')}<span class="hint">${p().smartImports.length} 份備份 · 原始資料保留</span></div>`:'';
       const importedCaveat=p().smartImports?.some(i=>i.mode==='snapshot'||i.conversionEstimated)?`<p class="stock-warning">${p().smartImports.some(i=>i.mode==='snapshot')?'部分舊買賣僅留存，以下損益只含本版已計入的帳務紀錄。':''}${p().smartImports.some(i=>i.conversionEstimated)?'部分新臺幣成本／損益採匯入匯率估計，請核對原交易匯率。':''}</p>`:'';
       queueMarket();
-      return `<section class="view stock-view">${top}${indexCard()}<details class="stock-holdings-controls"${view.holdingsControlsOpen?' open':''}><summary>持股更新</summary>${marketCard()}</details>${importedCaveat}${body}${imports}${legacyAccess}${help}</section>`;
+      return `<section class="view stock-view">${top}${marketCard()}${importedCaveat}${body}${imports}${legacyAccess}${help}</section>`;
     }
     const field=(label,name,value='',attrs='',hint='')=>`<label><span class="field-label">${label}</span><input class="field" name="${esc(name)}" value="${esc(value)}" ${attrs}>${hint?`<span class="hint">${hint}</span>`:''}</label>`;
     const select=(label,name,value,options)=>`<label><span class="field-label">${label}</span><select class="field-select" name="${name}">${options.map(([v,l])=>`<option value="${esc(v)}" ${v===value?'selected':''}>${esc(l)}</option>`).join('')}</select></label>`;
@@ -689,7 +666,6 @@
       }
     }
     function onChange(event) {
-      if(event.target.id==='stockIndexSymbol'){indices.select(event.target.value);return;}
       if(event.target.closest?.('#stockForm[data-kind="quotes"]')&&event.target.name.startsWith('mode-')){syncManualPriceFields();return;}
 
       const assetForm=event.target.closest('#stockForm[data-kind="asset"]');
@@ -733,9 +709,7 @@
     root.document.addEventListener('click',event=>{if(!event.target.closest('.stock-action-menu-wrap'))closeStockActions();});
     root.document.addEventListener('focusin',event=>{if(!event.target.closest('.stock-action-menu-wrap'))closeStockActions();});
     root.document.addEventListener('error',event=>{if(event.target.matches?.('.stock-avatar img[data-stock-logo]'))event.target.remove();},true);
-    root.document.addEventListener('toggle',event=>{if(event.target.matches?.('.stock-holdings-controls'))view.holdingsControlsOpen=event.target.open;},true);
     root.document.addEventListener('visibilitychange',()=>{
-      syncIndexVisibility();
       if(root.document.hidden){clearTimeout(marketTimer);marketTimer=null;marketController?.abort();return;}
       if(!onInvestment()||root.document.querySelector('#appDialog')?.open)return;
       queueMarket();
@@ -743,8 +717,6 @@
     root.document.addEventListener('keydown',event=>{if(event.key==='Escape'&&root.document.querySelector('.stock-action-menu-wrap.is-open')){event.preventDefault();closeStockActions(true);}});
     function click(el) {
       const action=el.dataset.stock,id=el.dataset.id||'';
-      if(action==='index-retry'){indices.retry();return true;}
-      if(action==='index-disconnect'){indices.disconnect();return true;}
       if(action==='toggle-market-details'){toggleMarketDetails(el);return true;}
       if(action==='toggle-market-auto'){toggleMarket('autoRefresh');return true;}
       if(action==='toggle-market-quotes'){toggleMarket('quoteEnabled');return true;}
@@ -792,7 +764,6 @@
       else if(action==='export-transactions')exportCSV('transactions');
     }
     function submit(form) {
-      if(form.id==='stockIndexConnectForm'){const field=form.elements.indexKey;const ok=indices.connect(field.value);field.value='';if(ok)form.closest('details').open=false;return true;}
       if(form.id==='stockBatchForm'){saveBatch(form);return true;}
       if(form.id==='stockImportForm'){saveImport(form);return true;}
       if(form.id==='stockForm'){save(form);return true;}
@@ -800,10 +771,6 @@
       if(['stockSearchForm','stockListForm'].includes(form.id)){const d=new FormData(form);view.search=String(d.get('search')||'').trim();view.filter=String(d.get('filter')||'all');view.sort=String(d.get('sort')||view.sort);view.exchange=String(d.get('exchange')||'');view.category=String(d.get('category')||'');view.favorites=d.has('favorites');api.render();return true;}
       return false;
     }
-    root.addEventListener?.('online',syncIndexVisibility);
-    root.addEventListener?.('offline',syncIndexVisibility);
-    root.addEventListener?.('pagehide',()=>indices.setActive(false));
-    root.addEventListener?.('pageshow',syncIndexVisibility);
-    return {render,click,submit,syncIndexVisibility,updateTradeForm,onInput,onChange,importFile:file=>{openImport();return readImport(file);}};
+    return {render,click,submit,updateTradeForm,onInput,onChange,importFile:file=>{openImport();return readImport(file);}};
   }};
 })(globalThis);

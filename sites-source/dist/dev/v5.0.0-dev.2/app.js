@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0-dev.2-R66';
+    const APP_VERSION = '5.0.0-dev.2-R65';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -3034,7 +3034,7 @@
     const renderV5Settings = () => {
       const c=currentCompany();
       const settingRow=(title,detail,action,label='開啟',extra='')=>`<div class="v5-setting-row"><div><h3>${title}</h3><p>${detail}</p></div>${v5Button(label,action,extra)}</div>`;
-      return `<section class="view">${v5Title('設定')}<div class="v5-settings-columns"><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">工作與公司</span></summary><div class="v5-settings-content">${settingRow('公司管理',c?`${userHtml(c.name)} · 共 ${state.companies.length} 家公司`:'建立任職公司與薪資基礎','manage-companies')}${settingRow('薪資規則','本薪、津貼、扣項與計薪區間','company-salary-rules','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}${settingRow('特休與假別','到職日、假別額度與每日標準工時','v5-leave-settings','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">顯示與操作</span></summary><div class="v5-settings-content"><label class="v5-language-setting"><span>介面語言</span><select class="field-select" data-language-preference><option value="auto">跟隨系統</option><option value="zh">繁體中文</option><option value="en">English</option></select></label>${settingRow('版面設定',escapeHtml(INTERFACE_STYLES[normalizeInterfaceStyle(ui.interfaceStyle)].name)+' · 介面風格、文字與密度、重點色','open-interface-settings','調整')}</div></details></div><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">資料管理</span></summary><div class="v5-settings-content">${settingRow('備份全部資料','一般 JSON 或密碼加密備份，包含薪資與全部投資資料','export-json','下載')}${settingRow('匯入備份','一般、加密或 SmartPortfolio 備份；可選覆蓋或新增','restore-backup-file','選擇檔案')}${settingRow('自己的 Google Drive','<span data-google-summary>'+escapeHtml(window.SalaryMateCloud?.summary()||'儲存至自己的 Google Drive，可選密碼加密')+'</span>','open-google-drive','開啟')}${settingRow('匯出報表','薪資、請假及出勤分析 CSV','v5-export-options','選擇報表')}${settingRow('資料檢查','檢查公司關聯、重複紀錄與補休餘額','data-health','檢查')}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">說明</span></summary><div class="v5-settings-content">${settingRow('授權、隱私與試算','資料保存方式、授權文字與試算範圍','open-legal','閱讀')}<p class="hint">v5.0.0-dev.2-R66 · 全介面開發版<br>v5 資料獨立保存。可手動匯入薪資備份，原版本的資料仍保留。</p><details class="v5-cleanup"><summary>清除這個版本的資料</summary><p class="hint">請先匯出備份；只清除目前 v5 完整版的資料。</p>${v5Button('清除本機資料','clear-data')}</details></div></details></div></div></section>`;
+      return `<section class="view">${v5Title('設定')}<div class="v5-settings-columns"><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">工作與公司</span></summary><div class="v5-settings-content">${settingRow('公司管理',c?`${userHtml(c.name)} · 共 ${state.companies.length} 家公司`:'建立任職公司與薪資基礎','manage-companies')}${settingRow('薪資規則','本薪、津貼、扣項與計薪區間','company-salary-rules','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}${settingRow('特休與假別','到職日、假別額度與每日標準工時','v5-leave-settings','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">顯示與操作</span></summary><div class="v5-settings-content"><label class="v5-language-setting"><span>介面語言</span><select class="field-select" data-language-preference><option value="auto">跟隨系統</option><option value="zh">繁體中文</option><option value="en">English</option></select></label>${settingRow('版面設定',escapeHtml(INTERFACE_STYLES[normalizeInterfaceStyle(ui.interfaceStyle)].name)+' · 介面風格、文字與密度、重點色','open-interface-settings','調整')}</div></details></div><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">資料管理</span></summary><div class="v5-settings-content">${settingRow('備份全部資料','一般 JSON 或密碼加密備份，包含薪資與全部投資資料','export-json','下載')}${settingRow('匯入備份','一般、加密或 SmartPortfolio 備份；可選覆蓋或新增','restore-backup-file','選擇檔案')}${settingRow('自己的 Google Drive','<span data-google-summary>'+escapeHtml(window.SalaryMateCloud?.summary()||'儲存至自己的 Google Drive，可選密碼加密')+'</span>','open-google-drive','開啟')}${settingRow('匯出報表','薪資、請假及出勤分析 CSV','v5-export-options','選擇報表')}${settingRow('資料檢查','檢查公司關聯、重複紀錄與補休餘額','data-health','檢查')}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">說明</span></summary><div class="v5-settings-content">${settingRow('授權、隱私與試算','資料保存方式、授權文字與試算範圍','open-legal','閱讀')}<p class="hint">v5.0.0-dev.2-R65 · 全介面開發版<br>v5 資料獨立保存。可手動匯入薪資備份，原版本的資料仍保留。</p><details class="v5-cleanup"><summary>清除這個版本的資料</summary><p class="hint">請先匯出備份；只清除目前 v5 完整版的資料。</p>${v5Button('清除本機資料','clear-data')}</details></div></details></div></div></section>`;
     };
     const renderV5Companies = () => `<div class="v5-breadcrumb"><button type="button" data-tab="settings">設定</button><span>／ 公司管理</span></div>${renderCompanies()}`;
     const openV5LeaveSettings = id => {
@@ -3106,7 +3106,6 @@
       enhanceVisualHierarchy($('#mainContent'));
       window.SalaryMateI18n.apply($('#mainContent'));
       window.SalaryMateI18n.apply($('.topbar'));
-      stocksUI.syncIndexVisibility();
       $$('.tab-btn').forEach((button) => {
         const active = button.dataset.tab === ({overtime:'calendar',hourly:'tax',companies:'settings'}[ui.tab] || ui.tab);
         button.classList.toggle('active', active);
@@ -5425,7 +5424,7 @@
       else if (event.target.id === 'payrollCycleForm') savePayrollCycleRule();
       if (event.target.id === 'companyBasicForm') saveCompanyBasicForm();
       if (event.target.id === 'investmentForm') {event.preventDefault();saveInvestment(event.target);}
-      if (['stockIndexConnectForm','stockForm','stockSearchForm','stockListForm','stockCatalogForm','stockImportForm','stockBatchForm'].includes(event.target.id)) {event.preventDefault();stocksUI.submit(event.target);}
+      if (['stockForm','stockSearchForm','stockListForm','stockCatalogForm','stockImportForm','stockBatchForm'].includes(event.target.id)) {event.preventDefault();stocksUI.submit(event.target);}
       if (event.target.id === 'overtimeForm') saveOvertimeForm();
       if (event.target.id === 'leaveForm') saveLeaveForm();
       if (event.target.id === 'yearEndForm') saveYearEndEstimate();
