@@ -58,7 +58,7 @@
   window.SalaryMateScrollbars=Object.freeze({refresh});schedule();
 })();
 
-// R69: continuous wing blending, shared route tangents and time-based damping.
+// R70: eight real viewing directions, continuous wing strokes and path-led turning.
 (() => {
   let active = null, loadedSheet = null;
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -70,8 +70,16 @@
     const u=(t-1+landing)/landing;
     return (1-landing-takeoff/2+landing*(u/2+Math.sin(Math.PI*u)/(2*Math.PI)))/area;
   };
-  // Eye-midpoint registrations in the unmodified 1254px, 3x3 generated sheet.
-  const anchors = [[236.15,256.6],[213.75,258.5],[196.7,257.35],[231.3,214.7],[208.9,214.5],[197.2,215.75],[236.7,201.55],[218.5,201.85],[196.85,201.45]];
+  const TAU = Math.PI * 2;
+  const angleDelta = (from, to) => Math.atan2(Math.sin(to-from), Math.cos(to-from));
+  // Atlas: 6 columns x 4 rows. Each three-frame group is up / level / down.
+  // Directions: front, front-right, right, back-right, back, back-left, left, front-left.
+  const anchors = [
+    [142,150],[125,152],[130,153], [151,156],[143,157],[144,160],
+    [179,129],[177,130],[174,132], [144,121],[145,122],[143,124],
+    [143,103],[128,107],[126,107], [105,108],[114,115],[107,119],
+    [107,113],[99,113],[96,114], [103,114],[92,118],[113,121]
+  ];
   const makeRoute = (points, bounds) => {
     const samples = [{...points[0], distance:0, segment:0, t:0}],segments=[];
     // One tangent is shared by both sides of each waypoint, avoiding sharp joins.
@@ -166,7 +174,7 @@
     const width = viewport?.width || window.innerWidth;
     const height = viewport?.height || window.innerHeight;
     const left = viewport?.offsetLeft || 0, top = viewport?.offsetTop || 0;
-    const size = Math.min(164, width * .36, height * .32);
+    const size = Math.min(172, width * .39, height * .34);
     if (size < 24) { greet(); return; }
     // Reserve room for rotation, the phone safe area, and the bottom menu.
     const radius = size * .55;
@@ -175,12 +183,15 @@
     const maxY = Math.max(minY, top + height - Math.min(100, height * .18) - radius);
     const homePoint = { x: home.left + home.width / 2, y: home.top + home.height / 2 };
     const homeScale = Math.min(1, home.width / (size * .64));
-    const points = [homePoint], clockwise = Math.random() > .5;
-    const quadrants = clockwise ? [[1,0],[1,1],[0,1],[0,0]] : [[0,1],[1,1],[1,0],[0,0]];
-    for (const [right, bottom] of quadrants) {
-      const x = minX + (maxX - minX) * (right * .5 + .08 + Math.random() * .34);
-      const y = minY + (maxY - minY) * (bottom * .5 + .08 + Math.random() * .34);
-      points.push({ x, y });
+    const center={x:(minX+maxX)/2,y:(minY+maxY)/2};
+    const rx=(maxX-minX)*(.40+Math.random()*.08),ry=(maxY-minY)*(.40+Math.random()*.08);
+    const startAngle=Math.atan2((homePoint.y-center.y)/(ry||1),(homePoint.x-center.x)/(rx||1));
+    const direction=Math.random()>.5?1:-1;
+    const points=[homePoint];
+    // A rounded full orbit naturally exposes both profiles and the back on each flight.
+    for(let i=0;i<=8;i++){
+      const angle=startAngle+direction*(i+.35)*TAU/8;
+      points.push({x:center.x+Math.cos(angle)*rx,y:center.y+Math.sin(angle)*ry});
     }
     points.push(homePoint);
     const route = makeRoute(points, {minX,maxX,minY,maxY});
@@ -195,12 +206,12 @@
     const frame = document.createElement('div');
     frame.className = 'jingyu-flight-sprite';
     const blended=window.CSS?.supports?.('mix-blend-mode','plus-lighter')===true;
-    const layers=Array.from({length:blended?2:1},()=>{
-      const wrapper=document.createElement('div'),image=document.createElement('img');
-      wrapper.className='jingyu-flight-pose';
+    const layers=Array.from({length:blended?4:1},()=>{
+      const wrapper=document.createElement('div'),crop=document.createElement('div'),image=document.createElement('img');
+      wrapper.className='jingyu-flight-pose';crop.className='jingyu-flight-cell';
       image.className='jingyu-flight-sheet';image.src=sheet.src;image.alt='';image.draggable=false;
-      wrapper.append(image);frame.append(wrapper);
-      return {wrapper,image,lastPose:-1};
+      crop.append(image);wrapper.append(crop);frame.append(wrapper);
+      return {wrapper,crop,image,lastPose:-1};
     });
     facing.append(frame);
     actor.append(facing);
@@ -209,45 +220,57 @@
     flight.layer = layer;
     button.classList.add('jingyu-away');
     button.setAttribute('aria-pressed', 'true');
-    const duration=clamp(route.length/300*1000+1400,8200,11000),started=window.performance.now();
-    let previous=started,phase=0,bank=0,yaw=0,pitch=0,glideBlend=0,holdPhase=null,mode='flap';
+    const duration=clamp(route.length/255*1000+1800,9800,15500),started=window.performance.now();
+    let previous=started,heading=0,bank=0,pitch=0,glideBlend=0;
     const pose = (layer,index,opacity) => {
       layer.wrapper.style.opacity=String(opacity);
       if(index===layer.lastPose)return;
       layer.lastPose=index;
-      const [eyeX,eyeY]=anchors[index];
-      layer.image.style.transform=`translate3d(${(-(index%3)*418+209-eyeX)/1254*100}%,${(-Math.floor(index/3)*418+209-eyeY)/1254*100}%,0)`;
+      const [anchorX,anchorY]=anchors[index];
+      // Clip the source cell before registration so offsets cannot expose a neighbor.
+      layer.crop.style.transform=`translate3d(${(.5-anchorX/256*.84)*100}%,${(.44-anchorY/256*.84)*100}%,0) scale(.84)`;
+      layer.image.style.transform=`translate3d(${-(index%6)/6*100}%,${-Math.floor(index/6)/4*100}%,0)`;
     };
     const tick = now => {
       if(active!==flight)return;
-      const elapsed=now-started,t=clamp(elapsed/duration,0,1),dt=clamp(now-previous,0,50);
+      const elapsed=now-started,t=clamp(elapsed/duration,0,1),dt=clamp(now-previous,0,80);
       previous=now;
       if(t>=1){finish();return;}
-      const progress=travelProgress(t),point=route.at(progress),ahead=route.at(Math.min(1,progress+.008));
-      const speed=Math.hypot(point.dx,point.dy)||1;
-      const nextMode=t>.88?'landing':((t>.27&&t<.42)||(t>.60&&t<.74))?'glide':'flap';
-      if(nextMode!==mode){mode=nextMode;const hold=mode==='landing'?.5:mode==='glide'?.25:null;holdPhase=hold===null?null:Math.ceil(phase-hold-1e-8)+hold;}
-      // Finish the current stroke before gliding or folding the wings to land.
-      if(glideBlend<.015||mode==='glide'){
-        const next=phase+dt/(t<.16||t>.8?460:640);
-        phase=holdPhase===null?next:Math.min(next,holdPhase);
-      }
-      const held=holdPhase!==null&&Math.abs(phase-holdPhase)<1e-7;
-      glideBlend+=((mode==='glide'&&held?1:0)-glideBlend)*(1-Math.exp(-dt/110));
-      const cycle=phase*8,index=Math.floor(cycle)%8,weight=smooth(cycle-Math.floor(cycle));
-      const from=glideBlend>.015?2:index,to=glideBlend>.015?8:(index+1)%8,mix=glideBlend>.015?glideBlend:weight;
-      if(blended){pose(layers[0],from,1-mix);pose(layers[1],to,mix);}else pose(layers[0],mix>.5?to:from,1);
+      const progress=travelProgress(t),point=route.at(progress);
+      const ahead=route.at(Math.min(1,progress+Math.min(.018,22/(route.length||1))));
+      const speed=Math.hypot(point.dx,point.dy);
+      const landing=smooth(clamp((t-.90)/.10,0,1));
+      let targetHeading=speed>.001?Math.atan2(point.dx,point.dy):heading;
+      targetHeading+=angleDelta(targetHeading,0)*landing;
+      // Wrapped angular damping crosses 359→0 smoothly and never flips a flat front image.
+      const headingStep=angleDelta(heading,targetHeading)*(1-Math.exp(-dt/105));
+      heading+=clamp(headingStep,-dt*.0042,dt*.0042);
+      const directionPosition=((heading/TAU*8)%8+8)%8;
+      const fromDirection=Math.floor(directionPosition),toDirection=(fromDirection+1)%8;
+      const directionMix=smooth(directionPosition-fromDirection);
+      const gliding=(t>.24&&t<.38)||(t>.59&&t<.73);
+      glideBlend+=((gliding?1:0)-glideBlend)*(1-Math.exp(-dt/155));
+      // Absolute elapsed time keeps wing phase consistent across refresh rates.
+      const phase=elapsed/620;
+      const stroke=1-Math.cos(phase*TAU)*(1-glideBlend);
+      const fromWing=Math.min(1,Math.floor(stroke)),toWing=fromWing+1,wingMix=stroke-fromWing;
+      if(blended){
+        pose(layers[0],fromDirection*3+fromWing,(1-directionMix)*(1-wingMix));
+        pose(layers[1],fromDirection*3+toWing,(1-directionMix)*wingMix);
+        pose(layers[2],toDirection*3+fromWing,directionMix*(1-wingMix));
+        pose(layers[3],toDirection*3+toWing,directionMix*wingMix);
+      }else pose(layers[0],(directionMix>.5?toDirection:fromDirection)*3+(wingMix>.5?toWing:fromWing),1);
       const turn=Math.atan2(point.dx*ahead.dy-point.dy*ahead.dx,point.dx*ahead.dx+point.dy*ahead.dy);
       const settling=1-smooth(clamp((t-.86)/.14,0,1));
-      const targetBank=clamp(point.dx/speed*5+turn*180/Math.PI*1.5,-14,14)*settling;
-      bank+=(targetBank-bank)*(1-Math.exp(-dt/125));
-      yaw+=(point.dx/speed*14*settling-yaw)*(1-Math.exp(-dt/180));
-      pitch+=(-point.dy/speed*5*settling-pitch)*(1-Math.exp(-dt/180));
-      facing.style.transform=`perspective(520px) rotateY(${yaw.toFixed(2)}deg) rotateX(${pitch.toFixed(2)}deg)`;
+      const targetBank=clamp(turn*180/Math.PI*2+(point.dx/(speed||1))*4,-17,17)*settling;
+      bank+=(targetBank-bank)*(1-Math.exp(-dt/145));
+      pitch+=(-point.dy/(speed||1)*5*settling-pitch)*(1-Math.exp(-dt/180));
+      facing.style.transform=`perspective(520px) rotateX(${pitch.toFixed(2)}deg)`;
       const lift=smooth(clamp(Math.min(t/.12,(1-t)/.16),0,1));
-      const scale=homeScale+(1-homeScale)*lift;
-      const bob=Math.sin(phase*Math.PI*2)*1.0*lift*(1-glideBlend);
-      const edge=size*scale*.56;
+      const depth=1-.10*(1-Math.cos(heading))/2;
+      const scale=homeScale+(depth-homeScale)*lift;
+      const bob=Math.sin(phase*TAU)*.7*lift*(1-glideBlend);
+      const edge=size*scale*.60;
       const x=clamp(point.x,left+edge,left+width-edge);
       const y=clamp(point.y+bob,top+edge,top+height-edge);
       actor.style.transform=`translate3d(${(x-size/2).toFixed(2)}px,${(y-size/2).toFixed(2)}px,0) rotate(${bank.toFixed(2)}deg) scale(${scale.toFixed(4)})`;
@@ -259,7 +282,7 @@
     flight.timer=window.setTimeout(finish,duration+350);
     };
     const source=button.dataset.flightSrc;
-    if(!source || !(source==='./art/jingyu-flight-r68.png'||source.startsWith('data:image/png;base64,'))){greet();return;}
+    if(!source || !(source==='./art/jingyu-flight-r70.png'||source.startsWith('data:image/png;base64,'))){greet();return;}
     if(loadedSheet?.source===source){begin(loadedSheet.image);return;}
     button.classList.add('jingyu-greeting');
     const image=new window.Image();

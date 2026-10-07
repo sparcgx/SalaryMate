@@ -28,7 +28,7 @@ for(const match of scripts){
     if(!source.includes(marker))throw new Error('Missing HD-2D companion asset declaration');
     const bytes=await readFile(path.join(base,companionPath));
     source=source.replace(marker,()=>"const HD2D_COMPANION_SRC = 'data:image/webp;base64,"+bytes.toString('base64')+"';");
-    const flightPath='./art/jingyu-flight-r68.png';
+    const flightPath='./art/jingyu-flight-r70.png';
     const flightMarker="const HD2D_FLIGHT_SRC = '"+flightPath+"';";
     if(!source.includes(flightMarker))throw new Error('Missing HD-2D flight asset declaration');
     const flightBytes=await readFile(path.join(base,flightPath));

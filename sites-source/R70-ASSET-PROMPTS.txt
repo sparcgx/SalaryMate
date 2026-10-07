@@ -1,0 +1,74 @@
+R70 Jingyu 360-degree flight atlas — asset provenance
+
+Generation tool: built-in image_gen.imagegen (no fallback CLI)
+Image operations performed after generation: filesystem copies only; no artwork manipulation.
+
+Identity/style reference:
+  /workspace/scratch/ffb98c0ef4a0/salarymate-site/dist/dev/v5.0.0-dev.2/art/jingyu-hd2d-r62.webp
+
+Initial generated original:
+  /workspace/scratch/e232537d5955/generated_images/exec-0ac09e2c-7a8c-4072-9303-291339645131.png
+Initial workspace copy:
+  /workspace/scratch/e232537d5955/generated_assets/jingyu-flight-360-atlas.png
+Initial dimensions: 1536 x 1024 pixels, RGBA
+Initial alpha range: 0–254
+Initial transparent_background argument: true
+
+Corrective edit input:
+  /workspace/scratch/e232537d5955/generated_assets/jingyu-flight-360-atlas.png
+Corrective generated original:
+  /workspace/scratch/e232537d5955/generated_images/exec-f6e54182-84e8-4bdb-ad07-b15df083260b.png
+Final corrected workspace copy:
+  /workspace/scratch/e232537d5955/generated_assets/jingyu-flight-360-atlas-padded.png
+Final dimensions: 1536 x 1024 pixels, RGBA
+Final alpha range: 0–254
+Final fully transparent pixel fraction: 0.7156391143798828
+Corrective transparent_background argument: true
+
+Layout: 6 columns x 4 rows, 24 sprites, invisible 256 x 256 cells.
+Each group of three cells: wings up / level / down.
+Row 1: front (columns 1–3), front-right (columns 4–6).
+Row 2: right profile (columns 1–3), back-right (columns 4–6).
+Row 3: full rear (columns 1–3), back-left (columns 4–6).
+Row 4: left profile (columns 1–3), front-left (columns 4–6).
+
+Inspection note: final directions and wing phases are preserved. All artwork fits inside its assigned cell. Cell-edge alpha is at most 1. Visible artwork at alpha > 32 has at least 21 px clearance. Requested exact 39 px padding and exact head registration were not achieved; runtime offsets may be required.
+
+INITIAL PROMPT (EXACT)
+======================
+Use case: stylized-concept.
+Asset type: production transparent game sprite atlas for SalaryMate's owl Jingyu.
+Input image 1 is an IDENTITY AND HD-2D STYLE REFERENCE only, not a pose reference. Rebuild its actual three-dimensional character from every required angle.
+Create ONE landscape RGBA sprite sheet, 1536×1024 pixels, with exactly 6 equal columns and 4 equal rows: 24 separate sprites, each centered in its own invisible 256×256 cell. Absolutely transparent empty background. No grid or labels.
+CHARACTER: the SAME chibi cream-ivory owl as reference, identical ear tufts, head/body proportions, huge turquoise eyes, gold beak, ivory feathers with warm gold edge light, rich navy cape trimmed with gold and gold stars, turquoise clasp gem, attached small navy/gold book secured to its torso. HD-2D fantasy RPG pixel sprite rendering with crisp fine pixel edges, luxurious feather detail, soft volumetric shading. Keep all visible identity details faithful.
+ACTION: fully airborne flight, feet tucked. In each group of 3 cells show successive coherent wing-flap phases: first wings UP, second wings LEVEL extended in a glide, third wings DOWN. The head and body are centered and identically registered and sized; only wings and slight cape flutter change. Wings attached anatomically, full silhouette uncut, at least 15 percent empty transparent margin on every side of EVERY CELL. No overlapping cells. Sprite head/body size remains identical throughout the sheet, including all directions.
+EXACT ROW AND COLUMN CONTENT, read left to right:
+ROW 1, columns 1–3: STRAIGHT FRONT, 0 degrees, flying toward viewer, symmetrical face with two eyes. Wings up / level / down.
+ROW 1, columns 4–6: FRONT-RIGHT THREE-QUARTER, 45 degrees, head and entire torso rotate toward screen right. Wings up / level / down.
+ROW 2, columns 1–3: STRICT RIGHT PROFILE, 90 degrees, flying toward SCREEN RIGHT; just ONE visible eye, gold beak pointing horizontally right; true side silhouette of head and torso. Wings up / level / down.
+ROW 2, columns 4–6: BACK-RIGHT THREE-QUARTER, 135 degrees, flying AWAY toward screen right; back of head and rear cape dominate, face turned away. Wings up / level / down.
+ROW 3, columns 1–3: FULL REAR, 180 degrees, flying straight AWAY from viewer; ONLY BACK OF IVORY HEAD, back of ears, and broad NAVY/GOLD STAR CAPE. ZERO eyes, ZERO beak, ZERO chest gem, ZERO frontal chest. Wings up / level / down.
+ROW 3, columns 4–6: BACK-LEFT THREE-QUARTER, 225 degrees, flying AWAY toward screen left; back of head and rear cape dominate, face turned away. Wings up / level / down.
+ROW 4, columns 1–3: STRICT LEFT PROFILE, 270 degrees, flying toward SCREEN LEFT; just ONE visible eye, gold beak pointing horizontally left; true side silhouette of head and torso. Wings up / level / down.
+ROW 4, columns 4–6: FRONT-LEFT THREE-QUARTER, 315 degrees, head and entire torso rotate toward screen left. Wings up / level / down.
+CRITICAL: this must be a genuine complete 360-degree turnaround. The rear views must be backs, and the side views must be true profiles. Never substitute reflected or tilted frontal poses. The book stays anatomically attached on the same side as the reference and is naturally occluded at appropriate angles. Exactly 24 cells, 6 columns by 4 rows, not 4 columns by 6 rows. No scene, floor, cast shadows, effects, arrows, captions, text, watermarks or UI.
+
+CORRECTIVE PROMPT (EXACT)
+=========================
+Use case: precise-object-edit.
+Asset type: transparent 24-frame game sprite atlas.
+Input image 1 is the EDIT TARGET. Make only one correction: independently reduce and precisely reposition each of its 24 owl sprites into a clean regular sprite grid. Preserve the existing character art, pixel detail, direction, body orientation, colors, costume and wing-flap pose of EVERY frame.
+OUTPUT: exactly 1536×1024 RGBA pixels, truly transparent background, a 6-column by 4-row grid of invisible equal 256×256 cells. No visible grid.
+CRITICAL EDIT: shrink EACH OWL INDIVIDUALLY to 60% of its current size, including its wings, cape and book. Do NOT shrink the atlas as a whole. Do NOT leave the 24 sprites clustered centrally. Each reduced sprite remains inside its ORIGINAL assigned cell in the same row and column.
+Place the center of every owl's HEAD at precisely cell-local x=128px, y=113px (50% width, 44% height). Match head/body scale and registration consistently across all frames. All wing extremities and every visible opaque pixel must remain at least 39px from ALL FOUR edges of its 256px cell, so neighboring frames have at least 78px empty transparent space between them. Keep each owl small, with generous empty transparent padding around it. No silhouette may overlap a cell boundary.
+KEEP THIS EXACT CONTENT AND ORDER:
+Row 1 cells 1–3: straight FRONT; wings up, level, down.
+Row 1 cells 4–6: FRONT-RIGHT 45-degree three-quarter; wings up, level, down.
+Row 2 cells 1–3: strict RIGHT PROFILE, one eye, beak toward screen right; wings up, level, down.
+Row 2 cells 4–6: BACK-RIGHT 135-degree three-quarter, flying away right; wings up, level, down.
+Row 3 cells 1–3: FULL REAR, only back of head and navy/gold cape, absolutely no eyes, beak or front chest; wings up, level, down.
+Row 3 cells 4–6: BACK-LEFT 225-degree three-quarter, flying away left; wings up, level, down.
+Row 4 cells 1–3: strict LEFT PROFILE, one eye, beak toward screen left; wings up, level, down.
+Row 4 cells 4–6: FRONT-LEFT 315-degree three-quarter; wings up, level, down.
+Preserve actual rear/profile rotations, identity, ivory feathers and ears, turquoise eyes and gem, gold beak, navy cape with gold trim/stars, attached book, tucked airborne feet, HD-2D fantasy sprite rendering. Do not redraw rear views as front views. No new poses, no extra frames, no labels, no effects, no shadows, no scenery, no opaque or translucent colored background. The spaces around the 24 small sprites are completely transparent alpha=0.
+
