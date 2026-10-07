@@ -180,3 +180,88 @@
  }
  root.SalaryMateStockServices={marketInfo,catalog:(query,signal)=>request('/api/stocks/catalog',{query},signal),forecasts:(market,symbol,year,signal)=>request('/api/stocks/dividends',{market,symbol,year,forecast:true},signal),forecastCache,dividendPeriod,dividends:(market,symbol,year,signal)=>request('/api/stocks/dividends',{market,symbol,year},signal),parseSmart,prepareSmart,fetchQuotes,fetchIntraday:assets=>fetchQuotes(assets.filter(a=>a.market==='TW'),'/api/stocks/nav'),applyIntraday,applyQuotes,lookup:(market,symbol,signal)=>request('/api/stocks/lookup',{market,symbol},signal)};
 })(globalThis);
+
+// R66: personal real-time index connection. Secrets and chart data stay in memory.
+(function(root){
+ 'use strict';
+ const API='https://api.fugle.tw/marketdata/v1.0/stock/',WS='wss://api.fugle.tw/marketdata/v1.0/stock/streaming';
+ const positive=n=>typeof n==='number'&&Number.isFinite(n)&&n>0;
+ const day=at=>new Date(at+28800000).toISOString().slice(0,10);
+ const stamp=value=>{const n=typeof value==='number'?(value>1e14?value/1000:value>1e11?value:value*1000):Date.parse(value);return Number.isFinite(n)&&n>=946684800000&&n<=Date.now()+60000?n:null;};
+ root.SalaryMateIndices={create(onUpdate=()=>{},env=root){
+  let key='',socket=null,active=false,generation=0,retry=0,retryTimer=null,watchdog=null,notifyTimer=null,lastMessage=0;
+  const controllers=new Set();
+  const s={status:'disconnected',symbol:'IX0001',name:'加權指數',catalog:[{symbol:'IX0001',name:'加權指數'}],value:null,previous:null,at:null,date:'',points:[],closed:false,partial:false};
+  const snapshot=()=>({...s,points:s.points.map(p=>({...p})),catalog:s.catalog.map(p=>({...p})),hasKey:!!key,change:positive(s.previous)&&positive(s.value)?s.value-s.previous:null,percent:positive(s.previous)&&positive(s.value)?(s.value/s.previous-1)*100:null,stale:!!s.at&&!s.closed&&Date.now()-s.at>90000});
+  const emit=()=>{if(notifyTimer)return;notifyTimer=env.setTimeout(()=>{notifyTimer=null;onUpdate(snapshot());},250);};
+  function cancel(){generation++;env.clearTimeout(retryTimer);retryTimer=null;env.clearTimeout(watchdog);watchdog=null;for(const c of controllers)c.abort();controllers.clear();if(socket){const old=socket;socket=null;old.onopen=old.onmessage=old.onclose=old.onerror=null;old.close();}}
+  function fail(status){cancel();s.status=status;emit();}
+  function points(rows){
+   const valid=rows.filter(p=>p.at&&positive(p.value));if(!valid.length)return;
+   const latest=Math.max(...valid.map(p=>p.at));const date=day(latest);
+   if(s.date&&date<s.date)return;
+   if(date>s.date){s.date=date;s.points=[];if(s.at&&day(s.at)!==date){s.value=s.at=s.previous=null;s.closed=false;}}
+   const map=new Map(s.points.map(p=>[Math.floor(p.at/60000),p]));
+   for(const p of valid)if(day(p.at)===s.date){const k=Math.floor(p.at/60000);if(!map.has(k)||map.get(k).at<=p.at)map.set(k,p);}
+   s.points=[...map.values()].sort((a,b)=>a.at-b.at).slice(-600);
+  }
+  function tick(value,at){if(!positive(value)||!at||(s.at&&at<s.at))return false;points([{at,value}]);s.value=value;s.at=at;emit();return true;}
+  async function request(path,token){
+   const controller=new env.AbortController();controllers.add(controller);
+   const timer=env.setTimeout(()=>controller.abort(),12000);
+   try{const r=await env.fetch(API+path,{headers:{'X-API-KEY':key},credentials:'omit',redirect:'error',cache:'no-store',signal:controller.signal});
+    if(token!==generation)throw Error('cancelled');
+    if(r.status===401||r.status===403){const e=Error('auth');e.auth=true;throw e;}
+    if(!r.ok)throw Error('unavailable');return await r.json();
+   }finally{env.clearTimeout(timer);controllers.delete(controller);}
+  }
+  async function seed(token){
+   const symbol=s.symbol;
+   const tasks=[request('intraday/quote/'+encodeURIComponent(symbol),token),request('intraday/candles/'+encodeURIComponent(symbol)+'?timeframe=1&sort=asc',token)];
+   const catalogNeeded=s.catalog.length===1;
+   if(catalogNeeded)for(const exchange of ['TWSE','TPEx'])tasks.push(request('intraday/tickers?type=INDEX&exchange='+exchange,token));
+   const results=await Promise.allSettled(tasks);if(token!==generation)return;
+   if(results[0].status==='rejected'&&results[0].reason?.auth){fail('auth-error');return;}
+   s.partial=results.slice(0,2).some(r=>r.status==='rejected');
+   const q=results[0].status==='fulfilled'?results[0].value:null;
+   if(q?.symbol===symbol&&q.type==='INDEX'){
+    const at=stamp(q.lastUpdated??q.closeTime??q.total?.time),value=q.closePrice??q.index;
+    if(at&&(!s.at||at>=s.at)){tick(value,at);s.closed=q.isClose===true;}
+    if(at&&s.date===day(at))s.previous=positive(q.previousClose)?q.previousClose:positive(q.referencePrice)?q.referencePrice:null;
+   }
+   const c=results[1].status==='fulfilled'?results[1].value:null;
+   if(c?.symbol===symbol&&c.type==='INDEX'&&Array.isArray(c.data)){
+    const rows=c.data.slice(0,1000).map(p=>({at:stamp(p.date),value:p.close}));points(rows);
+    const last=s.points.at(-1);if(!s.at&&last)tick(last.value,last.at);
+   }
+   const catalog=new Map(s.catalog.map(p=>[p.symbol,p]));
+   for(const r of results.slice(2))if(r.status==='fulfilled'&&r.value?.type==='INDEX'&&Array.isArray(r.value.data))for(const p of r.value.data.slice(0,500))if(/^[A-Z0-9_.-]{1,24}$/.test(p.symbol)&&typeof p.name==='string')catalog.set(p.symbol,{symbol:p.symbol,name:p.name.slice(0,80)});
+   s.catalog=[...catalog.values()];s.name=catalog.get(s.symbol)?.name||s.name;emit();
+  }
+  function reconnect(){
+   cancel();if(!key||!active)return;
+   s.status='reconnecting';emit();
+   if(retry>=5){s.status='error';emit();return;}
+   retryTimer=env.setTimeout(()=>{retryTimer=null;start();},Math.min(30000,2000*2**retry++));
+  }
+  function guard(token){watchdog=env.setTimeout(()=>{watchdog=null;if(token!==generation)return;if(Date.now()-lastMessage>70000){reconnect();return;}emit();guard(token);},30000);}
+  function start(){
+   if(!key||!active||socket)return;
+   cancel();const token=generation;s.status='connecting';s.partial=false;emit();lastMessage=Date.now();
+   try{socket=new env.WebSocket(WS);}catch{reconnect();return;}
+   const current=socket;
+   current.onopen=()=>{if(token===generation)current.send(JSON.stringify({event:'auth',data:{apikey:key}}));};
+   current.onmessage=event=>{
+    if(token!==generation||typeof event.data!=='string'||event.data.length>262144)return;
+    let m;try{m=JSON.parse(event.data);}catch{return;}lastMessage=Date.now();
+    if(m.event==='authenticated'){
+     s.status='connected';retry=0;current.send(JSON.stringify({event:'subscribe',data:{channel:'indices',symbol:s.symbol}}));void seed(token);emit();
+    }else if(m.event==='data'&&m.channel==='indices'&&m.data?.symbol===s.symbol&&m.data.type==='INDEX'){
+     const at=stamp(m.data.time),newer=at&&(!s.at||at>s.at);if(tick(m.data.index,at)&&newer)s.closed=false;
+    }else if(m.event==='error'){fail(s.status==='connecting'?'auth-error':'error');}
+   };
+   current.onclose=()=>{if(token===generation)reconnect();};current.onerror=()=>{if(token===generation)reconnect();};guard(token);
+  }
+  return {snapshot,connect(value){if(typeof value!=='string'||!value.trim()||value.trim().length>1024||/[\r\n]/.test(value))return false;cancel();key=value.trim();retry=0;start();return true;},disconnect(){cancel();key='';s.status='disconnected';emit();},setActive(value){value=!!value;if(value===active)return;active=value;if(active){retry=0;start();}else{cancel();s.status=key?'paused':'disconnected';emit();}},select(symbol){const row=s.catalog.find(x=>x.symbol===symbol);if(!row||symbol===s.symbol)return;cancel();Object.assign(s,{symbol,name:row.name,value:null,previous:null,at:null,date:'',points:[],closed:false,partial:false});retry=0;start();emit();},retry(){retry=0;cancel();start();},};
+ }};
+})(globalThis);

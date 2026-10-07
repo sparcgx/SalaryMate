@@ -1,8 +1,8 @@
-const CACHE='salarymate-v5-full-5.0.0-dev.2-R65';
+const CACHE='salarymate-v5-full-5.0.0-dev.2-R66';
 const BASE=new URL('./',self.location.href);
-const LOCALES=['./i18n-en.js?v=5.0.0-dev.2-R65','./i18n.js?v=5.0.0-dev.2-R65'];
-const STOCKS=['./google-drive.js?v=5.0.0-dev.2-R65','./google-drive-ui.js?v=5.0.0-dev.2-R65','./backup.js?v=5.0.0-dev.2-R65','./stocks.js?v=5.0.0-dev.2-R65','./stocks-integrations.js?v=5.0.0-dev.2-R65','./stocks-ui.js?v=5.0.0-dev.2-R65'];
-const SHELL=['./','./index.html','./styles.css?v=5.0.0-dev.2-R65','./bootstrap.js?v=5.0.0-dev.2-R65','./app.js?v=5.0.0-dev.2-R65','./reconcile.js?v=5.0.0-dev.2-R65','./copy-month.js?v=5.0.0-dev.2-R65','./comp-time.js?v=5.0.0-dev.2-R65','./annual-analysis.js?v=5.0.0-dev.2-R65','./legal-data.js?v=5.0.0-dev.2-R65','./legal.html','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./art/jingyu-hd2d-r62.webp'];
+const LOCALES=['./i18n-en.js?v=5.0.0-dev.2-R66','./i18n.js?v=5.0.0-dev.2-R66'];
+const STOCKS=['./google-drive.js?v=5.0.0-dev.2-R66','./google-drive-ui.js?v=5.0.0-dev.2-R66','./backup.js?v=5.0.0-dev.2-R66','./stocks.js?v=5.0.0-dev.2-R66','./stocks-integrations.js?v=5.0.0-dev.2-R66','./stocks-ui.js?v=5.0.0-dev.2-R66'];
+const SHELL=['./','./index.html','./styles.css?v=5.0.0-dev.2-R66','./bootstrap.js?v=5.0.0-dev.2-R66','./app.js?v=5.0.0-dev.2-R66','./reconcile.js?v=5.0.0-dev.2-R66','./copy-month.js?v=5.0.0-dev.2-R66','./comp-time.js?v=5.0.0-dev.2-R66','./annual-analysis.js?v=5.0.0-dev.2-R66','./legal-data.js?v=5.0.0-dev.2-R66','./legal.html','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./art/jingyu-hd2d-r62.webp'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll([...SHELL,...STOCKS,...LOCALES])).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('salarymate-v5-full-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{const url=new URL(e.request.url);if(e.request.method!=='GET'||url.origin!==BASE.origin||!url.pathname.startsWith(BASE.pathname))return;e.respondWith(fetch(e.request).then(r=>{if(r.ok){const copy=r.clone();e.waitUntil(caches.open(CACHE).then(c=>c.put(e.request,copy)));}return r;}).catch(()=>caches.match(e.request).then(c=>c||(e.request.mode==='navigate'?caches.match(new URL('index.html',BASE).href):Response.error()))));});
