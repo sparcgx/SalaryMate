@@ -2557,5 +2557,15 @@ globalThis.SalaryMateEnglish={
   "年損益 · 持股累計至今": "gains/losses · holdings to date",
   "晶羽：點一下飛行，再點停止": "Jingyu: tap to fly, tap again to stop",
   "點一下，晶羽陪你飛一圈": "Tap to send Jingyu on a short flight",
-  "晶羽向你打招呼": "Jingyu says hello"
+  "晶羽向你打招呼": "Jingyu says hello",
+  "手繪粗框、貼紙按鈕與印章標籤": "Bold ink frames, sticker buttons and stamped tags",
+  "香檳浮雕、陶瓷欄位與圓潤按鈕": "Champagne relief, ceramic fields and rounded buttons",
+  "銀紫晶框、星霧表頭與微光欄位": "Silver-violet frames, misted headers and softly lit fields",
+  "紙頁對話框、虛線欄位與彩鉛索引": "Paper dialogs, dashed fields and pencil tabs",
+  "藍圖表頭、刻度邊線與俐落折角": "Blueprint headers, drafting rails and angled corners",
+  "粉彩緞邊、糖霜欄位與夾心按鈕": "Pastel ribbons, frosted fields and layered candy buttons",
+  "晶羽夥伴、藍金對話框與嵌金欄位": "Jingyu companion, blue-gold dialogs and gold-inlaid fields",
+  "透亮邊線、磨砂卡片與內凹欄位": "Clear edges, frosted cards and inset fields",
+  "文件卡片、整齊表頭與清晰層次": "Document cards, tidy headers and clear hierarchy",
+  "石墨面板、霧銀邊線與深色內凹欄位": "Graphite panels, satin-silver edges and dark inset fields"
 };

@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0-dev.2-R80';
+    const APP_VERSION = '5.0.0-dev.2-R81';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -75,16 +75,16 @@
       slate: { name: '石墨灰', color: '#475569', accent: '#64748b', themeColor: '#475569' }
     });
     const INTERFACE_STYLES = Object.freeze({
-      doodle: { name: '繽紛手繪', note: '彩色印章、手繪粗框與跳色標籤', reference: true },
-      cream: { name: '奶油暖陽', note: '圓潤浮雕、香檳細邊與暖杏圓角', reference: true },
-      dusk: { name: '晚霧星紫', note: '銀紫星軌、極光光暈與夜色晶框', reference: true },
-      pencil: { name: '彩鉛日常', note: '紙張層疊、彩鉛索引與筆記格線', reference: true },
-      studio: { name: '清爽工作室', note: '藍圖格線、俐落折角與金色刻度', reference: true },
-      'macaron-luxe': { name: '馬卡龍糖果・華麗版', note: '珍珠糖霜、粉彩緞邊與夾心按鈕', baseStyle: 'macaron', ornate: true },
-      'pixel-luxe': { name: '奇幻 HD-2D・華麗版', note: '晶羽夥伴、藍金角框與水晶光暈', baseStyle: 'pixel', ornate: true },
-      glass: { name: '動態霧面玻璃', note: '半透明面板，背景柔和流動' },
-      cards: { name: '經典卡片', note: '灰底白卡，區塊層次更明確' },
-      dark: { name: '深色', note: '深色底與柔和文字，適合低光環境' }
+      doodle: { name: '繽紛手繪', note: '手繪粗框、貼紙按鈕與印章標籤', reference: true },
+      cream: { name: '奶油暖陽', note: '香檳浮雕、陶瓷欄位與圓潤按鈕', reference: true },
+      dusk: { name: '晚霧星紫', note: '銀紫晶框、星霧表頭與微光欄位', reference: true },
+      pencil: { name: '彩鉛日常', note: '紙頁對話框、虛線欄位與彩鉛索引', reference: true },
+      studio: { name: '清爽工作室', note: '藍圖表頭、刻度邊線與俐落折角', reference: true },
+      'macaron-luxe': { name: '馬卡龍糖果・華麗版', note: '粉彩緞邊、糖霜欄位與夾心按鈕', baseStyle: 'macaron', ornate: true },
+      'pixel-luxe': { name: '奇幻 HD-2D・華麗版', note: '晶羽夥伴、藍金對話框與嵌金欄位', baseStyle: 'pixel', ornate: true },
+      glass: { name: '動態霧面玻璃', note: '透亮邊線、磨砂卡片與內凹欄位' },
+      cards: { name: '經典卡片', note: '文件卡片、整齊表頭與清晰層次' },
+      dark: { name: '深色', note: '石墨面板、霧銀邊線與深色內凹欄位' }
     });
     const HD2D_BACKGROUNDS = Object.freeze({
       canyon: { name: '奇幻峽谷', note: '群山、瀑布與古老城鎮' },
@@ -3044,7 +3044,7 @@
     const renderV5Settings = () => {
       const c=currentCompany();
       const settingRow=(title,detail,action,label='開啟',extra='')=>`<div class="v5-setting-row"><div><h3>${title}</h3><p>${detail}</p></div>${v5Button(label,action,extra)}</div>`;
-      return `<section class="view">${v5Title('設定')}<div class="v5-settings-columns"><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">工作與公司</span></summary><div class="v5-settings-content">${settingRow('公司管理',c?`${userHtml(c.name)} · 共 ${state.companies.length} 家公司`:'建立任職公司與薪資基礎','manage-companies')}${settingRow('薪資規則','本薪、津貼、扣項與計薪區間','company-salary-rules','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}${settingRow('特休與假別','到職日、假別額度與每日標準工時','v5-leave-settings','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">顯示與操作</span></summary><div class="v5-settings-content"><label class="v5-language-setting"><span>介面語言</span><select class="field-select" data-language-preference><option value="auto">跟隨系統</option><option value="zh">繁體中文</option><option value="en">English</option></select></label>${settingRow('版面設定',escapeHtml(INTERFACE_STYLES[normalizeInterfaceStyle(ui.interfaceStyle)].name)+' · 介面風格、文字與密度、重點色','open-interface-settings','調整')}</div></details></div><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">資料管理</span></summary><div class="v5-settings-content">${settingRow('備份全部資料','一般 JSON 或密碼加密備份，包含薪資與全部投資資料','export-json','下載')}${settingRow('匯入備份','一般、加密或 SmartPortfolio 備份；可選覆蓋或新增','restore-backup-file','選擇檔案')}${settingRow('自己的 Google Drive','<span data-google-summary>'+escapeHtml(window.SalaryMateCloud?.summary()||'儲存至自己的 Google Drive，可選密碼加密')+'</span>','open-google-drive','開啟')}${settingRow('匯出報表','薪資、請假及出勤分析 CSV','v5-export-options','選擇報表')}${settingRow('資料檢查','檢查公司關聯、重複紀錄與補休餘額','data-health','檢查')}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">說明</span></summary><div class="v5-settings-content">${settingRow('授權、隱私與試算','資料保存方式、授權文字與試算範圍','open-legal','閱讀')}<p class="hint">v5.0.0-dev.2-R80 · 全介面開發版<br>v5 資料獨立保存。可手動匯入薪資備份，原版本的資料仍保留。</p><details class="v5-cleanup"><summary>清除這個版本的資料</summary><p class="hint">請先匯出備份；只清除目前 v5 完整版的資料。</p>${v5Button('清除本機資料','clear-data')}</details></div></details></div></div></section>`;
+      return `<section class="view">${v5Title('設定')}<div class="v5-settings-columns"><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">工作與公司</span></summary><div class="v5-settings-content">${settingRow('公司管理',c?`${userHtml(c.name)} · 共 ${state.companies.length} 家公司`:'建立任職公司與薪資基礎','manage-companies')}${settingRow('薪資規則','本薪、津貼、扣項與計薪區間','company-salary-rules','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}${settingRow('特休與假別','到職日、假別額度與每日標準工時','v5-leave-settings','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">顯示與操作</span></summary><div class="v5-settings-content"><label class="v5-language-setting"><span>介面語言</span><select class="field-select" data-language-preference><option value="auto">跟隨系統</option><option value="zh">繁體中文</option><option value="en">English</option></select></label>${settingRow('版面設定',escapeHtml(INTERFACE_STYLES[normalizeInterfaceStyle(ui.interfaceStyle)].name)+' · 介面風格、文字與密度、重點色','open-interface-settings','調整')}</div></details></div><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">資料管理</span></summary><div class="v5-settings-content">${settingRow('備份全部資料','一般 JSON 或密碼加密備份，包含薪資與全部投資資料','export-json','下載')}${settingRow('匯入備份','一般、加密或 SmartPortfolio 備份；可選覆蓋或新增','restore-backup-file','選擇檔案')}${settingRow('自己的 Google Drive','<span data-google-summary>'+escapeHtml(window.SalaryMateCloud?.summary()||'儲存至自己的 Google Drive，可選密碼加密')+'</span>','open-google-drive','開啟')}${settingRow('匯出報表','薪資、請假及出勤分析 CSV','v5-export-options','選擇報表')}${settingRow('資料檢查','檢查公司關聯、重複紀錄與補休餘額','data-health','檢查')}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">說明</span></summary><div class="v5-settings-content">${settingRow('授權、隱私與試算','資料保存方式、授權文字與試算範圍','open-legal','閱讀')}<p class="hint">v5.0.0-dev.2-R81 · 全介面開發版<br>v5 資料獨立保存。可手動匯入薪資備份，原版本的資料仍保留。</p><details class="v5-cleanup"><summary>清除這個版本的資料</summary><p class="hint">請先匯出備份；只清除目前 v5 完整版的資料。</p>${v5Button('清除本機資料','clear-data')}</details></div></details></div></div></section>`;
     };
     const renderV5Companies = () => `<div class="v5-breadcrumb"><button type="button" data-tab="settings">設定</button><span>／ 公司管理</span></div>${renderCompanies()}`;
     const openV5LeaveSettings = id => {

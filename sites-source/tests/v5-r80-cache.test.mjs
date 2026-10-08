@@ -7,9 +7,10 @@ import vm from 'node:vm';
 const base=new URL('../dist/dev/v5.0.0-dev.2/',import.meta.url);
 const source=fs.readFileSync(new URL('sw.js',base),'utf8');
 const origin='https://salarymate.test/dev/v5.0.0-dev.2/';
-const current='salarymate-v5-full-5.0.0-dev.2-R80';
+const current=source.match(/const CACHE='([^']+)'/)[1];
+const version=current.slice('salarymate-v5-full-'.length);
 const artCache='salarymate-v5-art-v1';
-const js=origin+'app.js?v=5.0.0-dev.2-R80';
+const js=origin+'app.js?v='+version;
 const art=origin+'art/jingyu-flight-r73-a.png';
 function runtime(){
  const handlers={},stores=new Map(),requests=[],puts=[],installed=[],pending=[];
@@ -38,7 +39,7 @@ test('R80 install contains the full interface but no flight, cast, spell or perc
  assert.equal(h.installed.length,22);assert.ok(h.installed.every(url=>!url.includes('/art/')));
  const index=fs.readFileSync(new URL('index.html',base),'utf8');
  for(const [,url]of index.matchAll(/<script defer src="([^"]+)"/g))assert.ok(h.installed.includes(url));
- assert.ok(h.installed.includes('./styles.css?v=5.0.0-dev.2-R80'));
+ assert.ok(h.installed.includes('./styles.css?v='+version));
  const bytes=h.installed.reduce((total,path)=>total+fs.statSync(new URL(path.split('?')[0]==='./'?'index.html':path.split('?')[0],base)).size,0);
  assert.ok(bytes<2_100_000);assert.equal(h.flags.skipped,1);
 });
@@ -47,7 +48,7 @@ test('R80 versioned interface is cache-first on reopen and offline; other versio
  const h=runtime();h.install();await h.settle();
  assert.equal(await(await h.fetch(js)).text(),'installed:'+js);assert.equal(h.requests.length,0);
  h.flags.online=false;assert.equal((await h.fetch(js)).status,200);assert.equal(h.requests.length,0);
- assert.equal((await h.fetch(js.replace('R80','R79'))).type,'error');
+ assert.equal((await h.fetch(origin+'app.js?v=5.0.0-dev.2-R79')).type,'error');
  h.flags.online=true;await h.fetch(origin+'app.js');await h.settle();await h.fetch(origin+'app.js');await h.settle();
  assert.equal(h.requests.filter(url=>url===origin+'app.js').length,2);
 });

@@ -25,9 +25,10 @@ test('six scenes retain exact R78 bytes and all CSS selectors while removing emb
     assert.ok(old.includes(asset.property+':url("'+encoded+'")'));
     restored=restored.replace('./art/'+asset.path.split('/').at(-1),encoded);
   }
-  assert.equal(restored,old);
+  // R81 appends component styling; R79's original scene rules stay byte-exact.
+  assert.equal(restored.slice(0,old.length),old);
   assert.equal(manifest.assets.length,6);
-  assert.ok(Buffer.byteLength(css)<260000);
+  assert.ok(Buffer.byteLength(css)<280000);
   assert.ok(!css.includes('data:image/'));
   assert.equal([...css.matchAll(/url\("\.\/art\/background-/g)].length,6);
 });
