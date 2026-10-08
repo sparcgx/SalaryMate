@@ -22,7 +22,7 @@ function element(tag='div'){
  setAttribute(name,value){this[name]=value;},remove(){this.removed=true;this.isConnected=false;if(this.parent)this.parent.children=this.parent.children.filter(n=>n!==this);}
  });
 }
-function setup({width=390,height=844,seed=3,blended=true,reduced=false,decodeWait=false,renderDecodeWait=false,plates=false}={}){
+function setup({width=390,height=844,seed=3,blended=true,reduced=false,decodeWait=false,renderDecodeWait=false,plates=false,magic=false}={}){
  let now=0,id=0,rng=seed,resolveDecode;const frames=new Map(),timers=new Map(),images=[];
  const renderDecoders=[];
  const createElement=tag=>{const el=element(tag);if(tag==='img'){el.complete=true;el.naturalWidth=1536;if(renderDecodeWait)el.decode=()=>new Promise((resolve,reject)=>renderDecoders.push({resolve,reject}));}return el;};
@@ -38,6 +38,7 @@ function setup({width=390,height=844,seed=3,blended=true,reduced=false,decodeWai
  setTimeout(fn,ms){const key=++id;timers.set(key,{fn,at:now+ms});return key;},clearTimeout:key=>timers.delete(key),
  Image:class{constructor(){images.push(this);}decode(){return decodeWait?new Promise(resolve=>resolveDecode=resolve):Promise.resolve();}}
  });
+ if(magic)window.SalaryMateWindArt=['blade','tornado'].map(kind=>'./art/jingyu-wind-'+kind+'-r75.png');
  if(plates)window.SalaryMateFlightSheets=['a','b','c','d'].map(id=>'./art/jingyu-flight-r73-'+id+'.png');
  window.window=window;vm.runInNewContext('// R70:'+source,window);
  const advance=t=>{now=t;const pending=[...frames.values()];frames.clear();pending.forEach(fn=>fn(t));for(const [key,item] of timers)if(item.at<=now){timers.delete(key);item.fn();}};
@@ -59,7 +60,7 @@ function flightStats(h,hz){
  const seen=new Set();let samples=0,lastAngle=null,maxTurn=0;
  for(let t=1000/hz;t<17000&&h.frames.size;t+=1000/hz){
   assert.equal(h.frames.size,1);h.advance(t);const actor=h.get('jingyu-flight-actor')[0];if(!actor)break;
-  const poses=h.poses();assert.equal(poses.length,4);assert.ok(Math.abs(poses.reduce((sum,p)=>sum+p.weight,0)-1)<1e-8);
+  const poses=h.poses();assert.equal(poses.length,2);assert.ok(Math.abs(poses.reduce((sum,p)=>sum+p.weight,0)-1)<1e-8);
   for(const p of poses){assert.ok(p.index>=0&&p.index<24);assert.ok(p.weight>=0&&p.weight<=1);if(p.weight>.3)seen.add(Math.floor(p.index/3));}
   const [x,y,bank,scale]=actor.style.transform.match(/translate3d\(([-\d.]+)px,([-\d.]+)px,0\) rotate\(([-\d.]+)deg\) scale\(([-\d.]+)\)/).slice(1).map(Number);
   const size=parseFloat(actor.style.width),cx=x+size/2,cy=y+size/2,edge=size*scale*.60;
@@ -77,10 +78,10 @@ test('full orbit exposes eight directions with bounded positions and normalized 
  }
  console.log('R70 position/blend samples:',samples);
 });
-test('wing phases are time based and interpolate all three phases while directions wrap smoothly',async()=>{
+test('absolute-time wing target poses match across refresh rates without renderer handoff latency',async()=>{
  const snapshots=[];
  for(const hz of [30,60,120]){
-  const h=setup({seed:4});await h.start();for(let i=1;i<=hz*2;i++)h.advance(i*1000/hz);
+  const h=setup({seed:4,blended:false});await h.start();for(let i=1;i<=hz*2;i++)h.advance(i*1000/hz);
   const wings=[0,0,0];for(const p of h.poses())wings[p.index%3]+=p.weight;snapshots.push(wings);h.window.SalaryMateCompanion.stop();assertClean(h);
  }
  for(let i=1;i<snapshots.length;i++)for(let k=0;k<3;k++)assert.ok(Math.abs(snapshots[0][k]-snapshots[i][k])<1e-8);
@@ -132,7 +133,7 @@ test('R72 pending rendered-image decode preserves perched bird; cancel and failu
  for(const outcome of ['ready','cancel','error']){
   const h=setup({renderDecodeWait:true});const start=h.start();
   await new Promise(resolve=>setImmediate(resolve));
-  assert.equal(h.renderDecoders.length,4);
+  assert.equal(h.renderDecoders.length,2);
   assert.equal(h.button.classList.contains('jingyu-away'),false);
   assert.equal(h.get('jingyu-flight-layer').length,0);
   assert.equal(h.frames.size,0);
@@ -169,17 +170,17 @@ test('R73 near/far pass stays within viewport and renders at scale <= 1 across r
 });
 test('R73 four decoded high-detail plates preserve all directions and reuse cache',async()=>{
  const h=setup({plates:true});await h.start();assert.equal(h.images.length,4);
- assert.equal(h.get('jingyu-flight-sheet').length,16);
+ assert.equal(h.get('jingyu-flight-sheet').length,8);
  const stats=flightStats(h,60);assert.deepEqual([...stats.seen].sort(),[0,1,2,3,4,5,6,7]);assertClean(h);
  await h.window.SalaryMateCompanion.fly(h.button);assert.equal(h.images.length,4);h.window.SalaryMateCompanion.stop();assertClean(h);
 });
 test('R73 every rendered plate is ready before takeoff, including cancellation during decoding',async()=>{
  for(const cancel of [false,true]){
   const h=setup({plates:true,renderDecodeWait:true});const pending=h.start();await new Promise(resolve=>setImmediate(resolve));
-  assert.equal(h.renderDecoders.length,16);assert.equal(h.button.classList.contains('jingyu-away'),false);
-  for(const d of h.renderDecoders.slice(0,15))d.resolve();await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(h.renderDecoders.length,8);assert.equal(h.button.classList.contains('jingyu-away'),false);
+  for(const d of h.renderDecoders.slice(0,7))d.resolve();await new Promise(resolve=>setImmediate(resolve));
   assert.equal(h.frames.size,0);assert.equal(h.button.classList.contains('jingyu-away'),false);
-  if(cancel)h.window.SalaryMateCompanion.stop();h.renderDecoders[15].resolve();await pending;
+  if(cancel)h.window.SalaryMateCompanion.stop();h.renderDecoders[7].resolve();await pending;
   if(cancel)assertClean(h);else {assert.equal(h.get('jingyu-flight-actor')[0].style.opacity,'1');h.window.SalaryMateCompanion.stop();assertClean(h);}
  }
 });
@@ -201,4 +202,63 @@ test('R73 four-plate compatibility renderer shows one decoded direction without 
  assert.equal(h.get('jingyu-flight-sheet').length,4);assert.equal(h.get('jingyu-flight-sheet').filter(image=>image.style.display==='block').length,1);
  assert.equal(h.poses().length,1);assert.equal(h.poses()[0].weight,1);
  h.window.SalaryMateCompanion.stop();assertClean(h);
+});
+
+test('R75 only two poses hand off briefly, with a single crisp pose for most samples',async()=>{
+ for(const hz of [30,60,120]){
+  const h=setup({plates:true});await h.start();let samples=0,crisp=0,run=0,maxRun=0;const wings=new Set();
+  for(let i=1;i/hz<17&&h.frames.size;i++){
+   h.advance(i*1000/hz);const poses=h.poses();if(!poses.length)break;samples++;
+   assert.equal(poses.length,2);assert.ok(Math.abs(poses.reduce((s,p)=>s+p.weight,0)-1)<1e-9);
+   const visible=poses.filter(p=>p.weight>.0001);for(const p of visible)wings.add(p.index%3);
+   if(visible.length===1){crisp++;run=0;}else {run+=1000/hz;maxRun=Math.max(maxRun,run);}
+  }
+  assert.ok(crisp/samples>.5,'a clear single pose on most frames');
+  assert.ok(maxRun<=64+1000/hz+.001,'handoff cannot become a persistent trail');
+  assert.deepEqual([...wings].sort(),[0,1,2]);assertClean(h);
+  console.log(`R75 ${hz} Hz single-pose samples: ${crisp}/${samples}`);
+ }
+});
+test('R75 wind blades and tornado appear within viewport using the existing single frame loop',async()=>{
+ for(const [width,height] of [[320,568],[430,932],[844,390],[240,220]])for(const hz of [30,60,120]){
+  const h=setup({width,height,plates:true,magic:true});await h.start();const seen=new Set();
+  assert.equal(h.get('jingyu-wind-effect').length,4);assert.equal(h.get('jingyu-wind-art').length,4);
+  for(let i=1;i/hz<17&&h.frames.size;i++){
+   assert.equal(h.frames.size,1);h.advance(i*1000/hz);
+   for(const fx of h.get('jingyu-wind-effect')){
+    const opacity=Number(fx.style.opacity);assert.ok(Number.isFinite(opacity)&&opacity>=0&&opacity<=.86);
+    if(opacity<=0)continue;seen.add(fx.dataset.kind);
+    const v=fx.style.transform.match(/translate3d\(([-\d.]+)px,([-\d.]+)px,0\) rotate\(([-\d.]+)deg\) scale\(([-\d.]+)\)/).slice(1).map(Number);
+    assert.ok(v.every(Number.isFinite));const [x,y,,scale]=v,w=parseFloat(fx.style.width),heightFx=parseFloat(fx.style.height),r=Math.hypot(w,heightFx)*scale/2;
+    assert.ok(x+w/2>=r-.02&&x+w/2<=width-r+.02);assert.ok(y+heightFx/2>=r-.02&&y+heightFx/2<=height-r+.02);
+   }
+  }
+  assert.deepEqual([...seen].sort(),['blade','tornado']);assertClean(h);assert.equal(h.get('jingyu-wind-effect').length,0);
+ }
+});
+test('R75 every cancellation removes active spells; reduced motion starts neither flight nor spells',async()=>{
+ for(const reason of ['tap','scroll','resize','pagehide','escape','motion','navigation']){
+  const h=setup({plates:true,magic:true});await h.start();
+  for(let t=50;t<15000&&!h.get('jingyu-wind-effect').some(fx=>Number(fx.style.opacity)>.1);t+=50)h.advance(t);
+  assert.ok(h.get('jingyu-wind-effect').some(fx=>Number(fx.style.opacity)>.1));
+  if(reason==='tap')h.window.SalaryMateCompanion.fly(h.button);
+  else if(reason==='escape')h.document.emit('keydown',{key:'Escape'});
+  else if(reason==='motion'){h.mq.matches=true;h.mq.emit('change');}
+  else if(reason==='navigation')h.window.SalaryMateCompanion.stop();
+  else h.window.emit(reason);
+  assertClean(h);assert.equal(h.get('jingyu-wind-effect').length,0);
+ }
+ const h=setup({plates:true,magic:true,reduced:true});await h.start();assert.equal(h.images.length,0);assert.equal(h.get('jingyu-wind-effect').length,0);h.advance(2000);assertClean(h);
+});
+test('R75 optional wind decoding cannot block takeoff or resurrect cancelled effects',async()=>{
+ for(const cancel of [false,true]){
+  const h=setup({plates:true,magic:true,renderDecodeWait:true});const pending=h.start();await new Promise(r=>setImmediate(r));
+  assert.equal(h.renderDecoders.length,8);for(const d of h.renderDecoders)d.resolve();await pending;await new Promise(r=>setImmediate(r));
+  assert.equal(h.renderDecoders.length,12);assert.equal(h.frames.size,1);assert.equal(h.get('jingyu-flight-actor')[0].style.opacity,'1');
+  if(cancel)h.window.SalaryMateCompanion.stop();
+  for(const d of h.renderDecoders.slice(8))cancel?d.resolve():d.reject(new Error('optional art failed'));
+  await new Promise(r=>setImmediate(r));
+  if(cancel)assertClean(h);
+  else {for(const t of [3500,3800,7000,7500]){h.advance(t);assert.ok(h.get('jingyu-wind-effect').every(fx=>fx.style.opacity==='0'));assert.equal(h.frames.size,1);}h.window.SalaryMateCompanion.stop();assertClean(h);}
+ }
 });

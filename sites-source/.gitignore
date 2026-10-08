@@ -1,3 +1,6 @@
 node_modules/
 .sites-runtime/
 npm-debug.log*
+
+# Reproducible Worker build output is packaged for deployment, not source Git.
+dist/server/

@@ -240,7 +240,7 @@
     frame.className = 'jingyu-flight-sprite';
     const blended=window.CSS?.supports?.('mix-blend-mode','plus-lighter')===true;
     const split=sheets.length===4;
-    const layers=Array.from({length:blended?4:1},()=>{
+    const layers=Array.from({length:blended?2:1},()=>{
       const wrapper=document.createElement('div'),crop=document.createElement('div');
       wrapper.className='jingyu-flight-pose';crop.className='jingyu-flight-cell';
       const images=sheets.map(sheet=>{
@@ -271,6 +271,23 @@
     } catch { if(active===flight){layer.remove();flight.layer=null;greet();} return; }
     if(active!==flight)return;
     window.clearTimeout(flight.timer);
+    // Optional spell art never delays takeoff. Use the actual displayed images;
+    // a failed/late image simply skips that spell, and stop() owns every node.
+    const spellSources=window.SalaryMateWindArt;
+    const spells=Array.isArray(spellSources)&&spellSources.length===2&&spellSources.every((src,i)=>typeof src==='string'&&(src===`./art/jingyu-wind-${i?'tornado':'blade'}-r75.png`||src.startsWith('data:image/png;base64,')))
+      ?[{kind:0,at:.29,fan:-.24,life:900},{kind:0,at:.29,fan:0,life:900},{kind:0,at:.29,fan:.24,life:900},{kind:1,at:.60,fan:0,life:1900}].map(spec=>{
+        const node=document.createElement('div'),image=document.createElement('img');
+        node.className='jingyu-wind-effect';node.dataset.kind=spec.kind?'tornado':'blade';node.style.opacity='0';
+        image.className='jingyu-wind-art';image.alt='';image.draggable=false;image.decoding='async';
+        const spell={...spec,node,image,ready:false,fired:false,born:null};
+        const release=()=>{image.onload=image.onerror=null;};
+        const ready=()=>{release();if(active===flight)spell.ready=true;};
+        flight.cleanups.push(()=>{release();spell.ready=false;});
+        image.src=spellSources[spec.kind];node.append(image);layer.append(node);
+        if(typeof image.decode==='function')Promise.resolve().then(()=>image.decode()).then(ready,release);
+        else {image.onload=ready;image.onerror=release;if(image.complete&&image.naturalWidth)ready();}
+        return spell;
+      }):[];
     document.body.append(layer);
     button.setAttribute('aria-pressed', 'true');
     const duration=clamp(route.length/235*1000+2200,11200,16200),started=window.performance.now();
@@ -298,6 +315,58 @@
         image.style.transform=`translate3d(${-(cellIndex%6)/6*100}%,${-Math.floor(cellIndex/6)/4*100}%,0)`;
       }
     };
+    // R75: one clear pose most of the time, with only a short TWO-pose handoff.
+    // Never blend two wing phases across two viewing directions simultaneously.
+    let shownPose=-1,nextPose=-1,handoffAt=0;
+    const handoffMs=64;
+    const renderPose=(target,now)=>{
+      if(!blended){pose(layers[0],target,1);return;}
+      if(shownPose<0)shownPose=target;
+      if(nextPose>=0&&now-handoffAt>=handoffMs){shownPose=nextPose;nextPose=-1;}
+      if(nextPose<0&&target!==shownPose){nextPose=target;handoffAt=now;}
+      const mix=nextPose<0?0:cinematic(clamp((now-handoffAt)/handoffMs,0,1));
+      pose(layers[0],shownPose,1-mix);
+      pose(layers[1],nextPose<0?shownPose:nextPose,mix);
+    };
+    const wind=(elapsed,x,y,scale,heading)=>{
+      for(const spell of spells){
+        const due=duration*spell.at;
+        if(!spell.fired&&elapsed>=due){
+          if(!spell.ready&&elapsed<due+250)continue;
+          spell.fired=true;
+          if(!spell.ready||elapsed>=due+spell.life)continue;
+          spell.born=due;
+          const angle=Math.PI/2-heading+spell.fan;
+          spell.vx=Math.cos(angle);spell.vy=Math.sin(angle);spell.angle=angle*180/Math.PI;
+          spell.w=spell.kind?clamp(size*.56,88,152):clamp(size*.48,64,128);
+          spell.h=spell.kind?clamp(spell.w*1.45,128,204):spell.w;
+          const availableRadius=Math.max(10,(Math.min(width,height)-20)/2);
+          const fit=Math.min(1,(availableRadius-6)/(Math.hypot(spell.w,spell.h)*.55));
+          spell.w*=fit;spell.h*=fit;
+          spell.node.style.width=`${spell.w}px`;spell.node.style.height=`${spell.h}px`;
+          spell.radius=Math.hypot(spell.w,spell.h)*.55+6;
+          const forward=size*scale*(spell.kind?.54:.18);
+          spell.x=clamp(x+spell.vx*forward,left+spell.radius,left+width-spell.radius);
+          spell.y=clamp(y+spell.vy*forward,top+spell.radius,top+height-spell.radius);
+          const distance=spell.kind?Math.min(42,width*.10):Math.min(180,width*.38,height*.30);
+          spell.endX=clamp(spell.x+spell.vx*distance,left+spell.radius,left+width-spell.radius);
+          spell.endY=clamp(spell.y+spell.vy*distance,top+spell.radius,top+height-spell.radius);
+        }
+        if(spell.born===null)continue;
+        const p=clamp((elapsed-spell.born)/spell.life,0,1);
+        if(p>=1){spell.node.style.opacity='0';continue;}
+        const appear=cinematic(clamp(p/(spell.kind?.20:.14),0,1));
+        const disappear=1-cinematic(clamp((p-(spell.kind?.68:.55))/(spell.kind?.32:.45),0,1));
+        const opacity=.86*appear*disappear;
+        const travel=spell.kind?smooth(p):1-(1-p)*(1-p);
+        const cx=spell.x+(spell.endX-spell.x)*travel,cy=spell.y+(spell.endY-spell.y)*travel;
+        const rotation=spell.kind?Math.sin(p*TAU*2)*5:spell.angle+Math.sin(p*Math.PI)*spell.fan*18;
+        const zoom=spell.kind?(.55+.43*appear)*(.97+.025*Math.sin(p*TAU*5)):.76+.22*appear;
+        spell.node.style.opacity=String(opacity);
+        spell.node.style.transform=`translate3d(${(cx-spell.w/2).toFixed(2)}px,${(cy-spell.h/2).toFixed(2)}px,0) rotate(${rotation.toFixed(2)}deg) scale(${zoom.toFixed(4)})`;
+        if(spell.kind)spell.image.style.transform=`scaleX(${(.94+.045*Math.sin(p*TAU*6)).toFixed(4)})`;
+      }
+    };
     const tick = now => {
       if(active!==flight)return;
       const elapsed=now-started,t=clamp(elapsed/duration,0,1),dt=clamp(now-previous,0,80);
@@ -321,13 +390,8 @@
       // Absolute elapsed time keeps wing phase consistent across refresh rates.
       const phase=elapsed/740;
       const stroke=1-Math.cos(phase*TAU)*(1-glideBlend);
-      const fromWing=Math.min(1,Math.floor(stroke)),toWing=fromWing+1,wingMix=stroke-fromWing;
-      if(blended){
-        pose(layers[0],fromDirection*3+fromWing,(1-directionMix)*(1-wingMix));
-        pose(layers[1],fromDirection*3+toWing,(1-directionMix)*wingMix);
-        pose(layers[2],toDirection*3+fromWing,directionMix*(1-wingMix));
-        pose(layers[3],toDirection*3+toWing,directionMix*wingMix);
-      }else pose(layers[0],(directionMix>.5?toDirection:fromDirection)*3+(wingMix>.5?toWing:fromWing),1);
+      const targetPose=(directionMix>.5?toDirection:fromDirection)*3+Math.round(stroke);
+      renderPose(targetPose,now);
       const turn=Math.atan2(point.dx*ahead.dy-point.dy*ahead.dx,point.dx*ahead.dx+point.dy*ahead.dy);
       const settling=1-smooth(clamp((t-.86)/.14,0,1));
       const targetBank=clamp(turn*180/Math.PI*2+(point.dx/(speed||1))*4,-17,17)*settling;
@@ -348,6 +412,7 @@
       // The first flight frame is opaque; only fade when the perched bird returns.
       actor.style.opacity=String(1-smooth(clamp((t-.978)/.022,0,1)));
       if(t>.978)button.classList.remove('jingyu-away');
+      wind(elapsed,x,y,scale,heading);
       flight.frame=window.requestAnimationFrame(tick);
     };
     tick(started);

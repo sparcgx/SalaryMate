@@ -1,0 +1,120 @@
+[
+  {
+    "asset": "blade",
+    "source_path": "/workspace/scratch/2abc8ba223a0/generated_images/exec-7c8c7f6c-85b0-4f88-8329-8f96d0037dc9.png",
+    "saved_path": "/workspace/scratch/2abc8ba223a0/r75-assets/jingyu-wind-blade-r75.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "format": "PNG",
+    "sha256": "a5dd03ecb36e0ac8aac6deec42486cfd04e3e2bc4f13a0998cb81524176f76c4",
+    "source_preserved": true,
+    "copied_bytes_identical": true,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "alpha_bbox_gt0": [
+      0,
+      19,
+      1240,
+      1254
+    ],
+    "alpha_bboxes": {
+      "gt16": [
+        91,
+        234,
+        1196,
+        996
+      ],
+      "gt64": [
+        96,
+        239,
+        1191,
+        994
+      ],
+      "gt128": [
+        101,
+        246,
+        1190,
+        993
+      ],
+      "gt250": [
+        123,
+        285,
+        1184,
+        975
+      ]
+    },
+    "fully_transparent_fraction": 0.7826941029534835,
+    "partially_transparent_fraction": 0.21722958621724675,
+    "fully_opaque_fraction": 7.631082926978167e-05,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "asset": "tornado",
+    "source_path": "/workspace/scratch/2abc8ba223a0/generated_images/exec-963505d5-5913-47f7-babd-b1c3084ae903.png",
+    "saved_path": "/workspace/scratch/2abc8ba223a0/r75-assets/jingyu-wind-tornado-r75.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA",
+    "format": "PNG",
+    "sha256": "1c40d6bb46fe45bf24e9572516588c51442a4e9ae325cb16a3cfd2958f1a65f1",
+    "source_preserved": true,
+    "copied_bytes_identical": true,
+    "alpha_extrema": [
+      0,
+      253
+    ],
+    "alpha_bbox_gt0": [
+      0,
+      0,
+      1022,
+      1536
+    ],
+    "alpha_bboxes": {
+      "gt16": [
+        47,
+        101,
+        978,
+        1446
+      ],
+      "gt64": [
+        48,
+        102,
+        977,
+        1445
+      ],
+      "gt128": [
+        48,
+        103,
+        976,
+        1438
+      ],
+      "gt250": [
+        97,
+        143,
+        930,
+        1356
+      ]
+    },
+    "fully_transparent_fraction": 0.5953006744384766,
+    "partially_transparent_fraction": 0.40469932556152344,
+    "fully_opaque_fraction": 0.0,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+]

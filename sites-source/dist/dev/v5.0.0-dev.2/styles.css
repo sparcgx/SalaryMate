@@ -1543,3 +1543,9 @@ body[data-interface-style=pixel] .company-picker .company-picker-panel{left:auto
  body[data-interface-style=pixel][data-ui-mode=large] .topbar .workspace-context{grid-column:2;grid-row:3;flex-wrap:wrap}
  body[data-interface-style=pixel][data-ui-mode=large] .workspace-context>.company-picker{flex:1 1 8rem}
 }
+
+/* R75: spell nodes share the flight loop, with no blur or persistent trail. */
+.jingyu-flight-actor{z-index:1}
+.jingyu-flight-pose{transition:none!important;animation:none!important;filter:none!important}
+.jingyu-wind-effect{position:absolute;left:0;top:0;z-index:0;pointer-events:none;opacity:0;transform-origin:center;will-change:transform,opacity;contain:layout style;isolation:isolate}
+.jingyu-wind-art{display:block;width:100%;height:100%;object-fit:contain;max-width:none!important;image-rendering:auto;user-select:none;pointer-events:none;transform-origin:center}

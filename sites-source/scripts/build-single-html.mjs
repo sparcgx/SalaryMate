@@ -33,6 +33,11 @@ for(const match of scripts){
     if(!source.includes(flightMarker))throw new Error('Missing HD-2D flight plates declaration');
     const flightSources=await Promise.all(flightPaths.map(async name=>'data:image/png;base64,'+(await readFile(path.join(base,name))).toString('base64')));
     source=source.replace(flightMarker,()=>'const HD2D_FLIGHT_SOURCES = Object.freeze('+JSON.stringify(flightSources)+');');
+    const windPaths=['blade','tornado'].map(kind=>'./art/jingyu-wind-'+kind+'-r75.png');
+    const windMarker='const HD2D_WIND_SOURCES = Object.freeze('+JSON.stringify(windPaths)+');';
+    if(!source.includes(windMarker))throw new Error('Missing HD-2D wind spell declarations');
+    const windSources=await Promise.all(windPaths.map(async name=>'data:image/png;base64,'+(await readFile(path.join(base,name))).toString('base64')));
+    source=source.replace(windMarker,()=>'const HD2D_WIND_SOURCES = Object.freeze('+JSON.stringify(windSources)+');');
   }
   if(name==='i18n-en.js')source+='\nObject.assign(window.SalaryMateEnglish,'+JSON.stringify({
     '單一 HTML 版':'Single HTML edition',

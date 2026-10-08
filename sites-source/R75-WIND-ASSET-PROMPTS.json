@@ -1,0 +1,157 @@
+{
+  "task": "SalaryMate r75 Jingyu wind magic effects",
+  "date": "2026-10-08",
+  "mode": "built-in image_gen",
+  "tool": "tools.image_gen__imagegen",
+  "generation_strategy": "Two independent calls in one Promise.allSettled concurrent batch; one call per asset; no retry or variant generation.",
+  "transparent_background": true,
+  "input_images": [],
+  "transformations": "None. Generated PNG bytes copied verbatim to the requested asset directory. Original tool outputs preserved. Pillow used only for read-only inspection and alpha measurements.",
+  "bbox_convention": "[left, top, right_exclusive, bottom_exclusive]",
+  "assets": [
+    {
+      "asset": "blade",
+      "filename": "jingyu-wind-blade-r75.png",
+      "exact_prompt": "Use case: stylized-concept\nAsset type: a single transparent PNG magic VFX overlay for a polished animated website; programmatic motion will move, rotate and scale this entire asset.\nPrimary request: ONE crisp, elegant, sharply defined crescent-shaped wind blade flying toward the RIGHT. The cutting crescent has a pointed leading right edge and only two or three graceful aerodynamic streamlines trailing toward the left. Read instantly as a strong single wind-slash projectile, with substantial visible body at small web sizes.\nStyle/medium: refined animated feature film magical VFX, high-detail clean luminous airflow sculpted with layered translucent 3D-like ribbons, sharp controlled edges, clear negative space.\nScene/backdrop: genuine RGBA transparency everywhere outside the isolated effect, including the empty interior areas. NO scene or ground.\nComposition/framing: square 1024 by 1024 canvas. The whole single effect is centered and fits within the central 76% of the canvas; leave at least 12% completely transparent clear margin on ALL four sides. Keep all tips and particles within that margin. Strong rightward directional silhouette. Do not use a sprite sheet or multiple separate samples.\nColor palette: clear pale teal, mint cyan, luminous ivory-white cutting rim, transparent center, subtle richer teal depth, only a few tiny pale gold star flecks. Harmonize with a cream-white, navy-blue and gold character palette, but NO character included.\nLighting/materials: luminous cyan-white rim with finely controlled brightness and transparent airy body, no broad bloom or overexposed halo.\nConstraints: exactly one large coherent wind blade, only 2–3 flow tails, no character, no Jingyu, no animal, no face, no text, no letters, no symbols, no logo, no watermark, no border, no checkerboard drawn into the image, no white/black/gray/colored background, no smoke cloud, no oversized glow, no scattered tiny multiple assets. Preserve a real alpha channel.",
+      "parameters": {
+        "transparent_background": true
+      },
+      "output_hint": "Generated images are saved to /workspace/scratch/2abc8ba223a0/generated_images as /workspace/scratch/2abc8ba223a0/generated_images/exec-7c8c7f6c-85b0-4f88-8329-8f96d0037dc9.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "measurements": {
+        "asset": "blade",
+        "source_path": "/workspace/scratch/2abc8ba223a0/generated_images/exec-7c8c7f6c-85b0-4f88-8329-8f96d0037dc9.png",
+        "saved_path": "/workspace/scratch/2abc8ba223a0/r75-assets/jingyu-wind-blade-r75.png",
+        "size": [
+          1254,
+          1254
+        ],
+        "mode": "RGBA",
+        "format": "PNG",
+        "sha256": "a5dd03ecb36e0ac8aac6deec42486cfd04e3e2bc4f13a0998cb81524176f76c4",
+        "source_preserved": true,
+        "copied_bytes_identical": true,
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "alpha_bbox_gt0": [
+          0,
+          19,
+          1240,
+          1254
+        ],
+        "alpha_bboxes": {
+          "gt16": [
+            91,
+            234,
+            1196,
+            996
+          ],
+          "gt64": [
+            96,
+            239,
+            1191,
+            994
+          ],
+          "gt128": [
+            101,
+            246,
+            1190,
+            993
+          ],
+          "gt250": [
+            123,
+            285,
+            1184,
+            975
+          ]
+        },
+        "fully_transparent_fraction": 0.7826941029534835,
+        "partially_transparent_fraction": 0.21722958621724675,
+        "fully_opaque_fraction": 0.00007631082926978167,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "asset": "tornado",
+      "filename": "jingyu-wind-tornado-r75.png",
+      "exact_prompt": "Use case: stylized-concept\nAsset type: a single transparent PNG magical tornado VFX overlay for a polished animated website; programmatic motion will translate, rotate and expand or shrink this entire asset.\nPrimary request: ONE elegant, immediately recognizable upright wind-magic tornado, a flared funnel broad at the top and tapering to a delicate narrow bottom point. Flowing spiral air ribbons curl in graceful clear loops, with sculpted layered 3D-like volume and a translucent open center. Strong coherent silhouette readable at small web sizes.\nStyle/medium: refined animated feature film magical VFX, highly polished clean flowing air ribbons, precise thin luminous contour highlights, dimensional overlapping spirals, airy beautiful finish.\nScene/backdrop: actual RGBA transparency outside and through the hollow gaps of the single effect. Floating isolated magic effect, no environment.\nComposition/framing: portrait 1024 by 1536 canvas. Entire tornado centered upright, about 72% of canvas height, leaving at least 14% completely transparent clear margin above and below and at least 12% at left and right. All fine tips and small particles stay inside these margins. Funnel top broad and gently elliptical, lower vortex pointed. ONE effect only, not a sprite sheet.\nColor palette: clear pale teal, mint cyan, ivory white luminous rim highlights, translucent teal depth, and only a few restrained gold and cyan fine particles. Harmonize with a cream-white, navy-blue and gold character palette, without including any character.\nLighting/materials: bright but controlled cyan-white wind ribbons, airy semi-transparent center; sharp clean definition with no diffuse overexposure or broad halo.\nConstraints: exactly one substantial coherent tornado; no character, no Jingyu, no animal, no face, no text, no letters, no symbols, no logo, no watermark, no border, no checkerboard drawn into the image, no white/black/gray/colored background, no ground, no contact shadow, no dust at base, no debris, no landscape, no scene, no large smoke cloud, no oversized glow, no multiple separate elements. Preserve a real alpha channel.",
+      "parameters": {
+        "transparent_background": true
+      },
+      "output_hint": "Generated images are saved to /workspace/scratch/2abc8ba223a0/generated_images as /workspace/scratch/2abc8ba223a0/generated_images/exec-963505d5-5913-47f7-babd-b1c3084ae903.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "measurements": {
+        "asset": "tornado",
+        "source_path": "/workspace/scratch/2abc8ba223a0/generated_images/exec-963505d5-5913-47f7-babd-b1c3084ae903.png",
+        "saved_path": "/workspace/scratch/2abc8ba223a0/r75-assets/jingyu-wind-tornado-r75.png",
+        "size": [
+          1024,
+          1536
+        ],
+        "mode": "RGBA",
+        "format": "PNG",
+        "sha256": "1c40d6bb46fe45bf24e9572516588c51442a4e9ae325cb16a3cfd2958f1a65f1",
+        "source_preserved": true,
+        "copied_bytes_identical": true,
+        "alpha_extrema": [
+          0,
+          253
+        ],
+        "alpha_bbox_gt0": [
+          0,
+          0,
+          1022,
+          1536
+        ],
+        "alpha_bboxes": {
+          "gt16": [
+            47,
+            101,
+            978,
+            1446
+          ],
+          "gt64": [
+            48,
+            102,
+            977,
+            1445
+          ],
+          "gt128": [
+            48,
+            103,
+            976,
+            1438
+          ],
+          "gt250": [
+            97,
+            143,
+            930,
+            1356
+          ]
+        },
+        "fully_transparent_fraction": 0.5953006744384766,
+        "partially_transparent_fraction": 0.40469932556152344,
+        "fully_opaque_fraction": 0,
+        "corner_alpha": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  ],
+  "inspection_notes": [
+    "Both outputs are genuine RGBA PNGs with partially transparent wind ribbons and zero alpha at all four corners.",
+    "The wind blade is square but the actual generated size is 1254x1254, rather than the prompted 1024x1024.",
+    "The wind blade main visible body at alpha >16 is [91,234,1196,996]; horizontal clear margins are narrower than the requested 12%. Faint alpha residues extend nearly to the canvas perimeter.",
+    "The tornado is 1024x1536 portrait. Its main visible body at alpha >16 is [47,101,978,1446], occupying about 87.6% of canvas height, rather than the requested approximately 72%. Faint translucent halo/residues extend to the canvas perimeter.",
+    "The tornado has a visible soft luminous halo. No post-generation pixel editing or cleanup was performed, honoring the one-generation-per-asset and bitmap-preservation constraint.",
+    "Website integration can adjust the image element size and surrounding container space without modifying PNG pixels."
+  ]
+}
