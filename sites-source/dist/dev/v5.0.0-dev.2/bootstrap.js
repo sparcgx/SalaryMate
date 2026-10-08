@@ -18,7 +18,17 @@
     if (label) { label.textContent = '另一分頁已更新，請重新整理'; label.classList.add('text-rose'); }
   });
   if (!window.SalaryMatePortable && 'serviceWorker' in navigator && location.protocol === 'https:') {
-    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(() => {}));
+    window.addEventListener('load', async () => {
+      try {
+        await navigator.serviceWorker.register('./sw.js',{scope:'./'});
+        const registration = await navigator.serviceWorker.ready;
+        // The first page may load its selected scene before the worker takes
+        // control. Retain that one scene for offline use, never prefetch the set.
+        const { interfaceStyle, hd2dBackground } = document.body.dataset;
+        const scene = interfaceStyle === 'pixel' ? hd2dBackground : interfaceStyle === 'macaron' ? 'macaron' : '';
+        if (scene) registration.active?.postMessage({ type: 'salarymate:cache-background', scene });
+      } catch {}
+    });
   }
 })();
 

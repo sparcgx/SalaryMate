@@ -23,6 +23,7 @@ export default {async fetch(request){
  const route=url.pathname.endsWith('/')?url.pathname+'index.html':url.pathname;
  const file=STATIC_FILES[route];if(!file)return new Response('Not found',{status:404});
  const headers={'content-type':file.type,'cache-control':'no-cache','x-content-type-options':'nosniff','referrer-policy':'strict-origin-when-cross-origin'};
+ if(${JSON.stringify(['canyon','forest','harbor','aurora','sky','macaron'].map(id=>'/dev/v5.0.0-dev.2/art/background-'+id+'-r79.webp'))}.includes(route))headers['cache-control']='public, max-age=31536000, immutable';
  if(route.startsWith('/dev/v5.0.0-dev.2/'))Object.assign(headers,DEV_SECURITY_HEADERS);
  const body=request.method==='HEAD'?null:Uint8Array.from(atob(file.body),c=>c.charCodeAt(0));
  return new Response(body,{headers});

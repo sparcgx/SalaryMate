@@ -1,0 +1,49 @@
+{
+  "source_commit": "e3dbad82fef842375d878aa1f1a4deeffaba70e1",
+  "source": "dist/dev/v5.0.0-dev.2/styles.css",
+  "operation": "Extract existing WebP data URLs byte-for-byte; no re-encoding or pixel edits.",
+  "assets": [
+    {
+      "id": "canyon",
+      "property": "--hd2d-canyon-scene",
+      "path": "dist/dev/v5.0.0-dev.2/art/background-canyon-r79.webp",
+      "bytes": 161768,
+      "sha256": "bd6fc533f80c3df07ce09335227f7c9095bab92a654756fcced0429dce94e4c3"
+    },
+    {
+      "id": "macaron",
+      "property": "--macaron-scene",
+      "path": "dist/dev/v5.0.0-dev.2/art/background-macaron-r79.webp",
+      "bytes": 21536,
+      "sha256": "b3f00c8eda688c82026a067b4fa487fe0e76d98023b9bbd53ca29792853eb698"
+    },
+    {
+      "id": "forest",
+      "property": "--hd2d-forest-scene",
+      "path": "dist/dev/v5.0.0-dev.2/art/background-forest-r79.webp",
+      "bytes": 322218,
+      "sha256": "e8678dcbb05aba317f7e2b10dd8b7968e77b1128aead15a0a4873cab7bc59a8c"
+    },
+    {
+      "id": "harbor",
+      "property": "--hd2d-harbor-scene",
+      "path": "dist/dev/v5.0.0-dev.2/art/background-harbor-r79.webp",
+      "bytes": 190156,
+      "sha256": "af7d00b323e7fdf3ff87b50b5f364926b810f5585e0e1d0ab4f421351eb30182"
+    },
+    {
+      "id": "aurora",
+      "property": "--hd2d-aurora-scene",
+      "path": "dist/dev/v5.0.0-dev.2/art/background-aurora-r79.webp",
+      "bytes": 230834,
+      "sha256": "da820a688d2c405054766570df6fe7fe423c016e369fb1d3c8c68b1e73c14df4"
+    },
+    {
+      "id": "sky",
+      "property": "--hd2d-sky-scene",
+      "path": "dist/dev/v5.0.0-dev.2/art/background-sky-r79.webp",
+      "bytes": 268472,
+      "sha256": "fc16beb15410725e80f8238a41198b0f833af3efdd5b9134eb5f6927e535d498"
+    }
+  ]
+}

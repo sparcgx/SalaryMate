@@ -57,7 +57,15 @@ for(const match of scripts){
   scriptsInline.push(`<script data-module="${name}">\n${source.replace(/<\/script/gi,'<\\/script')}\n</script>`);
   html=html.replace(match[0],'');
 }
-const css=await readFile(path.join(base,'styles.css'),'utf8');
+let css=await readFile(path.join(base,'styles.css'),'utf8');
+// The hosted CSS references only used scenes. The portable edition deliberately
+// embeds the same bytes so every background remains available without a network.
+const scenes=[...css.matchAll(/url\("(\.\/art\/background-(?:canyon|forest|harbor|aurora|sky|macaron)-r79\.webp)"\)/g)];
+if(scenes.length!==6||new Set(scenes.map(match=>match[1])).size!==6)throw new Error('Unexpected background asset manifest');
+for(const match of scenes){
+  const bytes=await readFile(path.join(base,match[1]));
+  css=css.replace(match[0],()=>`url("data:image/webp;base64,${bytes.toString('base64')}")`);
+}
 if(/@import\s|url\((?!["']?data:)/i.test(css))throw new Error('External CSS asset must be embedded');
 html=html.replace(/<link rel="stylesheet" href="\.\/styles\.css[^"]*">/,()=>`<style>\n${css.replace(/<\/style/gi,'<\\/style')}\n</style>`);
 html=html.replace(/\s*<link rel="manifest"[^>]*>/,'');
