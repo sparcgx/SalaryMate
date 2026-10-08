@@ -63,6 +63,7 @@
   let active = null, loadedSheet = null;
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const smooth = t => t * t * (3 - 2 * t);
+  const cinematic = t => t*t*t*(t*(t*6-15)+10);
   const travelProgress = t => {
     const takeoff=.12,landing=.18,area=1-(takeoff+landing)/2;
     if(t<takeoff){const u=t/takeoff;return takeoff*(u/2-Math.sin(Math.PI*u)/(2*Math.PI))/area;}
@@ -79,6 +80,34 @@
     [179,129],[177,130],[174,132], [144,121],[145,122],[143,124],
     [143,103],[128,107],[126,107], [105,108],[114,115],[107,119],
     [107,113],[99,113],[96,114], [103,114],[92,118],[113,121]
+  ];
+  // R73: measured source rectangles preserve wing tips beyond the nominal 512px grid.
+  // [sourceX, sourceY, width, height, headXWithinCrop, headYWithinCrop]
+  const posesR73 = [
+    [41,63,427,408,215,192],
+    [492,156,553,305,276,100],
+    [1056,156,449,323,240,99],
+    [55,509,442,435,266,225],
+    [534,617,526,316,304,115],
+    [1102,621,413,334,252,109],
+    [54,45,417,423,310,219],
+    [541,137,439,330,327,128],
+    [1074,142,415,356,297,123],
+    [67,522,419,412,231,176],
+    [522,614,523,315,298,93],
+    [1087,625,404,361,280,95],
+    [48,55,447,385,217,165],
+    [515,140,517,301,258,80],
+    [1062,136,401,306,202,80],
+    [64,507,416,410,249,174],
+    [511,587,515,329,267,85],
+    [1071,592,409,339,194,92],
+    [84,22,378,462,101,235],
+    [591,142,437,342,104,120],
+    [1099,124,412,381,117,125],
+    [67,512,416,426,160,208],
+    [510,619,540,318,244,104],
+    [1071,625,436,346,187,101],
   ];
   const makeRoute = (points, bounds) => {
     const samples = [{...points[0], distance:0, segment:0, t:0}],segments=[];
@@ -126,7 +155,7 @@
     const flight = active;
     active = null;
     if (flight.frame !== null) window.cancelAnimationFrame(flight.frame);
-    if (flight.loading) { flight.loading.onload=null; flight.loading.onerror=null; }
+    if (flight.loading) for(const image of flight.loading){image.onload=null;image.onerror=null;}
     window.clearTimeout(flight.timer);
     flight.cleanups.forEach(cleanup => cleanup());
     flight.layer?.remove();
@@ -165,7 +194,7 @@
       flight.timer = window.setTimeout(finish, 1800);
     };
     if (reduced?.matches || typeof window.requestAnimationFrame !== 'function' || !art.complete || !art.naturalWidth) { greet(); return; }
-    const begin = async sheet => {
+    const begin = async sheets => {
     if(active!==flight)return;
     if(reduced?.matches){greet();return;}
     window.clearTimeout(flight.timer);
@@ -175,10 +204,13 @@
     const width = viewport?.width || window.innerWidth;
     const height = viewport?.height || window.innerHeight;
     const left = viewport?.offsetLeft || 0, top = viewport?.offsetTop || 0;
-    const size = Math.min(172, width * .39, height * .34);
+    // R73: render at the closest pass size, then scale DOWN at a distance.
+    // This avoids enlarging an already-rasterized low-resolution compositor layer.
+    const nearDepth=1.55,farDepth=.64;
+    const size = Math.min(192, width * .32, height * .29) * nearDepth;
     if (size < 24) { greet(); return; }
     // Reserve room for rotation, the phone safe area, and the bottom menu.
-    const radius = size * .55;
+    const radius = size * .60;
     const minX = left + 12 + radius, maxX = Math.max(minX, left + width - 12 - radius);
     const minY = top + Math.min(40, height * .08) + radius;
     const maxY = Math.max(minY, top + height - Math.min(100, height * .18) - radius);
@@ -207,12 +239,18 @@
     const frame = document.createElement('div');
     frame.className = 'jingyu-flight-sprite';
     const blended=window.CSS?.supports?.('mix-blend-mode','plus-lighter')===true;
+    const split=sheets.length===4;
     const layers=Array.from({length:blended?4:1},()=>{
-      const wrapper=document.createElement('div'),crop=document.createElement('div'),image=document.createElement('img');
+      const wrapper=document.createElement('div'),crop=document.createElement('div');
       wrapper.className='jingyu-flight-pose';crop.className='jingyu-flight-cell';
-      image.className='jingyu-flight-sheet';image.decoding='sync';image.src=sheet.src;image.alt='';image.draggable=false;
-      crop.append(image);wrapper.append(crop);frame.append(wrapper);
-      return {wrapper,crop,image,lastPose:-1};
+      const images=sheets.map(sheet=>{
+        const image=document.createElement('img');
+        image.className='jingyu-flight-sheet';image.decoding='sync';image.src=sheet.src;image.alt='';image.draggable=false;
+        image.style.width=split?'300%':'600%';image.style.height=split?'200%':'400%';image.style.display='none';
+        crop.append(image);return image;
+      });
+      wrapper.append(crop);frame.append(wrapper);
+      return {wrapper,crop,images,lastPose:-1,activeSheet:-1};
     });
     facing.append(frame);
     actor.append(facing);
@@ -221,7 +259,7 @@
     // R72: decode the actual rendered nodes, not only the preload Image.
     // Keep the perched bird visible throughout cold-cache / iOS decoding.
     try {
-      await Promise.all(layers.map(({image}) => {
+      await Promise.all(layers.flatMap(layer=>layer.images).map(image => {
         if(typeof image.decode==='function')return image.decode();
         if(image.complete&&image.naturalWidth)return Promise.resolve();
         return new Promise((resolve,reject)=>{
@@ -235,16 +273,30 @@
     window.clearTimeout(flight.timer);
     document.body.append(layer);
     button.setAttribute('aria-pressed', 'true');
-    const duration=clamp(route.length/255*1000+1800,9800,15500),started=window.performance.now();
-    let previous=started,heading=0,bank=0,pitch=0,glideBlend=0;
+    const duration=clamp(route.length/235*1000+2200,11200,16200),started=window.performance.now();
+    let previous=started,heading=0,bank=0,pitch=0;
     const pose = (layer,index,opacity) => {
       layer.wrapper.style.opacity=String(opacity);
       if(index===layer.lastPose)return;
       layer.lastPose=index;
-      const [anchorX,anchorY]=anchors[index];
-      // Clip the source cell before registration so offsets cannot expose a neighbor.
-      layer.crop.style.transform=`translate3d(${(.5-anchorX/256*.84)*100}%,${(.44-anchorY/256*.84)*100}%,0) scale(.84)`;
-      layer.image.style.transform=`translate3d(${-(index%6)/6*100}%,${-Math.floor(index/6)/4*100}%,0)`;
+      const sheetIndex=split?Math.floor(index/6):0,cellIndex=split?index%6:index;
+      if(sheetIndex!==layer.activeSheet){
+        if(layer.activeSheet>=0)layer.images[layer.activeSheet].style.display='none';
+        layer.images[sheetIndex].style.display='block';layer.activeSheet=sheetIndex;
+      }
+      const image=layer.images[sheetIndex];
+      if(split){
+        const [x,y,w,h,headX,headY]=posesR73[index],artScale=.74;
+        // Crop each full silhouette BEFORE head registration, with consistent pixel scale.
+        layer.crop.style.width=`${w/512*size}px`;layer.crop.style.height=`${h/512*size}px`;
+        layer.crop.style.transform=`translate3d(${(.5-headX/512*artScale)*size}px,${(.44-headY/512*artScale)*size}px,0) scale(${artScale})`;
+        image.style.width=`${1536/w*100}%`;image.style.height=`${1024/h*100}%`;
+        image.style.transform=`translate3d(${-x/1536*100}%,${-y/1024*100}%,0)`;
+      }else{
+        const [anchorX,anchorY]=anchors[index];
+        layer.crop.style.transform=`translate3d(${(.5-anchorX/256*.84)*100}%,${(.44-anchorY/256*.84)*100}%,0) scale(.84)`;
+        image.style.transform=`translate3d(${-(cellIndex%6)/6*100}%,${-Math.floor(cellIndex/6)/4*100}%,0)`;
+      }
     };
     const tick = now => {
       if(active!==flight)return;
@@ -263,10 +315,11 @@
       const directionPosition=((heading/TAU*8)%8+8)%8;
       const fromDirection=Math.floor(directionPosition),toDirection=(fromDirection+1)%8;
       const directionMix=smooth(directionPosition-fromDirection);
-      const gliding=(t>.24&&t<.38)||(t>.59&&t<.73);
-      glideBlend+=((gliding?1:0)-glideBlend)*(1-Math.exp(-dt/155));
+      // Continuous absolute-time glide envelopes avoid refresh-rate-dependent transitions.
+      const glideWindow=(a,b,c,d)=>cinematic(clamp((t-a)/(b-a),0,1))*(1-cinematic(clamp((t-c)/(d-c),0,1)));
+      const glideBlend=glideWindow(.24,.28,.36,.40)+glideWindow(.59,.63,.71,.75);
       // Absolute elapsed time keeps wing phase consistent across refresh rates.
-      const phase=elapsed/620;
+      const phase=elapsed/740;
       const stroke=1-Math.cos(phase*TAU)*(1-glideBlend);
       const fromWing=Math.min(1,Math.floor(stroke)),toWing=fromWing+1,wingMix=stroke-fromWing;
       if(blended){
@@ -279,10 +332,13 @@
       const settling=1-smooth(clamp((t-.86)/.14,0,1));
       const targetBank=clamp(turn*180/Math.PI*2+(point.dx/(speed||1))*4,-17,17)*settling;
       bank+=(targetBank-bank)*(1-Math.exp(-dt/145));
-      pitch+=(-point.dy/(speed||1)*5*settling-pitch)*(1-Math.exp(-dt/180));
+      const depthMotion=Math.sin(TAU*progress);
+      pitch+=((-point.dy/(speed||1)*3+depthMotion*3)*settling-pitch)*(1-Math.exp(-dt/180));
       facing.style.transform=`perspective(520px) rotateX(${pitch.toFixed(2)}deg)`;
-      const lift=smooth(clamp(Math.min(t/.12,(1-t)/.16),0,1));
-      const depth=1-.10*(1-Math.cos(heading))/2;
+      const lift=cinematic(clamp(Math.min(t/.14,(1-t)/.18),0,1));
+      // One continuous approach/recede pass follows route progress, not turn direction.
+      const nearWeight=(1-Math.cos(TAU*progress))/2;
+      const depth=(farDepth+(nearDepth-farDepth)*nearWeight)/nearDepth;
       const scale=homeScale+(depth-homeScale)*lift;
       const bob=Math.sin(phase*TAU)*.7*lift*(1-glideBlend);
       const edge=size*scale*.60;
@@ -298,22 +354,31 @@
     button.classList.add('jingyu-away');
     flight.timer=window.setTimeout(finish,duration+350);
     };
-    const source=button.dataset.flightSrc;
-    if(!source || !(source==='./art/jingyu-flight-r70.png'||source.startsWith('data:image/png;base64,'))){greet();return;}
-    if(loadedSheet?.source===source)return begin(loadedSheet.image);
+    // High-detail plates live once in app memory; do not duplicate large data URLs in every render.
+    const source=window.SalaryMateFlightSheets||button.dataset.flightSrc;
+    const sources=Array.isArray(source)?source:[source];
+    if(![1,4].includes(sources.length)||sources.some(src=>typeof src!=='string'||!(src==='./art/jingyu-flight-r70.png'||/^\.\/art\/jingyu-flight-r73-[abcd]\.png$/.test(src)||src.startsWith('data:image/png;base64,')))){greet();return;}
+    if(loadedSheet?.source===source)return begin(loadedSheet.images);
     button.classList.add('jingyu-greeting');
-    const image=new window.Image();
-    flight.loading=image;
-    image.decoding='async';
-    image.onload=async()=>{
-      image.onload=image.onerror=null;
-      try{if(typeof image.decode==='function')await image.decode();}catch{if(active===flight){flight.loading=null;greet();}return;}
-      if(active!==flight)return;
-      flight.loading=null;loadedSheet={source,image};return begin(image);
-    };
-    image.onerror=()=>{image.onload=image.onerror=null;if(active===flight){flight.loading=null;greet();}};
-    flight.timer=window.setTimeout(finish,6000);
-    image.src=source;
+    const images=sources.map(()=>new window.Image());
+    flight.loading=images;
+    flight.timer=window.setTimeout(finish,sources.length===4?15000:6000);
+    const loading=images.map((image,index)=>new Promise((resolve,reject)=>{
+      const release=()=>{image.onload=image.onerror=null;};
+      image.decoding='async';
+      image.onload=async()=>{
+        release();
+        try{if(typeof image.decode==='function')await image.decode();}catch(error){reject(error);return;}
+        resolve(active===flight?image:null);
+      };
+      image.onerror=()=>{release();reject(new Error('Flight image unavailable'));};
+      flight.cleanups.push(()=>{release();resolve(null);});
+      image.src=sources[index];
+    }));
+    return Promise.all(loading).then(images=>{
+      if(active!==flight||images.some(image=>!image))return;
+      flight.loading=null;loadedSheet={source,images};return begin(images);
+    }).catch(()=>{if(active===flight){flight.loading=null;greet();}});
   };
   window.SalaryMateCompanion = Object.freeze({ fly, stop });
 })();

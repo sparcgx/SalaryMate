@@ -1,0 +1,2703 @@
+{
+  "method": {
+    "threshold": "alpha > 10",
+    "principalComponentMinimumPixels": 1000,
+    "artScale": 0.74,
+    "sourcePixelsPerFrameUnit": 512,
+    "headTargetFrame": [
+      0.5,
+      0.44
+    ],
+    "actorCenterFrame": [
+      0.5,
+      0.5
+    ],
+    "transform": "frameX=.5+.74*(sourceX-headGlobalX)/512; frameY=.44+.74*(sourceY-headGlobalY)/512",
+    "radius": "Maximum Euclidean distance from actor center to every occupied pixel corner of ALL crop alpha>10 pixels, including tiny disconnected components; conservatively covers full pixel squares.",
+    "alphaCornerCheck": "Exact alpha at all four crop corner pixels; also3x3 corner patch extrema and plate corner pixels. All transparent means alpha=0 exactly."
+  },
+  "plates": {
+    "a": {
+      "path": "/workspace/scratch/2abc8ba223a0/r73-assets/jingyu-flight-r73-a.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "principalComponentCount": 6,
+      "cornerAlpha": {
+        "topLeft": 1,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      }
+    },
+    "b": {
+      "path": "/workspace/scratch/2abc8ba223a0/r73-assets/jingyu-flight-r73-b.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "principalComponentCount": 6,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      }
+    },
+    "c": {
+      "path": "/workspace/scratch/2abc8ba223a0/r73-assets/jingyu-flight-r73-c.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "principalComponentCount": 6,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      }
+    },
+    "d": {
+      "path": "/workspace/scratch/2abc8ba223a0/r73-assets/jingyu-flight-r73-d.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "principalComponentCount": 6,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      }
+    }
+  },
+  "poses": [
+    {
+      "plate": "a",
+      "index": 0,
+      "direction": "front",
+      "phase": "up",
+      "sourceRect": [
+        41,
+        63,
+        427,
+        408
+      ],
+      "headAnchorGlobal": [
+        256,
+        255
+      ],
+      "principalComponentIdsInRect": [
+        1
+      ],
+      "intendedComponentId": 1,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 101182,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        45,
+        67,
+        464,
+        467
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        423,
+        404
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.19503906250000003,
+        0.16828125,
+        0.8006249999999999,
+        0.7464062499999999
+      ],
+      "minimumFramePadding": 0.16828125,
+      "maxRadiusFromActorCenter": 0.4001634511780048,
+      "farthestPixelCornerSource": [
+        75,
+        87
+      ],
+      "farthestPixelCornerFrame": [
+        0.2383984375,
+        0.19718750000000002
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 1,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": false,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          1
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": false,
+      "sourceRectEdgeAlphaMax": 1,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 62,
+      "allCropPixelsAlphaAbove10": 101188,
+      "nonPrincipalCropPixelsAlphaAbove10": 6,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        45,
+        67,
+        464,
+        467
+      ]
+    },
+    {
+      "plate": "a",
+      "index": 1,
+      "direction": "front",
+      "phase": "level",
+      "sourceRect": [
+        492,
+        156,
+        553,
+        305
+      ],
+      "headAnchorGlobal": [
+        768,
+        256
+      ],
+      "principalComponentIdsInRect": [
+        3
+      ],
+      "intendedComponentId": 3,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 83689,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        496,
+        160,
+        1041,
+        457
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        549,
+        301
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.106875,
+        0.30125,
+        0.8945703125,
+        0.7305078125
+      ],
+      "minimumFramePadding": 0.10542968750000004,
+      "maxRadiusFromActorCenter": 0.407519579457971,
+      "farthestPixelCornerSource": [
+        1041,
+        227
+      ],
+      "farthestPixelCornerFrame": [
+        0.8945703125,
+        0.3980859375
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": true,
+      "sourceRectEdgeAlphaMax": 1,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 37,
+      "allCropPixelsAlphaAbove10": 83690,
+      "nonPrincipalCropPixelsAlphaAbove10": 1,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        496,
+        160,
+        1041,
+        457
+      ]
+    },
+    {
+      "plate": "a",
+      "index": 2,
+      "direction": "front",
+      "phase": "down",
+      "sourceRect": [
+        1056,
+        156,
+        449,
+        323
+      ],
+      "headAnchorGlobal": [
+        1296,
+        255
+      ],
+      "principalComponentIdsInRect": [
+        4
+      ],
+      "intendedComponentId": 4,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 79900,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        1060,
+        160,
+        1501,
+        475
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        445,
+        319
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.15890625000000003,
+        0.30269531250000004,
+        0.7962890625,
+        0.7579687500000001
+      ],
+      "minimumFramePadding": 0.15890625000000003,
+      "maxRadiusFromActorCenter": 0.4039556549964529,
+      "farthestPixelCornerSource": [
+        1073,
+        465
+      ],
+      "farthestPixelCornerFrame": [
+        0.17769531249999998,
+        0.743515625
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": true,
+      "sourceRectEdgeAlphaMax": 1,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 54,
+      "allCropPixelsAlphaAbove10": 79901,
+      "nonPrincipalCropPixelsAlphaAbove10": 1,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        1060,
+        160,
+        1501,
+        475
+      ]
+    },
+    {
+      "plate": "a",
+      "index": 3,
+      "direction": "front-right",
+      "phase": "up",
+      "sourceRect": [
+        55,
+        509,
+        442,
+        435
+      ],
+      "headAnchorGlobal": [
+        321,
+        734
+      ],
+      "principalComponentIdsInRect": [
+        10
+      ],
+      "intendedComponentId": 10,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 108072,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        59,
+        513,
+        493,
+        940
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        438,
+        431
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.12132812500000001,
+        0.12058593750000002,
+        0.74859375,
+        0.737734375
+      ],
+      "minimumFramePadding": 0.12058593750000002,
+      "maxRadiusFromActorCenter": 0.48192781824363523,
+      "farthestPixelCornerSource": [
+        82,
+        543
+      ],
+      "farthestPixelCornerFrame": [
+        0.15457031250000003,
+        0.1639453125
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          1
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": false,
+      "sourceRectEdgeAlphaMax": 1,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 81,
+      "allCropPixelsAlphaAbove10": 108074,
+      "nonPrincipalCropPixelsAlphaAbove10": 2,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        59,
+        513,
+        493,
+        940
+      ]
+    },
+    {
+      "plate": "a",
+      "index": 4,
+      "direction": "front-right",
+      "phase": "level",
+      "sourceRect": [
+        534,
+        617,
+        526,
+        316
+      ],
+      "headAnchorGlobal": [
+        838,
+        732
+      ],
+      "principalComponentIdsInRect": [
+        11
+      ],
+      "intendedComponentId": 11,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 84528,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        538,
+        621,
+        1056,
+        929
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        522,
+        312
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.06640625,
+        0.2795703125,
+        0.815078125,
+        0.7247265625
+      ],
+      "minimumFramePadding": 0.06640625,
+      "maxRadiusFromActorCenter": 0.4617321969541452,
+      "farthestPixelCornerSource": [
+        539,
+        661
+      ],
+      "farthestPixelCornerFrame": [
+        0.06785156250000002,
+        0.3373828125
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": true,
+      "sourceRectEdgeAlphaMax": 1,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 68,
+      "allCropPixelsAlphaAbove10": 84530,
+      "nonPrincipalCropPixelsAlphaAbove10": 2,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        538,
+        621,
+        1056,
+        929
+      ]
+    },
+    {
+      "plate": "a",
+      "index": 5,
+      "direction": "front-right",
+      "phase": "down",
+      "sourceRect": [
+        1102,
+        621,
+        413,
+        334
+      ],
+      "headAnchorGlobal": [
+        1354,
+        730
+      ],
+      "principalComponentIdsInRect": [
+        12
+      ],
+      "intendedComponentId": 12,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 80906,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        1106,
+        625,
+        1511,
+        951
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        409,
+        330
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.14156249999999998,
+        0.28824218749999997,
+        0.7269140625,
+        0.7594140625
+      ],
+      "minimumFramePadding": 0.14156249999999998,
+      "maxRadiusFromActorCenter": 0.41610577991727826,
+      "farthestPixelCornerSource": [
+        1125,
+        946
+      ],
+      "farthestPixelCornerFrame": [
+        0.16902343749999998,
+        0.7521875
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 1,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": false,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          1
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": false,
+      "sourceRectEdgeAlphaMax": 1,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 75,
+      "allCropPixelsAlphaAbove10": 80910,
+      "nonPrincipalCropPixelsAlphaAbove10": 4,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        1106,
+        625,
+        1511,
+        951
+      ]
+    },
+    {
+      "plate": "b",
+      "index": 0,
+      "direction": "right",
+      "phase": "up",
+      "sourceRect": [
+        54,
+        45,
+        417,
+        423
+      ],
+      "headAnchorGlobal": [
+        364,
+        264
+      ],
+      "principalComponentIdsInRect": [
+        1
+      ],
+      "intendedComponentId": 1,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 107489,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        58,
+        49,
+        467,
+        464
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        413,
+        419
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.057734375000000004,
+        0.1292578125,
+        0.6488671875,
+        0.7290625
+      ],
+      "minimumFramePadding": 0.057734375000000004,
+      "maxRadiusFromActorCenter": 0.5006921783598213,
+      "farthestPixelCornerSource": [
+        96,
+        86
+      ],
+      "farthestPixelCornerFrame": [
+        0.11265625000000001,
+        0.182734375
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": true,
+      "sourceRectEdgeAlphaMax": 1,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 45,
+      "allCropPixelsAlphaAbove10": 107492,
+      "nonPrincipalCropPixelsAlphaAbove10": 3,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        58,
+        49,
+        467,
+        464
+      ]
+    },
+    {
+      "plate": "b",
+      "index": 1,
+      "direction": "right",
+      "phase": "level",
+      "sourceRect": [
+        541,
+        137,
+        439,
+        330
+      ],
+      "headAnchorGlobal": [
+        868,
+        265
+      ],
+      "principalComponentIdsInRect": [
+        3
+      ],
+      "intendedComponentId": 3,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 78792,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        545,
+        141,
+        976,
+        463
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        435,
+        326
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.03316406249999998,
+        0.26078124999999996,
+        0.65609375,
+        0.726171875
+      ],
+      "minimumFramePadding": 0.03316406249999998,
+      "maxRadiusFromActorCenter": 0.47814114332683666,
+      "farthestPixelCornerSource": [
+        545,
+        235
+      ],
+      "farthestPixelCornerFrame": [
+        0.03316406249999998,
+        0.396640625
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": true,
+      "sourceRectEdgeAlphaMax": 1,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 9,
+      "allCropPixelsAlphaAbove10": 78792,
+      "nonPrincipalCropPixelsAlphaAbove10": 0,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        545,
+        141,
+        976,
+        463
+      ]
+    },
+    {
+      "plate": "b",
+      "index": 2,
+      "direction": "right",
+      "phase": "down",
+      "sourceRect": [
+        1074,
+        142,
+        415,
+        356
+      ],
+      "headAnchorGlobal": [
+        1371,
+        265
+      ],
+      "principalComponentIdsInRect": [
+        4
+      ],
+      "intendedComponentId": 4,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 80741,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        1078,
+        146,
+        1485,
+        494
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        411,
+        352
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.07652343750000001,
+        0.2680078125,
+        0.664765625,
+        0.7709765625
+      ],
+      "minimumFramePadding": 0.07652343750000001,
+      "maxRadiusFromActorCenter": 0.42520330794618577,
+      "farthestPixelCornerSource": [
+        1078,
+        333
+      ],
+      "farthestPixelCornerFrame": [
+        0.07652343750000001,
+        0.53828125
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          1
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": false,
+      "sourceRectEdgeAlphaMax": 2,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 37,
+      "allCropPixelsAlphaAbove10": 80742,
+      "nonPrincipalCropPixelsAlphaAbove10": 1,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        1078,
+        146,
+        1485,
+        494
+      ]
+    },
+    {
+      "plate": "b",
+      "index": 3,
+      "direction": "back-right",
+      "phase": "up",
+      "sourceRect": [
+        67,
+        522,
+        419,
+        412
+      ],
+      "headAnchorGlobal": [
+        298,
+        698
+      ],
+      "principalComponentIdsInRect": [
+        7
+      ],
+      "intendedComponentId": 7,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 98771,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        71,
+        526,
+        482,
+        930
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        415,
+        408
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.17191406250000002,
+        0.19140625,
+        0.7659374999999999,
+        0.7753125000000001
+      ],
+      "minimumFramePadding": 0.17191406250000002,
+      "maxRadiusFromActorCenter": 0.41973568728448113,
+      "farthestPixelCornerSource": [
+        99,
+        528
+      ],
+      "farthestPixelCornerFrame": [
+        0.21238281250000002,
+        0.194296875
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 1,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": false,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          1
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": false,
+      "sourceRectEdgeAlphaMax": 2,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 164,
+      "allCropPixelsAlphaAbove10": 98772,
+      "nonPrincipalCropPixelsAlphaAbove10": 1,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        71,
+        526,
+        482,
+        930
+      ]
+    },
+    {
+      "plate": "b",
+      "index": 4,
+      "direction": "back-right",
+      "phase": "level",
+      "sourceRect": [
+        522,
+        614,
+        523,
+        315
+      ],
+      "headAnchorGlobal": [
+        820,
+        707
+      ],
+      "principalComponentIdsInRect": [
+        8
+      ],
+      "intendedComponentId": 8,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 78144,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        526,
+        618,
+        1041,
+        925
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        519,
+        311
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.075078125,
+        0.31136718750000003,
+        0.8194140624999999,
+        0.755078125
+      ],
+      "minimumFramePadding": 0.075078125,
+      "maxRadiusFromActorCenter": 0.4299834563155635,
+      "farthestPixelCornerSource": [
+        526,
+        703
+      ],
+      "farthestPixelCornerFrame": [
+        0.075078125,
+        0.43421875
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          1
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": false,
+      "sourceRectEdgeAlphaMax": 1,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 125,
+      "allCropPixelsAlphaAbove10": 78145,
+      "nonPrincipalCropPixelsAlphaAbove10": 1,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        526,
+        618,
+        1041,
+        925
+      ]
+    },
+    {
+      "plate": "b",
+      "index": 5,
+      "direction": "back-right",
+      "phase": "down",
+      "sourceRect": [
+        1087,
+        625,
+        404,
+        361
+      ],
+      "headAnchorGlobal": [
+        1367,
+        720
+      ],
+      "principalComponentIdsInRect": [
+        9
+      ],
+      "intendedComponentId": 9,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 74703,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        1091,
+        629,
+        1487,
+        982
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        400,
+        357
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.10109374999999998,
+        0.3084765625,
+        0.6734375,
+        0.8186718749999999
+      ],
+      "minimumFramePadding": 0.10109374999999998,
+      "maxRadiusFromActorCenter": 0.4282190818158971,
+      "farthestPixelCornerSource": [
+        1103,
+        896
+      ],
+      "farthestPixelCornerFrame": [
+        0.11843750000000003,
+        0.694375
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          1
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": false,
+      "sourceRectEdgeAlphaMax": 1,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 120,
+      "allCropPixelsAlphaAbove10": 74706,
+      "nonPrincipalCropPixelsAlphaAbove10": 3,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        1091,
+        629,
+        1487,
+        982
+      ]
+    },
+    {
+      "plate": "c",
+      "index": 0,
+      "direction": "back",
+      "phase": "up",
+      "sourceRect": [
+        48,
+        55,
+        447,
+        385
+      ],
+      "headAnchorGlobal": [
+        265,
+        220
+      ],
+      "principalComponentIdsInRect": [
+        1
+      ],
+      "intendedComponentId": 1,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 99386,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        52,
+        59,
+        491,
+        436
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        443,
+        381
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.1921484375,
+        0.2073046875,
+        0.826640625,
+        0.7521875
+      ],
+      "minimumFramePadding": 0.17335937499999998,
+      "maxRadiusFromActorCenter": 0.38880254948412,
+      "farthestPixelCornerSource": [
+        468,
+        85
+      ],
+      "farthestPixelCornerFrame": [
+        0.7933984375,
+        0.2448828125
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 1,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": false,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          1
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": false,
+      "sourceRectEdgeAlphaMax": 2,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 194,
+      "allCropPixelsAlphaAbove10": 99389,
+      "nonPrincipalCropPixelsAlphaAbove10": 3,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        52,
+        59,
+        491,
+        436
+      ]
+    },
+    {
+      "plate": "c",
+      "index": 1,
+      "direction": "back",
+      "phase": "level",
+      "sourceRect": [
+        515,
+        140,
+        517,
+        301
+      ],
+      "headAnchorGlobal": [
+        773,
+        220
+      ],
+      "principalComponentIdsInRect": [
+        3
+      ],
+      "intendedComponentId": 3,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 73742,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        519,
+        144,
+        1028,
+        437
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        513,
+        297
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.13289062499999998,
+        0.33015625,
+        0.8685546875,
+        0.7536328125
+      ],
+      "minimumFramePadding": 0.13144531250000002,
+      "maxRadiusFromActorCenter": 0.3748978315411257,
+      "farthestPixelCornerSource": [
+        1028,
+        214
+      ],
+      "farthestPixelCornerFrame": [
+        0.8685546875,
+        0.431328125
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": true,
+      "sourceRectEdgeAlphaMax": 2,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 64,
+      "allCropPixelsAlphaAbove10": 73743,
+      "nonPrincipalCropPixelsAlphaAbove10": 1,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        519,
+        144,
+        1028,
+        437
+      ]
+    },
+    {
+      "plate": "c",
+      "index": 2,
+      "direction": "back",
+      "phase": "down",
+      "sourceRect": [
+        1062,
+        136,
+        401,
+        306
+      ],
+      "headAnchorGlobal": [
+        1264,
+        216
+      ],
+      "principalComponentIdsInRect": [
+        2
+      ],
+      "intendedComponentId": 2,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 70109,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        1066,
+        140,
+        1459,
+        438
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        397,
+        302
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.21382812499999998,
+        0.33015625,
+        0.7818359375,
+        0.760859375
+      ],
+      "minimumFramePadding": 0.21382812499999998,
+      "maxRadiusFromActorCenter": 0.372687441370216,
+      "farthestPixelCornerSource": [
+        1076,
+        434
+      ],
+      "farthestPixelCornerFrame": [
+        0.22828125,
+        0.755078125
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": true,
+      "sourceRectEdgeAlphaMax": 1,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 43,
+      "allCropPixelsAlphaAbove10": 70109,
+      "nonPrincipalCropPixelsAlphaAbove10": 0,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        1066,
+        140,
+        1459,
+        438
+      ]
+    },
+    {
+      "plate": "c",
+      "index": 3,
+      "direction": "back-left",
+      "phase": "up",
+      "sourceRect": [
+        64,
+        507,
+        416,
+        410
+      ],
+      "headAnchorGlobal": [
+        313,
+        681
+      ],
+      "principalComponentIdsInRect": [
+        8
+      ],
+      "intendedComponentId": 8,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 97324,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        68,
+        511,
+        476,
+        913
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        412,
+        406
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.14589843749999998,
+        0.194296875,
+        0.7355859375,
+        0.7753125000000001
+      ],
+      "minimumFramePadding": 0.14589843749999998,
+      "maxRadiusFromActorCenter": 0.42064498060363353,
+      "farthestPixelCornerSource": [
+        75,
+        555
+      ],
+      "farthestPixelCornerFrame": [
+        0.156015625,
+        0.25789062500000004
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          1
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": false,
+      "sourceRectEdgeAlphaMax": 2,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 120,
+      "allCropPixelsAlphaAbove10": 97332,
+      "nonPrincipalCropPixelsAlphaAbove10": 8,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        68,
+        511,
+        476,
+        913
+      ]
+    },
+    {
+      "plate": "c",
+      "index": 4,
+      "direction": "back-left",
+      "phase": "level",
+      "sourceRect": [
+        511,
+        587,
+        515,
+        329
+      ],
+      "headAnchorGlobal": [
+        778,
+        672
+      ],
+      "principalComponentIdsInRect": [
+        10
+      ],
+      "intendedComponentId": 10,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 83303,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        515,
+        591,
+        1022,
+        912
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        511,
+        325
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.11988281249999999,
+        0.3229296875,
+        0.85265625,
+        0.786875
+      ],
+      "minimumFramePadding": 0.11988281249999999,
+      "maxRadiusFromActorCenter": 0.38505142859251,
+      "farthestPixelCornerSource": [
+        515,
+        671
+      ],
+      "farthestPixelCornerFrame": [
+        0.11988281249999999,
+        0.4385546875
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          1
+        ],
+        "topRight": [
+          0,
+          1
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": false,
+      "sourceRectEdgeAlphaMax": 1,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 81,
+      "allCropPixelsAlphaAbove10": 83304,
+      "nonPrincipalCropPixelsAlphaAbove10": 1,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        515,
+        591,
+        1022,
+        912
+      ]
+    },
+    {
+      "plate": "c",
+      "index": 5,
+      "direction": "back-left",
+      "phase": "down",
+      "sourceRect": [
+        1071,
+        592,
+        409,
+        339
+      ],
+      "headAnchorGlobal": [
+        1265,
+        684
+      ],
+      "principalComponentIdsInRect": [
+        11
+      ],
+      "intendedComponentId": 11,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 75656,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        1075,
+        596,
+        1476,
+        927
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        405,
+        335
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.225390625,
+        0.3128125,
+        0.8049609375,
+        0.7912109375
+      ],
+      "minimumFramePadding": 0.19503906250000003,
+      "maxRadiusFromActorCenter": 0.4144945729893187,
+      "farthestPixelCornerSource": [
+        1472,
+        924
+      ],
+      "farthestPixelCornerFrame": [
+        0.7991796875,
+        0.786875
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": true,
+      "sourceRectEdgeAlphaMax": 2,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 147,
+      "allCropPixelsAlphaAbove10": 75661,
+      "nonPrincipalCropPixelsAlphaAbove10": 5,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        1075,
+        596,
+        1476,
+        927
+      ]
+    },
+    {
+      "plate": "d",
+      "index": 0,
+      "direction": "left",
+      "phase": "up",
+      "sourceRect": [
+        84,
+        22,
+        378,
+        462
+      ],
+      "headAnchorGlobal": [
+        185,
+        257
+      ],
+      "principalComponentIdsInRect": [
+        1
+      ],
+      "intendedComponentId": 1,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 106752,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        88,
+        26,
+        458,
+        480
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        374,
+        458
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.3598046875,
+        0.1061328125,
+        0.8945703125,
+        0.7623046875
+      ],
+      "minimumFramePadding": 0.10542968750000004,
+      "maxRadiusFromActorCenter": 0.5078141781823231,
+      "farthestPixelCornerSource": [
+        408,
+        27
+      ],
+      "farthestPixelCornerFrame": [
+        0.8223046875,
+        0.10757812500000002
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": true,
+      "sourceRectEdgeAlphaMax": 2,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 32,
+      "allCropPixelsAlphaAbove10": 106755,
+      "nonPrincipalCropPixelsAlphaAbove10": 3,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        88,
+        26,
+        458,
+        480
+      ]
+    },
+    {
+      "plate": "d",
+      "index": 1,
+      "direction": "left",
+      "phase": "level",
+      "sourceRect": [
+        591,
+        142,
+        437,
+        342
+      ],
+      "headAnchorGlobal": [
+        695,
+        262
+      ],
+      "principalComponentIdsInRect": [
+        3
+      ],
+      "intendedComponentId": 3,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 82336,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        595,
+        146,
+        1024,
+        480
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        433,
+        338
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.35546875,
+        0.27234375,
+        0.9755078125000001,
+        0.755078125
+      ],
+      "minimumFramePadding": 0.02449218749999993,
+      "maxRadiusFromActorCenter": 0.4895395817247012,
+      "farthestPixelCornerSource": [
+        1024,
+        223
+      ],
+      "farthestPixelCornerFrame": [
+        0.9755078125000001,
+        0.38363281250000003
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": true,
+      "sourceRectEdgeAlphaMax": 1,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 59,
+      "allCropPixelsAlphaAbove10": 82336,
+      "nonPrincipalCropPixelsAlphaAbove10": 0,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        595,
+        146,
+        1024,
+        480
+      ]
+    },
+    {
+      "plate": "d",
+      "index": 2,
+      "direction": "left",
+      "phase": "down",
+      "sourceRect": [
+        1099,
+        124,
+        412,
+        381
+      ],
+      "headAnchorGlobal": [
+        1216,
+        249
+      ],
+      "principalComponentIdsInRect": [
+        2
+      ],
+      "intendedComponentId": 2,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 81542,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        1103,
+        128,
+        1507,
+        501
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        408,
+        377
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.3366796875,
+        0.2651171875,
+        0.9205859375000001,
+        0.80421875
+      ],
+      "minimumFramePadding": 0.07941406249999994,
+      "maxRadiusFromActorCenter": 0.4432672071736938,
+      "farthestPixelCornerSource": [
+        1440,
+        500
+      ],
+      "farthestPixelCornerFrame": [
+        0.82375,
+        0.8027734375
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": true,
+      "sourceRectEdgeAlphaMax": 1,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 26,
+      "allCropPixelsAlphaAbove10": 81542,
+      "nonPrincipalCropPixelsAlphaAbove10": 0,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        1103,
+        128,
+        1507,
+        501
+      ]
+    },
+    {
+      "plate": "d",
+      "index": 3,
+      "direction": "front-left",
+      "phase": "up",
+      "sourceRect": [
+        67,
+        512,
+        416,
+        426
+      ],
+      "headAnchorGlobal": [
+        227,
+        720
+      ],
+      "principalComponentIdsInRect": [
+        5
+      ],
+      "intendedComponentId": 5,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 111718,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        71,
+        516,
+        479,
+        934
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        412,
+        422
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.27453125,
+        0.14515625,
+        0.86421875,
+        0.749296875
+      ],
+      "minimumFramePadding": 0.13578124999999996,
+      "maxRadiusFromActorCenter": 0.4374111743673517,
+      "farthestPixelCornerSource": [
+        412,
+        522
+      ],
+      "farthestPixelCornerFrame": [
+        0.7673828125,
+        0.15382812499999998
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": true,
+      "sourceRectEdgeAlphaMax": 2,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 73,
+      "allCropPixelsAlphaAbove10": 111720,
+      "nonPrincipalCropPixelsAlphaAbove10": 2,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        71,
+        516,
+        479,
+        934
+      ]
+    },
+    {
+      "plate": "d",
+      "index": 4,
+      "direction": "front-left",
+      "phase": "level",
+      "sourceRect": [
+        510,
+        619,
+        540,
+        318
+      ],
+      "headAnchorGlobal": [
+        754,
+        723
+      ],
+      "principalComponentIdsInRect": [
+        7
+      ],
+      "intendedComponentId": 7,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 89507,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        514,
+        623,
+        1046,
+        933
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        536,
+        314
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.153125,
+        0.29546875,
+        0.92203125,
+        0.743515625
+      ],
+      "minimumFramePadding": 0.07796875000000003,
+      "maxRadiusFromActorCenter": 0.4290599394497521,
+      "farthestPixelCornerSource": [
+        1046,
+        711
+      ],
+      "farthestPixelCornerFrame": [
+        0.92203125,
+        0.42265625
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          1
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": false,
+      "sourceRectEdgeAlphaMax": 1,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 43,
+      "allCropPixelsAlphaAbove10": 89507,
+      "nonPrincipalCropPixelsAlphaAbove10": 0,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        514,
+        623,
+        1046,
+        933
+      ]
+    },
+    {
+      "plate": "d",
+      "index": 5,
+      "direction": "front-left",
+      "phase": "down",
+      "sourceRect": [
+        1071,
+        625,
+        436,
+        346
+      ],
+      "headAnchorGlobal": [
+        1258,
+        726
+      ],
+      "principalComponentIdsInRect": [
+        8
+      ],
+      "intendedComponentId": 8,
+      "otherPrincipalComponents": [],
+      "otherPrincipalComponentPixels": {},
+      "intendedComponentAlphaAbove10Pixels": 85202,
+      "intendedComponentPixelsClippedBySourceRect": 0,
+      "boundsAlphaAbove10GlobalExclusive": [
+        1075,
+        629,
+        1503,
+        967
+      ],
+      "boundsAlphaAbove10WithinCropExclusive": [
+        4,
+        4,
+        432,
+        342
+      ],
+      "transformedFrameBoundsExclusive": [
+        0.23550781250000002,
+        0.2998046875,
+        0.8541015625,
+        0.7883203125
+      ],
+      "minimumFramePadding": 0.14589843749999998,
+      "maxRadiusFromActorCenter": 0.4190159941832145,
+      "farthestPixelCornerSource": [
+        1473,
+        962
+      ],
+      "farthestPixelCornerFrame": [
+        0.8107421875,
+        0.7810937499999999
+      ],
+      "radiusBelow0_60": true,
+      "sourceRectAndFrameUnclipped": true,
+      "cornerAlpha": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 0,
+        "bottomRight": 0
+      },
+      "allFourCornerPixelsExactlyTransparent": true,
+      "corner3x3AlphaExtrema": {
+        "topLeft": [
+          0,
+          0
+        ],
+        "topRight": [
+          0,
+          0
+        ],
+        "bottomLeft": [
+          0,
+          0
+        ],
+        "bottomRight": [
+          0,
+          0
+        ]
+      },
+      "allFour3x3CornerPatchesExactlyTransparent": true,
+      "sourceRectEdgeAlphaMax": 1,
+      "sourceRectEdgePixelsAbove10": 0,
+      "sourceRectEdgePixelsNonzero": 63,
+      "allCropPixelsAlphaAbove10": 85203,
+      "nonPrincipalCropPixelsAlphaAbove10": 1,
+      "principalComponentBoundsAlphaAbove10GlobalExclusive": [
+        1075,
+        629,
+        1503,
+        967
+      ]
+    }
+  ],
+  "summary": {
+    "all24SourceRectsExcludeOtherPrincipalComponents": true,
+    "all24SourceRectsAndTransformedFramesUnclipped": true,
+    "all24MaxRadiiBelow0_60": true,
+    "maxRadiusAcrossAllPoses": 0.5078141781823231,
+    "minimumFramePaddingAcrossAllPoses": 0.02449218749999993,
+    "allSourceRectCornerPixelsExactlyTransparent": false,
+    "sourceRectCornerFailures": [
+      {
+        "plate": "a",
+        "index": 0,
+        "direction": "front",
+        "phase": "up",
+        "cornerAlpha": {
+          "topLeft": 1,
+          "topRight": 0,
+          "bottomLeft": 0,
+          "bottomRight": 0
+        }
+      },
+      {
+        "plate": "a",
+        "index": 5,
+        "direction": "front-right",
+        "phase": "down",
+        "cornerAlpha": {
+          "topLeft": 1,
+          "topRight": 0,
+          "bottomLeft": 0,
+          "bottomRight": 0
+        }
+      },
+      {
+        "plate": "b",
+        "index": 3,
+        "direction": "back-right",
+        "phase": "up",
+        "cornerAlpha": {
+          "topLeft": 0,
+          "topRight": 1,
+          "bottomLeft": 0,
+          "bottomRight": 0
+        }
+      },
+      {
+        "plate": "c",
+        "index": 0,
+        "direction": "back",
+        "phase": "up",
+        "cornerAlpha": {
+          "topLeft": 1,
+          "topRight": 0,
+          "bottomLeft": 0,
+          "bottomRight": 0
+        }
+      }
+    ],
+    "sourceRect3x3CornerFailures": [
+      {
+        "plate": "a",
+        "index": 0,
+        "direction": "front",
+        "phase": "up",
+        "corner3x3AlphaExtrema": {
+          "topLeft": [
+            0,
+            1
+          ],
+          "topRight": [
+            0,
+            0
+          ],
+          "bottomLeft": [
+            0,
+            0
+          ],
+          "bottomRight": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "plate": "a",
+        "index": 3,
+        "direction": "front-right",
+        "phase": "up",
+        "corner3x3AlphaExtrema": {
+          "topLeft": [
+            0,
+            0
+          ],
+          "topRight": [
+            0,
+            1
+          ],
+          "bottomLeft": [
+            0,
+            0
+          ],
+          "bottomRight": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "plate": "a",
+        "index": 5,
+        "direction": "front-right",
+        "phase": "down",
+        "corner3x3AlphaExtrema": {
+          "topLeft": [
+            0,
+            1
+          ],
+          "topRight": [
+            0,
+            0
+          ],
+          "bottomLeft": [
+            0,
+            0
+          ],
+          "bottomRight": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "plate": "b",
+        "index": 2,
+        "direction": "right",
+        "phase": "down",
+        "corner3x3AlphaExtrema": {
+          "topLeft": [
+            0,
+            0
+          ],
+          "topRight": [
+            0,
+            0
+          ],
+          "bottomLeft": [
+            0,
+            0
+          ],
+          "bottomRight": [
+            0,
+            1
+          ]
+        }
+      },
+      {
+        "plate": "b",
+        "index": 3,
+        "direction": "back-right",
+        "phase": "up",
+        "corner3x3AlphaExtrema": {
+          "topLeft": [
+            0,
+            0
+          ],
+          "topRight": [
+            0,
+            1
+          ],
+          "bottomLeft": [
+            0,
+            0
+          ],
+          "bottomRight": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "plate": "b",
+        "index": 4,
+        "direction": "back-right",
+        "phase": "level",
+        "corner3x3AlphaExtrema": {
+          "topLeft": [
+            0,
+            0
+          ],
+          "topRight": [
+            0,
+            1
+          ],
+          "bottomLeft": [
+            0,
+            0
+          ],
+          "bottomRight": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "plate": "b",
+        "index": 5,
+        "direction": "back-right",
+        "phase": "down",
+        "corner3x3AlphaExtrema": {
+          "topLeft": [
+            0,
+            1
+          ],
+          "topRight": [
+            0,
+            0
+          ],
+          "bottomLeft": [
+            0,
+            0
+          ],
+          "bottomRight": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "plate": "c",
+        "index": 0,
+        "direction": "back",
+        "phase": "up",
+        "corner3x3AlphaExtrema": {
+          "topLeft": [
+            0,
+            1
+          ],
+          "topRight": [
+            0,
+            0
+          ],
+          "bottomLeft": [
+            0,
+            0
+          ],
+          "bottomRight": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "plate": "c",
+        "index": 3,
+        "direction": "back-left",
+        "phase": "up",
+        "corner3x3AlphaExtrema": {
+          "topLeft": [
+            0,
+            0
+          ],
+          "topRight": [
+            0,
+            0
+          ],
+          "bottomLeft": [
+            0,
+            0
+          ],
+          "bottomRight": [
+            0,
+            1
+          ]
+        }
+      },
+      {
+        "plate": "c",
+        "index": 4,
+        "direction": "back-left",
+        "phase": "level",
+        "corner3x3AlphaExtrema": {
+          "topLeft": [
+            0,
+            1
+          ],
+          "topRight": [
+            0,
+            1
+          ],
+          "bottomLeft": [
+            0,
+            0
+          ],
+          "bottomRight": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "plate": "d",
+        "index": 4,
+        "direction": "front-left",
+        "phase": "level",
+        "corner3x3AlphaExtrema": {
+          "topLeft": [
+            0,
+            0
+          ],
+          "topRight": [
+            0,
+            0
+          ],
+          "bottomLeft": [
+            0,
+            1
+          ],
+          "bottomRight": [
+            0,
+            0
+          ]
+        }
+      }
+    ],
+    "allFourPlateCornerPixelsExactlyTransparent": false,
+    "all24SourceRectEdgesContainNoAlphaAbove10": true,
+    "maximumSourceRectEdgeAlpha": 2,
+    "posesWithTinyDisconnectedPixelsAbove10": [
+      {
+        "plate": "a",
+        "index": 0,
+        "count": 6
+      },
+      {
+        "plate": "a",
+        "index": 1,
+        "count": 1
+      },
+      {
+        "plate": "a",
+        "index": 2,
+        "count": 1
+      },
+      {
+        "plate": "a",
+        "index": 3,
+        "count": 2
+      },
+      {
+        "plate": "a",
+        "index": 4,
+        "count": 2
+      },
+      {
+        "plate": "a",
+        "index": 5,
+        "count": 4
+      },
+      {
+        "plate": "b",
+        "index": 0,
+        "count": 3
+      },
+      {
+        "plate": "b",
+        "index": 2,
+        "count": 1
+      },
+      {
+        "plate": "b",
+        "index": 3,
+        "count": 1
+      },
+      {
+        "plate": "b",
+        "index": 4,
+        "count": 1
+      },
+      {
+        "plate": "b",
+        "index": 5,
+        "count": 3
+      },
+      {
+        "plate": "c",
+        "index": 0,
+        "count": 3
+      },
+      {
+        "plate": "c",
+        "index": 1,
+        "count": 1
+      },
+      {
+        "plate": "c",
+        "index": 3,
+        "count": 8
+      },
+      {
+        "plate": "c",
+        "index": 4,
+        "count": 1
+      },
+      {
+        "plate": "c",
+        "index": 5,
+        "count": 5
+      },
+      {
+        "plate": "d",
+        "index": 0,
+        "count": 3
+      },
+      {
+        "plate": "d",
+        "index": 3,
+        "count": 2
+      },
+      {
+        "plate": "d",
+        "index": 5,
+        "count": 1
+      }
+    ]
+  }
+}

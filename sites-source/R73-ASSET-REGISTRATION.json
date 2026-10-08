@@ -1,0 +1,949 @@
+{
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "nominalGrid": [
+    3,
+    2
+  ],
+  "nominalCellSize": [
+    512,
+    512
+  ],
+  "anchorMethod": "Manual visual estimate of center of main head mass excluding ear tufts; approximately plus/minus 8 native pixels. Normalized256 values mean nominal512-cell-local coordinates divided by2. Use custom sourceRect before registration, because several wings extend beyond nominal cells.",
+  "plates": {
+    "a": {
+      "path": "/workspace/scratch/2abc8ba223a0/r73-assets/jingyu-flight-r73-a.png",
+      "poses": [
+        {
+          "index": 0,
+          "direction": "front",
+          "phase": "up",
+          "nominalCell": [
+            0,
+            0
+          ],
+          "boundsA10GlobalExclusive": [
+            45,
+            67,
+            464,
+            467
+          ],
+          "sourceRect": [
+            41,
+            63,
+            427,
+            408
+          ],
+          "headAnchorGlobal": [
+            256,
+            255
+          ],
+          "headAnchorWithinSourceRect": [
+            215,
+            192
+          ],
+          "headAnchorNominalCell": [
+            256,
+            255
+          ],
+          "headAnchorNormalized256": [
+            128.0,
+            127.5
+          ],
+          "alphaPixelsAbove10": 101182
+        },
+        {
+          "index": 1,
+          "direction": "front",
+          "phase": "level",
+          "nominalCell": [
+            1,
+            0
+          ],
+          "boundsA10GlobalExclusive": [
+            496,
+            160,
+            1041,
+            457
+          ],
+          "sourceRect": [
+            492,
+            156,
+            553,
+            305
+          ],
+          "headAnchorGlobal": [
+            768,
+            256
+          ],
+          "headAnchorWithinSourceRect": [
+            276,
+            100
+          ],
+          "headAnchorNominalCell": [
+            256,
+            256
+          ],
+          "headAnchorNormalized256": [
+            128.0,
+            128.0
+          ],
+          "alphaPixelsAbove10": 83689
+        },
+        {
+          "index": 2,
+          "direction": "front",
+          "phase": "down",
+          "nominalCell": [
+            2,
+            0
+          ],
+          "boundsA10GlobalExclusive": [
+            1060,
+            160,
+            1501,
+            475
+          ],
+          "sourceRect": [
+            1056,
+            156,
+            449,
+            323
+          ],
+          "headAnchorGlobal": [
+            1296,
+            255
+          ],
+          "headAnchorWithinSourceRect": [
+            240,
+            99
+          ],
+          "headAnchorNominalCell": [
+            272,
+            255
+          ],
+          "headAnchorNormalized256": [
+            136.0,
+            127.5
+          ],
+          "alphaPixelsAbove10": 79900
+        },
+        {
+          "index": 3,
+          "direction": "front-right",
+          "phase": "up",
+          "nominalCell": [
+            0,
+            1
+          ],
+          "boundsA10GlobalExclusive": [
+            59,
+            513,
+            493,
+            940
+          ],
+          "sourceRect": [
+            55,
+            509,
+            442,
+            435
+          ],
+          "headAnchorGlobal": [
+            321,
+            734
+          ],
+          "headAnchorWithinSourceRect": [
+            266,
+            225
+          ],
+          "headAnchorNominalCell": [
+            321,
+            222
+          ],
+          "headAnchorNormalized256": [
+            160.5,
+            111.0
+          ],
+          "alphaPixelsAbove10": 108072
+        },
+        {
+          "index": 4,
+          "direction": "front-right",
+          "phase": "level",
+          "nominalCell": [
+            1,
+            1
+          ],
+          "boundsA10GlobalExclusive": [
+            538,
+            621,
+            1056,
+            929
+          ],
+          "sourceRect": [
+            534,
+            617,
+            526,
+            316
+          ],
+          "headAnchorGlobal": [
+            838,
+            732
+          ],
+          "headAnchorWithinSourceRect": [
+            304,
+            115
+          ],
+          "headAnchorNominalCell": [
+            326,
+            220
+          ],
+          "headAnchorNormalized256": [
+            163.0,
+            110.0
+          ],
+          "alphaPixelsAbove10": 84528
+        },
+        {
+          "index": 5,
+          "direction": "front-right",
+          "phase": "down",
+          "nominalCell": [
+            2,
+            1
+          ],
+          "boundsA10GlobalExclusive": [
+            1106,
+            625,
+            1511,
+            951
+          ],
+          "sourceRect": [
+            1102,
+            621,
+            413,
+            334
+          ],
+          "headAnchorGlobal": [
+            1354,
+            730
+          ],
+          "headAnchorWithinSourceRect": [
+            252,
+            109
+          ],
+          "headAnchorNominalCell": [
+            330,
+            218
+          ],
+          "headAnchorNormalized256": [
+            165.0,
+            109.0
+          ],
+          "alphaPixelsAbove10": 80906
+        }
+      ]
+    },
+    "b": {
+      "path": "/workspace/scratch/2abc8ba223a0/r73-assets/jingyu-flight-r73-b.png",
+      "poses": [
+        {
+          "index": 0,
+          "direction": "right",
+          "phase": "up",
+          "nominalCell": [
+            0,
+            0
+          ],
+          "boundsA10GlobalExclusive": [
+            58,
+            49,
+            467,
+            464
+          ],
+          "sourceRect": [
+            54,
+            45,
+            417,
+            423
+          ],
+          "headAnchorGlobal": [
+            364,
+            264
+          ],
+          "headAnchorWithinSourceRect": [
+            310,
+            219
+          ],
+          "headAnchorNominalCell": [
+            364,
+            264
+          ],
+          "headAnchorNormalized256": [
+            182.0,
+            132.0
+          ],
+          "alphaPixelsAbove10": 107489
+        },
+        {
+          "index": 1,
+          "direction": "right",
+          "phase": "level",
+          "nominalCell": [
+            1,
+            0
+          ],
+          "boundsA10GlobalExclusive": [
+            545,
+            141,
+            976,
+            463
+          ],
+          "sourceRect": [
+            541,
+            137,
+            439,
+            330
+          ],
+          "headAnchorGlobal": [
+            868,
+            265
+          ],
+          "headAnchorWithinSourceRect": [
+            327,
+            128
+          ],
+          "headAnchorNominalCell": [
+            356,
+            265
+          ],
+          "headAnchorNormalized256": [
+            178.0,
+            132.5
+          ],
+          "alphaPixelsAbove10": 78792
+        },
+        {
+          "index": 2,
+          "direction": "right",
+          "phase": "down",
+          "nominalCell": [
+            2,
+            0
+          ],
+          "boundsA10GlobalExclusive": [
+            1078,
+            146,
+            1485,
+            494
+          ],
+          "sourceRect": [
+            1074,
+            142,
+            415,
+            356
+          ],
+          "headAnchorGlobal": [
+            1371,
+            265
+          ],
+          "headAnchorWithinSourceRect": [
+            297,
+            123
+          ],
+          "headAnchorNominalCell": [
+            347,
+            265
+          ],
+          "headAnchorNormalized256": [
+            173.5,
+            132.5
+          ],
+          "alphaPixelsAbove10": 80741
+        },
+        {
+          "index": 3,
+          "direction": "back-right",
+          "phase": "up",
+          "nominalCell": [
+            0,
+            1
+          ],
+          "boundsA10GlobalExclusive": [
+            71,
+            526,
+            482,
+            930
+          ],
+          "sourceRect": [
+            67,
+            522,
+            419,
+            412
+          ],
+          "headAnchorGlobal": [
+            298,
+            698
+          ],
+          "headAnchorWithinSourceRect": [
+            231,
+            176
+          ],
+          "headAnchorNominalCell": [
+            298,
+            186
+          ],
+          "headAnchorNormalized256": [
+            149.0,
+            93.0
+          ],
+          "alphaPixelsAbove10": 98771
+        },
+        {
+          "index": 4,
+          "direction": "back-right",
+          "phase": "level",
+          "nominalCell": [
+            1,
+            1
+          ],
+          "boundsA10GlobalExclusive": [
+            526,
+            618,
+            1041,
+            925
+          ],
+          "sourceRect": [
+            522,
+            614,
+            523,
+            315
+          ],
+          "headAnchorGlobal": [
+            820,
+            707
+          ],
+          "headAnchorWithinSourceRect": [
+            298,
+            93
+          ],
+          "headAnchorNominalCell": [
+            308,
+            195
+          ],
+          "headAnchorNormalized256": [
+            154.0,
+            97.5
+          ],
+          "alphaPixelsAbove10": 78144
+        },
+        {
+          "index": 5,
+          "direction": "back-right",
+          "phase": "down",
+          "nominalCell": [
+            2,
+            1
+          ],
+          "boundsA10GlobalExclusive": [
+            1091,
+            629,
+            1487,
+            982
+          ],
+          "sourceRect": [
+            1087,
+            625,
+            404,
+            361
+          ],
+          "headAnchorGlobal": [
+            1367,
+            720
+          ],
+          "headAnchorWithinSourceRect": [
+            280,
+            95
+          ],
+          "headAnchorNominalCell": [
+            343,
+            208
+          ],
+          "headAnchorNormalized256": [
+            171.5,
+            104.0
+          ],
+          "alphaPixelsAbove10": 74703
+        }
+      ]
+    },
+    "c": {
+      "path": "/workspace/scratch/2abc8ba223a0/r73-assets/jingyu-flight-r73-c.png",
+      "poses": [
+        {
+          "index": 0,
+          "direction": "back",
+          "phase": "up",
+          "nominalCell": [
+            0,
+            0
+          ],
+          "boundsA10GlobalExclusive": [
+            52,
+            59,
+            491,
+            436
+          ],
+          "sourceRect": [
+            48,
+            55,
+            447,
+            385
+          ],
+          "headAnchorGlobal": [
+            265,
+            220
+          ],
+          "headAnchorWithinSourceRect": [
+            217,
+            165
+          ],
+          "headAnchorNominalCell": [
+            265,
+            220
+          ],
+          "headAnchorNormalized256": [
+            132.5,
+            110.0
+          ],
+          "alphaPixelsAbove10": 99386
+        },
+        {
+          "index": 1,
+          "direction": "back",
+          "phase": "level",
+          "nominalCell": [
+            1,
+            0
+          ],
+          "boundsA10GlobalExclusive": [
+            519,
+            144,
+            1028,
+            437
+          ],
+          "sourceRect": [
+            515,
+            140,
+            517,
+            301
+          ],
+          "headAnchorGlobal": [
+            773,
+            220
+          ],
+          "headAnchorWithinSourceRect": [
+            258,
+            80
+          ],
+          "headAnchorNominalCell": [
+            261,
+            220
+          ],
+          "headAnchorNormalized256": [
+            130.5,
+            110.0
+          ],
+          "alphaPixelsAbove10": 73742
+        },
+        {
+          "index": 2,
+          "direction": "back",
+          "phase": "down",
+          "nominalCell": [
+            2,
+            0
+          ],
+          "boundsA10GlobalExclusive": [
+            1066,
+            140,
+            1459,
+            438
+          ],
+          "sourceRect": [
+            1062,
+            136,
+            401,
+            306
+          ],
+          "headAnchorGlobal": [
+            1264,
+            216
+          ],
+          "headAnchorWithinSourceRect": [
+            202,
+            80
+          ],
+          "headAnchorNominalCell": [
+            240,
+            216
+          ],
+          "headAnchorNormalized256": [
+            120.0,
+            108.0
+          ],
+          "alphaPixelsAbove10": 70109
+        },
+        {
+          "index": 3,
+          "direction": "back-left",
+          "phase": "up",
+          "nominalCell": [
+            0,
+            1
+          ],
+          "boundsA10GlobalExclusive": [
+            68,
+            511,
+            476,
+            913
+          ],
+          "sourceRect": [
+            64,
+            507,
+            416,
+            410
+          ],
+          "headAnchorGlobal": [
+            313,
+            681
+          ],
+          "headAnchorWithinSourceRect": [
+            249,
+            174
+          ],
+          "headAnchorNominalCell": [
+            313,
+            169
+          ],
+          "headAnchorNormalized256": [
+            156.5,
+            84.5
+          ],
+          "alphaPixelsAbove10": 97324
+        },
+        {
+          "index": 4,
+          "direction": "back-left",
+          "phase": "level",
+          "nominalCell": [
+            1,
+            1
+          ],
+          "boundsA10GlobalExclusive": [
+            515,
+            591,
+            1022,
+            912
+          ],
+          "sourceRect": [
+            511,
+            587,
+            515,
+            329
+          ],
+          "headAnchorGlobal": [
+            778,
+            672
+          ],
+          "headAnchorWithinSourceRect": [
+            267,
+            85
+          ],
+          "headAnchorNominalCell": [
+            266,
+            160
+          ],
+          "headAnchorNormalized256": [
+            133.0,
+            80.0
+          ],
+          "alphaPixelsAbove10": 83303
+        },
+        {
+          "index": 5,
+          "direction": "back-left",
+          "phase": "down",
+          "nominalCell": [
+            2,
+            1
+          ],
+          "boundsA10GlobalExclusive": [
+            1075,
+            596,
+            1476,
+            927
+          ],
+          "sourceRect": [
+            1071,
+            592,
+            409,
+            339
+          ],
+          "headAnchorGlobal": [
+            1265,
+            684
+          ],
+          "headAnchorWithinSourceRect": [
+            194,
+            92
+          ],
+          "headAnchorNominalCell": [
+            241,
+            172
+          ],
+          "headAnchorNormalized256": [
+            120.5,
+            86.0
+          ],
+          "alphaPixelsAbove10": 75656
+        }
+      ]
+    },
+    "d": {
+      "path": "/workspace/scratch/2abc8ba223a0/r73-assets/jingyu-flight-r73-d.png",
+      "poses": [
+        {
+          "index": 0,
+          "direction": "left",
+          "phase": "up",
+          "nominalCell": [
+            0,
+            0
+          ],
+          "boundsA10GlobalExclusive": [
+            88,
+            26,
+            458,
+            480
+          ],
+          "sourceRect": [
+            84,
+            22,
+            378,
+            462
+          ],
+          "headAnchorGlobal": [
+            185,
+            257
+          ],
+          "headAnchorWithinSourceRect": [
+            101,
+            235
+          ],
+          "headAnchorNominalCell": [
+            185,
+            257
+          ],
+          "headAnchorNormalized256": [
+            92.5,
+            128.5
+          ],
+          "alphaPixelsAbove10": 106752
+        },
+        {
+          "index": 1,
+          "direction": "left",
+          "phase": "level",
+          "nominalCell": [
+            1,
+            0
+          ],
+          "boundsA10GlobalExclusive": [
+            595,
+            146,
+            1024,
+            480
+          ],
+          "sourceRect": [
+            591,
+            142,
+            437,
+            342
+          ],
+          "headAnchorGlobal": [
+            695,
+            262
+          ],
+          "headAnchorWithinSourceRect": [
+            104,
+            120
+          ],
+          "headAnchorNominalCell": [
+            183,
+            262
+          ],
+          "headAnchorNormalized256": [
+            91.5,
+            131.0
+          ],
+          "alphaPixelsAbove10": 82336
+        },
+        {
+          "index": 2,
+          "direction": "left",
+          "phase": "down",
+          "nominalCell": [
+            2,
+            0
+          ],
+          "boundsA10GlobalExclusive": [
+            1103,
+            128,
+            1507,
+            501
+          ],
+          "sourceRect": [
+            1099,
+            124,
+            412,
+            381
+          ],
+          "headAnchorGlobal": [
+            1216,
+            249
+          ],
+          "headAnchorWithinSourceRect": [
+            117,
+            125
+          ],
+          "headAnchorNominalCell": [
+            192,
+            249
+          ],
+          "headAnchorNormalized256": [
+            96.0,
+            124.5
+          ],
+          "alphaPixelsAbove10": 81542
+        },
+        {
+          "index": 3,
+          "direction": "front-left",
+          "phase": "up",
+          "nominalCell": [
+            0,
+            1
+          ],
+          "boundsA10GlobalExclusive": [
+            71,
+            516,
+            479,
+            934
+          ],
+          "sourceRect": [
+            67,
+            512,
+            416,
+            426
+          ],
+          "headAnchorGlobal": [
+            227,
+            720
+          ],
+          "headAnchorWithinSourceRect": [
+            160,
+            208
+          ],
+          "headAnchorNominalCell": [
+            227,
+            208
+          ],
+          "headAnchorNormalized256": [
+            113.5,
+            104.0
+          ],
+          "alphaPixelsAbove10": 111718
+        },
+        {
+          "index": 4,
+          "direction": "front-left",
+          "phase": "level",
+          "nominalCell": [
+            1,
+            1
+          ],
+          "boundsA10GlobalExclusive": [
+            514,
+            623,
+            1046,
+            933
+          ],
+          "sourceRect": [
+            510,
+            619,
+            540,
+            318
+          ],
+          "headAnchorGlobal": [
+            754,
+            723
+          ],
+          "headAnchorWithinSourceRect": [
+            244,
+            104
+          ],
+          "headAnchorNominalCell": [
+            242,
+            211
+          ],
+          "headAnchorNormalized256": [
+            121.0,
+            105.5
+          ],
+          "alphaPixelsAbove10": 89507
+        },
+        {
+          "index": 5,
+          "direction": "front-left",
+          "phase": "down",
+          "nominalCell": [
+            2,
+            1
+          ],
+          "boundsA10GlobalExclusive": [
+            1075,
+            629,
+            1503,
+            967
+          ],
+          "sourceRect": [
+            1071,
+            625,
+            436,
+            346
+          ],
+          "headAnchorGlobal": [
+            1258,
+            726
+          ],
+          "headAnchorWithinSourceRect": [
+            187,
+            101
+          ],
+          "headAnchorNominalCell": [
+            234,
+            214
+          ],
+          "headAnchorNormalized256": [
+            117.0,
+            107.0
+          ],
+          "alphaPixelsAbove10": 85202
+        }
+      ]
+    }
+  }
+}

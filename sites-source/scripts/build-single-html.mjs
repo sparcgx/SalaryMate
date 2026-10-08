@@ -28,11 +28,11 @@ for(const match of scripts){
     if(!source.includes(marker))throw new Error('Missing HD-2D companion asset declaration');
     const bytes=await readFile(path.join(base,companionPath));
     source=source.replace(marker,()=>"const HD2D_COMPANION_SRC = 'data:image/webp;base64,"+bytes.toString('base64')+"';");
-    const flightPath='./art/jingyu-flight-r70.png';
-    const flightMarker="const HD2D_FLIGHT_SRC = '"+flightPath+"';";
-    if(!source.includes(flightMarker))throw new Error('Missing HD-2D flight asset declaration');
-    const flightBytes=await readFile(path.join(base,flightPath));
-    source=source.replace(flightMarker,()=>"const HD2D_FLIGHT_SRC = 'data:image/png;base64,"+flightBytes.toString('base64')+"';");
+    const flightPaths=['a','b','c','d'].map(id=>'./art/jingyu-flight-r73-'+id+'.png');
+    const flightMarker='const HD2D_FLIGHT_SOURCES = Object.freeze('+JSON.stringify(flightPaths)+');';
+    if(!source.includes(flightMarker))throw new Error('Missing HD-2D flight plates declaration');
+    const flightSources=await Promise.all(flightPaths.map(async name=>'data:image/png;base64,'+(await readFile(path.join(base,name))).toString('base64')));
+    source=source.replace(flightMarker,()=>'const HD2D_FLIGHT_SOURCES = Object.freeze('+JSON.stringify(flightSources)+');');
   }
   if(name==='i18n-en.js')source+='\nObject.assign(window.SalaryMateEnglish,'+JSON.stringify({
     '單一 HTML 版':'Single HTML edition',
