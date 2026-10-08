@@ -22,10 +22,12 @@ function element(tag='div'){
  setAttribute(name,value){this[name]=value;},remove(){this.removed=true;this.isConnected=false;if(this.parent)this.parent.children=this.parent.children.filter(n=>n!==this);}
  });
 }
-function setup({width=390,height=844,seed=3,blended=true,reduced=false,decodeWait=false}={}){
+function setup({width=390,height=844,seed=3,blended=true,reduced=false,decodeWait=false,renderDecodeWait=false}={}){
  let now=0,id=0,rng=seed,resolveDecode;const frames=new Map(),timers=new Map(),images=[];
+ const renderDecoders=[];
+ const createElement=tag=>{const el=element(tag);if(tag==='img'){el.complete=true;el.naturalWidth=1536;if(renderDecodeWait)el.decode=()=>new Promise((resolve,reject)=>renderDecoders.push({resolve,reject}));}return el;};
  const body=element();body.dataset.interfaceStyle='pixel';
- const document=events({body,hidden:false,dialog:false,querySelector(){return this.dialog?{}:null;},createElement:element});
+ const document=events({body,hidden:false,dialog:false,querySelector(){return this.dialog?{}:null;},createElement});
  const mq=events({matches:reduced});
  const art={complete:true,naturalWidth:128,getBoundingClientRect:()=>({left:width-64,top:12,width:42,height:42})};
  const button=element('button');button.dataset.flightSrc='./art/jingyu-flight-r70.png';button.querySelector=()=>art;
@@ -45,7 +47,7 @@ function setup({width=390,height=844,seed=3,blended=true,reduced=false,decodeWai
   return {index:Math.round(-y/25)*6+Math.round(-x/(100/6)),weight:Number(wrapper.style.opacity)};
  });
  const start=async()=>{window.SalaryMateCompanion.fly(button);if(images.length){images.at(-1).naturalWidth=1536;images.at(-1).naturalHeight=1024;await images.at(-1).onload?.();}};
- return {window,document,mq,button,images,frames,timers,start,advance,get,poses,resolveDecode:()=>resolveDecode?.(),width,height};
+ return {window,document,mq,button,images,frames,timers,start,advance,get,poses,resolveDecode:()=>resolveDecode?.(),renderDecoders,width,height};
 }
 function assertClean(h){assert.equal(h.frames.size,0);assert.equal(h.timers.size,0);assert.equal(h.get('jingyu-flight-layer').length,0);assert.equal(h.button['aria-pressed'],'false');assert.equal(h.window.listenerCount(),0);assert.equal(h.document.listenerCount(),0);assert.equal(h.mq.listenerCount(),0);assert.equal(h.window.visualViewport.listenerCount(),0);}
 function flightStats(h,hz){
@@ -99,5 +101,40 @@ test('decode cancellation, image failure and reduced motion do not start an anim
 });
 test('unsupported blending uses one real directional frame and cached art is reused',async()=>{
  const h=setup({blended:false});await h.start();h.advance(2400);assert.equal(h.poses().length,1);assert.equal(h.poses()[0].weight,1);h.window.SalaryMateCompanion.stop();assertClean(h);
- h.window.SalaryMateCompanion.fly(h.button);assert.equal(h.images.length,1);assert.equal(h.frames.size,1);h.window.SalaryMateCompanion.stop();assertClean(h);
+ await h.window.SalaryMateCompanion.fly(h.button);assert.equal(h.images.length,1);assert.equal(h.frames.size,1);h.window.SalaryMateCompanion.stop();assertClean(h);
+});
+
+// R72 regression: handoff must never hide the only visible bird during takeoff.
+test('R72 cold and cached takeoff show an opaque positioned first frame',async()=>{
+ for(const blended of [true,false]){
+  const h=setup({blended});
+  for(let attempt=0;attempt<2;attempt++){
+   if(attempt)await h.window.SalaryMateCompanion.fly(h.button);else await h.start();
+   for(const time of [0,16,80,160,350]){
+    if(time)h.advance(time);
+    const actor=h.get('jingyu-flight-actor')[0];
+    assert.ok(actor.style.transform.includes('translate3d('));
+    assert.equal(Number(actor.style.opacity),1);
+    assert.ok(h.poses().some(p=>p.weight>0));
+    assert.equal(h.button.classList.contains('jingyu-away'),true);
+   }
+   h.window.SalaryMateCompanion.stop();assertClean(h);
+  }
+ }
+});
+test('R72 pending rendered-image decode preserves perched bird; cancel and failure stay clean',async()=>{
+ for(const outcome of ['ready','cancel','error']){
+  const h=setup({renderDecodeWait:true});const start=h.start();
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(h.renderDecoders.length,4);
+  assert.equal(h.button.classList.contains('jingyu-away'),false);
+  assert.equal(h.get('jingyu-flight-layer').length,0);
+  assert.equal(h.frames.size,0);
+  if(outcome==='cancel')h.window.SalaryMateCompanion.stop();
+  for(const d of h.renderDecoders)outcome==='error'?d.reject(new Error('decode failed')):d.resolve();
+  await start;
+  if(outcome==='ready'){assert.equal(Number(h.get('jingyu-flight-actor')[0].style.opacity),1);assert.equal(h.frames.size,1);}
+  else assert.equal(h.frames.size,0);
+  h.window.SalaryMateCompanion.stop();assertClean(h);
+ }
 });

@@ -165,10 +165,11 @@
       flight.timer = window.setTimeout(finish, 1800);
     };
     if (reduced?.matches || typeof window.requestAnimationFrame !== 'function' || !art.complete || !art.naturalWidth) { greet(); return; }
-    const begin = sheet => {
+    const begin = async sheet => {
     if(active!==flight)return;
     if(reduced?.matches){greet();return;}
     window.clearTimeout(flight.timer);
+    flight.timer=window.setTimeout(finish,6000);
     button.classList.remove('jingyu-greeting');
     const viewport = window.visualViewport;
     const width = viewport?.width || window.innerWidth;
@@ -209,16 +210,30 @@
     const layers=Array.from({length:blended?4:1},()=>{
       const wrapper=document.createElement('div'),crop=document.createElement('div'),image=document.createElement('img');
       wrapper.className='jingyu-flight-pose';crop.className='jingyu-flight-cell';
-      image.className='jingyu-flight-sheet';image.src=sheet.src;image.alt='';image.draggable=false;
+      image.className='jingyu-flight-sheet';image.decoding='sync';image.src=sheet.src;image.alt='';image.draggable=false;
       crop.append(image);wrapper.append(crop);frame.append(wrapper);
       return {wrapper,crop,image,lastPose:-1};
     });
     facing.append(frame);
     actor.append(facing);
     layer.append(actor);
-    document.body.append(layer);
     flight.layer = layer;
-    button.classList.add('jingyu-away');
+    // R72: decode the actual rendered nodes, not only the preload Image.
+    // Keep the perched bird visible throughout cold-cache / iOS decoding.
+    try {
+      await Promise.all(layers.map(({image}) => {
+        if(typeof image.decode==='function')return image.decode();
+        if(image.complete&&image.naturalWidth)return Promise.resolve();
+        return new Promise((resolve,reject)=>{
+          image.onload=()=>{image.onload=image.onerror=null;resolve();};
+          image.onerror=()=>{image.onload=image.onerror=null;reject(new Error('Flight image unavailable'));};
+          flight.cleanups.push(()=>{image.onload=image.onerror=null;resolve();});
+        });
+      }));
+    } catch { if(active===flight){layer.remove();flight.layer=null;greet();} return; }
+    if(active!==flight)return;
+    window.clearTimeout(flight.timer);
+    document.body.append(layer);
     button.setAttribute('aria-pressed', 'true');
     const duration=clamp(route.length/255*1000+1800,9800,15500),started=window.performance.now();
     let previous=started,heading=0,bank=0,pitch=0,glideBlend=0;
@@ -274,16 +289,18 @@
       const x=clamp(point.x,left+edge,left+width-edge);
       const y=clamp(point.y+bob,top+edge,top+height-edge);
       actor.style.transform=`translate3d(${(x-size/2).toFixed(2)}px,${(y-size/2).toFixed(2)}px,0) rotate(${bank.toFixed(2)}deg) scale(${scale.toFixed(4)})`;
-      actor.style.opacity=String(smooth(clamp(Math.min(t/.035,(1-t)/.035),0,1)));
+      // The first flight frame is opaque; only fade when the perched bird returns.
+      actor.style.opacity=String(1-smooth(clamp((t-.978)/.022,0,1)));
       if(t>.978)button.classList.remove('jingyu-away');
       flight.frame=window.requestAnimationFrame(tick);
     };
     tick(started);
+    button.classList.add('jingyu-away');
     flight.timer=window.setTimeout(finish,duration+350);
     };
     const source=button.dataset.flightSrc;
     if(!source || !(source==='./art/jingyu-flight-r70.png'||source.startsWith('data:image/png;base64,'))){greet();return;}
-    if(loadedSheet?.source===source){begin(loadedSheet.image);return;}
+    if(loadedSheet?.source===source)return begin(loadedSheet.image);
     button.classList.add('jingyu-greeting');
     const image=new window.Image();
     flight.loading=image;
@@ -292,7 +309,7 @@
       image.onload=image.onerror=null;
       try{if(typeof image.decode==='function')await image.decode();}catch{if(active===flight){flight.loading=null;greet();}return;}
       if(active!==flight)return;
-      flight.loading=null;loadedSheet={source,image};begin(image);
+      flight.loading=null;loadedSheet={source,image};return begin(image);
     };
     image.onerror=()=>{image.onload=image.onerror=null;if(active===flight){flight.loading=null;greet();}};
     flight.timer=window.setTimeout(finish,6000);
