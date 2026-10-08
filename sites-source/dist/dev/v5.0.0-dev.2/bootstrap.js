@@ -186,6 +186,7 @@
     };
     listen(document, 'visibilitychange', () => { if (document.hidden) finish(); });
     listen(document, 'keydown', event => { if (event.key === 'Escape') finish(); });
+    listen(document, 'pointerdown', event => { if (!button.contains?.(event.target)) finish(); });
     for (const event of ['pagehide', 'resize', 'scroll', 'beforeprint']) listen(window, event);
     for (const event of ['resize', 'scroll']) listen(window.visualViewport, event);
     listen(reduced, 'change');
@@ -316,6 +317,52 @@
         else {image.onload=ready;image.onerror=release;if(image.complete&&image.naturalWidth)ready();}
         return spell;
       }):[];
+    // R77: impact uses the same clock/RAF as flight, never transforms body or
+    // reparents the app. Fixed menus keep their original viewport containing block.
+    const impact=document.createElement('div'),wave=document.createElement('div');
+    impact.className='jingyu-screen-impact';wave.className='jingyu-impact-wave';
+    impact.style.opacity='0';wave.style.opacity='0';impact.append(wave);
+    if(spells.length)layer.append(impact);
+    const hits=[],bodyStyle=document.body.style;
+    const impactVars=['--jingyu-impact-x','--jingyu-impact-y'];
+    const savedImpactVars=impactVars.map(name=>[bodyStyle.getPropertyValue(name),bodyStyle.getPropertyPriority(name)]);
+    const hadImpactClass=document.body.classList.contains('jingyu-screen-hit');
+    let shaking=false;
+    const clearImpact=()=>{
+      if(!shaking)return;
+      shaking=false;
+      if(!hadImpactClass)document.body.classList.remove('jingyu-screen-hit');
+      impactVars.forEach((name,i)=>{
+        const [value,priority]=savedImpactVars[i];
+        if(value)bodyStyle.setProperty(name,value,priority);else bodyStyle.removeProperty(name);
+      });
+      impact.style.opacity=wave.style.opacity='0';
+    };
+    flight.cleanups.push(()=>{clearImpact();hits.length=0;});
+    const screenHit=elapsed=>{
+      let dx=0,dy=0,energy=0,latest=null;
+      for(let i=hits.length-1;i>=0;i--){
+        const hit=hits[i],age=elapsed-hit.at,p=age/hit.life;
+        if(p>=1){hits.splice(i,1);continue;}
+        if(p<0)continue;
+        const envelope=(1-p)**2*cinematic(clamp(age/22,0,1));
+        const strength=(hit.kind?1.3:1)*envelope,phase=age/1000*TAU;
+        dx+=strength*(.68*Math.sin(phase*13.7)+.32*Math.sin(phase*22.3+1.1));
+        dy+=strength*(.72*Math.sin(phase*17.1+.7)+.28*Math.cos(phase*25.7));
+        energy=Math.max(energy,strength);if(!latest||hit.at>latest.at)latest=hit;
+      }
+      if(!latest){clearImpact();return;}
+      const amplitude=clamp(Math.min(width,height)*.052,12,24);
+      document.body.classList.add('jingyu-screen-hit');shaking=true;
+      bodyStyle.setProperty(impactVars[0],`${(clamp(dx,-1.4,1.4)*amplitude).toFixed(2)}px`);
+      bodyStyle.setProperty(impactVars[1],`${(clamp(dy,-1.2,1.2)*amplitude*.72).toFixed(2)}px`);
+      // A soft edge pulse and expanding ring; no full-screen flashing.
+      impact.style.opacity=String(Math.min(.64,energy*.48));
+      const p=clamp((elapsed-latest.at)/latest.life,0,1),diameter=Math.min(width,height)*.68;
+      wave.style.width=wave.style.height=`${diameter}px`;
+      wave.style.opacity=String((1-p)**2*.72);
+      wave.style.transform=`translate3d(${(latest.x-diameter/2).toFixed(2)}px,${(latest.y-diameter/2).toFixed(2)}px,0) scale(${(.30+1.4*cinematic(p)).toFixed(4)})`;
+    };
     document.body.append(layer);
     button.setAttribute('aria-pressed', 'true');
     const duration=clamp(route.length/235*1000+2200,11200,16200),started=window.performance.now();
@@ -394,6 +441,8 @@
           spell.fired=true;
           if(!spell.ready||elapsed>=due+spell.life)continue;
           spell.born=due;
+          spell.hit=false;
+          spell.hitDelay=spell.kind?980:420+(spell.fan+.24)/.24*75;
           const cast=casts[spell.kind];
           const aim=cast.armed?cast.side*Math.PI/2:heading;
           const angle=Math.PI/2-aim+spell.fan;
@@ -408,20 +457,30 @@
           const forward=size*scale*(spell.kind?.54:.18);
           spell.x=clamp(x+spell.vx*forward,left+spell.radius,left+width-spell.radius);
           spell.y=clamp(y+spell.vy*forward,top+spell.radius,top+height-spell.radius);
-          const distance=spell.kind?Math.min(42,width*.10):Math.min(180,width*.38,height*.30);
-          spell.endX=clamp(spell.x+spell.vx*distance,left+spell.radius,left+width-spell.radius);
-          spell.endY=clamp(spell.y+spell.vy*distance,top+spell.radius,top+height-spell.radius);
+          // Project toward the viewer: converge near the screen centre and grow.
+          spell.endX=left+width*(.50+spell.fan*.30);
+          spell.endY=top+height*(spell.kind?.47:.46)+spell.fan*Math.min(80,height*.12);
+          spell.hitScale=spell.kind?clamp(Math.min(width,height)/spell.h*1.20,1.35,3.4):clamp(Math.min(width,height)/(spell.w*1.1),1.55,3.2);
+          spell.node.dataset.target='screen';
         }
         if(spell.born===null)continue;
-        const p=clamp((elapsed-spell.born)/spell.life,0,1);
+        const age=elapsed-spell.born,p=clamp(age/spell.life,0,1);
+        if(!spell.hit&&age>=spell.hitDelay){
+          spell.hit=true;
+          // A resumed/stalled frame must not replay an impact the viewer missed.
+          if(age-spell.hitDelay<=100)hits.push({at:spell.born+spell.hitDelay,life:spell.kind?780:540,kind:spell.kind,x:spell.endX,y:spell.endY});
+        }
         if(p>=1){spell.node.style.opacity='0';continue;}
         const appear=cinematic(clamp(p/(spell.kind?.20:.14),0,1));
-        const disappear=1-cinematic(clamp((p-(spell.kind?.68:.55))/(spell.kind?.32:.45),0,1));
+        const approach=clamp(age/spell.hitDelay,0,1);
+        const after=clamp((age-spell.hitDelay)/(spell.life-spell.hitDelay),0,1);
+        const disappear=1-cinematic(after);
         const opacity=.86*appear*disappear;
-        const travel=spell.kind?smooth(p):1-(1-p)*(1-p);
+        const travel=cinematic(approach);
         const cx=spell.x+(spell.endX-spell.x)*travel,cy=spell.y+(spell.endY-spell.y)*travel;
-        const rotation=spell.kind?Math.sin(p*TAU*2)*5:spell.angle+Math.sin(p*Math.PI)*spell.fan*18;
-        const zoom=spell.kind?(.55+.43*appear)*(.97+.025*Math.sin(p*TAU*5)):.76+.22*appear;
+        const rotation=spell.kind?Math.sin(p*TAU*2)*9:spell.angle+approach*70+spell.fan*18;
+        const zoom=(.42+(spell.hitScale-.42)*approach**2.3)*(1+after*.15);
+        spell.node.style.zIndex=approach>.4?'2':'0';
         spell.node.style.opacity=String(opacity);
         spell.node.style.transform=`translate3d(${(cx-spell.w/2).toFixed(2)}px,${(cy-spell.h/2).toFixed(2)}px,0) rotate(${rotation.toFixed(2)}deg) scale(${zoom.toFixed(4)})`;
         if(spell.kind)spell.image.style.transform=`scaleX(${(.94+.045*Math.sin(p*TAU*6)).toFixed(4)})`;
@@ -479,6 +538,7 @@
       actor.style.opacity=String(1-smooth(clamp((t-.978)/.022,0,1)));
       if(t>.978)button.classList.remove('jingyu-away');
       wind(elapsed,x,y,scale,heading);
+      screenHit(elapsed);
       flight.frame=window.requestAnimationFrame(tick);
     };
     tick(started);
