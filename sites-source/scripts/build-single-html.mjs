@@ -23,11 +23,11 @@ for(const match of scripts){
   const name=match[1];if(path.basename(name)!==name)throw new Error('Unexpected module path');
   let source=await readFile(path.join(base,name),'utf8');
   if(name==='app.js'){
-    const companionPath='./art/jingyu-hd2d-r62.webp';
+    const companionPath='./art/jingyu-hd2d-r74.png';
     const marker="const HD2D_COMPANION_SRC = '"+companionPath+"';";
     if(!source.includes(marker))throw new Error('Missing HD-2D companion asset declaration');
     const bytes=await readFile(path.join(base,companionPath));
-    source=source.replace(marker,()=>"const HD2D_COMPANION_SRC = 'data:image/webp;base64,"+bytes.toString('base64')+"';");
+    source=source.replace(marker,()=>"const HD2D_COMPANION_SRC = 'data:image/png;base64,"+bytes.toString('base64')+"';");
     const flightPaths=['a','b','c','d'].map(id=>'./art/jingyu-flight-r73-'+id+'.png');
     const flightMarker='const HD2D_FLIGHT_SOURCES = Object.freeze('+JSON.stringify(flightPaths)+');';
     if(!source.includes(flightMarker))throw new Error('Missing HD-2D flight plates declaration');

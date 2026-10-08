@@ -1388,7 +1388,7 @@ body[data-interface-style=pixel][data-hd2d-background=aurora]{--companion-light:
 body[data-interface-style=pixel][data-hd2d-background=sky]{--companion-light:#b6dcff59;--companion-rim:#f6e6b8}
 body[data-interface-style=pixel] .v5-companion,.v5-reference-preview[data-preview-style=pixel-luxe] .v5-companion{display:inline-flex}
 .v5-companion::before{content:"";position:absolute;inset:15% 0 10%;border-radius:50%;background:radial-gradient(ellipse,var(--companion-light,#87d8e84f),transparent 70%);z-index:-1}
-.v5-companion-art{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:contain;box-sizing:border-box;padding:3px;image-rendering:pixelated;filter:drop-shadow(0 3px 2px #071c2a80);transform-origin:50% 85%}
+.v5-companion-art{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:contain;box-sizing:border-box;padding:3px;image-rendering:auto;filter:drop-shadow(0 3px 2px #071c2a80);transform-origin:50% 85%}
 .v5-companion--home{--companion-size:112px}
 .v5-companion--quiet{--companion-size:84px}
 .v5-companion--toast{--companion-size:44px;padding:0}
@@ -1506,4 +1506,40 @@ body[data-interface-style=pixel] #topbarCompanion .jingyu-greeting{box-shadow:0 
  .stock-market-actions .stock-head-actions{position:static;flex:1 0 100%;width:100%;max-width:100%;box-sizing:border-box;box-shadow:none;margin-top:4px}
  .stock-market-actions .stock-action-menu-wrap.is-open .stock-head-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
  .stock-market-actions .stock-head-actions .btn{text-align:center;font-size:max(14px,.875rem);padding:10px 12px}
+}
+
+/* R74: Jingyu spans the header rows; company and year share the narrower right column. */
+body[data-interface-style=pixel] .topbar{height:auto;padding:12px 14px}
+body[data-interface-style=pixel] .topbar-inner{display:grid;grid-template-columns:clamp(88px,25vw,116px) minmax(0,1fr) auto;grid-template-rows:auto auto;gap:10px 8px;align-items:center}
+body[data-interface-style=pixel] .topbar-brand{display:contents}
+body[data-interface-style=pixel] #topbarCompanion{grid-column:1;grid-row:1/3;align-self:stretch;align-items:center;justify-content:center;min-width:0}
+body[data-interface-style=pixel] #topbarCompanion .v5-companion{--companion-size:100%;width:100%;aspect-ratio:1;padding:0}
+body[data-interface-style=pixel] #topbarCompanion .v5-companion-art{padding:4px;image-rendering:auto;filter:drop-shadow(0 2px 2px #071c2a55)}
+body[data-interface-style=pixel] .topbar-brand-copy{grid-column:2;grid-row:1;min-width:0;overflow-wrap:anywhere}
+body[data-interface-style=pixel] .topbar .top-actions{grid-column:3;grid-row:1;min-width:0;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+body[data-interface-style=pixel] .topbar .workspace-context{grid-column:2/4;grid-row:2;position:relative;justify-self:end;width:min(100%,320px);min-width:0;gap:8px}
+body[data-interface-style=pixel] .workspace-context>.company-picker{position:static;flex:1;min-width:0}
+body[data-interface-style=pixel] .company-picker .company-picker-trigger{min-width:0;max-width:none;min-height:44px;gap:6px;padding:8px 9px}
+body[data-interface-style=pixel] .workspace-context #yearFilter{flex:0 0 6.1rem;width:6.1rem;max-width:6.1rem;min-width:0;min-height:44px;padding:8px 22px 8px 8px}
+body[data-interface-style=pixel] .company-picker .company-picker-panel{left:auto;right:0;width:360px;max-width:calc(100vw - 48px);transform-origin:top right}
+@media(max-width:720px){
+ body[data-interface-style=pixel] .topbar .workspace-context{width:100%}
+ body[data-interface-style=pixel] .topbar .top-actions>.menu-wrap>.btn{padding:7px 9px;min-height:42px}
+ body[data-interface-style=pixel] .topbar .language-switch button{min-width:30px;padding:5px 6px}
+}
+/* Keep controls readable on narrow phones and when the large-text mode is selected. */
+@media(max-width:380px){
+ body[data-interface-style=pixel] .topbar-inner{grid-template-columns:80px minmax(0,1fr);grid-template-rows:auto auto auto;gap:8px}
+ body[data-interface-style=pixel] #topbarCompanion{grid-row:1/4}
+ body[data-interface-style=pixel] .topbar-brand-copy{grid-column:2;grid-row:1}
+ body[data-interface-style=pixel] .topbar .top-actions{grid-column:2;grid-row:2}
+ body[data-interface-style=pixel] .topbar .workspace-context{grid-column:2;grid-row:3}
+}
+@media(max-width:720px){
+ body[data-interface-style=pixel][data-ui-mode=large] .topbar-inner{grid-template-columns:clamp(80px,23vw,112px) minmax(0,1fr);grid-template-rows:auto auto auto;gap:10px 8px}
+ body[data-interface-style=pixel][data-ui-mode=large] #topbarCompanion{grid-row:1/4}
+ body[data-interface-style=pixel][data-ui-mode=large] .topbar-brand-copy{grid-column:2;grid-row:1}
+ body[data-interface-style=pixel][data-ui-mode=large] .topbar .top-actions{grid-column:2;grid-row:2}
+ body[data-interface-style=pixel][data-ui-mode=large] .topbar .workspace-context{grid-column:2;grid-row:3;flex-wrap:wrap}
+ body[data-interface-style=pixel][data-ui-mode=large] .workspace-context>.company-picker{flex:1 1 8rem}
 }

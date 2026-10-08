@@ -1,0 +1,44 @@
+{
+  "source_path": "/workspace/scratch/2abc8ba223a0/generated_images/exec-66ed3004-f2ed-473b-a427-bff52710ce39.png",
+  "output_path": "/workspace/scratch/2abc8ba223a0/r74-assets/jingyu-hd2d-r74.png",
+  "format": "PNG",
+  "mode": "RGBA",
+  "size": [
+    1254,
+    1254
+  ],
+  "alpha_extrema": [
+    0,
+    255
+  ],
+  "alpha_bbox_nonzero": [
+    0,
+    0,
+    1234,
+    1254
+  ],
+  "padding_pixels": {
+    "left": 0,
+    "top": 0,
+    "right": 20,
+    "bottom": 0
+  },
+  "alpha_counts": {
+    "transparent": 727539,
+    "partial": 844226,
+    "opaque": 751
+  },
+  "bbox_at_alpha_16": [
+    66,
+    7,
+    1202,
+    1247
+  ],
+  "bbox_at_alpha_128": [
+    67,
+    8,
+    1202,
+    1246
+  ],
+  "bytes_identical": true
+}
