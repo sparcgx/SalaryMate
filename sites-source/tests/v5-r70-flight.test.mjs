@@ -29,7 +29,7 @@ function element(tag='div'){
  setAttribute(name,value){this[name]=value;},remove(){this.removed=true;this.isConnected=false;if(this.parent)this.parent.children=this.parent.children.filter(n=>n!==this);}
  });
 }
-function setup({width=390,height=844,seed=3,blended=true,reduced=false,decodeWait=false,renderDecodeWait=false,plates=false,magic=false,casting=false}={}){
+function setup({width=390,height=844,seed=3,blended=true,reduced=false,decodeWait=false,renderDecodeWait=false,plates=false,magic=false,casting=false,expanded=false,language='zh'}={}){
  let now=0,id=0,rng=seed,resolveDecode;const frames=new Map(),timers=new Map(),images=[];
  const renderDecoders=[];
  const createElement=tag=>{const el=element(tag);if(tag==='img'){el.complete=true;el.naturalWidth=1536;if(renderDecodeWait)el.decode=()=>new Promise((resolve,reject)=>renderDecoders.push({resolve,reject}));}return el;};
@@ -45,6 +45,7 @@ function setup({width=390,height=844,seed=3,blended=true,reduced=false,decodeWai
  setTimeout(fn,ms){const key=++id;timers.set(key,{fn,at:now+ms});return key;},clearTimeout:key=>timers.delete(key),
  Image:class{constructor(){images.push(this);}decode(){return decodeWait?new Promise(resolve=>resolveDecode=resolve):Promise.resolve();}}
  });
+ if(expanded){window.SalaryMateWindExtras=['bullet','spear','vortex'].map(kind=>'./art/jingyu-wind-'+kind+'-r78.png');window.SalaryMateI18n={language:()=>language,text:value=>value};}
  if(casting)window.SalaryMateCastArt='./art/jingyu-cast-r76.png';
  if(magic)window.SalaryMateWindArt=['blade','tornado'].map(kind=>'./art/jingyu-wind-'+kind+'-r75.png');
  if(plates)window.SalaryMateFlightSheets=['a','b','c','d'].map(id=>'./art/jingyu-flight-r73-'+id+'.png');
@@ -383,4 +384,80 @@ test('R77 missed frames, unavailable wind art and reduced motion never replay a 
  for(let t=50;t<17000&&failed.frames.size;t+=50){failed.advance(t);assert.equal(failed.document.body.classList.contains('jingyu-screen-hit'),false);}
  assertClean(failed);
  const reduced=setup({plates:true,magic:true,casting:true,reduced:true});await reduced.start();assert.equal(reduced.get('jingyu-screen-impact').length,0);assert.equal(reduced.document.body.classList.contains('jingyu-screen-hit'),false);reduced.advance(2000);assertClean(reduced);
+});
+
+test('R78 five flights cover all ten spells without repeats; effects, poses and impact stay bounded',async()=>{
+ const expected=['blade','bullet','vacuum','bind','gale','tornado','spear','storm','implosion','hurricane'].sort();
+ for(const [width,height] of [[390,844],[844,390],[1440,900],[240,220]])for(const hz of [30,60,120]){
+  const h=setup({width,height,plates:true,magic:true,casting:true,expanded:true,seed:hz});const chosen=[],visible=new Set(),poses=new Set(),names=new Set();
+  for(let flight=0;flight<5;flight++){
+   const start=h.time();await h.start();await new Promise(r=>setImmediate(r));
+   const nodes=h.get('jingyu-wind-effect'),ids=[...new Set(nodes.map(n=>n.dataset.kind))];
+   assert.equal(ids.length,2);chosen.push(...ids);assert.ok(nodes.length<=22,'bounded allocation, not thousands of DOM sprites');
+   for(let i=1;i/hz<17&&h.frames.size;i++){
+    assert.equal(h.frames.size,1);h.advance(start+i*1000/hz);
+    let shown=0;
+    for(const fx of h.get('jingyu-wind-effect')){
+     const opacity=Number(fx.style.opacity);assert.ok(Number.isFinite(opacity)&&opacity>=0&&opacity<=.86);
+     if(opacity<=.001)continue;shown++;visible.add(fx.dataset.kind);
+     assert.ok(!/NaN|Infinity|undefined/.test(fx.style.transform));
+     const scales=fx.style.transform.match(/scale\(([^)]+)\)/)[1].split(',').map(Number);
+     assert.ok(scales.every(value=>value>0&&value<=3.91));
+    }
+    assert.ok(shown<=12,'at most one bounded spell group visible');
+    const actor=h.get('jingyu-flight-actor')[0];if(actor&&actor.dataset.cast!=='none')poses.add(actor.dataset.cast);
+    for(const name of h.get('jingyu-spell-name'))if(Number(name.style.opacity)>.01){names.add(name.dataset.spell);assert.ok(name.textContent);}
+    for(const key of ['--jingyu-impact-x','--jingyu-impact-y'])assert.ok(Math.abs(parseFloat(h.document.body.style.getPropertyValue(key)||'0'))<=33.61);
+   }
+   assertClean(h);assert.equal(h.get('jingyu-spell-name').length,0);
+  }
+  assert.deepEqual(chosen.slice().sort(),expected);assert.deepEqual([...visible].sort(),expected);assert.deepEqual([...poses].sort(),expected);assert.deepEqual([...names].sort(),expected);
+ }
+});
+
+test('R78 bullet expands, vacuum stays subtle, storm cycles, and implosion contracts before release',async()=>{
+ const snapshots={};
+ for(let seed=1;Object.keys(snapshots).length<4&&seed<50;seed++){
+  const h=setup({plates:true,magic:true,casting:true,expanded:true,seed});await h.start();await new Promise(r=>setImmediate(r));
+  const ids=[...new Set(h.get('jingyu-wind-effect').map(n=>n.dataset.kind))],duration=[...h.timers.values()][0].at-350;
+  for(const id of ids){
+   if(!['bullet','vacuum','storm','implosion'].includes(id)||snapshots[id])continue;
+   const slot=ids.indexOf(id),due=duration*(slot?.60:.29),samples=[];
+   for(let t=h.time()+20;t<due+1700&&h.frames.size;t+=20){
+    h.advance(t);const age=t-due;
+    if(age<0)continue;
+    const nodes=h.get('jingyu-wind-effect').filter(n=>n.dataset.kind===id);
+    samples.push({age,parts:nodes.map(n=>({role:n.dataset.role,opacity:Number(n.style.opacity),transform:n.style.transform||''}))});
+   }
+   snapshots[id]=samples;
+  }
+  h.window.SalaryMateCompanion.stop();assertClean(h);
+ }
+ assert.equal(Object.keys(snapshots).length,4);
+ const scale=(sample,role)=>Number(sample.parts.find(p=>p.role===role).transform.match(/scale\(([^,)]+)/)[1]);
+ const near=(id,age)=>snapshots[id].reduce((a,b)=>Math.abs(a.age-age)<Math.abs(b.age-age)?a:b);
+ assert.ok(scale(near('bullet',650),'bullet')>scale(near('bullet',350),'bullet')*2);
+ assert.ok(snapshots.vacuum.every(s=>s.parts.every(p=>p.opacity<=.28)));
+ assert.ok(snapshots.storm.filter(s=>s.parts.filter(p=>p.opacity>.1).length>=6).length>15);
+ assert.ok(scale(near('implosion',950),'implosion-core')<scale(near('implosion',300),'implosion-core'));
+ assert.ok(scale(near('implosion',1500),'implosion-core')>scale(near('implosion',950),'implosion-core')*4);
+});
+
+test('R78 expanded art failure/cancellation stays nonblocking; names follow the active language',async()=>{
+ for(const cancel of [false,true]){
+  const h=setup({plates:true,magic:true,casting:true,expanded:true,renderDecodeWait:true});const pending=h.start();await new Promise(r=>setImmediate(r));
+  h.renderDecoders.forEach(d=>d.resolve());await pending;await new Promise(r=>setImmediate(r));assert.equal(h.frames.size,1);
+  if(cancel)h.window.SalaryMateCompanion.stop();
+  h.renderDecoders.slice(8,10).forEach(d=>d.resolve());
+  h.renderDecoders.slice(10).forEach(d=>cancel?d.resolve():d.reject(new Error('magic unavailable')));
+  await new Promise(r=>setImmediate(r));
+  if(cancel){assertClean(h);continue;}
+  for(let t=50;t<17000&&h.frames.size;t+=50){h.advance(t);assert.ok(h.get('jingyu-wind-effect').every(n=>Number(n.style.opacity)===0));assert.equal(h.document.body.classList.contains('jingyu-screen-hit'),false);}
+  assertClean(h);
+ }
+ const h=setup({plates:true,magic:true,casting:true,expanded:true,language:'en'});await h.start();
+ for(let t=50;t<5000&&Number(h.get('jingyu-spell-name')[0]?.style.opacity)<=.01;t+=50)h.advance(t);
+ assert.match(h.get('jingyu-spell-name')[0].textContent,/^[A-Za-z ]+$/);
+ h.document.emit('pointerdown',{target:{}});assertClean(h);
+ const reduced=setup({plates:true,magic:true,casting:true,expanded:true,reduced:true});await reduced.start();assert.equal(reduced.get('jingyu-spell-name').length,0);reduced.advance(2000);assertClean(reduced);
 });

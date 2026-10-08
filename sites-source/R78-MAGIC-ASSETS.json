@@ -1,0 +1,191 @@
+{
+  "generation_mode": "built-in image_gen",
+  "execution": "Three independent image calls in one parallel batch; one call per asset; no retry or variant generation.",
+  "image_changes": "None. Final images are byte-for-byte copies of originals.",
+  "reference_role": "Style only, not layout.",
+  "references": [
+    "dist/dev/v5.0.0-dev.2/art/jingyu-wind-blade-r75.png",
+    "dist/dev/v5.0.0-dev.2/art/jingyu-wind-tornado-r75.png"
+  ],
+  "assets": [
+    {
+      "name": "bullet",
+      "path": "/workspace/scratch/2abc8ba223a0/r78-assets/jingyu-wind-bullet-r78.png",
+      "original_generated_path": "/workspace/scratch/2abc8ba223a0/generated_images/exec-26d67a5a-1efd-4a1f-a448-ff5b3c4c4617.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "bytes": 1437722,
+      "mode": "RGBA",
+      "sha256": "08ef8aebab8fca1f236f68adb8b65e5fce61f6bfe979a1f78b59df04b27ed362",
+      "copy_identical": true,
+      "alpha": {
+        "min": 0,
+        "max": 255,
+        "transparent_pixels": 986457,
+        "partial_alpha_pixels": 585997,
+        "opaque_pixels": 62,
+        "transparent_fraction": 0.627311,
+        "bbox_gt_0": [
+          0,
+          0,
+          1240,
+          1254
+        ],
+        "bbox_gt_16": [
+          182,
+          218,
+          1073,
+          1058
+        ],
+        "bbox_gt_127": [
+          183,
+          219,
+          1072,
+          1057
+        ],
+        "transparent_padding_fraction_ltrb": [
+          0,
+          0,
+          0.0112,
+          0
+        ],
+        "border_alpha_max": 1,
+        "centre_disk_radius_fraction": 0.1,
+        "centre_disk_transparent_fraction": 0,
+        "centre_disk_alpha_max": 253
+      },
+      "issues": [
+        "Generated 1254x1254 rather than requested 1024x1024.",
+        "Strict 18% transparent padding was not achieved. Alpha greater than 16 bounding box: [182,218,1073,1058]; alpha=1 stray pixels reach image border."
+      ],
+      "project_path": "dist/dev/v5.0.0-dev.2/art/jingyu-wind-bullet-r78.png"
+    },
+    {
+      "name": "spear",
+      "path": "/workspace/scratch/2abc8ba223a0/r78-assets/jingyu-wind-spear-r78.png",
+      "original_generated_path": "/workspace/scratch/2abc8ba223a0/generated_images/exec-b720e450-c8d2-4183-b355-442b63a9f04d.png",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "bytes": 1498522,
+      "mode": "RGBA",
+      "sha256": "73c75cd938cd7b56e278990d16b7a9d97488af6daf462c0319e50220588f9932",
+      "copy_identical": true,
+      "alpha": {
+        "min": 0,
+        "max": 254,
+        "transparent_pixels": 1177193,
+        "partial_alpha_pixels": 395671,
+        "opaque_pixels": 0,
+        "transparent_fraction": 0.748439,
+        "bbox_gt_0": [
+          0,
+          31,
+          1516,
+          1002
+        ],
+        "bbox_gt_16": [
+          77,
+          287,
+          1484,
+          746
+        ],
+        "bbox_gt_127": [
+          90,
+          296,
+          1481,
+          743
+        ],
+        "transparent_padding_fraction_ltrb": [
+          0,
+          0.0303,
+          0.013,
+          0.0215
+        ],
+        "border_alpha_max": 1,
+        "centre_disk_radius_fraction": 0.1,
+        "centre_disk_transparent_fraction": 0,
+        "centre_disk_alpha_max": 253
+      },
+      "issues": [
+        "Requested 1536x1024 dimensions achieved.",
+        "Visible effect exceeds requested horizontal x=180..1356 box: alpha greater than 16 bounding box [77,287,1484,746].",
+        "The preview shows diffuse RGB glow, but true alpha bounds are concentrated around the spear; border alpha is at most 1."
+      ],
+      "project_path": "dist/dev/v5.0.0-dev.2/art/jingyu-wind-spear-r78.png"
+    },
+    {
+      "name": "vortex",
+      "path": "/workspace/scratch/2abc8ba223a0/r78-assets/jingyu-wind-vortex-r78.png",
+      "original_generated_path": "/workspace/scratch/2abc8ba223a0/generated_images/exec-8a3a7aeb-fb9e-4fe0-b7ae-1351f574bf81.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "bytes": 1660661,
+      "mode": "RGBA",
+      "sha256": "39c97dc2c63203b8930738a6da8025cd24ce0de714dc26f683732c45e0de4ba6",
+      "copy_identical": true,
+      "alpha": {
+        "min": 0,
+        "max": 253,
+        "transparent_pixels": 843514,
+        "partial_alpha_pixels": 729002,
+        "opaque_pixels": 0,
+        "transparent_fraction": 0.53641,
+        "bbox_gt_0": [
+          0,
+          8,
+          1236,
+          1254
+        ],
+        "bbox_gt_16": [
+          96,
+          119,
+          1159,
+          1141
+        ],
+        "bbox_gt_127": [
+          97,
+          120,
+          1157,
+          1140
+        ],
+        "transparent_padding_fraction_ltrb": [
+          0,
+          0.0064,
+          0.0144,
+          0
+        ],
+        "border_alpha_max": 1,
+        "centre_disk_radius_fraction": 0.1,
+        "centre_disk_transparent_fraction": 0.950106,
+        "centre_disk_alpha_max": 1
+      },
+      "issues": [
+        "Generated 1254x1254 rather than requested 1024x1024.",
+        "Strict 18% transparent padding was not achieved. Alpha greater than 16 bounding box: [96,119,1159,1141]; alpha=1 stray pixels reach image border.",
+        "The open central eye is effectively transparent: central disk radius 10% of width has alpha max 1, with 95.0106% exactly alpha 0.",
+        "Ring ribbons are fuller and denser than the requested thin delicate annulus."
+      ],
+      "project_path": "dist/dev/v5.0.0-dev.2/art/jingyu-wind-vortex-r78.png"
+    }
+  ],
+  "prompt_set": [
+    {
+      "name": "bullet",
+      "prompt": "Use case: stylized-concept.\nAsset type: standalone high-detail fantasy wind-magic VFX sprite for Jingyu in a game.\nInput images: image 1 wind blade and image 2 wind tornado are STYLE REFERENCES ONLY. Match their refined translucent flowing ribbons, painterly three-dimensional compressed-air detail, icy ivory highlights, cyan and mint airflow, and a very few small gold glints. Do not copy their silhouettes or layouts.\nScene/backdrop: genuinely TRANSPARENT RGBA PNG canvas, not a black backdrop, not a white backdrop, not a checkerboard drawing. Empty areas and spaces between airflow strands must be transparent alpha. Isolated effect only.\nStyle: polished high-detail fantasy art, crisp airy strands with soft feathering only at strand edges, sculptural translucent compressed air, luminous fine edges and internal flow detail.\nAvoid: any character, weapon handle, metal, fire, electric lightning, text, logo, UI, border, environment, ground plane, shadow, huge diffuse background glow, or opaque background.\nPrimary request: a compact, high-density SPHERICAL compressed-air orb. Sharply defined swirling HELICAL strands wrap around a clear circular three-dimensional volume, with a small bright compact core. Strong circular overall silhouette and wrapped airflow mass; this is a magical air bullet, not a disc, crescent, tornado or comet.\nComposition/framing: 1024x1024 square canvas. Center the entire compact orb at (512,512). Every visible wisp and glint must fit within x=190..834, y=190..834, preserving at least 18% truly transparent padding on all four sides. High-density strands occupy the spherical volume but keep airy transparent gaps. No long trailing jet or off-centre streak."
+    },
+    {
+      "name": "spear",
+      "prompt": "Use case: stylized-concept.\nAsset type: standalone high-detail fantasy wind-magic VFX sprite for Jingyu in a game.\nInput images: image 1 wind blade and image 2 wind tornado are STYLE REFERENCES ONLY. Match their refined translucent flowing ribbons, painterly three-dimensional compressed-air detail, icy ivory highlights, cyan and mint airflow, and a very few small gold glints. Do not copy their silhouettes or layouts.\nScene/backdrop: genuinely TRANSPARENT RGBA PNG canvas, not a black backdrop, not a white backdrop, not a checkerboard drawing. Empty areas and spaces between airflow strands must be transparent alpha. Isolated effect only.\nStyle: polished high-detail fantasy art, crisp airy strands with soft feathering only at strand edges, sculptural translucent compressed air, luminous fine edges and internal flow detail.\nAvoid: any character, weapon handle, metal, fire, electric lightning, text, logo, UI, border, environment, ground plane, shadow, huge diffuse background glow, or opaque background.\nPrimary request: a long HORIZONTAL wind spear pointing RIGHT, with a distinct narrow pointed tip at the far right and a three-dimensional spiral drill / helical compressed-air body tapering into it. Transparent spaces between successive helix turns, luminous delicate edges, feathered wind trails at the left. Clearly a long thrusting air projectile, made only from airflow, not a crescent, tornado, metal spear, flame or lightning bolt.\nComposition/framing: 1536x1024 landscape canvas. The horizontal central shaft axis is exactly around y=512 and runs left-to-right. Entire effect including every trailing wisp and glint stays inside x=180..1356, y=260..764. Long narrow silhouette with a precise rightmost point. Ample real transparent canvas surrounding the spear. No large halo or diffuse ambient glow."
+    },
+    {
+      "name": "vortex",
+      "prompt": "Use case: stylized-concept.\nAsset type: standalone high-detail fantasy wind-magic VFX sprite for Jingyu in a game.\nInput images: image 1 wind blade and image 2 wind tornado are STYLE REFERENCES ONLY. Match their refined translucent flowing ribbons, painterly three-dimensional compressed-air detail, icy ivory highlights, cyan and mint airflow, and a very few small gold glints. Do not copy their silhouettes or layouts.\nScene/backdrop: genuinely TRANSPARENT RGBA PNG canvas, not a black backdrop, not a white backdrop, not a checkerboard drawing. Empty areas and spaces between airflow strands must be transparent alpha. Isolated effect only.\nStyle: polished high-detail fantasy art, crisp airy strands with soft feathering only at strand edges, sculptural translucent compressed air, luminous fine edges and internal flow detail.\nAvoid: any character, weapon handle, metal, fire, electric lightning, text, logo, UI, border, environment, ground plane, shadow, huge diffuse background glow, or opaque background.\nPrimary request: a face-on circular wind VORTEX RING, viewed straight through its clearly OPEN TRANSPARENT CENTRE. Spiralling thin refined ribbon strands define a compressed-air annulus. Delicate sculptural airflow with readable inward curling direction, suitable for animating an expanding vacuum shockwave, implosion, or hurricane eye. The inner eye is a true empty alpha hole; no core, no filled disc, no sphere.\nComposition/framing: 1024x1024 square canvas. Center at (512,512). Entire ring including every wisp and glint stays within x=190..834, y=190..834, with at least 18% transparent padding on each side. Outer ring diameter about 630 pixels; transparent central aperture at least 280 pixels diameter. Circular face-on art, no perspective ellipse, no vertical tornado. Natural fantasy airflow, not a geometric diagram."
+    }
+  ]
+}

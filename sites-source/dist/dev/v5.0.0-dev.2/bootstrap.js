@@ -61,6 +61,41 @@
 // R70: eight real viewing directions, continuous wing strokes and path-led turning.
 (() => {
   let active = null, loadedSheet = null;
+  let magicBag=[],lastMagic=null;
+  // R78: two spells per flight, shuffled without replacement across five flights.
+  const magicBook=[
+    {id:'blade',zh:'風刃',en:'Wind Blade',kind:0,life:900},
+    {id:'bullet',zh:'疾風彈',en:'Wind Bullet',kind:0,life:1150,hits:[[410,1.25,620]]},
+    {id:'vacuum',zh:'真空波',en:'Vacuum Wave',kind:0,life:1000,hits:[[340,.95,440]]},
+    {id:'bind',zh:'旋風絞殺',en:'Whirlwind Bind',kind:1,life:2150,hits:[[400,.60,350],[850,.70,350],[1300,.75,350],[1750,1,500]]},
+    {id:'gale',zh:'狂風震擊',en:'Gale Burst',kind:1,life:1150,hits:[[230,1.3,620]]},
+    {id:'tornado',zh:'龍捲風暴',en:'Tornado',kind:1,life:2350,hits:[[760,.85,450],[1270,.95,450],[1800,1.25,640]]},
+    {id:'spear',zh:'風神之矛',en:'Spear of Zephyr',kind:0,life:1300,hits:[[510,1.35,620]]},
+    {id:'storm',zh:'千刃風暴',en:'Blade Storm',kind:1,life:1850,hits:[[350,.50,280],[750,.60,280],[1150,.70,280],[1520,1,480]]},
+    {id:'implosion',zh:'真空爆破',en:'Void Implosion',kind:1,life:1900,hits:[[1060,1.4,740]]},
+    {id:'hurricane',zh:'滅世颶風',en:'Grand Hurricane',kind:1,life:2750,hits:[[650,.75,440],[1200,.90,440],[1780,1.10,480],[2290,1.40,760]]}
+  ];
+  const drawMagic=()=>{
+    if(!magicBag.length){
+      magicBag=magicBook.slice();
+      for(let i=magicBag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[magicBag[i],magicBag[j]]=[magicBag[j],magicBag[i]];}
+      if(magicBag.at(-1)?.id===lastMagic)[magicBag[0],magicBag[magicBag.length-1]]=[magicBag.at(-1),magicBag[0]];
+    }
+    const magic=magicBag.pop();lastMagic=magic.id;return magic;
+  };
+  const magicParts=id=>{
+    const part=(role,art,index=0)=>({role,art,index});
+    if(id==='bullet')return [part('bullet',2),part('bullet-ring',4)];
+    if(id==='vacuum')return [part('vacuum',4),part('vacuum',4,1)];
+    if(id==='bind')return [part('bind-column',1),...Array.from({length:4},(_,i)=>part('bind-blade',0,i))];
+    if(id==='gale')return Array.from({length:3},(_,i)=>part('burst-ring',4,i));
+    if(id==='tornado')return [part('tornado-column',1),...Array.from({length:3},(_,i)=>part('lift-ring',4,i))];
+    if(id==='spear')return [part('spear',3),part('spear-ring',4),part('spear-ring',4,1)];
+    if(id==='storm')return Array.from({length:12},(_,i)=>part('rain-blade',0,i));
+    if(id==='implosion')return [part('implosion-core',2),...Array.from({length:4},(_,i)=>part('inward-ring',4,i))];
+    if(id==='hurricane')return [part('hurricane-eye',4),part('hurricane-column',1),part('hurricane-column',1,1),part('hurricane-ring',4),part('hurricane-ring',4,1),...Array.from({length:5},(_,i)=>part('hurricane-blade',0,i))];
+    return [];
+  };
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const smooth = t => t * t * (3 - 2 * t);
   const cinematic = t => t*t*t*(t*(t*6-15)+10);
@@ -299,24 +334,33 @@
       flight.cleanups.push(()=>{castReady=false;});
       Promise.all(decoding).then(()=>{if(active===flight)castReady=true;},()=>{});
     }
-    const casts=[{kind:0,at:.29,lead:420,hold:260,recovery:300,armed:null},{kind:1,at:.60,lead:560,hold:500,recovery:400,armed:null}];
-    // Optional spell art never delays takeoff. Use the actual displayed images;
-    // a failed/late image simply skips that spell, and stop() owns every node.
-    const spellSources=window.SalaryMateWindArt;
-    const spells=Array.isArray(spellSources)&&spellSources.length===2&&spellSources.every((src,i)=>typeof src==='string'&&(src===`./art/jingyu-wind-${i?'tornado':'blade'}-r75.png`||src.startsWith('data:image/png;base64,')))
-      ?[{kind:0,at:.29,fan:-.24,life:900},{kind:0,at:.29,fan:0,life:900},{kind:0,at:.29,fan:.24,life:900},{kind:1,at:.60,fan:0,life:1900}].map(spec=>{
-        const node=document.createElement('div'),image=document.createElement('img');
-        node.className='jingyu-wind-effect';node.dataset.kind=spec.kind?'tornado':'blade';node.style.opacity='0';
-        image.className='jingyu-wind-art';image.alt='';image.draggable=false;image.decoding='async';
-        const spell={...spec,node,image,ready:false,fired:false,born:null};
-        const release=()=>{image.onload=image.onerror=null;};
-        const ready=()=>{release();if(active===flight)spell.ready=true;};
-        flight.cleanups.push(()=>{release();spell.ready=false;});
-        image.src=spellSources[spec.kind];node.append(image);layer.append(node);
-        if(typeof image.decode==='function')Promise.resolve().then(()=>image.decode()).then(ready,release);
-        else {image.onload=ready;image.onerror=release;if(image.complete&&image.naturalWidth)ready();}
-        return spell;
-      }):[];
+    const spellSources=window.SalaryMateWindArt,extraSources=window.SalaryMateWindExtras;
+    const hasWind=Array.isArray(spellSources)&&spellSources.length===2&&spellSources.every((src,i)=>typeof src==='string'&&(src===`./art/jingyu-wind-${i?'tornado':'blade'}-r75.png`||src.startsWith('data:image/png;base64,')));
+    const expanded=hasWind&&Array.isArray(extraSources)&&extraSources.length===3&&extraSources.every((src,i)=>typeof src==='string'&&(src===`./art/jingyu-wind-${['bullet','spear','vortex'][i]}-r78.png`||src.startsWith('data:image/png;base64,')));
+    const selected=expanded?[drawMagic(),drawMagic()]:null;
+    const casts=selected?selected.map((magic,index)=>({magic,index,kind:magic.kind,at:index?.60:.29,lead:magic.kind?600:420,hold:magic.kind?(magic.id==='hurricane'?1800:1050):280,recovery:magic.kind?400:300,armed:null}))
+      :[{kind:0,index:0,at:.29,lead:420,hold:260,recovery:300,armed:null},{kind:1,index:1,at:.60,lead:560,hold:500,recovery:400,armed:null}];
+    const sourcesForMagic=expanded?[...spellSources,...extraSources]:spellSources;
+    const specs=selected?casts.flatMap(cast=>cast.magic.id==='blade'
+      ?[-.24,0,.24].map(fan=>({kind:0,castIndex:cast.index,magic:cast.magic,at:cast.at,fan,life:900,art:0}))
+      :magicParts(cast.magic.id).map((part,i)=>({...part,kind:cast.kind,castIndex:cast.index,magic:cast.magic,at:cast.at,fan:0,life:cast.magic.life,striker:i===0})))
+      :[{kind:0,castIndex:0,at:.29,fan:-.24,life:900,art:0},{kind:0,castIndex:0,at:.29,fan:0,life:900,art:0},{kind:0,castIndex:0,at:.29,fan:.24,life:900,art:0},{kind:1,castIndex:1,at:.60,fan:0,life:1900,art:1}];
+    // Decode only the selected spells' actual nodes; failed art never blocks flight.
+    const spells=hasWind?specs.map(spec=>{
+      const node=document.createElement('div'),image=document.createElement('img');
+      node.className='jingyu-wind-effect';node.dataset.kind=spec.magic?.id||(spec.kind?'tornado':'blade');node.dataset.role=spec.role||'projectile';node.style.opacity='0';
+      image.className='jingyu-wind-art';image.alt='';image.draggable=false;image.decoding='async';
+      const spell={...spec,node,image,ready:false,fired:false,born:null,hitStep:0};
+      const release=()=>{image.onload=image.onerror=null;};
+      const ready=()=>{release();if(active===flight)spell.ready=true;};
+      flight.cleanups.push(()=>{release();spell.ready=false;});
+      image.src=sourcesForMagic[spec.art];node.append(image);layer.append(node);
+      if(typeof image.decode==='function')Promise.resolve().then(()=>image.decode()).then(ready,release);
+      else {image.onload=ready;image.onerror=release;if(image.complete&&image.naturalWidth)ready();}
+      return spell;
+    }):[];
+    const spellName=document.createElement('div');spellName.className='jingyu-spell-name';spellName.style.opacity='0';
+    if(expanded)layer.append(spellName);
     // R77: impact uses the same clock/RAF as flight, never transforms body or
     // reparents the app. Fixed menus keep their original viewport containing block.
     const impact=document.createElement('div'),wave=document.createElement('div');
@@ -346,7 +390,7 @@
         if(p>=1){hits.splice(i,1);continue;}
         if(p<0)continue;
         const envelope=(1-p)**2*cinematic(clamp(age/22,0,1));
-        const strength=(hit.kind?1.3:1)*envelope,phase=age/1000*TAU;
+        const strength=(hit.strength??(hit.kind?1.3:1))*envelope,phase=age/1000*TAU;
         dx+=strength*(.68*Math.sin(phase*13.7)+.32*Math.sin(phase*22.3+1.1));
         dy+=strength*(.72*Math.sin(phase*17.1+.7)+.28*Math.cos(phase*25.7));
         energy=Math.max(energy,strength);if(!latest||hit.at>latest.at)latest=hit;
@@ -423,18 +467,120 @@
         const due=duration*cast.at,relative=elapsed-due;
         if(cast.armed===null&&relative>=-cast.lead){
           // Decide once before wind-up: late/failed art must not pop in mid-attack.
-          cast.armed=castReady&&relative<-80&&spells.some(spell=>spell.kind===cast.kind&&spell.ready);
+          cast.armed=castReady&&relative<-80&&spells.some(spell=>spell.castIndex===cast.index&&spell.ready);
           cast.side=Math.sin(heading)<0?-1:1;
         }
         if(!cast.armed||relative<-cast.lead||relative>=cast.hold+cast.recovery)continue;
         const stage=relative<-64?0:relative<cast.hold?1:2;
         const strength=cinematic(clamp((relative+cast.lead)/180,0,1))*(1-cinematic(clamp((relative-cast.hold)/cast.recovery,0,1)));
-        return {pose:24+(cast.side<0?6:0)+cast.kind*3+stage,side:cast.side,strength,kick:Math.sin(Math.PI*clamp(relative/240,0,1)),kind:cast.kind,stage};
+        return {pose:24+(cast.side<0?6:0)+cast.kind*3+stage,side:cast.side,strength,kick:Math.sin(Math.PI*clamp(relative/240,0,1)),kind:cast.kind,stage,id:cast.magic?.id||(cast.kind?'tornado':'blade')};
       }
       return null;
     };
+    const renderMagic=(spell,elapsed,x,y)=>{
+      const due=duration*spell.at;
+      if(!spell.fired&&elapsed>=due){
+        if(!spell.ready&&elapsed<due+250)return;
+        spell.fired=true;
+        if(!spell.ready||elapsed>=due+spell.life)return;
+        spell.born=due;spell.x=x;spell.y=y;
+        spell.tx=left+width*.50;spell.ty=top+height*.46;
+        const unit=Math.min(width,height),column=spell.role.includes('column');
+        spell.w=spell.role==='rain-blade'?Math.min(72,unit*.15):spell.role==='spear'?Math.min(280,unit*.72):column?Math.min(210,unit*.47):Math.min(200,unit*.44);
+        spell.h=column?spell.w*1.5:spell.role==='spear'?spell.w*2/3:spell.w;
+        spell.node.style.width=`${spell.w}px`;spell.node.style.height=`${spell.h}px`;
+        spell.node.dataset.target='screen';spell.node.style.zIndex='2';
+      }
+      if(spell.born===null)return;
+      const age=elapsed-spell.born,p=clamp(age/spell.life,0,1),i=spell.index;
+      if(spell.striker)while(spell.hitStep<spell.magic.hits.length&&age>=spell.magic.hits[spell.hitStep][0]){
+        const [at,strength,life]=spell.magic.hits[spell.hitStep++];
+        if(age-at<=100)hits.push({at:spell.born+at,strength,life,kind:spell.kind,x:spell.tx,y:spell.ty});
+      }
+      if(p>=1){spell.node.style.opacity='0';return;}
+      const unit=Math.min(width,height),fade=cinematic(clamp(age/160,0,1))*(1-cinematic(clamp((p-.76)/.24,0,1)));
+      let cx=spell.tx,cy=spell.ty,sx=1,sy=1,angle=0,opacity=.78*fade;
+      const move=u=>{const t=cinematic(clamp(u,0,1));cx=spell.x+(spell.tx-spell.x)*t;cy=spell.y+(spell.ty-spell.y)*t;};
+      switch(spell.role){
+        case 'bullet':{
+          const u=clamp(age/410,0,1),pop=cinematic(clamp((age-410)/200,0,1));move(u);
+          sx=sy=.26+.48*u+1.8*pop;angle=age*.28;
+          opacity*=1-cinematic(clamp((age-570)/580,0,1));break;
+        }
+        case 'bullet-ring':{
+          const u=clamp((age-410)/650,0,1);sx=sy=.6+2.5*cinematic(u);angle=-age*.12;
+          opacity=age<410?0:.64*Math.sin(Math.PI*u)*(1-u);break;
+        }
+        case 'vacuum':{
+          const u=clamp((age-i*85)/420,0,1);move(u);
+          cx+=(i?1:-1)*unit*.07;sx=.30+2.9*u;sy=.05+.17*u;angle=(i?18:-18)+u*22;
+          opacity=(age<i*85||age>i*85+700)?0:.28*Math.sin(Math.PI*clamp((age-i*85)/700,0,1));break;
+        }
+        case 'bind-column':
+          sx=.78+.08*Math.sin(age*.018);sy=.88+.16*Math.sin(p*Math.PI);angle=Math.sin(age*.014)*6;break;
+        case 'bind-blade':{
+          const a=age*.012+i*TAU/4,r=unit*(.21-.045*Math.sin(p*Math.PI));
+          cx+=Math.cos(a)*r;cy+=Math.sin(a)*r*.62;sx=.40;sy=.40;angle=a*180/Math.PI+90;
+          spell.node.style.zIndex=Math.sin(a)>0?'2':'0';break;
+        }
+        case 'burst-ring':{
+          const u=clamp((age-i*110)/850,0,1);cx=spell.x;cy=spell.y;
+          sx=sy=.12+3.5*cinematic(u);angle=age*.09+i*35;
+          opacity=age<i*110?0:.82*Math.sin(Math.PI*u)*(1-u*.35);break;
+        }
+        case 'tornado-column':
+          cx+=Math.sin((p-.5)*Math.PI)*width*.23;cy-=Math.sin(p*Math.PI)*height*.10;
+          sx=1.0+.45*Math.sin(p*Math.PI);sy=1.18+.25*Math.sin(p*Math.PI);angle=Math.sin(age*.018)*7;break;
+        case 'lift-ring':{
+          const u=((age/1050+i/3)%1+1)%1;
+          cx+=Math.sin((p-.5)*Math.PI)*width*.23;cy+=unit*(.20-u*.60);
+          sx=.48+u*.60;sy=sx*.28;angle=age*.20+i*60;opacity*=Math.sin(Math.PI*u);break;
+        }
+        case 'spear':{
+          const u=clamp(age/510,0,1);move(u);sx=.32+1.50*u;sy=.40+.90*u;
+          angle=Math.atan2(spell.ty-spell.y,spell.tx-spell.x)*180/Math.PI;
+          spell.image.style.transform=`scaleY(${(.90+.10*Math.sin(age*.045)).toFixed(4)})`;
+          opacity*=1-cinematic(clamp((age-560)/520,0,1));break;
+        }
+        case 'spear-ring':{
+          const u=clamp((age-i*90)/510,0,1);move(u);sx=.20+.65*u;sy=sx*.26;angle=age*.75+i*90;
+          opacity*=age<i*90?0:1-cinematic(clamp((age-510)/420,0,1));break;
+        }
+        case 'rain-blade':{
+          const local=age-i*32,u=((local%520)+520)%520/520,col=i%4,row=Math.floor(i/4);
+          cx=left+width*(.06+col*.25)+unit*(u-.5)*.24;
+          cy=top+height*(-.12+row*.27+u*.80);sx=sy=.48+.60*u;angle=72+i%3*14;
+          opacity=local<0?0:.82*Math.sin(Math.PI*u)*(1-cinematic(clamp((p-.79)/.21,0,1)));break;
+        }
+        case 'implosion-core':{
+          if(age<1060){const u=age/1060;sx=sy=.38*(1-u)+.07;opacity*=.60;}
+          else{const u=clamp((age-1060)/650,0,1);sx=sy=.10+2.7*cinematic(u);opacity=.86*(1-u);}
+          angle=-age*.28;break;
+        }
+        case 'inward-ring':{
+          const u=clamp(age/1060,0,1),a=i*TAU/4+age*.006,r=unit*.34*(1-cinematic(u));
+          cx+=Math.cos(a)*r;cy+=Math.sin(a)*r;sx=sy=.85*(1-u)+.05;angle=-age*.32+i*45;
+          opacity*=1-cinematic(clamp((age-1000)/180,0,1));break;
+        }
+        case 'hurricane-eye':
+          sx=sy=1.1+2.0*Math.sin(p*Math.PI);angle=-age*.17;opacity*=.72;break;
+        case 'hurricane-column':{
+          const a=age*.0028+i*Math.PI;cx+=Math.cos(a)*unit*.27;cy+=Math.sin(a)*unit*.13;
+          sx=1.05;sy=1.45;angle=Math.sin(age*.014+i)*9;opacity*=.78;break;
+        }
+        case 'hurricane-ring':
+          sx=sy=1.5+i*.6+Math.sin(p*Math.PI)*.5;angle=age*(i?-.23:.19)+i*60;opacity*=.48;break;
+        case 'hurricane-blade':{
+          const a=age*.008+i*TAU/5,r=unit*(.28+.10*Math.sin(p*Math.PI));
+          cx+=Math.cos(a)*r;cy+=Math.sin(a)*r*.82;sx=sy=.34;angle=a*180/Math.PI+90;break;
+        }
+      }
+      spell.node.style.opacity=String(clamp(opacity,0,.86));
+      spell.node.style.transform=`translate3d(${(cx-spell.w/2).toFixed(2)}px,${(cy-spell.h/2).toFixed(2)}px,0) rotate(${angle.toFixed(2)}deg) scale(${sx.toFixed(4)},${sy.toFixed(4)})`;
+    };
     const wind=(elapsed,x,y,scale,heading)=>{
       for(const spell of spells){
+        if(spell.role){renderMagic(spell,elapsed,x,y);continue;}
         const due=duration*spell.at;
         if(!spell.fired&&elapsed>=due){
           if(!spell.ready&&elapsed<due+250)continue;
@@ -443,7 +589,7 @@
           spell.born=due;
           spell.hit=false;
           spell.hitDelay=spell.kind?980:420+(spell.fan+.24)/.24*75;
-          const cast=casts[spell.kind];
+          const cast=casts[spell.castIndex];
           const aim=cast.armed?cast.side*Math.PI/2:heading;
           const angle=Math.PI/2-aim+spell.fan;
           spell.vx=Math.cos(angle);spell.vy=Math.sin(angle);spell.angle=angle*180/Math.PI;
@@ -485,6 +631,16 @@
         spell.node.style.transform=`translate3d(${(cx-spell.w/2).toFixed(2)}px,${(cy-spell.h/2).toFixed(2)}px,0) rotate(${rotation.toFixed(2)}deg) scale(${zoom.toFixed(4)})`;
         if(spell.kind)spell.image.style.transform=`scaleX(${(.94+.045*Math.sin(p*TAU*6)).toFixed(4)})`;
       }
+      if(expanded){
+        const named=casts.find(cast=>elapsed>=duration*cast.at-cast.lead&&elapsed<duration*cast.at+cast.magic.life&&(cast.armed||spells.some(spell=>spell.castIndex===cast.index&&spell.born!==null)));
+        if(named){
+          const text=window.SalaryMateI18n?.language?.()==='en'?named.magic.en:named.magic.zh;
+          if(spellName.textContent!==text)spellName.textContent=text;
+          spellName.dataset.spell=named.magic.id;
+          const age=elapsed-duration*named.at;
+          spellName.style.opacity=String(cinematic(clamp((age+named.lead)/180,0,1))*(1-cinematic(clamp((age-named.magic.life+250)/250,0,1))));
+        }else spellName.style.opacity='0';
+      }
     };
     const tick = now => {
       if(active!==flight)return;
@@ -512,7 +668,7 @@
       const targetPose=(directionMix>.5?toDirection:fromDirection)*3+Math.round(stroke);
       const casting=attack(elapsed,heading);
       renderPose(casting?casting.pose:targetPose,now);
-      actor.dataset.cast=casting?(casting.kind?'tornado':'blade'):'none';
+      actor.dataset.cast=casting?casting.id:'none';
       actor.dataset.castStage=casting?String(casting.stage):'';
       const turn=Math.atan2(point.dx*ahead.dy-point.dy*ahead.dx,point.dx*ahead.dx+point.dy*ahead.dy);
       const settling=1-smooth(clamp((t-.86)/.14,0,1));

@@ -38,6 +38,11 @@ for(const match of scripts){
     if(!source.includes(castMarker))throw new Error('Missing HD-2D attack asset declaration');
     const castBytes=await readFile(path.join(base,castPath));
     source=source.replace(castMarker,()=>"const HD2D_CAST_SRC = 'data:image/png;base64,"+castBytes.toString('base64')+"';");
+    const extraPaths=['bullet','spear','vortex'].map(kind=>'./art/jingyu-wind-'+kind+'-r78.png');
+    const extraMarker='const HD2D_WIND_EXTRAS = Object.freeze('+JSON.stringify(extraPaths)+');';
+    if(!source.includes(extraMarker))throw new Error('Missing expanded wind magic declarations');
+    const extraSources=await Promise.all(extraPaths.map(async name=>'data:image/png;base64,'+(await readFile(path.join(base,name))).toString('base64')));
+    source=source.replace(extraMarker,()=>'const HD2D_WIND_EXTRAS = Object.freeze('+JSON.stringify(extraSources)+');');
     const windPaths=['blade','tornado'].map(kind=>'./art/jingyu-wind-'+kind+'-r75.png');
     const windMarker='const HD2D_WIND_SOURCES = Object.freeze('+JSON.stringify(windPaths)+');';
     if(!source.includes(windMarker))throw new Error('Missing HD-2D wind spell declarations');
