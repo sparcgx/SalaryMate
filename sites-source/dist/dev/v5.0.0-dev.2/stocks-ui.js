@@ -54,18 +54,24 @@
     const dailyChange=a=>`<span class="stock-daily-change ${tone(a.quoteChange)}">${a.quoteChange==null?'漲跌待更新':`${a.quoteChange>0?'+':''}${num(a.quoteChange,4)}${a.quoteChangePercent==null?'':` / ${a.quoteChangePercent>0?'+':''}${num(a.quoteChangePercent,2)}%`}`}</span>`;
     const listPriceFormat=new Intl.NumberFormat('zh-TW',{minimumFractionDigits:2,maximumFractionDigits:4});
     const listPercentFormat=new Intl.NumberFormat('zh-TW',{minimumFractionDigits:2,maximumFractionDigits:2});
-    function quoteSummary(a){
+    function quoteSummary(a,inlineTime=false){
       const quoted=typeof a.quotePrice==='number'&&Number.isFinite(a.quotePrice);
       const source=String(a.quoteSource||'').trim();
       const closed=['TWSE 上市收盤','TPEx 上櫃收盤','TWSE 收盤','TPEx 收盤'].includes(source);
       const label=closed?'收盤':source.includes('最新')||a.quoteMode==='auto'?'最新價':'價格';
       const dated=quoted&&core.dateOK(a.quoteDate);
       const date=dated?`${Number(a.quoteDate.slice(5,7))}/${Number(a.quoteDate.slice(8,10))}`:'—';
-      const at=String(a.quoteProviderTime||'').trim()||a.quoteMarketAt||a.quoteDate||'';
+      const at=String(a.quoteProviderTime||'').trim()||String(a.quoteMarketAt||a.quoteDate||'');
       const meta=quoted?[a.currency,source||'手動',at].filter(Boolean).join(' · '):'尚無行情';
+      // Show the provider's own time beside the holdings price. Do not convert
+      // time zones, infer a closing time, or substitute the fetch/check time.
+      const readableAt=core.dateOK(at.slice(0,10))?`${Number(at.slice(5,7))}/${Number(at.slice(8,10))}${at.slice(10).replace(/^T/,' ')}`:at;
+      const stamp=inlineTime&&quoted
+        ? `<span class="stock-quote-date stock-quote-timestamp" title="${esc(at)}">${esc(readableAt||'—')}</span>`
+        : dated?`<time class="stock-quote-date" datetime="${esc(a.quoteDate)}" aria-label="${esc(at||a.quoteDate)}">${date}</time>`:'<span class="stock-quote-date">—</span>';
       const percent=quoted&&typeof a.quoteChangePercent==='number'&&Number.isFinite(a.quoteChangePercent)?a.quoteChangePercent:null;
       const change=percent==null?'—':`${percent>0?'+':''}${listPercentFormat.format(Object.is(percent,-0)?0:percent)}%`;
-      return `<div class="stock-list-price stock-list-price-summary"><dl class="stock-quote-summary" title="${esc(meta)}"><div><dt>${label}</dt><dd><strong class="stock-quote-value">${quoted?listPriceFormat.format(a.quotePrice):'待更新'}</strong>${dated?`<time class="stock-quote-date" datetime="${esc(a.quoteDate)}" aria-label="${esc(at||a.quoteDate)}">${date}</time>`:'<span class="stock-quote-date">—</span>'}</dd></div><div><dt>漲跌</dt><dd><strong class="stock-quote-value ${tone(percent)}"${percent==null?' aria-label="漲跌待更新"':''}>${change}</strong></dd></div></dl>${navInfo(a)}</div>`;
+      return `<div class="stock-list-price stock-list-price-summary"><dl class="stock-quote-summary" title="${esc(meta)}"><div><dt>${label}</dt><dd><strong class="stock-quote-value">${quoted?listPriceFormat.format(a.quotePrice):'待更新'}</strong>${stamp}</dd></div><div><dt>漲跌</dt><dd><strong class="stock-quote-value ${tone(percent)}"${percent==null?' aria-label="漲跌待更新"':''}>${change}</strong></dd></div></dl>${navInfo(a)}</div>`;
     }
     const empty=(label,action)=>`<div class="stock-empty"><h3>${label}</h3><p>輸入自己的實際資料，這裡不會預先放入示範持股。</p>${action||btn('新增股票','asset','',true)}</div>`;
     const stat=(label,value,hint='',cls='')=>`<div class="stock-stat"><span>${label}</span><strong class="${cls}">${value}</strong><small>${hint}</small></div>`;
@@ -85,9 +91,9 @@
       let rows=holdings.filter(s=>(watch?s.quantity===0:s.quantity>0)&&stockMatches(s.asset));
       rows.sort((a,b)=>view.sort==='symbol'?a.asset.symbol.localeCompare(b.asset.symbol):view.sort==='profit'?(b.unrealized??-Infinity)-(a.unrealized??-Infinity):(b.value??-1)-(a.value??-1));
       if(!rows.length)return empty(watch?'尚無觀察股票':'沒有符合條件的持股',btn('新增股票','asset')+btn('登記買入','buy','',true));
-      return table(['股票／帳戶',watch?'狀態':'股數／剩餘均價','行情','持有成本 TWD','市值 TWD','未實現損益 TWD','操作'],rows.map(s=>{
+      return table(['股票','分類',watch?'狀態':'股數／剩餘均價','行情','持有成本 TWD','市值 TWD','未實現損益 TWD','帳戶','操作'],rows.map(s=>{
         const a=s.asset;
-        return `<tr><td class="stock-asset-cell">${assetName(a)}${tags(a)}<small>${markets[a.market]} · ${(a.account?user(a.account):'未分帳戶')}</small></td><td>${watch?badge('觀察／已出清'):`<strong>${num(s.quantity,6)} 股</strong><small>${num(s.average,4)} ${a.currency}</small>`}</td><td class="stock-quote-cell">${quoteSummary(a)}</td><td>${money(s.costTwd)}</td><td>${s.value==null?'待更新股價':money(s.value)}</td><td class="${tone(s.unrealized)}"><strong>${signed(s.unrealized)}</strong><small>${s.returnPct==null?'—':num(s.returnPct)+'%'}</small></td><td><div class="stock-row-actions">${btn('買入','buy',a.id)}${s.quantity>0?btn('賣出','sell',a.id):btn('編輯','asset',a.id)}</div></td></tr>`;
+        return `<tr><td class="stock-asset-cell">${assetName(a)}</td><td class="stock-classification-cell">${tags(a)}<small>${markets[a.market]}</small></td><td>${watch?badge('觀察／已出清'):`<strong>${num(s.quantity,6)} 股</strong><small>${num(s.average,4)} ${a.currency}</small>`}</td><td class="stock-quote-cell">${quoteSummary(a,true)}</td><td>${money(s.costTwd)}</td><td>${s.value==null?'待更新股價':money(s.value)}</td><td class="${tone(s.unrealized)}"><strong>${signed(s.unrealized)}</strong><small>${s.returnPct==null?'—':num(s.returnPct)+'%'}</small></td><td class="stock-account-cell">${a.account?user(a.account):'未分帳戶'}</td><td><div class="stock-row-actions">${btn('買入','buy',a.id)}${s.quantity>0?btn('賣出','sell',a.id):btn('編輯','asset',a.id)}</div></td></tr>`;
       }).join(''),'stock-ledger stock-holdings-table');
     }
     function eventTable(events,showActions=true) {

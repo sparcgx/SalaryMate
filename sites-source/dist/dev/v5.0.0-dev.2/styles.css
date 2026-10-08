@@ -1700,3 +1700,19 @@ body.jingyu-screen-hit :is(.sidebar,.workspace-shell>.topbar,.workspace-shell>ma
 @media (forced-colors:active){
  body[data-interface-style][data-ui-mode] :is(.field,.field-select,.calc-input,.btn,dialog,.menu,.v5-settings-disclosure){box-shadow:none;border-color:CanvasText}
 }
+
+/* R82: the old light-only .data-row:hover leaked through transparent table cells.
+   Match the selected theme for both pointer and keyboard interaction. */
+@media screen{
+ body[data-interface-style] .data-row:is(:hover,:focus-within){background:var(--surface-2)}
+ .stock-holdings-table td.stock-classification-cell{min-width:128px;width:160px;text-align:left}
+ .stock-holdings-table .stock-classification-cell .stock-tags{margin:0;max-width:190px;gap:5px}
+ .stock-holdings-table .stock-classification-cell .stock-badge{white-space:normal;overflow-wrap:anywhere}
+ .stock-holdings-table td.stock-account-cell{min-width:130px;max-width:240px;text-align:left;white-space:normal;overflow-wrap:anywhere}
+ .stock-holdings-table td.stock-quote-cell{min-width:360px}
+ .stock-holdings-table .stock-quote-summary{grid-template-columns:minmax(230px,1fr) minmax(80px,auto)}
+ .stock-holdings-table .stock-quote-summary>div:first-child dd{display:flex;align-items:baseline;gap:10px}
+ .stock-holdings-table .stock-quote-summary>div:first-child .stock-quote-value{flex:none;white-space:nowrap;overflow-wrap:normal}
+ .stock-holdings-table .stock-quote-date{min-width:0;margin-top:0;line-height:1.5}
+ .stock-holdings-table .stock-quote-timestamp{white-space:normal;overflow-wrap:anywhere;border-inline-start:1px solid var(--line);padding-inline-start:8px}
+}
