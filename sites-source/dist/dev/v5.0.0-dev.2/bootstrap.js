@@ -109,6 +109,13 @@
     [510,619,540,318,244,104],
     [1071,625,436,346,187,101],
   ];
+  // R76: measured rectangles include the forward slash and raised feather tips.
+  // Head registration keeps the six poses steady despite irregular atlas spacing.
+  const castPoses=[
+    [21,123,450,333,350,132], [529,104,563,365,318,136],
+    [1066,112,446,377,285,134], [68,537,422,421,251,189],
+    [533,474,464,478,270,246], [993,617,537,348,328,103]
+  ];
   const makeRoute = (points, bounds) => {
     const samples = [{...points[0], distance:0, segment:0, t:0}],segments=[];
     // One tangent is shared by both sides of each waypoint, avoiding sharp joins.
@@ -271,6 +278,27 @@
     } catch { if(active===flight){layer.remove();flight.layer=null;greet();} return; }
     if(active!==flight)return;
     window.clearTimeout(flight.timer);
+    // R76: optional attack art is decoded on the two existing pose layers.
+    // It never hides the home bird or delays the first visible flight frame.
+    const castSource=window.SalaryMateCastArt;
+    let castReady=false;
+    if(typeof castSource==='string'&&(castSource==='./art/jingyu-cast-r76.png'||castSource.startsWith('data:image/png;base64,'))){
+      const decoding=layers.map(poseLayer=>{
+        const image=document.createElement('img');
+        image.className='jingyu-flight-sheet';image.alt='';image.draggable=false;image.decoding='async';image.style.display='none';
+        image.src=castSource;poseLayer.images.push(image);poseLayer.crop.append(image);
+        const release=()=>{image.onload=image.onerror=null;};
+        if(typeof image.decode==='function')return Promise.resolve().then(()=>image.decode());
+        if(image.complete&&image.naturalWidth)return Promise.resolve();
+        return new Promise((resolve,reject)=>{
+          image.onload=()=>{release();resolve();};image.onerror=()=>{release();reject(new Error('Attack art unavailable'));};
+          flight.cleanups.push(()=>{release();resolve();});
+        });
+      });
+      flight.cleanups.push(()=>{castReady=false;});
+      Promise.all(decoding).then(()=>{if(active===flight)castReady=true;},()=>{});
+    }
+    const casts=[{kind:0,at:.29,lead:420,hold:260,recovery:300,armed:null},{kind:1,at:.60,lead:560,hold:500,recovery:400,armed:null}];
     // Optional spell art never delays takeoff. Use the actual displayed images;
     // a failed/late image simply skips that spell, and stop() owns every node.
     const spellSources=window.SalaryMateWindArt;
@@ -296,13 +324,27 @@
       layer.wrapper.style.opacity=String(opacity);
       if(index===layer.lastPose)return;
       layer.lastPose=index;
-      const sheetIndex=split?Math.floor(index/6):0,cellIndex=split?index%6:index;
+      layer.wrapper.dataset.pose=String(index);
+      const casting=index>=24,castIndex=(index-24)%6;
+      layer.wrapper.style.transform=casting&&index>=30?'scaleX(-1)':'scaleX(1)';
+      layer.crop.style.clipPath='none';
+      const sheetIndex=casting?sheets.length:(split?Math.floor(index/6):0),cellIndex=split?index%6:index;
       if(sheetIndex!==layer.activeSheet){
         if(layer.activeSheet>=0)layer.images[layer.activeSheet].style.display='none';
         layer.images[sheetIndex].style.display='block';layer.activeSheet=sheetIndex;
       }
       const image=layer.images[sheetIndex];
-      if(split){
+      if(casting){
+        const [x,y,w,h,headX,headY]=castPoses[castIndex],artScale=.74;
+        layer.crop.style.width=`${w/512*size}px`;layer.crop.style.height=`${h/512*size}px`;
+        layer.crop.style.transform=`translate3d(${(.5-headX/512*artScale)*size}px,${(.44-headY/512*artScale)*size}px,0) scale(${artScale})`;
+        image.style.width=`${1536/w*100}%`;image.style.height=`${1024/h*100}%`;
+        image.style.transform=`translate3d(${-x/1536*100}%,${-y/1024*100}%,0)`;
+        // These two silhouettes overlap in bounding-box space, not in pixels.
+        // Exclude the neighbour without trimming either owl's actual feathers.
+        if(castIndex===1)layer.crop.style.clipPath='polygon(0 0,100% 0,100% 53.6986%,95.3819% 53.6986%,95.3819% 100%,0 100%)';
+        if(castIndex===2)layer.crop.style.clipPath='polygon(10.3139% 0,100% 0,100% 100%,0 100%,0 49.8674%,10.3139% 49.8674%)';
+      }else if(split){
         const [x,y,w,h,headX,headY]=posesR73[index],artScale=.74;
         // Crop each full silhouette BEFORE head registration, with consistent pixel scale.
         layer.crop.style.width=`${w/512*size}px`;layer.crop.style.height=`${h/512*size}px`;
@@ -311,6 +353,7 @@
         image.style.transform=`translate3d(${-x/1536*100}%,${-y/1024*100}%,0)`;
       }else{
         const [anchorX,anchorY]=anchors[index];
+        layer.crop.style.width=layer.crop.style.height='100%';
         layer.crop.style.transform=`translate3d(${(.5-anchorX/256*.84)*100}%,${(.44-anchorY/256*.84)*100}%,0) scale(.84)`;
         image.style.transform=`translate3d(${-(cellIndex%6)/6*100}%,${-Math.floor(cellIndex/6)/4*100}%,0)`;
       }
@@ -328,6 +371,21 @@
       pose(layers[0],shownPose,1-mix);
       pose(layers[1],nextPose<0?shownPose:nextPose,mix);
     };
+    const attack=(elapsed,heading)=>{
+      for(const cast of casts){
+        const due=duration*cast.at,relative=elapsed-due;
+        if(cast.armed===null&&relative>=-cast.lead){
+          // Decide once before wind-up: late/failed art must not pop in mid-attack.
+          cast.armed=castReady&&relative<-80&&spells.some(spell=>spell.kind===cast.kind&&spell.ready);
+          cast.side=Math.sin(heading)<0?-1:1;
+        }
+        if(!cast.armed||relative<-cast.lead||relative>=cast.hold+cast.recovery)continue;
+        const stage=relative<-64?0:relative<cast.hold?1:2;
+        const strength=cinematic(clamp((relative+cast.lead)/180,0,1))*(1-cinematic(clamp((relative-cast.hold)/cast.recovery,0,1)));
+        return {pose:24+(cast.side<0?6:0)+cast.kind*3+stage,side:cast.side,strength,kick:Math.sin(Math.PI*clamp(relative/240,0,1)),kind:cast.kind,stage};
+      }
+      return null;
+    };
     const wind=(elapsed,x,y,scale,heading)=>{
       for(const spell of spells){
         const due=duration*spell.at;
@@ -336,7 +394,9 @@
           spell.fired=true;
           if(!spell.ready||elapsed>=due+spell.life)continue;
           spell.born=due;
-          const angle=Math.PI/2-heading+spell.fan;
+          const cast=casts[spell.kind];
+          const aim=cast.armed?cast.side*Math.PI/2:heading;
+          const angle=Math.PI/2-aim+spell.fan;
           spell.vx=Math.cos(angle);spell.vy=Math.sin(angle);spell.angle=angle*180/Math.PI;
           spell.w=spell.kind?clamp(size*.56,88,152):clamp(size*.48,64,128);
           spell.h=spell.kind?clamp(spell.w*1.45,128,204):spell.w;
@@ -391,14 +451,20 @@
       const phase=elapsed/740;
       const stroke=1-Math.cos(phase*TAU)*(1-glideBlend);
       const targetPose=(directionMix>.5?toDirection:fromDirection)*3+Math.round(stroke);
-      renderPose(targetPose,now);
+      const casting=attack(elapsed,heading);
+      renderPose(casting?casting.pose:targetPose,now);
+      actor.dataset.cast=casting?(casting.kind?'tornado':'blade'):'none';
+      actor.dataset.castStage=casting?String(casting.stage):'';
       const turn=Math.atan2(point.dx*ahead.dy-point.dy*ahead.dx,point.dx*ahead.dx+point.dy*ahead.dy);
       const settling=1-smooth(clamp((t-.86)/.14,0,1));
       const targetBank=clamp(turn*180/Math.PI*2+(point.dx/(speed||1))*4,-17,17)*settling;
       bank+=(targetBank-bank)*(1-Math.exp(-dt/145));
       const depthMotion=Math.sin(TAU*progress);
       pitch+=((-point.dy/(speed||1)*3+depthMotion*3)*settling-pitch)*(1-Math.exp(-dt/180));
-      facing.style.transform=`perspective(520px) rotateX(${pitch.toFixed(2)}deg)`;
+      const recoil=casting?-casting.side*casting.kick*size*.014:0;
+      const castLift=casting?-casting.strength*size*.006:0;
+      const castTilt=casting?casting.side*(-5*casting.strength+8*casting.kick):0;
+      facing.style.transform=`perspective(520px) rotateX(${pitch.toFixed(2)}deg) translate3d(${recoil.toFixed(2)}px,${castLift.toFixed(2)}px,0) rotate(${castTilt.toFixed(2)}deg)`;
       const lift=cinematic(clamp(Math.min(t/.14,(1-t)/.18),0,1));
       // One continuous approach/recede pass follows route progress, not turn direction.
       const nearWeight=(1-Math.cos(TAU*progress))/2;

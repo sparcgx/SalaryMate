@@ -1,0 +1,119 @@
+{
+  "method": "Read-only connected component analysis of original alpha > 16. Runtime rectangular crops, two CSS clip polygons, head alignment; original PNG bytes unmodified.",
+  "frames": [
+    {
+      "frame": 0,
+      "source_rectangle_and_head": [
+        21,
+        123,
+        450,
+        333,
+        350,
+        132
+      ],
+      "lost_character_pixels_alpha_gt_16": 0,
+      "neighbour_character_pixels_alpha_gt_16": 0,
+      "normalized_visible_bounds": [
+        0.005703125000000031,
+        0.26078124999999996,
+        0.6315234375000001,
+        0.7175
+      ]
+    },
+    {
+      "frame": 1,
+      "source_rectangle_and_head": [
+        529,
+        104,
+        563,
+        365,
+        318,
+        136
+      ],
+      "lost_character_pixels_alpha_gt_16": 0,
+      "neighbour_character_pixels_alpha_gt_16": 0,
+      "normalized_visible_bounds": [
+        0.05195312499999999,
+        0.255,
+        0.84109375,
+        0.7579687500000001
+      ]
+    },
+    {
+      "frame": 2,
+      "source_rectangle_and_head": [
+        1066,
+        112,
+        446,
+        377,
+        285,
+        134
+      ],
+      "lost_character_pixels_alpha_gt_16": 0,
+      "neighbour_character_pixels_alpha_gt_16": 0,
+      "normalized_visible_bounds": [
+        0.09964843750000002,
+        0.25789062500000004,
+        0.7196875,
+        0.778203125
+      ]
+    },
+    {
+      "frame": 3,
+      "source_rectangle_and_head": [
+        68,
+        537,
+        422,
+        421,
+        251,
+        189
+      ],
+      "lost_character_pixels_alpha_gt_16": 0,
+      "neighbour_character_pixels_alpha_gt_16": 0,
+      "normalized_visible_bounds": [
+        0.1487890625,
+        0.1783984375,
+        0.734140625,
+        0.7623046875
+      ]
+    },
+    {
+      "frame": 4,
+      "source_rectangle_and_head": [
+        533,
+        474,
+        464,
+        478,
+        270,
+        246
+      ],
+      "lost_character_pixels_alpha_gt_16": 0,
+      "neighbour_character_pixels_alpha_gt_16": 0,
+      "normalized_visible_bounds": [
+        0.12132812500000001,
+        0.096015625,
+        0.7673828125,
+        0.7623046875
+      ]
+    },
+    {
+      "frame": 5,
+      "source_rectangle_and_head": [
+        993,
+        617,
+        537,
+        348,
+        328,
+        103
+      ],
+      "lost_character_pixels_alpha_gt_16": 0,
+      "neighbour_character_pixels_alpha_gt_16": 0,
+      "normalized_visible_bounds": [
+        0.03749999999999998,
+        0.30269531250000004,
+        0.7890625,
+        0.7810937499999999
+      ]
+    }
+  ]
+}

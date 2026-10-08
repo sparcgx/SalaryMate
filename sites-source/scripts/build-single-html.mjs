@@ -33,6 +33,11 @@ for(const match of scripts){
     if(!source.includes(flightMarker))throw new Error('Missing HD-2D flight plates declaration');
     const flightSources=await Promise.all(flightPaths.map(async name=>'data:image/png;base64,'+(await readFile(path.join(base,name))).toString('base64')));
     source=source.replace(flightMarker,()=>'const HD2D_FLIGHT_SOURCES = Object.freeze('+JSON.stringify(flightSources)+');');
+    const castPath='./art/jingyu-cast-r76.png';
+    const castMarker="const HD2D_CAST_SRC = '"+castPath+"';";
+    if(!source.includes(castMarker))throw new Error('Missing HD-2D attack asset declaration');
+    const castBytes=await readFile(path.join(base,castPath));
+    source=source.replace(castMarker,()=>"const HD2D_CAST_SRC = 'data:image/png;base64,"+castBytes.toString('base64')+"';");
     const windPaths=['blade','tornado'].map(kind=>'./art/jingyu-wind-'+kind+'-r75.png');
     const windMarker='const HD2D_WIND_SOURCES = Object.freeze('+JSON.stringify(windPaths)+');';
     if(!source.includes(windMarker))throw new Error('Missing HD-2D wind spell declarations');

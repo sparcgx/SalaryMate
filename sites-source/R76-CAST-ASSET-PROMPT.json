@@ -1,0 +1,144 @@
+{
+  "mode": "built-in image_gen edit (identity-preserve)",
+  "original_path": "/workspace/scratch/2abc8ba223a0/generated_images/exec-13bfe2c8-a86a-447b-af49-a2cee0494097.png",
+  "prompt": "Use case: identity-preserve.\nEdit the referenced existing Jingyu owl character into ONE production sprite sheet, exact canvas 1536x1024 RGBA with truly transparent background. Image 1 is the existing flight sheet and PRIMARY anatomy, proportions, outfit and pose-rendering reference (use its bottom-row 3/4 RIGHT-facing character). Image 2 is a supporting close-up identity/detail reference for feather texture, cyan jewel eyes, navy cloth, gold trim, cyan diamond clasp and the identical small navy/gold book on chest-side.\nLayout: exactly 3 columns by 2 rows, six equally sized invisible cells of 512x512. One separate full-body owl per cell. No visible grid or dividers. Same character scale across all six; consistent head/body anchor approximately head center (270,235) and belly center (260,335) within EVERY cell. Body width about 170px, head width about 170px. Entire wing span and every feather tip within own cell, with at least 35 pixels transparent margin on all four sides. Do not let figures touch or overlap cells. All six face RIGHT in three-quarter view, eyes looking right.\nChange ONLY pose to create an actual two-attack casting animation. Preserve ivory owl identity, large round glossy cyan eyes, tufts, feather anatomy, gold beak/talons, navy cape with gold border and little gold diamond/star details, cyan diamond collar clasp, small navy gold book, high-detail hand-painted game illustration and warm natural feather shading. No redesign.\nTop left cell: WIND BLADE CHARGE: focused owl leaning forward slightly, wings drawn sharply BACK behind shoulders, elbows bent, feather fans swept back/left, visibly compressed preparatory attack silhouette.\nTop middle cell: WIND BLADE RELEASE: decisive forceful forward wing slash to the RIGHT, near wing fully thrust forward horizontally across/alongside torso toward the right edge, other wing swept back for balance. This must be a clear attack gesture and dramatic asymmetric silhouette, not ordinary flapping. Face remains visible.\nTop right cell: WIND BLADE RECOVERY: near wing continues its follow-through downward and forward/right, lower than release; other wing relaxing downward, torso recovering upright.\nBottom left cell: TORNADO CHARGE: both wings bent and raising above shoulder level, feathers curving upward, preparatory V with wing tips still distinctly below the next frame.\nBottom middle cell: TORNADO SUMMON RELEASE: both wings fully raised and spread in tall broad upward V, clear symmetrical summoning gesture relative to 3/4 body, talons visibly drawn up toward belly, focused slightly lifted gaze right.\nBottom right cell: TORNADO RECOVERY: wings lowering outward to low diagonals after the release, talons relaxing down, upright body. Distinct from top-row forward slash recovery.\nThe six action silhouettes must be visibly distinct. Character ONLY. NO magic effects, wind, blades, tornadoes, glows, auras, motion trails, speed lines, shadows, pedestal, floor, labels, text, numbers, borders, grids, backgrounds or props beyond the existing attached book. True alpha transparency in every empty pixel. Do not reproduce the brown background of reference image 1.",
+  "transparent_background": true,
+  "reference_paths": [
+    "/workspace/scratch/ffb98c0ef4a0/salarymate-site/dist/dev/v5.0.0-dev.2/art/jingyu-flight-r73-a.png",
+    "/workspace/scratch/ffb98c0ef4a0/salarymate-site/dist/dev/v5.0.0-dev.2/art/jingyu-hd2d-r74.png"
+  ],
+  "visual_review": {
+    "identity": "Strong fidelity to existing ivory owl, cyan eyes, navy/gold outfit and book.",
+    "poses": "Six distinct three-quarter right action poses; slash release is clear; top-right recovery resembles normal wings-down pose.",
+    "issues": [
+      "Top-middle slash extends past its 512px cell right boundary.",
+      "Bottom-middle raised wing extends above its row boundary.",
+      "Head anchors and body scales vary across cells.",
+      "Low alpha edge pixels extend near cell boundaries; image preview displays stored RGB brown backdrop, but representative backdrop pixels actually have alpha 0."
+    ],
+    "accepted_for_runtime": false,
+    "retry_performed": false,
+    "alpha_note": "RGBA alpha is present; sampled character pixels have alpha 252–253 and sampled background pixels alpha 0. Brown RGB backdrop appears in tool preview but is transparent in representative samples. No alpha edits performed."
+  },
+  "path": "/workspace/scratch/2abc8ba223a0/r76-assets/jingyu-cast-r76.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "bytes": 2235973,
+  "pixel_mode": "RGBA",
+  "alpha_extrema": [
+    0,
+    254
+  ],
+  "alpha_bounds_per_cell": [
+    {
+      "row": 0,
+      "column": 0,
+      "local_bbox": [
+        0,
+        37,
+        512,
+        512
+      ],
+      "local_bbox_alpha_above_127": [
+        30,
+        132,
+        462,
+        447
+      ]
+    },
+    {
+      "row": 0,
+      "column": 1,
+      "local_bbox": [
+        1,
+        19,
+        512,
+        512
+      ],
+      "local_bbox_alpha_above_127": [
+        26,
+        113,
+        512,
+        512
+      ]
+    },
+    {
+      "row": 0,
+      "column": 2,
+      "local_bbox": [
+        0,
+        33,
+        494,
+        512
+      ],
+      "local_bbox_alpha_above_127": [
+        0,
+        121,
+        479,
+        480
+      ]
+    },
+    {
+      "row": 1,
+      "column": 0,
+      "local_bbox": [
+        0,
+        0,
+        512,
+        494
+      ],
+      "local_bbox_alpha_above_127": [
+        77,
+        34,
+        481,
+        437
+      ]
+    },
+    {
+      "row": 1,
+      "column": 1,
+      "local_bbox": [
+        1,
+        0,
+        512,
+        479
+      ],
+      "local_bbox_alpha_above_127": [
+        30,
+        0,
+        512,
+        431
+      ]
+    },
+    {
+      "row": 1,
+      "column": 2,
+      "local_bbox": [
+        0,
+        1,
+        500,
+        488
+      ],
+      "local_bbox_alpha_above_127": [
+        0,
+        114,
+        497,
+        444
+      ]
+    }
+  ],
+  "alpha_histogram_summary": {
+    "zero_pixels": 941360,
+    "nonzero_pixels": 631504,
+    "pixels_above_127": 565180,
+    "opaque_pixels": 0
+  },
+  "runtime_asset_path": "dist/dev/v5.0.0-dev.2/art/jingyu-cast-r76.png",
+  "runtime_integration": {
+    "accepted_with_measured_crops": true,
+    "measurements": "R76-CAST-ASSET-MEASUREMENTS.json",
+    "note": "Fixed equal-cell assessment remains a description of raw generation; runtime uses measured source rectangles, head registration and two clipping polygons. PNG pixels unchanged."
+  }
+}

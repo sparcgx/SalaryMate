@@ -22,7 +22,7 @@ function element(tag='div'){
  setAttribute(name,value){this[name]=value;},remove(){this.removed=true;this.isConnected=false;if(this.parent)this.parent.children=this.parent.children.filter(n=>n!==this);}
  });
 }
-function setup({width=390,height=844,seed=3,blended=true,reduced=false,decodeWait=false,renderDecodeWait=false,plates=false,magic=false}={}){
+function setup({width=390,height=844,seed=3,blended=true,reduced=false,decodeWait=false,renderDecodeWait=false,plates=false,magic=false,casting=false}={}){
  let now=0,id=0,rng=seed,resolveDecode;const frames=new Map(),timers=new Map(),images=[];
  const renderDecoders=[];
  const createElement=tag=>{const el=element(tag);if(tag==='img'){el.complete=true;el.naturalWidth=1536;if(renderDecodeWait)el.decode=()=>new Promise((resolve,reject)=>renderDecoders.push({resolve,reject}));}return el;};
@@ -38,6 +38,7 @@ function setup({width=390,height=844,seed=3,blended=true,reduced=false,decodeWai
  setTimeout(fn,ms){const key=++id;timers.set(key,{fn,at:now+ms});return key;},clearTimeout:key=>timers.delete(key),
  Image:class{constructor(){images.push(this);}decode(){return decodeWait?new Promise(resolve=>resolveDecode=resolve):Promise.resolve();}}
  });
+ if(casting)window.SalaryMateCastArt='./art/jingyu-cast-r76.png';
  if(magic)window.SalaryMateWindArt=['blade','tornado'].map(kind=>'./art/jingyu-wind-'+kind+'-r75.png');
  if(plates)window.SalaryMateFlightSheets=['a','b','c','d'].map(id=>'./art/jingyu-flight-r73-'+id+'.png');
  window.window=window;vm.runInNewContext('// R70:'+source,window);
@@ -261,4 +262,65 @@ test('R75 optional wind decoding cannot block takeoff or resurrect cancelled eff
   if(cancel)assertClean(h);
   else {for(const t of [3500,3800,7000,7500]){h.advance(t);assert.ok(h.get('jingyu-wind-effect').every(fx=>fx.style.opacity==='0'));assert.equal(h.frames.size,1);}h.window.SalaryMateCompanion.stop();assertClean(h);}
  }
+});
+
+test('R76 both attacks show wind-up, release and recovery, synchronized to effects with at most two poses',async()=>{
+ const sides=new Set();
+ for(const blended of [true,false])for(const hz of [30,60,120]){
+  const h=setup({plates:true,magic:true,casting:true,blended,seed:hz});await h.start();await new Promise(r=>setImmediate(r));
+  const stages={blade:new Set(),tornado:new Set()},firstEffects=new Set();let returned=false,hadAttack=false;
+  for(let i=1;i/hz<17&&h.frames.size;i++){
+   assert.equal(h.frames.size,1);h.advance(i*1000/hz);
+   const actor=h.get('jingyu-flight-actor')[0];if(!actor)break;
+   const poses=h.get('jingyu-flight-pose'),visible=poses.filter(p=>Number(p.style.opacity)>.0001);
+   assert.ok(visible.length<=2);assert.ok(Math.abs(poses.reduce((sum,p)=>sum+Number(p.style.opacity),0)-1)<1e-9);
+   if(actor.dataset.cast!=='none'){
+    hadAttack=true;stages[actor.dataset.cast].add(Number(actor.dataset.castStage));
+   }else if(hadAttack)returned=true;
+   for(const pose of visible){
+    const index=Number(pose.dataset.pose);if(index<24)continue;
+    sides.add(pose.style.transform);
+    assert.ok(index<36);const images=pose.children[0].children.filter(img=>img.style.display==='block');
+    assert.equal(images.length,1);assert.equal(images[0].src,'./art/jingyu-cast-r76.png');
+   }
+   for(const fx of h.get('jingyu-wind-effect'))if(Number(fx.style.opacity)>.001&&!firstEffects.has(fx.dataset.kind)){
+    firstEffects.add(fx.dataset.kind);assert.equal(actor.dataset.cast,fx.dataset.kind);assert.equal(actor.dataset.castStage,'1');
+   }
+  }
+  assert.deepEqual([...stages.blade].sort(),[0,1,2]);assert.deepEqual([...stages.tornado].sort(),[0,1,2]);
+  assert.equal(firstEffects.size,2);assert.ok(returned);assertClean(h);
+ }
+ assert.deepEqual([...sides].sort(),['scaleX(-1)','scaleX(1)']);
+});
+
+test('R76 slow/failed attack art never blocks takeoff or pops into an attack after wind-up',async()=>{
+ for(const outcome of ['failed','late','cancelled']){
+  const h=setup({plates:true,magic:true,casting:true,renderDecodeWait:true});const pending=h.start();await new Promise(r=>setImmediate(r));
+  assert.equal(h.renderDecoders.length,8);h.renderDecoders.forEach(d=>d.resolve());await pending;await new Promise(r=>setImmediate(r));
+  assert.equal(h.renderDecoders.length,14);assert.equal(h.frames.size,1);assert.equal(h.get('jingyu-flight-actor')[0].style.opacity,'1');
+  h.renderDecoders.slice(10).forEach(d=>d.resolve());await new Promise(r=>setImmediate(r));
+  if(outcome==='cancelled')h.window.SalaryMateCompanion.stop();
+  if(outcome==='late')for(let t=50;t<=3350;t+=50)h.advance(t);
+  h.renderDecoders.slice(8,10).forEach(d=>outcome==='failed'?d.reject(new Error('attack failed')):d.resolve());
+  await new Promise(r=>setImmediate(r));
+  if(outcome==='cancelled'){assertClean(h);continue;}
+  for(let t=3400;t<=3800;t+=50){h.advance(t);assert.equal(h.get('jingyu-flight-actor')[0].dataset.cast,'none');}
+  assert.ok(h.get('jingyu-wind-effect').some(fx=>Number(fx.style.opacity)>0));
+  h.window.SalaryMateCompanion.stop();assertClean(h);
+ }
+});
+
+test('R76 cancelling during a casting pose removes art and effects, and reduced motion never creates either',async()=>{
+ for(const reason of ['tap','scroll','resize','pagehide','escape','motion','navigation']){
+  const h=setup({plates:true,magic:true,casting:true});await h.start();await new Promise(r=>setImmediate(r));
+  for(let t=50;t<15000&&h.get('jingyu-flight-actor')[0]?.dataset.cast!=='blade';t+=50)h.advance(t);
+  assert.equal(h.get('jingyu-flight-actor')[0].dataset.cast,'blade');
+  if(reason==='tap')h.window.SalaryMateCompanion.fly(h.button);
+  else if(reason==='escape')h.document.emit('keydown',{key:'Escape'});
+  else if(reason==='motion'){h.mq.matches=true;h.mq.emit('change');}
+  else if(reason==='navigation')h.window.SalaryMateCompanion.stop();
+  else h.window.emit(reason);
+  assertClean(h);assert.equal(h.get('jingyu-flight-sheet').length,0);assert.equal(h.get('jingyu-wind-effect').length,0);
+ }
+ const h=setup({plates:true,magic:true,casting:true,reduced:true});await h.start();assert.equal(h.get('jingyu-flight-sheet').length,0);h.advance(2000);assertClean(h);
 });
