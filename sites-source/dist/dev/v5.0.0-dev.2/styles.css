@@ -1495,3 +1495,15 @@ body[data-interface-style=pixel] #topbarCompanion .jingyu-greeting{box-shadow:0 
 .jingyu-flight-sheet{display:block;position:absolute;left:0;top:0;width:600%;height:400%;max-width:none!important;image-rendering:auto;will-change:transform;user-select:none}
 @media(prefers-reduced-motion:reduce){.jingyu-flight-layer{display:none!important}}
 @media print{.jingyu-flight-layer{display:none!important}}
+
+/* R71: investment options share the lower market toolbar; expand in flow on phones. */
+.stock-heading>div:first-child{width:100%}
+.stock-market-actions>.stock-action-menu-wrap{margin-inline-start:auto;max-width:100%}
+@media(max-width:720px){
+ .stock-heading.page-head{grid-template-columns:minmax(0,1fr)}
+ .stock-market-actions>.stock-action-menu-wrap{display:contents}
+ .stock-market-actions .stock-action-toggle{margin-inline-start:auto;white-space:nowrap}
+ .stock-market-actions .stock-head-actions{position:static;flex:1 0 100%;width:100%;max-width:100%;box-sizing:border-box;box-shadow:none;margin-top:4px}
+ .stock-market-actions .stock-action-menu-wrap.is-open .stock-head-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .stock-market-actions .stock-head-actions .btn{text-align:center;font-size:max(14px,.875rem);padding:10px 12px}
+}
