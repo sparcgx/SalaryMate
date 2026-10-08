@@ -264,7 +264,8 @@ test('R75 optional wind decoding cannot block takeoff or resurrect cancelled eff
  for(const cancel of [false,true]){
   const h=setup({plates:true,magic:true,renderDecodeWait:true});const pending=h.start();await new Promise(r=>setImmediate(r));
   assert.equal(h.renderDecoders.length,8);for(const d of h.renderDecoders)d.resolve();await pending;await new Promise(r=>setImmediate(r));
-  assert.equal(h.renderDecoders.length,12);assert.equal(h.frames.size,1);assert.equal(h.get('jingyu-flight-actor')[0].style.opacity,'1');
+  assert.equal(h.renderDecoders.length,8);h.advance(150);await new Promise(r=>setImmediate(r));
+  assert.equal(h.renderDecoders.length,11);assert.equal(h.frames.size,1);assert.equal(h.get('jingyu-flight-actor')[0].style.opacity,'1');
   if(cancel)h.window.SalaryMateCompanion.stop();
   for(const d of h.renderDecoders.slice(8))cancel?d.resolve():d.reject(new Error('optional art failed'));
   await new Promise(r=>setImmediate(r));
@@ -306,10 +307,11 @@ test('R76 slow/failed attack art never blocks takeoff or pops into an attack aft
  for(const outcome of ['failed','late','cancelled']){
   const h=setup({plates:true,magic:true,casting:true,renderDecodeWait:true});const pending=h.start();await new Promise(r=>setImmediate(r));
   assert.equal(h.renderDecoders.length,8);h.renderDecoders.forEach(d=>d.resolve());await pending;await new Promise(r=>setImmediate(r));
-  assert.equal(h.renderDecoders.length,14);assert.equal(h.frames.size,1);assert.equal(h.get('jingyu-flight-actor')[0].style.opacity,'1');
+  assert.equal(h.renderDecoders.length,8);h.advance(150);await new Promise(r=>setImmediate(r));
+  assert.equal(h.renderDecoders.length,13);assert.equal(h.frames.size,1);assert.equal(h.get('jingyu-flight-actor')[0].style.opacity,'1');
   h.renderDecoders.slice(10).forEach(d=>d.resolve());await new Promise(r=>setImmediate(r));
   if(outcome==='cancelled')h.window.SalaryMateCompanion.stop();
-  if(outcome==='late')for(let t=50;t<=3350;t+=50)h.advance(t);
+  if(outcome==='late')for(let t=200;t<=3350;t+=50)h.advance(t);
   h.renderDecoders.slice(8,10).forEach(d=>outcome==='failed'?d.reject(new Error('attack failed')):d.resolve());
   await new Promise(r=>setImmediate(r));
   if(outcome==='cancelled'){assertClean(h);continue;}
@@ -380,6 +382,7 @@ test('R77 missed frames, unavailable wind art and reduced motion never replay a 
  paused.window.SalaryMateCompanion.stop();assertClean(paused);
  const failed=setup({plates:true,magic:true,casting:true,renderDecodeWait:true});const pending=failed.start();await new Promise(r=>setImmediate(r));
  failed.renderDecoders.forEach(d=>d.resolve());await pending;await new Promise(r=>setImmediate(r));
+ failed.advance(150);await new Promise(r=>setImmediate(r));
  failed.renderDecoders.slice(8,10).forEach(d=>d.resolve());failed.renderDecoders.slice(10).forEach(d=>d.reject(new Error('wind unavailable')));await new Promise(r=>setImmediate(r));
  for(let t=50;t<17000&&failed.frames.size;t+=50){failed.advance(t);assert.equal(failed.document.body.classList.contains('jingyu-screen-hit'),false);}
  assertClean(failed);
@@ -447,6 +450,7 @@ test('R78 expanded art failure/cancellation stays nonblocking; names follow the 
  for(const cancel of [false,true]){
   const h=setup({plates:true,magic:true,casting:true,expanded:true,renderDecodeWait:true});const pending=h.start();await new Promise(r=>setImmediate(r));
   h.renderDecoders.forEach(d=>d.resolve());await pending;await new Promise(r=>setImmediate(r));assert.equal(h.frames.size,1);
+  h.advance(150);await new Promise(r=>setImmediate(r));
   if(cancel)h.window.SalaryMateCompanion.stop();
   h.renderDecoders.slice(8,10).forEach(d=>d.resolve());
   h.renderDecoders.slice(10).forEach(d=>cancel?d.resolve():d.reject(new Error('magic unavailable')));
@@ -460,4 +464,30 @@ test('R78 expanded art failure/cancellation stays nonblocking; names follow the 
  assert.match(h.get('jingyu-spell-name')[0].textContent,/^[A-Za-z ]+$/);
  h.document.emit('pointerdown',{target:{}});assertClean(h);
  const reduced=setup({plates:true,magic:true,casting:true,expanded:true,reduced:true});await reduced.start();assert.equal(reduced.get('jingyu-spell-name').length,0);reduced.advance(2000);assertClean(reduced);
+});
+
+test('R80 magic sources are absent at takeoff, load in two stages, and retain one animation loop',async()=>{
+ const h=setup({plates:true,magic:true,casting:true});
+ assert.equal(h.images.length,0);assert.equal(h.get('jingyu-wind-art').length,0);
+ await h.start();const duration=[...h.timers.values()][0].at-350;
+ const fx=h.get('jingyu-wind-effect'),blade=fx.filter(n=>n.dataset.kind==='blade'),tornado=fx.find(n=>n.dataset.kind==='tornado');
+ assert.ok(fx.every(n=>!n.children[0].src));assert.equal(h.get('jingyu-flight-sheet').length,8);
+ h.advance(100);assert.ok(fx.every(n=>!n.children[0].src));
+ h.advance(150);assert.ok(blade.every(n=>n.children[0].src.endsWith('blade-r75.png')));
+ assert.ok(!tornado.children[0].src);assert.equal(h.get('jingyu-flight-sheet').length,10);
+ h.advance(duration*.60-2450);assert.ok(!tornado.children[0].src);
+ h.advance(duration*.60-2350);assert.ok(tornado.children[0].src.endsWith('tornado-r75.png'));
+ assert.equal(h.frames.size,1);assert.equal(h.timers.size,1);
+ h.window.SalaryMateCompanion.stop();assertClean(h);
+});
+
+test('R80 early cancellation and missed casting windows never start later downloads',async()=>{
+ for(const time of [80,200]){
+  const h=setup({plates:true,magic:true,casting:true});await h.start();
+  const optional=h.get('jingyu-wind-art');h.advance(time);h.window.SalaryMateCompanion.stop();
+  const before=optional.map(image=>image.src);h.advance(15000);assert.deepEqual(optional.map(image=>image.src),before);assertClean(h);
+ }
+ const h=setup({plates:true,magic:true,casting:true});await h.start();const duration=[...h.timers.values()][0].at-350;
+ h.advance(duration*.65);assert.ok(h.get('jingyu-wind-art').every(image=>!image.src));
+ assert.equal(h.get('jingyu-flight-sheet').length,8);h.window.SalaryMateCompanion.stop();assertClean(h);
 });

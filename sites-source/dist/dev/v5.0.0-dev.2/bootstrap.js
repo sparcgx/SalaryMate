@@ -324,26 +324,26 @@
     } catch { if(active===flight){layer.remove();flight.layer=null;greet();} return; }
     if(active!==flight)return;
     window.clearTimeout(flight.timer);
-    // R76: optional attack art is decoded on the two existing pose layers.
-    // It never hides the home bird or delays the first visible flight frame.
+    // R80: defer optional attack decoding until flight is already visible.
     const castSource=window.SalaryMateCastArt;
-    let castReady=false;
-    if(typeof castSource==='string'&&(castSource==='./art/jingyu-cast-r76.png'||castSource.startsWith('data:image/png;base64,'))){
-      const decoding=layers.map(poseLayer=>{
+    let castReady=false,castStarted=false;
+    const loadCast=()=>{
+      if(castStarted||active!==flight)return;
+      castStarted=true;
+      if(!(typeof castSource==='string'&&(castSource==='./art/jingyu-cast-r76.png'||castSource.startsWith('data:image/png;base64,'))))return;
+      let readyCount=0;
+      layers.forEach(poseLayer=>{
         const image=document.createElement('img');
         image.className='jingyu-flight-sheet';image.alt='';image.draggable=false;image.decoding='async';image.style.display='none';
         image.src=castSource;poseLayer.images.push(image);poseLayer.crop.append(image);
         const release=()=>{image.onload=image.onerror=null;};
-        if(typeof image.decode==='function')return Promise.resolve().then(()=>image.decode());
-        if(image.complete&&image.naturalWidth)return Promise.resolve();
-        return new Promise((resolve,reject)=>{
-          image.onload=()=>{release();resolve();};image.onerror=()=>{release();reject(new Error('Attack art unavailable'));};
-          flight.cleanups.push(()=>{release();resolve();});
-        });
+        const ready=()=>{release();if(active===flight&&++readyCount===layers.length)castReady=true;};
+        flight.cleanups.push(release);
+        if(typeof image.decode==='function')Promise.resolve().then(()=>image.decode()).then(ready,release);
+        else {image.onload=ready;image.onerror=release;if(image.complete&&image.naturalWidth)ready();}
       });
       flight.cleanups.push(()=>{castReady=false;});
-      Promise.all(decoding).then(()=>{if(active===flight)castReady=true;},()=>{});
-    }
+    };
     const spellSources=window.SalaryMateWindArt,extraSources=window.SalaryMateWindExtras;
     const hasWind=Array.isArray(spellSources)&&spellSources.length===2&&spellSources.every((src,i)=>typeof src==='string'&&(src===`./art/jingyu-wind-${i?'tornado':'blade'}-r75.png`||src.startsWith('data:image/png;base64,')));
     const expanded=hasWind&&Array.isArray(extraSources)&&extraSources.length===3&&extraSources.every((src,i)=>typeof src==='string'&&(src===`./art/jingyu-wind-${['bullet','spear','vortex'][i]}-r78.png`||src.startsWith('data:image/png;base64,')));
@@ -364,11 +364,27 @@
       const release=()=>{image.onload=image.onerror=null;};
       const ready=()=>{release();if(active===flight)spell.ready=true;};
       flight.cleanups.push(()=>{release();spell.ready=false;});
-      image.src=sourcesForMagic[spec.art];node.append(image);layer.append(node);
-      if(typeof image.decode==='function')Promise.resolve().then(()=>image.decode()).then(ready,release);
-      else {image.onload=ready;image.onerror=release;if(image.complete&&image.naturalWidth)ready();}
+      node.append(image);layer.append(node);
+      spell.load=()=>{
+        if(spell.loading||active!==flight)return;spell.loading=true;
+        image.src=sourcesForMagic[spec.art];
+        if(typeof image.decode==='function')Promise.resolve().then(()=>image.decode()).then(ready,release);
+        else {image.onload=ready;image.onerror=release;if(image.complete&&image.naturalWidth)ready();}
+      };
       return spell;
     }):[];
+    const prepared=[false,false];
+    const prepareMagic=elapsed=>{
+      for(let index=0;index<casts.length;index++){
+        // Stage one follows visible takeoff; stage two precedes its own wind-up.
+        const from=index?Math.max(120,duration*casts[index].at-2400):120;
+        if(prepared[index]||elapsed<from)continue;
+        prepared[index]=true;
+        // Never start late downloads after a tab suspension missed the spell.
+        if(elapsed>=duration*casts[index].at)continue;
+        loadCast();spells.filter(spell=>spell.castIndex===index).forEach(spell=>spell.load());
+      }
+    };
     const spellName=document.createElement('div');spellName.className='jingyu-spell-name';spellName.style.opacity='0';
     if(expanded)layer.append(spellName);
     // R77: impact uses the same clock/RAF as flight, never transforms body or
@@ -657,6 +673,7 @@
       const elapsed=now-started,t=clamp(elapsed/duration,0,1),dt=clamp(now-previous,0,80);
       previous=now;
       if(t>=1){finish();return;}
+      prepareMagic(elapsed);
       const progress=travelProgress(t),point=route.at(progress);
       const ahead=route.at(Math.min(1,progress+Math.min(.018,22/(route.length||1))));
       const speed=Math.hypot(point.dx,point.dy);

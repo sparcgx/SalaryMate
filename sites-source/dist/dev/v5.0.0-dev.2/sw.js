@@ -1,32 +1,63 @@
-const CACHE='salarymate-v5-full-5.0.0-dev.2-R79';
+const CACHE='salarymate-v5-full-5.0.0-dev.2-R80';
 const BASE=new URL('./',self.location.href);
-// R79: backgrounds are fetched only when used. Keep their immutable files in a
-// small separate cache so routine app upgrades do not discard visited scenes.
 const SCENE_CACHE='salarymate-v5-backgrounds-r79';
 const SCENES=new Map(['canyon','forest','harbor','aurora','sky','macaron'].map(id=>[id,new URL(`./art/background-${id}-r79.webp`,BASE).href]));
 const SCENE_URLS=new Set(SCENES.values());
-const sceneRequests=new Map();
-async function cachedScene(url){
-  if(sceneRequests.has(url))return (await sceneRequests.get(url)).clone();
+// Named art survives app releases. No mascot art belongs to mandatory install.
+const ART_CACHE='salarymate-v5-art-v1';
+const ART_FILES=['jingyu-hd2d-r74.png','jingyu-flight-r70.png',...['a','b','c','d'].map(id=>`jingyu-flight-r73-${id}.png`),'jingyu-cast-r76.png',...['blade','tornado'].map(id=>`jingyu-wind-${id}-r75.png`),...['bullet','spear','vortex'].map(id=>`jingyu-wind-${id}-r78.png`)];
+const ART_URLS=new Set(ART_FILES.map(file=>new URL('./art/'+file,BASE).href));
+const resourceRequests=new Map();
+async function cacheFirst(cacheName,url,legacy=false){
+  const key=cacheName+':'+url;
+  if(resourceRequests.has(key))return (await resourceRequests.get(key)).clone();
   const pending=(async()=>{
-    const cache=await caches.open(SCENE_CACHE),cached=await cache.match(url);
+    let cache,cached;
+    try{cache=await caches.open(cacheName);cached=await cache.match(url);}catch{}
+    if(!cached&&legacy)try{cached=await caches.match(url);if(cached&&cache)await cache.put(url,cached.clone());}catch{}
     if(cached)return cached;
     const response=await fetch(url);
-    if(response.ok)try{await cache.put(url,response.clone());}catch{}
+    if(response.ok&&cache)try{await cache.put(url,response.clone());}catch{}
     return response;
   })();
-  sceneRequests.set(url,pending);
-  try{return (await pending).clone();}finally{if(sceneRequests.get(url)===pending)sceneRequests.delete(url);}
+  resourceRequests.set(key,pending);
+  try{return (await pending).clone();}finally{if(resourceRequests.get(key)===pending)resourceRequests.delete(key);}
 }
 self.addEventListener('message',event=>{
   if(event.data?.type!=='salarymate:cache-background'||!SCENES.has(event.data.scene)||!event.source?.url)return;
   const source=new URL(event.source.url);
   if(source.origin!==BASE.origin||!source.pathname.startsWith(BASE.pathname))return;
-  event.waitUntil(cachedScene(SCENES.get(event.data.scene)).catch(()=>{}));
+  event.waitUntil(cacheFirst(SCENE_CACHE,SCENES.get(event.data.scene)).catch(()=>{}));
 });
-const LOCALES=['./i18n-en.js?v=5.0.0-dev.2-R79','./i18n.js?v=5.0.0-dev.2-R79'];
-const STOCKS=['./google-drive.js?v=5.0.0-dev.2-R79','./google-drive-ui.js?v=5.0.0-dev.2-R79','./backup.js?v=5.0.0-dev.2-R79','./stocks.js?v=5.0.0-dev.2-R79','./stocks-integrations.js?v=5.0.0-dev.2-R79','./stocks-ui.js?v=5.0.0-dev.2-R79'];
-const SHELL=['./','./index.html','./styles.css?v=5.0.0-dev.2-R79','./bootstrap.js?v=5.0.0-dev.2-R79','./app.js?v=5.0.0-dev.2-R79','./reconcile.js?v=5.0.0-dev.2-R79','./copy-month.js?v=5.0.0-dev.2-R79','./comp-time.js?v=5.0.0-dev.2-R79','./annual-analysis.js?v=5.0.0-dev.2-R79','./legal-data.js?v=5.0.0-dev.2-R79','./legal.html','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./art/jingyu-hd2d-r74.png','./art/jingyu-wind-bullet-r78.png','./art/jingyu-wind-spear-r78.png','./art/jingyu-wind-vortex-r78.png','./art/jingyu-cast-r76.png','./art/jingyu-wind-blade-r75.png','./art/jingyu-wind-tornado-r75.png','./art/jingyu-flight-r73-a.png','./art/jingyu-flight-r73-b.png','./art/jingyu-flight-r73-c.png','./art/jingyu-flight-r73-d.png'];
-self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll([...SHELL,...STOCKS,...LOCALES])).then(()=>self.skipWaiting())));
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('salarymate-v5-full-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',e=>{const url=new URL(e.request.url);if(e.request.method!=='GET'||url.origin!==BASE.origin||!url.pathname.startsWith(BASE.pathname))return;if(SCENE_URLS.has(url.href)){e.respondWith(cachedScene(url.href));return;}e.respondWith(fetch(e.request).then(r=>{if(r.ok){const copy=r.clone();e.waitUntil(caches.open(CACHE).then(c=>c.put(e.request,copy)));}return r;}).catch(()=>caches.match(e.request).then(c=>c||(e.request.mode==='navigate'?caches.match(new URL('index.html',BASE).href):Response.error()))));});
+const LOCALES=["./i18n-en.js?v=5.0.0-dev.2-R80","./i18n.js?v=5.0.0-dev.2-R80"];
+const STOCKS=["./google-drive.js?v=5.0.0-dev.2-R80","./google-drive-ui.js?v=5.0.0-dev.2-R80","./backup.js?v=5.0.0-dev.2-R80","./stocks.js?v=5.0.0-dev.2-R80","./stocks-integrations.js?v=5.0.0-dev.2-R80","./stocks-ui.js?v=5.0.0-dev.2-R80"];
+const SHELL=["./","./index.html","./styles.css?v=5.0.0-dev.2-R80","./bootstrap.js?v=5.0.0-dev.2-R80","./app.js?v=5.0.0-dev.2-R80","./reconcile.js?v=5.0.0-dev.2-R80","./copy-month.js?v=5.0.0-dev.2-R80","./comp-time.js?v=5.0.0-dev.2-R80","./annual-analysis.js?v=5.0.0-dev.2-R80","./legal-data.js?v=5.0.0-dev.2-R80","./legal.html","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
+const VERSIONED_URLS=new Set([...SHELL,...STOCKS,...LOCALES].filter(path=>path.includes('?v=')).map(path=>new URL(path,BASE).href));
+self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll([...SHELL,...STOCKS,...LOCALES])).then(()=>self.skipWaiting())));
+self.addEventListener('activate',event=>event.waitUntil((async()=>{
+  const previous=(await caches.keys()).filter(key=>key.startsWith('salarymate-v5-full-')&&key!==CACHE);
+  for(const key of previous){
+    try{
+      const old=await caches.open(key),art=await caches.open(ART_CACHE);
+      // Retain already-downloaded R79 images without a network or image decode.
+      for(const url of ART_URLS){
+        if(await art.match(url))continue;
+        const cached=await old.match(url);if(cached?.ok)await art.put(url,cached);
+      }
+      await caches.delete(key);
+    }catch{} // Preserve the old cache if migration fails; art can still reuse it.
+  }
+  await self.clients.claim();
+})()));
+self.addEventListener('fetch',event=>{
+  const url=new URL(event.request.url);
+  if(event.request.method!=='GET'||url.origin!==BASE.origin||!url.pathname.startsWith(BASE.pathname))return;
+  if(SCENE_URLS.has(url.href)){event.respondWith(cacheFirst(SCENE_CACHE,url.href));return;}
+  if(ART_URLS.has(url.href)){event.respondWith(cacheFirst(ART_CACHE,url.href,true));return;}
+  if(VERSIONED_URLS.has(url.href)){event.respondWith(cacheFirst(CACHE,url.href));return;}
+  // HTML continues checking for releases; API routes are outside this scope.
+  event.respondWith(fetch(event.request).then(response=>{
+    if(response.ok){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(cache=>cache.put(event.request,copy)).catch(()=>{}));}
+    return response;
+  }).catch(()=>caches.match(event.request).then(cached=>cached||(event.request.mode==='navigate'?caches.match(new URL('index.html',BASE).href):Response.error()))));
+});
