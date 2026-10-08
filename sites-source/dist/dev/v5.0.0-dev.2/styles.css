@@ -1716,3 +1716,22 @@ body.jingyu-screen-hit :is(.sidebar,.workspace-shell>.topbar,.workspace-shell>ma
  .stock-holdings-table .stock-quote-date{min-width:0;margin-top:0;line-height:1.5}
  .stock-holdings-table .stock-quote-timestamp{white-space:normal;overflow-wrap:anywhere;border-inline-start:1px solid var(--line);padding-inline-start:8px}
 }
+
+/* R83: one portfolio table across tabs; let available space drive the layout. */
+@media screen{
+ .stock-view{container:stock-area / inline-size}
+ .stock-workspace{grid-template-columns:minmax(0,1fr)}
+ .stock-list-table .stock-list-main{max-width:none;grid-template-columns:minmax(0,1fr) 44px;gap:12px;align-items:start}
+ .stock-list-table .stock-list-main .stock-name{min-width:0}
+ .stock-list-table .stock-list-main .stock-favorite{min-width:44px;min-height:44px!important}
+ .stock-list-table .stock-asset-cell{min-width:248px}
+}
+@media screen and (min-width:1181px){
+ .workspace-shell{max-width:none;padding-inline:clamp(28px,2.5vw,72px)}
+ .workspace-shell>main{max-width:none;width:100%;min-width:0}
+}
+@media screen{
+ @container stock-area (min-width:128rem){
+  .stock-workspace{grid-template-columns:minmax(0,1fr) 280px}
+ }
+}

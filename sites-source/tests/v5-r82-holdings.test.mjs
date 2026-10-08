@@ -12,15 +12,15 @@ const buy=(id)=>({id:'buy-'+id,assetId:id,date:'2026-10-01',time:'10:00',type:'b
 function setup(patch={}){
  const portfolio={assets:[asset('tw',patch),asset('us'),asset('watch')],transactions:[buy('tw'),buy('us')],marketData:{autoRefresh:false,quoteEnabled:false}};
  const state={stockPortfolio:portfolio};
- const context={Intl,Date,URL,console,document:{hidden:true,addEventListener(){},querySelector:()=>null},clearTimeout(){},setTimeout(){throw Error('No timer should start during rendering');},SalaryMateI18n:{user:v=>v,text:v=>v}};
+ const context={Intl,Date,URL,console,AbortController,FormData:class extends Map{constructor(form){super(Object.entries(form.values||{}));}},document:{hidden:true,addEventListener(){},querySelector:()=>null},clearTimeout(){},setTimeout(){throw Error('No timer should start during rendering');},SalaryMateI18n:{user:v=>v,text:v=>v}};
  vm.createContext(context);for(const source of scripts)vm.runInContext(source,context);
  const core=context.SalaryMateStocks;core.validate(portfolio);
  const ui=context.SalaryMateStocksUI.create({state:()=>state,year:()=>2026,today:()=>'2026-10-08',legacyTotal:()=>0,render(){}});
  const before=JSON.stringify(portfolio),model=JSON.stringify(core.calculate(portfolio,2026,'2026-10-08'));
- return {portfolio,ui,render:()=>ui.render(''),assertUnchanged(){assert.equal(JSON.stringify(portfolio),before);assert.equal(JSON.stringify(core.calculate(portfolio,2026,'2026-10-08')),model);}};
+ return {portfolio,ui,context,render:()=>ui.render(''),assertUnchanged(){assert.equal(JSON.stringify(portfolio),before);assert.equal(JSON.stringify(core.calculate(portfolio,2026,'2026-10-08')),model);}};
 }
 function ledger(html){
- const table=html.match(/<table class="stock-table stock-ledger stock-holdings-table">([\s\S]*?)<\/table>/)?.[1];assert.ok(table);
+ const table=html.match(/<table class="stock-table stock-ledger stock-holdings-table(?: stock-list-table)?">([\s\S]*?)<\/table>/)?.[1];assert.ok(table);
  return {heads:[...table.matchAll(/<th scope="col">([^<]+)<\/th>/g)].map(m=>m[1]),rows:[...table.split('<tbody>')[1].matchAll(/<tr>([\s\S]*?)<\/tr>/g)].map(m=>[...m[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/g)].map(m=>m[1]))};
 }
 const rowFor=(table,id)=>table.rows.find(row=>row[0].includes('data-id="'+id+'"'));
@@ -56,6 +56,41 @@ test('R82 quote timestamp follows price, preserves source zones and never substi
  const missing=setup({quotePrice:null,quoteProviderTime:'',quoteDate:'',quoteMarketAt:''}),cell=rowFor(ledger(missing.render()),'tw')[3];assert.ok(cell.includes('待更新'));assert.ok(!cell.includes('stock-quote-timestamp'));missing.assertUnchanged();
 });
 
-test('R82 stock list keeps its existing compact date rendering and all portfolio records',()=>{
- const h=setup();h.ui.click({dataset:{stock:'tab',id:'stocks'},closest:()=>null});const html=h.render();assert.ok(html.includes('stock-quotes-list'));assert.ok(!html.includes('stock-quote-timestamp'));assert.match(html,/<time class="stock-quote-date" datetime="2026-10-08"[^>]*>10\/8<\/time>/);h.assertUnchanged();
+test('R83 stock list shares all nine holdings columns, values and inline time while retaining list actions',()=>{
+ const h=setup(),overview=ledger(h.render());h.ui.click({dataset:{stock:'tab',id:'stocks'},closest:()=>null});const html=h.render(),list=ledger(html);
+ assert.deepEqual(list.heads,overview.heads);assert.equal(list.rows.length,3);assert.ok(list.rows.every(r=>r.length===9));
+ const tw=rowFor(list,'tw');assert.deepEqual(tw.slice(1,8),rowFor(overview,'tw').slice(1,8));assert.ok(tw[3].includes('10/8 13:30:00'));
+ assert.match(tw[0],/data-stock="favorite" data-id="tw"/);for(const action of ['buy','asset','delete-asset'])assert.ok(tw[8].includes(`data-stock="${action}" data-id="tw"`));
+ assert.match(rowFor(list,'watch')[2],/>0 股</);assert.equal(rowFor(list,'watch')[4],'$0');assert.equal(rowFor(list,'watch')[7],'觀察帳戶');h.assertUnchanged();
+});
+
+test('R83 stock list preserves all-assets sorting and combined search, classification and favorite filters',()=>{
+ const h=setup({favorite:true,quoteChangePercent:5});h.ui.click({dataset:{stock:'tab',id:'stocks'},closest:()=>null});
+ const ids=()=>ledger(h.render()).rows.map(r=>r[0].match(/data-stock="detail" data-id="([^"]+)"/)[1]);
+ for(const [sort,expected]of [['favorite',['tw','watch','us']],['symbol',['tw','watch','us']],['change',['tw','us','watch']]]){assert.equal(h.ui.submit({id:'stockListForm',values:{sort}}),true);assert.deepEqual(ids(),expected);}
+ h.ui.submit({id:'stockListForm',values:{search:'長期帳戶',exchange:'TWSE',category:'ETF',favorites:'on'}});assert.deepEqual(ids(),['tw']);
+ h.ui.submit({id:'stockListForm',values:{exchange:'NASDAQ'}});assert.deepEqual(ids(),['us']);
+ h.ui.submit({id:'stockListForm',values:{search:'不存在的股票'}});assert.ok(h.render().includes('沒有符合條件的股票'));
+ h.ui.submit({id:'stockListForm',values:{}});assert.equal(ids().length,3);h.assertUnchanged();
+});
+
+test('R83 each investment tab has one persistent refresh and preserves the three menu actions',()=>{
+ const h=setup();for(const tab of ['overview','stocks','transactions','income','analysis','watchlist']){
+  h.ui.click({dataset:{stock:'tab',id:tab},closest:()=>null});const html=h.render();assert.equal((html.match(/data-stock="refresh"/g)||[]).length,1);
+  const actions=html.match(/id="stockHeadActions" class="stock-head-actions">([\s\S]*?)<\/div>/)[1];assert.ok(!actions.includes('data-stock="refresh"'));for(const action of ['asset','buy','batch'])assert.ok(actions.includes(`data-stock="${action}"`));
+  assert.ok(html.indexOf('data-stock="refresh"')<html.indexOf('id="stockHeadActions"'));
+ }h.assertUnchanged();
+});
+
+test('R83 the single refresh stays busy, rejects duplicate requests and recovers from a failed update',async()=>{
+ const h=setup(),card={outerHTML:''};let calls=0,reject;
+ const pending=new Promise((resolve,rejectRequest)=>{reject=rejectRequest;});
+ // Attach the service before create: create captures this reference.
+ h.context.SalaryMateStockServices={fetchQuotes(){calls++;return pending;}};
+ const ui=h.context.SalaryMateStocksUI.create({state:()=>({stockPortfolio:h.portfolio}),year:()=>2026,today:()=>'2026-10-08',legacyTotal:()=>0,render(){}});
+ h.context.document.hidden=false;h.context.document.querySelector=selector=>selector==='.stock-view'?{}:selector==='[data-market-card]'?card:null;
+ const click=()=>ui.click({dataset:{stock:'refresh'},closest:()=>null});click();click();assert.equal(calls,1);
+ assert.match(card.outerHTML,/data-stock="refresh"[^>]*disabled aria-busy="true"/);assert.ok(card.outerHTML.includes('更新中…'));
+ reject(Error('fixture source unavailable'));await new Promise(setImmediate);
+ assert.equal((card.outerHTML.match(/data-stock="refresh"/g)||[]).length,1);assert.doesNotMatch(card.outerHTML,/data-stock="refresh"[^>]*disabled/);assert.ok(card.outerHTML.includes('更新失敗，已保留上次匯率與價格。'));h.assertUnchanged();
 });
