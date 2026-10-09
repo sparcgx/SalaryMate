@@ -5,15 +5,18 @@ import vm from 'node:vm';
 import os from 'node:os';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
+import {websiteBootstrap} from '../scripts/lib/style-pack-build.mjs';
+import {fileURLToPath} from 'node:url';
 import {startupModules,buildStartupBundle} from '../scripts/lib/startup-bundle.mjs';
 const root=new URL('..',import.meta.url),base=new URL('dist/dev/v5.0.0-dev.2/',root);
 const read=name=>fs.readFileSync(new URL(name,base),'utf8');
 
-test('R97 single deferred startup bundle preserves all 14 original modules byte-for-byte in dependency order',()=>{
+test('R97 single deferred startup bundle preserves module order and exact generated website payloads',async()=>{
  const before=execFileSync('git',['show','97b22193e627e83032215bd5e74a37ebdfb9accc:dist/dev/v5.0.0-dev.2/index.html'],{cwd:root,encoding:'utf8'});
  const oldOrder=[...before.matchAll(/<script defer src="\.\/([^?]+)\?/g)].map(match=>match[1]);
  assert.deepEqual([...startupModules],oldOrder);
- const expected=startupModules.map(name=>`\n;/* SalaryMate module: ${name} */\n${read(name)}\n`).join('');
+ const parts=await Promise.all(startupModules.map(async name=>`\n;/* SalaryMate module: ${name} */\n${name==='bootstrap.js'?await websiteBootstrap(fileURLToPath(base)):read(name)}\n`));
+ const expected=parts.join('');
  assert.equal(read('startup.js'),expected);new vm.Script(expected);
  const scripts=[...read('index.html').matchAll(/<script defer src="([^"]+)"/g)];
  assert.equal(scripts.length,1);assert.equal(scripts[0][1],'./startup.js?v='+read('app.js').match(/const APP_VERSION = '([^']+)'/)[1]);

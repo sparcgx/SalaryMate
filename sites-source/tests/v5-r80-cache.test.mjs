@@ -29,6 +29,7 @@ function runtime(){
  const waitUntil=promise=>pending.push(promise);
  return {stores,requests,puts,installed,flags,
   install(){handlers.install({waitUntil});},activate(){handlers.activate({waitUntil});},
+  message(data,source=origin){handlers.message({data,source:{url:source},waitUntil});},
   async settle(){while(pending.length)await Promise.all(pending.splice(0));},
   fetch(url,mode='cors',method='GET'){let promise;handlers.fetch({request:{url,mode,method},waitUntil,respondWith:value=>{promise=value;}});return promise;}
  };
@@ -38,14 +39,36 @@ test('R80 install contains the full interface but no flight, cast, spell or perc
  const h=runtime();h.install();await h.settle();
  const index=fs.readFileSync(new URL('index.html',base),'utf8');
  const scripts=[...index.matchAll(/<script defer src="([^"]+)"/g)].map(match=>match[1]);
- const expected=['./','./index.html','./styles.css?v='+version,'./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png',...scripts];
+ const expected=['./','./index.html','./styles-core.css?v='+version,'./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png',...scripts];
  assert.equal(new Set(h.installed).size,h.installed.length,'No duplicate precache entries');
  assert.deepEqual([...h.installed].sort(),expected.sort(),'Cache exactly the current interface and required assets');
  assert.ok(h.installed.every(url=>!url.includes('/art/')&&!/legal/.test(url)),'Artwork and legal content remain on demand');
  for(const [,url]of index.matchAll(/<script defer src="([^"]+)"/g))assert.ok(h.installed.includes(url));
- assert.ok(h.installed.includes('./styles.css?v='+version));
+ assert.ok(h.installed.includes('./styles-core.css?v='+version));
  const bytes=h.installed.reduce((total,path)=>total+fs.statSync(new URL(path.split('?')[0]==='./'?'index.html':path.split('?')[0],base)).size,0);
  assert.ok(bytes<2_100_000);assert.equal(h.flags.skipped,1);
+});
+
+test('R98 style packages are cache-first after selection and remain available offline',async()=>{
+ const h=runtime();h.install();await h.settle();
+ const urls=['styles.css','ornate-flight.js'].map(name=>origin+name+'?v='+version);
+ for(const url of urls){assert.equal(h.stores.get(current).has(url),false);assert.equal((await h.fetch(url)).status,200);}
+ h.flags.online=false;for(const url of urls)assert.equal((await h.fetch(url)).status,200);
+ assert.equal(h.requests.length,2);
+});
+test('R98 activation retains exact current style packages fetched by the preceding worker',async()=>{
+ const h=runtime(),previous='salarymate-v5-full-previous',url=origin+'styles.css?v='+version;
+ h.stores.set(previous,new Map([[url,new Response('current style')],[origin+'ornate-flight.js?v=obsolete',new Response('old flight')]]));
+ h.install();await h.settle();h.activate();await h.settle();h.flags.online=false;
+ assert.equal(await(await h.fetch(url)).text(),'current style');assert.equal(h.requests.length,0);
+ assert.equal(h.stores.get(current).has(origin+'ornate-flight.js?v=obsolete'),false);
+});
+test('R98 scoped style messages retain CSS only for non-pixel styles and flight only for pixel',async()=>{
+ const h=runtime();
+ h.message({type:'salarymate:cache-style-pack',style:'pixel-luxe'},'https://outside.test/');
+ h.message({type:'salarymate:cache-style-pack',style:'glass'});await h.settle();assert.equal(h.requests.length,0);
+ h.message({type:'salarymate:cache-style-pack',style:'autumn'});await h.settle();assert.deepEqual(h.requests,[origin+'styles.css?v='+version]);
+ h.message({type:'salarymate:cache-style-pack',style:'pixel-luxe'});await h.settle();assert.deepEqual(h.requests,[origin+'styles.css?v='+version,origin+'ornate-flight.js?v='+version]);
 });
 
 test('R80 versioned interface is cache-first on reopen and offline; other versions cannot match it',async()=>{

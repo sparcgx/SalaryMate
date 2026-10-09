@@ -52,7 +52,7 @@ for(const match of scenes){
   css=css.replace(match[0],()=>`url("data:image/webp;base64,${bytes.toString('base64')}")`);
 }
 if(/@import\s|url\((?!["']?data:)/i.test(css))throw new Error('External CSS asset must be embedded');
-html=html.replace(/<link rel="stylesheet" href="\.\/styles\.css[^"]*">/,()=>`<style>\n${css.replace(/<\/style/gi,'<\\/style')}\n</style>`);
+html=html.replace(/<link rel="stylesheet" href="\.\/styles-core\.css[^"]*" data-style-core>/,()=>`<style>\n${css.replace(/<\/style/gi,'<\\/style')}\n</style>`);
 html=html.replace(/\s*<link rel="manifest"[^>]*>/,'');
 for(const rel of ['icon','apple-touch-icon']){
   const pattern=new RegExp(`<link rel="${rel}" href="\\./([^"?]+)(?:\\?[^\"]*)?">`),match=html.match(pattern);

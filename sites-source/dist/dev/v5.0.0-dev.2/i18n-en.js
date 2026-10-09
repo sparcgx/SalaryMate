@@ -2690,5 +2690,8 @@ globalThis.SalaryMateEnglish={
   "SalaryMate · R93 開發測試版 · 單一 HTML": "SalaryMate · R93 Development Test Edition · Single HTML",
   "SalaryMate R93 開發測試版：個人薪資、加班、特休與投資管理。資料預設儲存在目前瀏覽器，支援自己的 Google Drive 備份。": "SalaryMate R93 development test edition: personal salary, overtime, annual leave and investment management. Data is stored in this browser by default, with backups to your own Google Drive.",
   "重試": "Retry",
-  "同日請假的結束時段不可早於開始時段。": "The end period cannot precede the start period for leave on the same day."
+  "同日請假的結束時段不可早於開始時段。": "The end period cannot precede the start period for leave on the same day.",
+  "華麗風格下載失敗，暫以一般風格顯示；可重新選用重試。": "The ornate style could not download. A standard style is shown for now; select the style again to retry.",
+  "正在下載華麗風格，完成後套用…": "Downloading the ornate style. It will be applied when ready…",
+  "華麗風格下載失敗，已保留目前風格；請稍後重試。": "The ornate style could not download. Your current style is unchanged; please retry later."
 };

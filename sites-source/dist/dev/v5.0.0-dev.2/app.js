@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0-dev.2-R97';
+    const APP_VERSION = '5.0.0-dev.2-R98';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -337,6 +337,7 @@
     const HD2D_CAST_SRC = './art/jingyu-cast-r76.png';
     window.SalaryMateCastArt = HD2D_CAST_SRC;
     const hd2dCompanion = (variant = 'heading') => {
+      if (window.SalaryMateStylePacks && !window.SalaryMateStylePacks.ready('pixel-luxe')) return '';
       const kind = ['home','heading','quiet','toast','preview','interactive'].includes(variant) ? variant : 'heading';
       if (kind !== 'preview' && interfaceBaseStyle(ui.interfaceStyle) !== 'pixel') return '';
       if (kind === 'interactive') return `<button type="button" class="v5-companion v5-companion--interactive" data-action="jingyu-fly" aria-label="晶羽：點一下飛行，再點停止" aria-pressed="false" title="點一下，晶羽陪你飛一圈"><img class="v5-companion-art" src="${HD2D_COMPANION_SRC}" width="128" height="128" alt="" decoding="async" draggable="false"></button>`;
@@ -364,17 +365,34 @@
       themeMeta?.setAttribute('content', COLOR_THEMES[theme].themeColor);
       return theme;
     };
+    let pendingVisualStyle = '';
     const applyInterfaceStyle = (value = ui.interfaceStyle) => {
       window.SalaryMateCompanion?.stop();
       const style = normalizeInterfaceStyle(value);
       ui.interfaceStyle = style;
-      const baseStyle = interfaceBaseStyle(style);
+      const packs = window.SalaryMateStylePacks;
+      const available = !packs || packs.ready(style);
+      if (!available && pendingVisualStyle !== style) {
+        pendingVisualStyle = style;
+        packs.ensure(style).then(() => {
+          if (pendingVisualStyle !== style) return;
+          pendingVisualStyle = '';
+          if (ui.interfaceStyle === style) { applyVisualPreferences(); renderAll(); }
+        }).catch(() => {
+          if (pendingVisualStyle !== style) return;
+          pendingVisualStyle = '';
+          if (ui.interfaceStyle === style) toast('華麗風格下載失敗，暫以一般風格顯示；可重新選用重試。', 'warning');
+        });
+      }
+      if (available) pendingVisualStyle = '';
+      packs?.activate(available ? style : 'glass');
+      const baseStyle = available ? interfaceBaseStyle(style) : 'glass';
       for (const element of [document.body, document.documentElement]) {
         element.dataset.interfaceStyle = baseStyle;
-        if (INTERFACE_STYLES[style].ornate) element.dataset.styleVariant = 'ornate';
+        if (available && INTERFACE_STYLES[style].ornate) element.dataset.styleVariant = 'ornate';
         else delete element.dataset.styleVariant;
       }
-      document.body.dataset.visualFamily = INTERFACE_STYLES[style].reference ? 'reference' : 'classic';
+      document.body.dataset.visualFamily = available && INTERFACE_STYLES[style].reference ? 'reference' : 'classic';
       $('meta[name="theme-color"]')?.setAttribute('content', ({ autumn: '#fffaf0', doodle: '#fffdf8', cream: '#fff8ed', dusk: '#19152c', pencil: '#fcf9f2', studio: '#f2f7fc', dark: '#151a21', cards: '#eef1f5', macaron: '#fffefa', pixel: '#102635' })[baseStyle] || COLOR_THEMES[normalizeColorTheme(ui.colorTheme)].themeColor);
       return style;
     };
@@ -3485,8 +3503,26 @@
       if (saved) toast(message);
     };
 
+    let styleSelectionRequest = 0;
+    const selectStylePackage = async next => {
+      const request = ++styleSelectionRequest;
+      const packs = window.SalaryMateStylePacks;
+      try {
+        if (!packs.ready(next)) {
+          toast('正在下載華麗風格，完成後套用…', 'info');
+          await packs.ensure(next);
+        }
+        if (request !== styleSelectionRequest) return;
+        if (next === ui.interfaceStyle) { applyVisualPreferences(); renderAll(); openInterfaceSettings(); }
+        else setVisualChoice('interfaceStyle', next, '介面風格已儲存', { fullRender: true });
+      } catch {
+        if (request === styleSelectionRequest) { openInterfaceSettings(); toast('華麗風格下載失敗，已保留目前風格；請稍後重試。', 'warning'); }
+      }
+    };
     const setInterfaceStyle = value => {
-      setVisualChoice('interfaceStyle', normalizeInterfaceStyle(value), '介面風格已儲存', { fullRender: true });
+      const next = normalizeInterfaceStyle(value), packs = window.SalaryMateStylePacks;
+      if (!packs) return setVisualChoice('interfaceStyle', next, '介面風格已儲存', { fullRender: true });
+      return selectStylePackage(next);
     };
 
     const setSurfaceOpacity = value => {

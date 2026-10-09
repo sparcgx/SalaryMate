@@ -1,4 +1,4 @@
-const CACHE='salarymate-v5-full-5.0.0-dev.2-R97';
+const CACHE='salarymate-v5-full-5.0.0-dev.2-R98';
 const BASE=new URL('./',self.location.href);
 const SCENE_CACHE='salarymate-v5-backgrounds-r79';
 const SCENES=new Map(['canyon','forest','harbor','aurora','sky','macaron'].map(id=>[id,new URL(`./art/background-${id}-r79.webp`,BASE).href]));
@@ -25,6 +25,11 @@ async function cacheFirst(cacheName,url,legacy=false){
   try{return (await pending).clone();}finally{if(resourceRequests.get(key)===pending)resourceRequests.delete(key);}
 }
 self.addEventListener('message',event=>{
+  if(event.data?.type==='salarymate:cache-style-pack'){
+    if(!event.source?.url||!['pixel-luxe','macaron-luxe','autumn','doodle','cream','dusk','pencil','studio'].includes(event.data.style))return;
+    const source=new URL(event.source.url);if(source.origin!==BASE.origin||!source.pathname.startsWith(BASE.pathname))return;
+    event.waitUntil(Promise.all(STYLE_PACKS.slice(0,event.data.style==='pixel-luxe'?2:1).map(path=>cacheFirst(CACHE,new URL(path,BASE).href))).catch(()=>{}));return;
+  }
   const legal=event.data?.type==='salarymate:cache-legal';
   if(!event.source?.url||!legal&&(event.data?.type!=='salarymate:cache-background'||!SCENES.has(event.data.scene)))return;
   const source=new URL(event.source.url);
@@ -33,9 +38,10 @@ self.addEventListener('message',event=>{
 });
 const LOCALES=[];
 const STOCKS=[];
-const SHELL=["./","./index.html","./styles.css?v=5.0.0-dev.2-R97","./startup.js?v=5.0.0-dev.2-R97","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
-const OPTIONAL=["./legal-data.js?v=5.0.0-dev.2-R97"];
-const VERSIONED_URLS=new Set([...SHELL,...STOCKS,...LOCALES,...OPTIONAL].filter(path=>path.includes('?v=')).map(path=>new URL(path,BASE).href));
+const SHELL=["./","./index.html","./styles-core.css?v=5.0.0-dev.2-R98","./startup.js?v=5.0.0-dev.2-R98","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
+const OPTIONAL=["./legal-data.js?v=5.0.0-dev.2-R98"];
+const STYLE_PACKS=["./styles.css?v=5.0.0-dev.2-R98","./ornate-flight.js?v=5.0.0-dev.2-R98"];
+const VERSIONED_URLS=new Set([...SHELL,...STOCKS,...LOCALES,...OPTIONAL,...STYLE_PACKS].filter(path=>path.includes('?v=')).map(path=>new URL(path,BASE).href));
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll([...SHELL,...STOCKS,...LOCALES])).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{
   const previous=(await caches.keys()).filter(key=>key.startsWith('salarymate-v5-full-')&&key!==CACHE);
@@ -49,7 +55,7 @@ self.addEventListener('activate',event=>event.waitUntil((async()=>{
       }
       // A previously active worker may have fetched the current optional URL.
       const current=await caches.open(CACHE);
-      for(const path of OPTIONAL){const url=new URL(path,BASE).href,cached=await old.match(url);if(cached?.ok&&!await current.match(url))await current.put(url,cached);}
+      for(const path of [...OPTIONAL,...STYLE_PACKS]){const url=new URL(path,BASE).href,cached=await old.match(url);if(cached?.ok&&!await current.match(url))await current.put(url,cached);}
       await caches.delete(key);
     }catch{} // Preserve the old cache if migration fails; art can still reuse it.
   }
