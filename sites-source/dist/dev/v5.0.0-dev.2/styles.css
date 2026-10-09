@@ -1743,3 +1743,18 @@ body.jingyu-screen-hit :is(.sidebar,.workspace-shell>.topbar,.workspace-shell>ma
 
 /* R85: preserve the existing expanded income spacing after lazy insertion. */
 .stock-legacy-shortcut[open]>[data-stock-legacy]>.view{padding-top:24px;color:var(--ink)}
+
+/* R87: distinct day types retain labels and opaque, readable surfaces. */
+.status.overtime-type{color:#465366;background:#eef1f5;border:1px solid #b3bfcd;border-radius:var(--detail-badge-round,4px);white-space:nowrap}
+.status.overtime-type[data-overtime-type=weekday]{color:#1e497e;background:#e8f0fc;border-color:#9fb8d7}
+.status.overtime-type[data-overtime-type=restday]{color:#704300;background:#fff0cc;border-color:#d2ab56}
+.status.overtime-type[data-overtime-type=holiday]{color:#94314b;background:#fce7ed;border-color:#d59caa}
+.status.overtime-type[data-overtime-type=spring]{color:#7a3c12;background:#ffeadb;border-color:#d6a581}
+.status.overtime-type[data-overtime-type=custom]{color:#603c8e;background:#f0e8ff;border-color:#baa3d7}
+.v5-work-list>.v5-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media screen and (max-width:960px){
+ .v5-calendar-layout .v5-agenda{display:block}
+}
+@media (forced-colors:active){
+ body .status.overtime-type[data-overtime-type]{color:CanvasText;background:Canvas;border-color:CanvasText}
+}

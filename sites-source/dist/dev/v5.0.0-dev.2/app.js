@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0-dev.2-R86';
+    const APP_VERSION = '5.0.0-dev.2-R87';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -1489,6 +1489,11 @@
       weekday: '平日', restday: '休息日', weekend: '休息日', holiday: '例假日／約定假日', spring: '春節約定', custom: '自訂倍率'
     })[type] || '加班';
 
+    const overtimeTypeBadge = type => {
+      const tone=type==='weekend'?'restday':['weekday','restday','holiday','spring','custom'].includes(type)?type:'other';
+      return `<span class="status overtime-type" data-overtime-type="${tone}">${escapeHtml(overtimeTypeName(type))}</span>`;
+    };
+
     const filteredRecords = () => {
       const key = `${ui.selectedYear}:${ui.companyFilter}`;
       if (!calculationCache.filteredRecords.has(key)) {
@@ -2234,6 +2239,16 @@
       return `<article class="card metric ${definition.tone} leave-kpi-card" data-leave-kpi="${escapeAttr(definition.type)}"><div class="metric-label"><span>${escapeHtml(definition.label)}</span><span class="metric-icon">${escapeHtml(definition.icon)}</span></div><div class="leave-kpi-values" aria-label="${escapeAttr(`${definition.label}使用 ${rateNumber(summary.used)} 天，剩餘 ${summary.remainingText}`)}"><div class="leave-kpi-stat"><span>使用數</span><strong>${rateNumber(summary.used)} 天</strong></div><div class="leave-kpi-stat remaining"><span>剩餘數</span><strong class="${summary.remainingIsText ? 'status-text' : ''}">${escapeHtml(summary.remainingText)}</strong></div></div><div class="metric-note">${escapeHtml(summary.note)}</div></article>`;
     };
 
+    const renderAnnualLeaveHighlights = companies => {
+      const summaries=companies.map(company=>({company,summary:leaveQuotaSummary(company,'annual',leaveQuotaAsOf(company))}));
+      const allLimited=summaries.length>0&&summaries.every(({summary})=>summary.limited&&summary.configured);
+      const allUnlimited=summaries.length>0&&summaries.every(({summary})=>!summary.limited);
+      const pending=summaries.some(({summary})=>summary.limited&&!summary.configured);
+      const available=allLimited?rateNumber(summaries.reduce((sum,{company,summary})=>sum+numberValue(summary.remaining)*company.workHoursPerDay,0))+' <small>小時</small>':!summaries.length?'—':pending?'待設定':allUnlimited?'未設上限':'依公司';
+      const reserved=summaries.length?rateNumber(summaries.reduce((sum,{company,summary})=>sum+numberValue(summary.reserved)*company.workHoursPerDay,0))+' <small>小時</small>':'—';
+      return v5Stats([['可用特休',available,'依各公司特休週期'],['預留特休',reserved,'預計請假已先保留']]);
+    };
+
     const leaveQuotaCycleText = (summary) => {
       if (!summary.configured) return '需設定到職日';
       if (!summary.start || !summary.end) return '—';
@@ -2307,8 +2322,7 @@
           <article class="card metric blue"><div class="metric-label"><span>同步薪資表</span><span class="metric-icon">↻</span></div><div class="metric-value" style="font-size:18px;margin-top:14px">${ui.overtimeMonth ? `同步至 ${ui.overtimeMonth} 月薪資` : '請先選薪資月份'}</div><div class="metric-note"><button class="btn btn-small" type="button" data-action="sync-overtime" ${ui.overtimeMonth && totalPay ? '' : 'disabled'}>帶入薪資明細</button></div></article>
         </div>
         <p class="hint">單筆顯示金額僅供參考；總額使用未取整金額計算。</p><div class="notice warning">加班金額為個人估算值；實際給付仍以薪資單、勞動契約與適用法規為準。休息日最多接受 12 小時輸入。</div>
-        ${renderCompTimePanel()}
-        ${logs.length ? `<article class="card table-shell"><div class="table-scroll"><table><thead><tr><th>加班日期</th><th>歸屬薪資月</th><th>公司</th><th>類型</th><th>時數</th><th>每日加班時薪</th><th>預估加班費</th><th>備註</th><th>操作</th></tr></thead><tbody>${logs.map((log) => { const attributed = salaryMonthForLog(log); return `<tr class="data-row"><td class="money">${escapeHtml(log.date)}</td><td><b>${attributed ? `${attributed.year} 年 ${attributed.month} 月` : '—'}</b><small style="display:block;color:var(--muted)">${escapeHtml(companyPayrollPeriodName(log.companyId))}</small></td><td>${userHtml(companyName(log.companyId))}</td><td><span class="status ${log.type === 'spring' || log.type === 'holiday' ? 'former' : 'current'}">${escapeHtml(overtimeTypeName(log.type))}</span></td><td class="money">${numberValue(log.hours)} 小時</td><td class="money">$${hourlyRateNumber(log.hourlyRate)}</td><td class="money text-green">$${money(overtimeAmount(log))}</td><td>${userHtml(log.note || '—')}</td><td class="actions"><button class="btn btn-small" type="button" data-action="credit-comp-time" data-id="${escapeAttr(log.id)}" ${state.compTimeCredits.some(row=>row.sourceId===log.id)?'disabled':''}>轉補休</button> <button class="btn btn-small" type="button" data-action="edit-overtime" data-id="${escapeAttr(log.id)}">編輯</button> <button class="btn btn-small btn-danger" type="button" data-action="delete-overtime" data-id="${escapeAttr(log.id)}">刪除</button></td></tr>`; }).join('')}</tbody></table></div></article>` : emptyPanel('時', '尚無加班紀錄', '新增每日加班後，系統會依公司計薪區間自動歸入薪資月份。', '<button class="btn btn-primary" type="button" data-action="add-overtime">新增加班</button>')}`;
+        ${logs.length ? `<article class="card table-shell"><div class="table-scroll"><table><thead><tr><th>加班日期</th><th>歸屬薪資月</th><th>公司</th><th>類型</th><th>時數</th><th>每日加班時薪</th><th>預估加班費</th><th>備註</th><th>操作</th></tr></thead><tbody>${logs.map((log) => { const attributed = salaryMonthForLog(log); return `<tr class="data-row"><td class="money">${escapeHtml(log.date)}</td><td><b>${attributed ? `${attributed.year} 年 ${attributed.month} 月` : '—'}</b><small style="display:block;color:var(--muted)">${escapeHtml(companyPayrollPeriodName(log.companyId))}</small></td><td>${userHtml(companyName(log.companyId))}</td><td>${overtimeTypeBadge(log.type)}</td><td class="money">${numberValue(log.hours)} 小時</td><td class="money">$${hourlyRateNumber(log.hourlyRate)}</td><td class="money text-green">$${money(overtimeAmount(log))}</td><td>${userHtml(log.note || '—')}</td><td class="actions"><button class="btn btn-small" type="button" data-action="credit-comp-time" data-id="${escapeAttr(log.id)}" ${state.compTimeCredits.some(row=>row.sourceId===log.id)?'disabled':''}>轉補休</button> <button class="btn btn-small" type="button" data-action="edit-overtime" data-id="${escapeAttr(log.id)}">編輯</button> <button class="btn btn-small btn-danger" type="button" data-action="delete-overtime" data-id="${escapeAttr(log.id)}">刪除</button></td></tr>`; }).join('')}</tbody></table></div></article>` : emptyPanel('時', '尚無加班紀錄', '新增每日加班後，系統會依公司計薪區間自動歸入薪資月份。', '<button class="btn btn-primary" type="button" data-action="add-overtime">新增加班</button>')}`;
     };
 
     const renderLeavePanel = () => {
@@ -2328,6 +2342,7 @@
       const syncPanel = canSync ? `<article class="card card-pad sync-panel"><div class="section-title"><div><h3>請假扣款連動</h3><p>${userHtml(selectedCompany.name)}｜${ui.selectedYear} 年 ${ui.leaveMonth} 月薪資｜${escapeHtml(salaryPeriodLabel(ui.selectedYear, ui.leaveMonth, selectedCompany.id))}</p></div><span class="status ${syncStatusTone}">${escapeHtml(syncStatusText)}</span></div><div class="summary-row"><span>已確認請假 ${sync.records} 筆／${rateNumber(sync.hours)} 小時</span><b>請假扣薪 $${money(sync.wage)} ＋ 出勤扣款 $${money(sync.attendance)}</b></div><div class="live-total"><span>預計寫入薪資自訂扣項</span><strong>$${money(sync.total)}</strong></div><div class="form-actions"><button class="btn" type="button" data-action="unlink-leave" ${sync.linkedItem ? '' : 'disabled'}>解除薪資連動</button><button class="btn btn-primary" type="button" data-action="sync-leave" ${sync.total ? '' : 'disabled'}>${sync.status === 'synced' ? '重新同步' : '預覽並同步扣款'}</button></div></article>` : `<div class="notice"><b>薪資扣款連動：</b>請在上方先選擇單一公司與薪資月份，即可預覽已確認請假的扣薪、出勤扣款，並安全同步至薪資自訂扣項。</div>`;
       return `
         <div class="notice"><b>目前計算區間：</b>${escapeHtml(periodSummary)}</div>
+        ${renderAnnualLeaveHighlights(scopeCompanies)}
         <div class="metric-grid leave-kpi-grid">
           ${LEAVE_KPI_TYPES.map((definition) => renderLeaveKpiCard(definition, scopeCompanies)).join('')}
         </div>
@@ -3014,17 +3029,16 @@
     };
 
     const renderV5Calendar = () => {
-      const y=Number(ui.selectedYear),m=v5.month,c=currentCompany(),prefix=`${y}-${pad2(m)}`;
+      const y=Number(ui.selectedYear),m=v5.month,prefix=`${y}-${pad2(m)}`;
       if(!v5.date.startsWith(prefix))v5.date=prefix+'-01';
       const first=new Date(y,m-1,1,12),offset=(first.getDay()+6)%7,days=new Date(y,m,0).getDate(),count=Math.ceil((offset+days)/7)*7;
       const byDate=new Map();
       for(const log of state.overtimeLogs.filter(v5Scope)){if(!byDate.has(log.date))byDate.set(log.date,[]);byDate.get(log.date).push({kind:'overtime',item:log,hours:log.hours});}
       for(const record of state.leaveRecords.filter(v5Scope)){for(const day of leaveDateEntries(record)){if(!byDate.has(day.date))byDate.set(day.date,[]);byDate.get(day.date).push({kind:'leave',item:record,hours:day.hours});}}
-      const logs=state.overtimeLogs.filter(x=>v5Scope(x)&&x.date.startsWith(prefix));
-      const annual=c?annualLeaveSummary(c,v5.date):null,hours=c?.workHoursPerDay||8,rows=byDate.get(v5.date)||[];
+      const rows=byDate.get(v5.date)||[];
       const cells=Array.from({length:count},(_,i)=>{const d=new Date(y,m-1,i-offset+1,12),date=isoDate(d.getFullYear(),d.getMonth()+1,d.getDate()),events=(byDate.get(date)||[]).filter(r=>r.item.status!=='cancelled');return `<button type="button" class="v5-day ${date===v5.date?'selected':''} ${date===todayIso()?'today':''} ${d.getMonth()!==m-1?'outside':''}" data-v5="day" data-date="${date}" aria-pressed="${date===v5.date}" tabindex="${date===v5.date?0:-1}" aria-label="${date}，${events.length} 筆紀錄"><span class="v5-date-number">${d.getDate()}</span>${events.slice(0,2).map(r=>`<span class="v5-calendar-tag ${r.kind} ${r.item.status==='planned'?'planned':''}">${r.kind==='leave'?escapeHtml(leaveTypeName(r.item.type)):'加班'} ${rateNumber(r.hours)}h</span>`).join('')}${events.length>2?`<small>另 ${events.length-2} 筆</small>`:''}</button>`;}).join('');
-      return `<section class="view">${v5Title('工作日曆',v5Button('記加班','add-overtime')+v5Button('記請假','add-leave','',true))}${v5Tabs([['calendar','月曆'],['overtime','加班紀錄'],['leave','請假紀錄'],['comp','補休帳本']],'calendar','work-tab')}${v5Stats([['本月加班',rateNumber(logs.reduce((s,l)=>s+l.hours,0))+' <small>小時</small>','按日曆月份'],['加班費試算','$'+money(overtimeTotal(logs))],['可用特休',annual?.configured&&annual.limited?rateNumber(annual.remaining*hours)+' <small>小時</small>':'待設定'],['預留特休',annual?rateNumber(annual.reserved*hours)+' <small>小時</small>':'—']])}
-      <div class="v5-calendar-layout"><section><div class="v5-calendar-top"><div class="v5-month-controls"><h3>${y} 年 ${m} 月</h3><button type="button" class="btn btn-small" data-v5="month" data-step="-1" aria-label="上一月">上一月</button><button type="button" class="btn btn-small" data-v5="today">今天</button><button type="button" class="btn btn-small" data-v5="month" data-step="1" aria-label="下一月">下一月</button></div><div class="v5-legend"><span>加班</span><span>請假</span></div></div><div class="v5-weekdays" aria-hidden="true">${['一','二','三','四','五','六','日'].map(x=>`<span>${x}</span>`).join('')}</div><div class="v5-calendar-grid" role="group" aria-label="選擇日期">${cells}</div><p class="hint">點日期查看紀錄。虛線代表預計請假；薪資歸屬依公司計薪區間。</p></section><aside class="v5-agenda"><div class="section-title"><h3>${Number(v5.date.slice(5,7))} 月 ${Number(v5.date.slice(8))} 日</h3><span>${['週日','週一','週二','週三','週四','週五','週六'][new Date(v5.date+'T12:00:00').getDay()]}</span></div>${rows.length?rows.map(v5DayRow).join(''):'<div class="v5-quiet-empty">這天還沒有紀錄。</div>'}<div class="v5-day-actions">${v5Button('記加班','add-overtime')}${v5Button('記請假','add-leave')}</div><div class="v5-leave-balance"><h3>特休額度</h3>${annual?.configured?`<p class="hint">${annual.start} ～ ${annual.end} 前</p><dl><dt>核定／試算額度</dt><dd>${annual.limited?rateNumber(annual.entitlement*hours)+' 小時':'不設上限'}</dd><dt>已確認</dt><dd>${rateNumber(annual.used*hours)} 小時</dd><dt>預留</dt><dd>${rateNumber(annual.reserved*hours)} 小時</dd><dt>可用</dt><dd>${annual.limited?rateNumber(annual.remaining*hours)+' 小時':'不設上限'}</dd></dl>`:'<p class="hint">請先設定公司到職日與特休規則。</p>'}${c?v5Button('調整假別與額度','v5-leave-settings',`data-id="${escapeAttr(c.id)}"`):v5Button('建立公司','add-company-basic')}</div></aside></div></section>`;
+      return `<section class="view">${v5Title('工作日曆',v5Button('記加班','add-overtime')+v5Button('記請假','add-leave','',true))}${v5Tabs([['calendar','月曆'],['overtime','加班紀錄'],['leave','請假紀錄'],['comp','補休帳本']],'calendar','work-tab')}
+      <div class="v5-calendar-layout"><section><div class="v5-calendar-top"><div class="v5-month-controls"><h3>${y} 年 ${m} 月</h3><button type="button" class="btn btn-small" data-v5="month" data-step="-1" aria-label="上一月">上一月</button><button type="button" class="btn btn-small" data-v5="today">今天</button><button type="button" class="btn btn-small" data-v5="month" data-step="1" aria-label="下一月">下一月</button></div><div class="v5-legend"><span>加班</span><span>請假</span></div></div><div class="v5-weekdays" aria-hidden="true">${['一','二','三','四','五','六','日'].map(x=>`<span>${x}</span>`).join('')}</div><div class="v5-calendar-grid" role="group" aria-label="選擇日期">${cells}</div><p class="hint">點日期查看紀錄。虛線代表預計請假；薪資歸屬依公司計薪區間。</p></section><aside class="v5-agenda"><div class="section-title"><h3>${Number(v5.date.slice(5,7))} 月 ${Number(v5.date.slice(8))} 日</h3><span>${['週日','週一','週二','週三','週四','週五','週六'][new Date(v5.date+'T12:00:00').getDay()]}</span></div>${rows.length?rows.map(v5DayRow).join(''):'<div class="v5-quiet-empty">這天還沒有紀錄。</div>'}<div class="v5-day-actions">${v5Button('記加班','add-overtime')}${v5Button('記請假','add-leave')}</div></aside></div></section>`;
     };
 
     const renderV5Attendance = () => {
