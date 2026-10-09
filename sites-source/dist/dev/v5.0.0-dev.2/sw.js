@@ -1,4 +1,4 @@
-const CACHE='salarymate-v5-full-5.0.0-dev.2-R98';
+const CACHE='salarymate-v5-full-5.0.0-dev.2-R99';
 const BASE=new URL('./',self.location.href);
 const SCENE_CACHE='salarymate-v5-backgrounds-r79';
 const SCENES=new Map(['canyon','forest','harbor','aurora','sky','macaron'].map(id=>[id,new URL(`./art/background-${id}-r79.webp`,BASE).href]));
@@ -38,10 +38,31 @@ self.addEventListener('message',event=>{
 });
 const LOCALES=[];
 const STOCKS=[];
-const SHELL=["./","./index.html","./styles-core.css?v=5.0.0-dev.2-R98","./startup.js?v=5.0.0-dev.2-R98","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
-const OPTIONAL=["./legal-data.js?v=5.0.0-dev.2-R98"];
-const STYLE_PACKS=["./styles.css?v=5.0.0-dev.2-R98","./ornate-flight.js?v=5.0.0-dev.2-R98"];
+const SHELL=["./","./index.html","./styles-core.css?v=5.0.0-dev.2-R99","./startup.js?v=5.0.0-dev.2-R99","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
+const OPTIONAL=["./legal-data.js?v=5.0.0-dev.2-R99"];
+const STYLE_PACKS=["./styles.css?v=5.0.0-dev.2-R99","./ornate-flight.js?v=5.0.0-dev.2-R99"];
 const VERSIONED_URLS=new Set([...SHELL,...STOCKS,...LOCALES,...OPTIONAL,...STYLE_PACKS].filter(path=>path.includes('?v=')).map(path=>new URL(path,BASE).href));
+function navigationResponse(event){
+  const index=new URL('index.html',BASE).href;
+  const cachePromise=caches.open(CACHE).catch(()=>null);
+  // Check for releases without putting a slow network on the visible path.
+  // Keep a cached shell coherent with its installed, versioned startup assets.
+  const network=fetch(event.request).then(async response=>{
+    if(response.ok){
+      const text=await response.clone().text(),version=text.match(/startup\.js\?v=([a-zA-Z0-9.-]+)/)?.[1];
+      if(version&&CACHE==='salarymate-v5-full-'+version){
+        const cache=await cachePromise;if(cache)try{await cache.put(index,response.clone());}catch{}
+      }
+    }
+    return response;
+  });
+  event.waitUntil(network.then(()=>{}).catch(()=>{}));
+  return cachePromise.then(async cache=>{
+    let cached;try{cached=await cache?.match(index);}catch{}
+    if(cached?.ok)return cached;
+    return network.catch(async()=>{try{return await caches.match(index)||Response.error();}catch{return Response.error();}});
+  });
+}
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll([...SHELL,...STOCKS,...LOCALES])).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{
   const previous=(await caches.keys()).filter(key=>key.startsWith('salarymate-v5-full-')&&key!==CACHE);
@@ -64,10 +85,11 @@ self.addEventListener('activate',event=>event.waitUntil((async()=>{
 self.addEventListener('fetch',event=>{
   const url=new URL(event.request.url);
   if(event.request.method!=='GET'||url.origin!==BASE.origin||!url.pathname.startsWith(BASE.pathname))return;
+  if(event.request.mode==='navigate'&&(url.pathname===BASE.pathname||url.pathname===new URL('index.html',BASE).pathname)){event.respondWith(navigationResponse(event));return;}
   if(SCENE_URLS.has(url.href)){event.respondWith(cacheFirst(SCENE_CACHE,url.href));return;}
   if(ART_URLS.has(url.href)){event.respondWith(cacheFirst(ART_CACHE,url.href,true));return;}
   if(VERSIONED_URLS.has(url.href)){event.respondWith(cacheFirst(CACHE,url.href));return;}
-  // HTML continues checking for releases; API routes are outside this scope.
+  // Other scoped files retain normal network/offline behavior; APIs stay outside.
   event.respondWith(fetch(event.request).then(response=>{
     if(response.ok){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(cache=>cache.put(event.request,copy)).catch(()=>{}));}
     return response;

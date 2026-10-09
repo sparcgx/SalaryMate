@@ -36,6 +36,26 @@
 })();
 
 // Desktop horizontal scroll controls stay above the table and mirror wheel/trackpad scrolling.
+// R99 startup screen: non-blocking shell and application-ready handoff.
+(() => {
+  'use strict';
+  const coreStyle=document.querySelector('link[data-style-core]');
+  let applicationReady=false,styleReady=!coreStyle||!!coreStyle.sheet,styleFailed=false,reported=false;
+  const finishStartup=()=>{
+    if(!applicationReady)return;
+    document.querySelectorAll('[data-startup-inert]').forEach(element=>{element.removeAttribute('inert');element.removeAttribute('data-startup-inert');});
+    if(styleReady)document.body.removeAttribute('data-startup');
+    else if(styleFailed&&!reported){reported=true;const notice=document.createElement('p');notice.className='notice warning';notice.setAttribute('role','alert');notice.textContent='介面樣式載入失敗，請重新整理；本機資料仍保留。';document.getElementById('mainContent')?.prepend(notice);}
+  };
+  if(coreStyle){
+    coreStyle.addEventListener('load',()=>{styleReady=true;finishStartup();},{once:true});
+    coreStyle.addEventListener('error',()=>{styleFailed=true;finishStartup();},{once:true});
+    coreStyle.media='all';
+  }
+  window.SalaryMateStartup=Object.freeze({complete(){applicationReady=true;finishStartup();},styled(){styleReady=true;finishStartup();}});
+})();
+
+// Desktop horizontal scroll runtime.
 (() => {
   const controls=new Map();let queued=false;
   const selector='.stock-table-wrap,.table-scroll,.attendance-trend-scroll';

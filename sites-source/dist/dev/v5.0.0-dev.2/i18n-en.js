@@ -2693,5 +2693,8 @@ globalThis.SalaryMateEnglish={
   "同日請假的結束時段不可早於開始時段。": "The end period cannot precede the start period for leave on the same day.",
   "華麗風格下載失敗，暫以一般風格顯示；可重新選用重試。": "The ornate style could not download. A standard style is shown for now; select the style again to retry.",
   "正在下載華麗風格，完成後套用…": "Downloading the ornate style. It will be applied when ready…",
-  "華麗風格下載失敗，已保留目前風格；請稍後重試。": "The ornate style could not download. Your current style is unchanged; please retry later."
+  "華麗風格下載失敗，已保留目前風格；請稍後重試。": "The ornate style could not download. Your current style is unchanged; please retry later.",
+  "正在載入 SalaryMate，讀取本機資料…": "Loading SalaryMate and reading local data…",
+  "載入中": "Loading",
+  "介面樣式載入失敗，請重新整理；本機資料仍保留。": "Interface styles could not load. Reload the page; your local data is retained."
 };

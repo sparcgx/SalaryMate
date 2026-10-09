@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0-dev.2-R98';
+    const APP_VERSION = '5.0.0-dev.2-R99';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -6017,4 +6017,5 @@
       setTimeout(() => openRecordForm(), 0);
     }
     if (ui.migratedLegacy) setTimeout(() => toast('已自動轉入舊版 v2 瀏覽器資料'), 250);
+    window.SalaryMateStartup?.complete();
   })();

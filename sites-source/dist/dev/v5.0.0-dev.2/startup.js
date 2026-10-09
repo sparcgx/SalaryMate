@@ -2695,7 +2695,10 @@ globalThis.SalaryMateEnglish={
   "同日請假的結束時段不可早於開始時段。": "The end period cannot precede the start period for leave on the same day.",
   "華麗風格下載失敗，暫以一般風格顯示；可重新選用重試。": "The ornate style could not download. A standard style is shown for now; select the style again to retry.",
   "正在下載華麗風格，完成後套用…": "Downloading the ornate style. It will be applied when ready…",
-  "華麗風格下載失敗，已保留目前風格；請稍後重試。": "The ornate style could not download. Your current style is unchanged; please retry later."
+  "華麗風格下載失敗，已保留目前風格；請稍後重試。": "The ornate style could not download. Your current style is unchanged; please retry later.",
+  "正在載入 SalaryMate，讀取本機資料…": "Loading SalaryMate and reading local data…",
+  "載入中": "Loading",
+  "介面樣式載入失敗，請重新整理；本機資料仍保留。": "Interface styles could not load. Reload the page; your local data is retained."
 };
 
 
@@ -3017,6 +3020,26 @@ globalThis.SalaryMateEnglish={
 })();
 
 // Desktop horizontal scroll controls stay above the table and mirror wheel/trackpad scrolling.
+// R99 startup screen: non-blocking shell and application-ready handoff.
+(() => {
+  'use strict';
+  const coreStyle=document.querySelector('link[data-style-core]');
+  let applicationReady=false,styleReady=!coreStyle||!!coreStyle.sheet,styleFailed=false,reported=false;
+  const finishStartup=()=>{
+    if(!applicationReady)return;
+    document.querySelectorAll('[data-startup-inert]').forEach(element=>{element.removeAttribute('inert');element.removeAttribute('data-startup-inert');});
+    if(styleReady)document.body.removeAttribute('data-startup');
+    else if(styleFailed&&!reported){reported=true;const notice=document.createElement('p');notice.className='notice warning';notice.setAttribute('role','alert');notice.textContent='介面樣式載入失敗，請重新整理；本機資料仍保留。';document.getElementById('mainContent')?.prepend(notice);}
+  };
+  if(coreStyle){
+    coreStyle.addEventListener('load',()=>{styleReady=true;finishStartup();},{once:true});
+    coreStyle.addEventListener('error',()=>{styleFailed=true;finishStartup();},{once:true});
+    coreStyle.media='all';
+  }
+  window.SalaryMateStartup=Object.freeze({complete(){applicationReady=true;finishStartup();},styled(){styleReady=true;finishStartup();}});
+})();
+
+// Desktop horizontal scroll runtime.
 (() => {
   const controls=new Map();let queued=false;
   const selector='.stock-table-wrap,.table-scroll,.attendance-trend-scroll';
@@ -3054,7 +3077,7 @@ globalThis.SalaryMateEnglish={
 
 // Website-only style packages. The portable edition already contains all code and CSS.
 (() => {
- const version='5.0.0-dev.2-R98';
+ const version='5.0.0-dev.2-R99';
  const base=new URL('./',document.baseURI);
  const core=document.querySelector('link[data-style-core]');
  let css=null,cssReady=false,cssPending=null,flightPending=null;
@@ -3096,6 +3119,7 @@ globalThis.SalaryMateEnglish={
   const use=ornate(style)&&ready(style);
   if(css)css.media=use?'all':'not all';
   if(core)core.disabled=use;
+  if(use)window.SalaryMateStartup?.styled();
   if(!use)window.SalaryMateCompanion?.stop();
   return use||!ornate(style);
  }
@@ -4957,7 +4981,7 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0-dev.2-R98';
+    const APP_VERSION = '5.0.0-dev.2-R99';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -10972,5 +10996,6 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
       setTimeout(() => openRecordForm(), 0);
     }
     if (ui.migratedLegacy) setTimeout(() => toast('已自動轉入舊版 v2 瀏覽器資料'), 250);
+    window.SalaryMateStartup?.complete();
   })();
 

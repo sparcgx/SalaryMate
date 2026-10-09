@@ -42,6 +42,7 @@
   const use=ornate(style)&&ready(style);
   if(css)css.media=use?'all':'not all';
   if(core)core.disabled=use;
+  if(use)window.SalaryMateStartup?.styled();
   if(!use)window.SalaryMateCompanion?.stop();
   return use||!ornate(style);
  }

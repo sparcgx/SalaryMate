@@ -14,7 +14,7 @@ const js=origin+'startup.js?v='+version;
 const art=origin+'art/jingyu-flight-r73-a.png';
 function runtime(){
  const handlers={},stores=new Map(),requests=[],puts=[],installed=[],pending=[];
- const flags={online:true,failRead:false,failWrite:false,failInstall:false,status:200,skipped:0,claimed:0};
+ const flags={online:true,failRead:false,failWrite:false,failInstall:false,status:200,skipped:0,claimed:0,gate:null,body:null};
  const key=value=>typeof value==='string'?new URL(value,origin).href:value.url;
  const caches={
   async open(name){if(flags.failRead)throw Error('cache unavailable');if(!stores.has(name))stores.set(name,new Map());const store=stores.get(name);return {
@@ -25,7 +25,7 @@ function runtime(){
   async keys(){return [...stores.keys()];},async delete(name){return stores.delete(name);},
   async match(input){if(flags.failRead)throw Error('cache unavailable');for(const store of stores.values())if(store.has(key(input)))return store.get(key(input)).clone();}
  };
- vm.runInNewContext(source,{URL,Map,Set,Response,caches,self:{location:{href:origin+'sw.js'},addEventListener:(name,fn)=>{handlers[name]=fn;},skipWaiting:()=>{flags.skipped++;},clients:{claim:()=>{flags.claimed++;}}},fetch:async input=>{requests.push(key(input));if(!flags.online)throw Error('offline');return new Response('network:'+key(input),{status:flags.status});}});
+ vm.runInNewContext(source,{URL,Map,Set,Response,caches,self:{location:{href:origin+'sw.js'},addEventListener:(name,fn)=>{handlers[name]=fn;},skipWaiting:()=>{flags.skipped++;},clients:{claim:()=>{flags.claimed++;}}},fetch:async input=>{requests.push(key(input));if(flags.gate)await flags.gate;if(!flags.online)throw Error('offline');return new Response(flags.body??'network:'+key(input),{status:flags.status});}});
  const waitUntil=promise=>pending.push(promise);
  return {stores,requests,puts,installed,flags,
   install(){handlers.install({waitUntil});},activate(){handlers.activate({waitUntil});},
@@ -128,4 +128,26 @@ test('R80 release HTML keeps checking updates and has offline fallback; APIs sta
 test('R80 an incomplete interface install does not take over the previous offline version',async()=>{
  const h=runtime();h.flags.failInstall=true;h.install();await assert.rejects(h.settle(),/install incomplete/);
  assert.equal(h.flags.skipped,0);assert.equal(h.flags.claimed,0);
+});
+
+test('R99 navigation responds from the installed shell while network update remains unresolved',async()=>{
+ const h=runtime();h.install();await h.settle();let release;h.flags.gate=new Promise(resolve=>{release=resolve;});
+ const response=await h.fetch(origin+'?action=add-record','navigate');
+ assert.equal(await response.text(),'installed:'+origin+'index.html');assert.equal(h.requests.length,1);
+ release();await h.settle();
+});
+test('R99 background refresh stores same-version HTML but never overwrites the shell with a newer uncached version',async()=>{
+ const h=runtime();h.install();await h.settle();
+ h.flags.body='<script defer src="./startup.js?v='+version+'"></script>current';
+ await h.fetch(origin,'navigate');await h.settle();
+ assert.match(await h.stores.get(current).get(origin+'index.html').clone().text(),/current$/);
+ h.flags.body='<script defer src="./startup.js?v=5.0.0-dev.2-R9999"></script>uncached';
+ const response=await h.fetch(origin,'navigate');assert.match(await response.text(),/current$/);await h.settle();
+ assert.doesNotMatch(await h.stores.get(current).get(origin+'index.html').clone().text(),/uncached/);
+});
+test('R99 first uncached navigation uses the network; cache failure and offline refresh do not hide a valid installed shell',async()=>{
+ const cold=runtime();assert.match(await(await cold.fetch(origin,'navigate')).text(),/^network:/);await cold.settle();
+ const failed=runtime();failed.flags.failRead=true;assert.match(await(await failed.fetch(origin,'navigate')).text(),/^network:/);await failed.settle();
+ const warm=runtime();warm.install();await warm.settle();warm.flags.online=false;
+ assert.match(await(await warm.fetch(origin,'navigate')).text(),/^installed:/);await warm.settle();
 });
