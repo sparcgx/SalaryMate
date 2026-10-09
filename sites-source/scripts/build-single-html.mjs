@@ -4,12 +4,16 @@ import {createHash} from 'node:crypto';
 import {salaryMateCsp} from '../server/security-policy.mjs';
 import './build-locales.mjs';
 import {embedPortableArtwork} from './lib/portable-artwork.mjs';
+import {startupModules} from './lib/startup-bundle.mjs';
 
 const output=process.argv[2],origin=process.argv[3];
 if(!output||!path.isAbsolute(output)||!origin||new URL(origin).protocol!=='https:'||new URL(origin).origin!==origin)throw new Error('Usage: node build-single-html.mjs /absolute/output.html https://verified-site-origin');
 const base=path.resolve(import.meta.dirname,'../dist/dev/v5.0.0-dev.2');
 let html=await readFile(path.join(base,'index.html'),'utf8');
-const scripts=[...html.matchAll(/<script defer src="\.\/([^"?]+)(?:\?[^"]*)?"><\/script>/g)];
+const hostedScripts=[...html.matchAll(/<script defer src="\.\/([^"?]+)(?:\?[^"]*)?"><\/script>/g)];
+if(hostedScripts.length!==1||hostedScripts[0][1]!=='startup.js')throw new Error('Unexpected hosted startup manifest');
+html=html.replace(hostedScripts[0][0],'');
+const scripts=startupModules.map(name=>['',name]);
 if(scripts.length!==14||scripts.some(match=>match[1]==='legal-data.js'))throw new Error('Unexpected script manifest; inspect dependencies before bundling.');
 // Full offline edition includes the on-demand legal module before application startup.
 scripts.unshift(['','legal-data.js']);

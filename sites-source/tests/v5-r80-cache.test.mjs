@@ -10,7 +10,7 @@ const origin='https://salarymate.test/dev/v5.0.0-dev.2/';
 const current=source.match(/const CACHE='([^']+)'/)[1];
 const version=current.slice('salarymate-v5-full-'.length);
 const artCache='salarymate-v5-art-v1';
-const js=origin+'app.js?v='+version;
+const js=origin+'startup.js?v='+version;
 const art=origin+'art/jingyu-flight-r73-a.png';
 function runtime(){
  const handlers={},stores=new Map(),requests=[],puts=[],installed=[],pending=[];

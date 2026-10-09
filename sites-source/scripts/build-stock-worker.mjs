@@ -2,9 +2,11 @@ import {readFile,readdir,mkdir,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 import {salaryMateCsp} from '../server/security-policy.mjs';
 import './build-locales.mjs';
+import {buildStartupBundle} from './lib/startup-bundle.mjs';
 const root=path.resolve(import.meta.dirname,'..'),dist=path.join(root,'dist'),files={};
 const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.json':'application/json; charset=utf-8','.webmanifest':'application/manifest+json','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.jpg':'image/jpeg','.jpeg':'image/jpeg','.ico':'image/x-icon'};
 async function scan(dir,prefix='') {for(const entry of await readdir(dir,{withFileTypes:true})){if(entry.name==='server'||entry.name.startsWith('.'))continue;const rel=prefix+'/'+entry.name,full=path.join(dir,entry.name);if(entry.isDirectory())await scan(full,rel);else{const bytes=await readFile(full);files[rel]={body:bytes.toString('base64'),type:types[path.extname(entry.name)]||'application/octet-stream'};}}}
+await buildStartupBundle(path.join(dist,'dev/v5.0.0-dev.2'));
 await scan(dist);
 const devBase='/dev/v5.0.0-dev.2/';
 const devHtml=await readFile(path.join(dist,devBase,'index.html'),'utf8');

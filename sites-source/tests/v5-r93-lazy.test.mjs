@@ -140,7 +140,7 @@ function workerFixture(){
 }
 
 test('R93 website manifest and SW install omit both legal payloads while OPTIONAL remains versioned',async()=>{
- const html=read('index.html'),modules=[...html.matchAll(/<script defer src="([^\"]+)"><\/script>/g)];assert.equal(modules.length,14);assert.ok(!modules.some(match=>match[1].includes('legal-data')));
+ const html=read('index.html'),modules=[...html.matchAll(/<script defer src="([^\"]+)"><\/script>/g)];assert.equal(modules.length,1);assert.match(modules[0][1],/startup\.js\?v=/);assert.ok(!modules.some(match=>match[1].includes('legal-data')));
  const h=workerFixture();assert.equal(h.probe.OPTIONAL.length,1);assert.match(h.probe.OPTIONAL[0],/^\.\/legal-data\.js\?v=/);assert.equal(h.probe.VERSIONED_URLS.has(new URL(h.probe.OPTIONAL[0],h.probe.BASE).href),true);
  assert.ok(!h.probe.SHELL.some(url=>/legal/.test(url)));await h.dispatch('install');assert.ok(h.calls.adds.length>0);assert.ok(!h.calls.adds.some(url=>/legal/.test(url)));assert.equal(h.calls.network,0);
 });

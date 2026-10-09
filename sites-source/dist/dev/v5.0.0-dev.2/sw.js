@@ -1,4 +1,4 @@
-const CACHE='salarymate-v5-full-5.0.0-dev.2-R96';
+const CACHE='salarymate-v5-full-5.0.0-dev.2-R97';
 const BASE=new URL('./',self.location.href);
 const SCENE_CACHE='salarymate-v5-backgrounds-r79';
 const SCENES=new Map(['canyon','forest','harbor','aurora','sky','macaron'].map(id=>[id,new URL(`./art/background-${id}-r79.webp`,BASE).href]));
@@ -31,10 +31,10 @@ self.addEventListener('message',event=>{
   if(source.origin!==BASE.origin||!source.pathname.startsWith(BASE.pathname))return;
   event.waitUntil((legal?cacheFirst(CACHE,new URL(OPTIONAL[0],BASE).href):cacheFirst(SCENE_CACHE,SCENES.get(event.data.scene))).catch(()=>{}));
 });
-const LOCALES=["./i18n-en.js?v=5.0.0-dev.2-R96","./i18n.js?v=5.0.0-dev.2-R96"];
-const STOCKS=["./google-drive.js?v=5.0.0-dev.2-R96","./google-drive-ui.js?v=5.0.0-dev.2-R96","./backup.js?v=5.0.0-dev.2-R96","./stocks.js?v=5.0.0-dev.2-R96","./stocks-integrations.js?v=5.0.0-dev.2-R96","./stocks-ui.js?v=5.0.0-dev.2-R96"];
-const SHELL=["./","./index.html","./styles.css?v=5.0.0-dev.2-R96","./bootstrap.js?v=5.0.0-dev.2-R96","./app.js?v=5.0.0-dev.2-R96","./reconcile.js?v=5.0.0-dev.2-R96","./copy-month.js?v=5.0.0-dev.2-R96","./comp-time.js?v=5.0.0-dev.2-R96","./annual-analysis.js?v=5.0.0-dev.2-R96","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
-const OPTIONAL=["./legal-data.js?v=5.0.0-dev.2-R96"];
+const LOCALES=[];
+const STOCKS=[];
+const SHELL=["./","./index.html","./styles.css?v=5.0.0-dev.2-R97","./startup.js?v=5.0.0-dev.2-R97","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
+const OPTIONAL=["./legal-data.js?v=5.0.0-dev.2-R97"];
 const VERSIONED_URLS=new Set([...SHELL,...STOCKS,...LOCALES,...OPTIONAL].filter(path=>path.includes('?v=')).map(path=>new URL(path,BASE).href));
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll([...SHELL,...STOCKS,...LOCALES])).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{
