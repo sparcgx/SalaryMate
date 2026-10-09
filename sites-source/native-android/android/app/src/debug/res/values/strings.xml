@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">個人薪資管理 Compose</string>
+    <string name="title_activity_main">個人薪資管理 Compose</string>
+    <string name="package_name">com.salarymate.personal.debug</string>
+    <string name="custom_url_scheme">com.salarymate.personal.debug</string>
+</resources>

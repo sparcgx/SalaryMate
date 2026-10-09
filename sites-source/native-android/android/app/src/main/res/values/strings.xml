@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SalaryMate 開發版</string>
+    <string name="title_activity_main">SalaryMate 開發版</string>
+    <string name="package_name">com.salarymate.personal.dev</string>
+    <string name="custom_url_scheme">com.salarymate.personal.dev</string>
+</resources>

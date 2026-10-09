@@ -1,0 +1,28 @@
+{
+  "name": "salarymate-app",
+  "version": "5.0.0-dev.2-R99",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "android:sync": "node ../scripts/build-android-assets.mjs && cap sync android",
+    "android:build": "npm run android:sync && cd android && ./gradlew assembleRelease",
+    "android:check": "node --test ../tests/v5-r99-android-package.test.mjs ../tests/v5-r99-android-legacy-backup.test.mjs ../tests/v5-android-runtime.test.mjs"
+  },
+  "dependencies": {
+    "@capacitor-community/sqlite": "^8.1.1",
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/filesystem": "^8.1.3",
+    "@capacitor/ios": "8.5.2",
+    "@capacitor/privacy-screen": "^2.0.1",
+    "@capacitor/share": "^8.0.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0",
+    "esbuild": "^0.28.2"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  }
+}

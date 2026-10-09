@@ -4,3 +4,14 @@ npm-debug.log*
 
 # Reproducible Worker build output is packaged for deployment, not source Git.
 dist/server/
+
+# Android build assets are generated from the current development web source.
+native-android/www/
+native-android/android/app/src/main/assets/public/
+native-android/android/local.properties
+native-android/android/.gradle/
+native-android/android/.kotlin/
+native-android/android/**/build/
+*.jks
+*.keystore
+*.p12

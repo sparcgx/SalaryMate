@@ -1,0 +1,15 @@
+{
+  "appId": "com.salarymate.personal.dev",
+  "appName": "SalaryMate 開發版",
+  "webDir": "www",
+  "plugins": {
+    "CapacitorSQLite": {
+      "iosDatabaseLocation": "Library/CapacitorDatabase",
+      "iosIsEncryption": false
+    }
+  },
+  "server": {
+    "hostname": "salarymate.sparcgx2420.chatgpt.site",
+    "androidScheme": "https"
+  }
+}
