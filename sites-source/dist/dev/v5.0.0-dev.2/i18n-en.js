@@ -2654,5 +2654,9 @@ globalThis.SalaryMateEnglish={
   "預計先保留、確認列為已用；可在假別額度管理調整": "Planned leave is reserved; confirmed leave counts as used. Adjust allowances in Leave allowance management.",
   "筆婚假尚未填結婚登記日，請編輯紀錄核對事件與核定額度；原紀錄仍保留。": "marriage leave records without a registration date. Edit them to verify the event and approved allowance; the original records are preserved.",
   "每日標準工時需介於 1～24 小時。": "Standard daily work hours must be between 1 and 24.",
-  "請假法定預設限普通病假未住院、事假與家庭照顧假共用額度及婚假事件；住院／兩年度病假、生理假併病假、部分工時比例與婚假新舊制請求人資格，須依人事核定結果核對。修改額度不會重算已保存的請假扣薪。": "Statutory defaults cover non-hospitalized ordinary sick leave, the shared personal/family care allowance and marriage events. Hospitalized/two-year sick leave, menstrual leave counted toward sick leave, part-time ratios and eligibility under the marriage transition rules must be checked against the employer’s approved result. Allowance changes do not recalculate saved leave wage deductions."
+  "請假法定預設限普通病假未住院、事假與家庭照顧假共用額度及婚假事件；住院／兩年度病假、生理假併病假、部分工時比例與婚假新舊制請求人資格，須依人事核定結果核對。修改額度不會重算已保存的請假扣薪。": "Statutory defaults cover non-hospitalized ordinary sick leave, the shared personal/family care allowance and marriage events. Hospitalized/two-year sick leave, menstrual leave counted toward sick leave, part-time ratios and eligibility under the marriage transition rules must be checked against the employer’s approved result. Allowance changes do not recalculate saved leave wage deductions.",
+  "返回設定": "Back to settings",
+  "適用：v5.0.0-dev.2-R89 網頁開發測試版與單一 HTML 版；說明修訂：2026-10-09。": "Applies to the v5.0.0-dev.2-R89 web development test edition and single HTML edition. Notice revised: 2026-10-09.",
+  "R89 開發測試版": "R89 development test edition",
+  "R89 開發測試版 · 單一 HTML": "R89 development test edition · Single HTML"
 };

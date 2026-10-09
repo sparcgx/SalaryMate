@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0-dev.2-R88';
+    const APP_VERSION = '5.0.0-dev.2-R89';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -2815,7 +2815,7 @@
       const fixedTotal = fixedIncomeTotal(profile);
       const deductionsTotal = numberValue(company.laborIns) + numberValue(company.healthIns) + customTotal(company.fixedDeductions);
       return `<section class="view" aria-labelledby="companySalaryRulesTitle">
-        <div class="page-head"><div><button class="btn btn-small" type="button" data-action="salary-rules-back">← 公司詳細資料</button><h2 id="companySalaryRulesTitle" class="detail-title">薪資規則</h2><p>${userHtml(company.name)}｜規則定義與每月交易分離；既有薪資快照不回溯修改。</p></div></div>
+        <div class="page-head"><div class="salary-rules-heading"><div class="salary-rules-navigation"><button class="btn btn-small" type="button" data-tab="settings" aria-label="返回設定">返回</button><button class="btn btn-small" type="button" data-action="salary-rules-back">公司詳細資料</button></div><h2 id="companySalaryRulesTitle" class="detail-title">薪資規則</h2><p>${userHtml(company.name)}｜規則定義與每月交易分離；既有薪資快照不回溯修改。</p></div></div>
         <article class="card card-pad salary-rules-card">
           <div class="section-title"><div><h3>目前設定</h3><p>本薪、津貼與自定義固定項目集中在薪資計算；特殊薪資週期、年度加薪與年終規則在進階設定。</p></div></div>
           <div class="salary-rule-list">

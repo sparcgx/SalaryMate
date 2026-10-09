@@ -1759,6 +1759,10 @@ body.jingyu-screen-hit :is(.sidebar,.workspace-shell>.topbar,.workspace-shell>ma
  body .status.overtime-type[data-overtime-type]{color:CanvasText;background:Canvas;border-color:CanvasText}
 }
 
+.salary-rules-heading{flex:1;min-width:0}
+.salary-rules-navigation{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px}
+.salary-rules-navigation>.btn{min-height:44px}
+
 /* R88: keep the central leave manager readable and its actions on the right. */
 .quota-management-actions{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:12px;margin:20px 0}
 .quota-management-actions>.hint{margin:0}
