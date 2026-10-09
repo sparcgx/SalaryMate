@@ -1740,3 +1740,6 @@ body.jingyu-screen-hit :is(.sidebar,.workspace-shell>.topbar,.workspace-shell>ma
 @media screen and (max-width:1180px){
  .stock-allocation{display:block}
 }
+
+/* R85: preserve the existing expanded income spacing after lazy insertion. */
+.stock-legacy-shortcut[open]>[data-stock-legacy]>.view{padding-top:24px;color:var(--ink)}

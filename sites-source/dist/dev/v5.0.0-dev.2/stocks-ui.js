@@ -14,7 +14,7 @@
     const tone=n=>n>0?'stock-profit':n<0?'stock-loss':'';
     const types={buy:'買入',sell:'賣出',dividend:'現金股息',split:'分割／合併',opening:'期初持股'};
     const markets={TW:'台股',US:'美股',OTHER:'其他市場'};
-    const view={tab:'overview',search:'',filter:'all',sort:'value',exchange:'',category:'',favorites:false,refreshing:false,quoteResult:null,forecastBusy:false,forecastErrors:[],marketIssue:'',lastMarketAttempt:0,marketExpanded:false};
+    const view={tab:'overview',legacyExpanded:false,search:'',filter:'all',sort:'value',exchange:'',category:'',favorites:false,refreshing:false,quoteResult:null,forecastBusy:false,forecastErrors:[],marketIssue:'',lastMarketAttempt:0,marketExpanded:false};
     const MARKET_INTERVAL=300000;
     let marketTimer,marketController;
     let catalogController,catalogSequence=0,catalogItems=[];
@@ -137,10 +137,13 @@
       }).join('');
       return `<div class="stock-stats">${stat('本年已實現損益',signed(m.yearRealized),'扣除賣出費稅與買入成本',tone(m.yearRealized))}${stat('本年實收股息',money(m.yearDividends),'已扣股息費用與稅額')}${stat('本年投資所得',signed(m.yearRealized+m.yearDividends),'已實現損益＋實收股息',tone(m.yearRealized+m.yearDividends))}${stat('本年記錄費稅',money(m.yearFees),'已計入成本或實收，不再重複扣除')}</div><section class="stock-panel"><div class="stock-panel-head"><h3>${api.year()} 年每月損益</h3><span>單位：TWD</span></div>${table(['月份','買入筆數','賣出筆數','已實現損益','實收股息','合計'],rows)}<p class="stock-footnote">這是記帳損益，不是年化報酬或報稅試算。手動收入未計入此股票交易分析，請見「股息與收入」。</p></section>`;
     }
+    let legacySource='';
+    const renderLegacy=()=>typeof legacySource==='function'?legacySource():String(legacySource||'');
     function render(legacy) {
+      legacySource=legacy;
       if(view.tab!=='income'&&(forecastTimer||forecastController||forecastReady.length))pauseForecasts();
       queueForecasts();
-      const m=model(),held=m.holdings.filter(s=>s.quantity>0),income=m.yearDividends+api.legacyTotal();
+      const m=model(),held=m.holdings.filter(s=>s.quantity>0),legacyTotal=api.legacyTotal(),income=m.yearDividends+legacyTotal;
       const tabs=[['overview','持股總覽'],['stocks','股票清單'],['transactions','交易紀錄'],['income','股息與收入'],['analysis','損益分析'],['watchlist','觀察清單']];
       const top=`<div class="stock-heading page-head"><div><p class="stock-eyebrow">投資工作區 <span>本機記帳 · 跨公司共用</span></p><h2>股票投資</h2><p class="stock-heading-summary"><span>台股・美股・ETF</span><span>${api.year()} 年損益 · 持股累計至今</span></p></div></div><nav class="stock-tabs" aria-label="投資功能">${tabs.map(([id,label])=>`<button type="button" data-stock="tab" data-id="${id}" aria-current="${view.tab===id?'page':'false'}" class="${view.tab===id?'active':''}">${label}</button>`).join('')}</nav>`;
       const help='<details class="stock-method"><summary>資料與計算方式</summary><p>市場資料每 5 分鐘自動查詢，也可立即更新。台股優先採 TWSE 最新成交，未取得成交時使用 TWSE／TPEx 收盤資料；美股採 Nasdaq 最新可用行情，匯率採 Frankfurter 參考值，不保證即時。手動模式與基金保留自行填寫的價格。停用個股連動後僅更新參考匯率；關閉自動更新仍可立即更新。投資頁隱藏、離線或正在編輯時暫停自動查詢。查詢只傳送市場與股票代號，不傳送持股、交易、薪資或帳戶資料。來源失敗、日期較舊或編輯期間收到回應時，保留原資料。</p><p>交易匯率與成本不會被行情更新改寫。新臺幣損益採先進先出（FIFO）；買入費稅加入成本，賣出費稅從收入扣除。資料只保存在此裝置，可於設定匯出 JSON 備份。盤中預估淨值支援群益、富邦投信公布的台幣 ETF，與股價一起查詢，顯示來源時間；預估值獨立保存，不會改寫每日公告或持股市值。</p></details>';
@@ -152,10 +155,10 @@
       } else if(view.tab==='transactions') {
         body=`<section class="stock-panel"><div class="stock-panel-head"><h3>${api.year()} 年交易</h3>${btn('匯出交易','export-transactions')}</div><form id="stockSearchForm" class="stock-toolbar"><label><span class="sr-only">搜尋股票或帳戶</span><input name="search" class="field" type="search" placeholder="代號、名稱或帳戶" value="${esc(view.search)}"></label><label><span class="sr-only">交易類型</span><select class="field-select" name="filter">${Object.entries({all:'全部交易',...types}).map(([v,l])=>`<option value="${v}" ${view.filter===v?'selected':''}>${l}</option>`).join('')}</select></label><button class="btn" type="submit">篩選</button>${btn('分割／合併','split')}</form>${eventTable(m.events.filter(t=>t.inYear&&matches(t.asset)&&(view.filter==='all'||view.filter===t.type)))}</section>`;
       } else if(view.tab==='income') {
-        body=`<div class="stock-stats">${stat('本年實收股息',money(m.yearDividends),'股票交易簿中的股息')}${stat('本年其他收入',money(api.legacyTotal()),'保留原投資收入紀錄')}${stat('年度收入合計',money(income),'股息＋原投資收入，不含買賣損益')}</div>${forecastSection()}<section class="stock-panel"><div class="stock-panel-head"><h3>${api.year()} 年股票股息</h3>${btn('登記股息','dividend','',true)}</div>${eventTable(m.events.filter(t=>t.inYear&&t.type==='dividend'))}</section><section class="stock-legacy"><p class="stock-footnote">原有收入仍保留在下方，不會自動轉成持股。已在股票交易簿登記的股息／損益，請勿再次手動新增。</p>${legacy}</section>`;
+        body=`<div class="stock-stats">${stat('本年實收股息',money(m.yearDividends),'股票交易簿中的股息')}${stat('本年其他收入',money(legacyTotal),'保留原投資收入紀錄')}${stat('年度收入合計',money(income),'股息＋原投資收入，不含買賣損益')}</div>${forecastSection()}<section class="stock-panel"><div class="stock-panel-head"><h3>${api.year()} 年股票股息</h3>${btn('登記股息','dividend','',true)}</div>${eventTable(m.events.filter(t=>t.inYear&&t.type==='dividend'))}</section><section class="stock-legacy"><p class="stock-footnote">原有收入仍保留在下方，不會自動轉成持股。已在股票交易簿登記的股息／損益，請勿再次手動新增。</p>${renderLegacy()}</section>`;
       } else body=analysis(m);
       // The compact income shortcut preserves the original ledger's one-click entry point.
-      const legacyAccess=view.tab==='income'?'':`<details class="stock-legacy-shortcut"><summary>其他投資收入 · ${api.year()} 年 $${num(api.legacyTotal())}</summary>${legacy}</details>`;
+      const legacyAccess=view.tab==='income'?'':`<details class="stock-legacy-shortcut"${view.legacyExpanded?' open':''}><summary>其他投資收入 · ${api.year()} 年 $${num(legacyTotal)}</summary><div data-stock-legacy data-loaded="${view.legacyExpanded}">${view.legacyExpanded?renderLegacy():''}</div></details>`;
       const imports=p().smartImports?.length?`<div class="stock-import-access">${btn('查看 SmartPortfolio 匯入紀錄','archives')}<span class="hint">${p().smartImports.length} 份備份 · 原始資料保留</span></div>`:'';
       const importedCaveat=p().smartImports?.some(i=>i.mode==='snapshot'||i.conversionEstimated)?`<p class="stock-warning">${p().smartImports.some(i=>i.mode==='snapshot')?'部分舊買賣僅留存，以下損益只含本版已計入的帳務紀錄。':''}${p().smartImports.some(i=>i.conversionEstimated)?'部分新臺幣成本／損益採匯入匯率估計，請核對原交易匯率。':''}</p>`:'';
       queueMarket();
@@ -236,7 +239,11 @@
       document.querySelector('#stockTradePreview').textContent=type==='split'?`目前持有 ${num(s.quantity,6)} 股；總成本保持不變。`:`${root.SalaryMateI18n.user(a.symbol)} · ${a.currency} · 目前 ${num(s.quantity,6)} 股 ｜ ${type==='opening'?'期初成本（非現金支出）':type==='buy'?'支出':'實收'} ${valid?money(net)+' TWD':'待填金額與匯率'}`;
       root.SalaryMateI18n.apply(form);
     }
-    const forecastAssets=()=>p().assets.filter(a=>a.market==='TW'&&a.currency==='TWD'&&(p().transactions.some(t=>t.assetId===a.id&&['buy','opening'].includes(t.type))||a.dividendForecast?.announcements?.length));
+    const forecastAssets=()=>{
+      const portfolio=p(),purchased=new Set();
+      for(const t of portfolio.transactions)if(t.type==='buy'||t.type==='opening')purchased.add(t.assetId);
+      return portfolio.assets.filter(a=>a.market==='TW'&&a.currency==='TWD'&&(purchased.has(a.id)||a.dividendForecast?.announcements?.length));
+    };
     const forecastRows=(includeExcluded=false)=>core.dividendForecasts(p(),api.today(),includeExcluded);
     const forecastRow=key=>forecastRows(true).find(r=>r.key===key);
     const onInvestment=()=>!!root.document?.querySelector('.stock-view');
@@ -329,13 +336,15 @@
     async function refreshForecasts(force=true) {
       if(force&&root.navigator?.onLine===false){api.toast('目前離線，保留上次配息公告。');return;}
       if(view.forecastBusy||forecastInactive()||marketBlocked())return;
-      const assets=forecastAssets().filter(a=>force||!a.dividendForecast||Date.now()-Date.parse(a.dividendForecast.checkedAt)>21600000||!Number.isFinite(Date.parse(a.dividendForecast.checkedAt)));
+      const eligible=forecastAssets(),assets=eligible.filter(a=>force||!a.dividendForecast||Date.now()-Date.parse(a.dividendForecast.checkedAt)>21600000||!Number.isFinite(Date.parse(a.dividendForecast.checkedAt)));
       if(!assets.length){if(force)api.toast('目前沒有需要查詢的台股／ETF 持股。');return;}
-      const grouped=[...new Map(assets.map(a=>[a.symbol,{symbol:a.symbol,assets:assets.filter(x=>x.symbol===a.symbol)}])).values()];
+      const bySymbol=new Map();
+      for(const a of assets){if(!bySymbol.has(a.symbol))bySymbol.set(a.symbol,{symbol:a.symbol,assets:[]});bySymbol.get(a.symbol).assets.push(a);}
+      const grouped=[...bySymbol.values()];
       const controller=new AbortController(),sequence=++forecastSequence;
       forecastController=controller;
       const current=()=>sequence===forecastSequence&&!controller.signal.aborted&&!forecastInactive();
-      view.forecastBusy=true;view.forecastAttempt=Date.now();view.forecastAttemptKey=forecastAssets().map(a=>a.id+':'+a.symbol).join('|');view.forecastErrors=[];renderKeepingScroll();
+      view.forecastBusy=true;view.forecastAttempt=Date.now();view.forecastAttemptKey=eligible.map(a=>a.id+':'+a.symbol).join('|');view.forecastErrors=[];renderKeepingScroll();
       const year=Number(api.today().slice(0,4)),ready=[];
       try{
         for(let i=0;i<grouped.length&&current();i+=2){
@@ -759,6 +768,16 @@
     root.document.addEventListener('click',event=>{if(!event.target.closest('.stock-action-menu-wrap'))closeStockActions();});
     root.document.addEventListener('focusin',event=>{if(!event.target.closest('.stock-action-menu-wrap'))closeStockActions();});
     root.document.addEventListener('error',event=>{if(event.target.matches?.('.stock-avatar img[data-stock-logo]'))event.target.remove();},true);
+    root.document.addEventListener('toggle',event=>{
+      const details=event.target;
+      if(!details.matches?.('.stock-legacy-shortcut')||details.isConnected===false)return;
+      view.legacyExpanded=details.open;
+      const content=details.querySelector('[data-stock-legacy]');
+      if(!details.open||!content||content.dataset.loaded==='true')return;
+      content.innerHTML=renderLegacy();content.dataset.loaded='true';
+      if(api.enhance)api.enhance(content);else root.SalaryMateI18n?.apply(content);
+      root.SalaryMateScrollbars?.refresh();
+    },true);
     root.document.addEventListener('visibilitychange',()=>{
       if(root.document.hidden){clearTimeout(marketTimer);marketTimer=null;marketController?.abort();pauseForecasts();return;}
       if(!onInvestment()||root.document.querySelector('#appDialog')?.open)return;

@@ -75,6 +75,15 @@ test('R84 an already-cancelled request never starts HTTP or a timeout',async()=>
  await assert.rejects(h.context.SalaryMateStockServices.forecasts('TW','0050',2026,controller.signal));assert.equal(sent,0);assert.equal(h.timers.size,0);
 });
 
+test('R85 same-symbol forecast accounts share a request and each keeps its own saved result',async()=>{
+ const h=harness(4);h.state.stockPortfolio.assets[2].symbol='0050';h.state.stockPortfolio.assets[3].symbol='0050';h.state.stockPortfolio.assets.forEach((a,i)=>{a.account='Fixture '+i;});
+ const original=JSON.stringify(h.state.stockPortfolio.transactions);h.click('tab','income');h.run(150);
+ assert.equal(h.requests.length,2);assert.deepEqual(h.requests.map(r=>r.symbol),['0050','0051']);
+ for(const r of h.requests)r.resolve(h.data(r));await turn();assert.equal(h.commits,1);
+ for(const a of h.state.stockPortfolio.assets)assert.equal(a.dividendForecast.announcements[0].symbol,a.symbol);
+ assert.equal(JSON.stringify(h.state.stockPortfolio.transactions),original);
+});
+
 test('R84 allocation stays available on small screens while retaining screen-only layout changes',()=>{
  const ast=postcss.parse(fs.readFileSync(new URL('styles.css',base),'utf8'));
  for(const width of [320,390,720,1180,1280,2560]){let display='block';

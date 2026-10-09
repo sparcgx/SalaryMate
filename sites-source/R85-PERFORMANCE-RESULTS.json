@@ -1,0 +1,56 @@
+{
+  "environment": "Node native source execution; not browser timing or FPS",
+  "method": "2 warm-ups, median of 9 samples; fictional data",
+  "equivalence": {
+    "incomeHTML": true,
+    "unchangedState": true,
+    "translationInputs": 2579,
+    "languages": 3
+  },
+  "R84": {
+    "income": {
+      "records": 1000,
+      "collapsedBytes": 320942,
+      "collapsedLegacyRenders": 1,
+      "collapsedMedianMs": 26.535,
+      "expandedMedianMs": 25.144
+    },
+    "forecastCandidates": {
+      "assets": 200,
+      "transactions": 10000,
+      "candidateIdReads": 1980100,
+      "candidateMedianMs": 35.543
+    },
+    "translation": {
+      "repetitions": 1000,
+      "zhStartupDictionaryCompiles": 1,
+      "constructors": 1001,
+      "dictionaryCompiles": 1,
+      "dictionaryPasses": 1000,
+      "translationMedianMs": 8.023
+    }
+  },
+  "R85": {
+    "income": {
+      "records": 1000,
+      "collapsedBytes": 7122,
+      "collapsedLegacyRenders": 0,
+      "collapsedMedianMs": 0.664,
+      "expandedMedianMs": 7.415
+    },
+    "forecastCandidates": {
+      "assets": 200,
+      "transactions": 10000,
+      "candidateIdReads": 200,
+      "candidateMedianMs": 0.193
+    },
+    "translation": {
+      "repetitions": 1000,
+      "zhStartupDictionaryCompiles": 0,
+      "constructors": 1,
+      "dictionaryCompiles": 1,
+      "dictionaryPasses": 1,
+      "translationMedianMs": 0.219
+    }
+  }
+}

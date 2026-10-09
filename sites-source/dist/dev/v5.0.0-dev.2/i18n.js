@@ -9,13 +9,16 @@
   const language=()=>preference==='auto'?systemLanguage():preference;
   const entries=Object.entries(root.SalaryMateEnglish||{}).sort((a,b)=>b[0].length-a[0].length);
   const exact=new Map(entries),phrases=entries.filter(([key])=>key.length>1);
-  const pattern=new RegExp(phrases.map(([key])=>key.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|'),'g');
+  const segments=new Map(),userParts=/(\uE100[^\uE101]*\uE101)/g;
+  let pattern;
+  const phrasePattern=()=>pattern||(pattern=new RegExp(phrases.map(([key])=>key.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|'),'g'));
   function segment(text){
     if(language()!=='en')return text;
     if(!/\p{Script=Han}/u.test(text))return text;
-    if(exact.has(text.trim()))return text.replace(text.trim(),exact.get(text.trim()));
-    return text.replace(/共\s*(\d+)\s*家公司/g,'$1 companies').replace(/(\d{4})\s*對\s*(\d{4})/g,'$1 vs. $2')
-      .replace(pattern,match=>' '+exact.get(match)+' ')
+    if(segments.has(text))return segments.get(text);
+    const trimmed=text.trim();
+    const translated=exact.has(trimmed)?text.replace(trimmed,exact.get(trimmed)):text.replace(/共\s*(\d+)\s*家公司/g,'$1 companies').replace(/(\d{4})\s*對\s*(\d{4})/g,'$1 vs. $2')
+      .replace(phrasePattern(),match=>' '+exact.get(match)+' ')
       .replace(/(\d+)\s*年\s*(\d+)\s*月/g,'$1 / $2').replace(/(\d+)\s*年/g,'$1')
       .replace(/(\d+)\s*月/g,'Month $1').replace(/(\d+)\s*日/g,'$1 day(s)')
       .replace(/(\d+(?:\.\d+)?)\s*筆/g,'$1 entries').replace(/(\d+)\s*項/g,'$1 items')
@@ -23,9 +26,14 @@
       .replace(/(\d+(?:\.\d+)?)\s*天/g,'$1 days').replace(/(\d+(?:\.\d+)?)\s*股(?![\p{Script=Han}])/gu,'$1 shares')
       .replace(/(\d+(?:\.\d+)?)\s*倍/g,'$1×').replace(/(\d{4}-\d{2}-\d{2})\s*前/g,'before $1')
       .replace(/：/g,': ').replace(/；/g,'; ').replace(/，/g,', ').replace(/。/g,'. ').replace(/／/g,' / ').replace(/[ \t]{2,}/g,' ');
+    // Bound transient label reuse; protected user segments bypass this cache.
+    if(text.length<=512&&translated.length<=1024){if(segments.size>=512)segments.delete(segments.keys().next().value);segments.set(text,translated);}
+    return translated;
   }
   function text(value){
-    return String(value??'').split(new RegExp('('+START+'[^'+END+']*'+END+')','g')).map(part=>part.startsWith(START)?part.slice(1,-1):segment(part)).join('');
+    const source=String(value??'');
+    if(!source.includes(START))return segment(source);
+    return source.split(userParts).map(part=>part.startsWith(START)?part.slice(1,-1):segment(part)).join('');
   }
   const user=value=>START+String(value??'').replaceAll(START,'').replaceAll(END,'')+END;
   function applyScopes(scopes){
