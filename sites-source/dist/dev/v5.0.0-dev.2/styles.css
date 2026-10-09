@@ -1758,3 +1758,14 @@ body.jingyu-screen-hit :is(.sidebar,.workspace-shell>.topbar,.workspace-shell>ma
 @media (forced-colors:active){
  body .status.overtime-type[data-overtime-type]{color:CanvasText;background:Canvas;border-color:CanvasText}
 }
+
+/* R88: keep the central leave manager readable and its actions on the right. */
+.quota-management-actions{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:12px;margin:20px 0}
+.quota-management-actions>.hint{margin:0}
+#v5LeaveSettingsForm .quota-policy-name{line-height:1.6}
+#v5LeaveSettingsForm .quota-policy-row input[readonly]{background:var(--surface-2);color:var(--ink)}
+#v5LeaveSettingsForm .v5-explanation{margin-block:22px}
+@media(max-width:720px){
+ #v5LeaveSettingsForm .quota-policy-row{gap:12px;row-gap:16px;padding-block:18px}
+ .quota-management-actions{align-items:flex-end;flex-direction:column}
+}

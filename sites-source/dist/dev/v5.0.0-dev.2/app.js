@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0-dev.2-R87';
+    const APP_VERSION = '5.0.0-dev.2-R88';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -27,13 +27,14 @@
     };
     const LEAVE_KPI_TYPES = Object.freeze([
       { type: 'annual', label: '特休', icon: '特', tone: 'green' },
-      { type: 'personal', label: '事假', icon: '事', tone: 'amber' },
+      { type: 'personal', label: '事假／家庭照顧', icon: '事', tone: 'amber' },
       { type: 'sick', label: '病假', icon: '病', tone: 'blue' },
       { type: 'menstrual', label: '生理假', icon: '生', tone: 'rose' }
     ]);
-    const defaultLeavePolicies = () => Object.fromEntries(Object.keys(LEAVE_TYPES).map((type) => [type, {
-      mode: type === 'annual' ? 'auto' : 'unlimited',
-      quotaDays: 0
+    const STATUTORY_LEAVE_DAYS = Object.freeze({sick:30,personal:14,family:7,marriage:14});
+    const defaultLeavePolicies = () => Object.fromEntries(Object.keys(LEAVE_TYPES).map(type => [type, {
+      mode: type === 'annual' ? 'auto' : Object.hasOwn(STATUTORY_LEAVE_DAYS,type) ? 'statutory' : 'unlimited',
+      quotaDays: STATUTORY_LEAVE_DAYS[type] || 0
     }]));
     const defaultYearEndGrades = () => [
       { id: 'grade_aplus', name: 'A+', multiplier: 2 },
@@ -565,10 +566,10 @@
       const defaults = defaultLeavePolicies();
       return Object.fromEntries(Object.keys(LEAVE_TYPES).map((type) => {
         const policy = policies?.[type] || {};
-        const allowedModes = type === 'annual' ? ['auto', 'custom'] : ['unlimited', 'custom'];
+        const allowedModes = type === 'annual' ? ['auto', 'custom'] : Object.hasOwn(STATUTORY_LEAVE_DAYS,type) ? ['statutory','unlimited','custom'] : ['unlimited','custom'];
         return [type, {
           mode: allowedModes.includes(policy.mode) ? policy.mode : defaults[type].mode,
-          quotaDays: Math.max(0, numberValue(policy.quotaDays))
+          quotaDays: Math.max(0, numberValue(policy.quotaDays ?? defaults[type].quotaDays))
         }];
       }));
     };
@@ -707,6 +708,8 @@
         date: legacyDate,
         companyId: String(record.companyId || ''),
         type,
+        marriageEventDate: validIsoDate(String(record.marriageEventDate || '')) ? String(record.marriageEventDate) : '',
+        marriageQuotaDays: numberValue(record.marriageQuotaDays)>0 ? clamp(record.marriageQuotaDays,0,366) : null,
         durationMode,
         startPortion: ['full', 'pm'].includes(record.startPortion) ? record.startPortion : 'full',
         endPortion: ['full', 'am'].includes(record.endPortion) ? record.endPortion : 'full',
@@ -1306,34 +1309,42 @@
         nextGrantDate: shiftIsoMonths(start, (years + 1) * 12)
       };
     };
-    const leaveQuotaSummary = (company, type, asOfDate = todayIso()) => {
+    const leaveQuotaUsage = (company, type, cycle, eventDate = '', excludeId = '') => state.leaveRecords
+      .filter(record => record.id!==excludeId && record.companyId===company.id && record.status!=='cancelled' &&
+        (type==='personal' ? ['personal','family'].includes(record.type) : record.type===type) &&
+        (!cycle.perEvent || record.marriageEventDate===eventDate))
+      .reduce((totals,record) => {
+        const days=leaveDateEntries(record).filter(entry=>cycle.perEvent || (entry.date>=cycle.start && entry.date<cycle.end)).reduce((sum,entry)=>sum+entry.days,0);
+        totals[record.status==='planned'?'reserved':'used']+=days;
+        return totals;
+      },{used:0,reserved:0});
+
+    const leaveQuotaSummary = (company, type, asOfDate = todayIso(), eventDate = '', eventQuotaDays = null) => {
       const storedPolicy = normalizeLeavePolicies(company?.leavePolicies)[type] || { mode: 'unlimited', quotaDays: 0 };
       const fixedMonthlyMenstrual = type === 'menstrual';
       const policy = fixedMonthlyMenstrual ? { mode: 'monthly_once', quotaDays: 1 } : storedPolicy;
       const automaticAnnual = type === 'annual' && policy.mode === 'auto';
-      const cycle = fixedMonthlyMenstrual
+      const statutory=policy.mode==='statutory',perEvent=statutory&&type==='marriage';
+      const cycle = perEvent
+        ? {configured:validIsoDate(eventDate),start:'',end:'',nextGrantDate:'',perEvent:true,eventDate}
+        : fixedMonthlyMenstrual
         ? calendarMonthLeaveCycle(asOfDate)
         : automaticAnnual
           ? annualLeaveCycle(company, asOfDate)
-          : companyLeaveCycle(company, asOfDate);
-      const limited = fixedMonthlyMenstrual || automaticAnnual || policy.mode === 'custom';
-      const entitlement = fixedMonthlyMenstrual ? 1 : automaticAnnual ? numberValue(cycle.entitlement) : limited ? numberValue(policy.quotaDays) : null;
+          : statutory ? calendarLeaveCycle(asOfDate) : companyLeaveCycle(company, asOfDate);
+      const limited = fixedMonthlyMenstrual || automaticAnnual || statutory || policy.mode === 'custom';
+      const eventRecord=perEvent&&state.leaveRecords.find(record=>record.companyId===company.id&&record.type==='marriage'&&record.marriageEventDate===eventDate&&numberValue(record.marriageQuotaDays)>0);
+      const marriageDays=numberValue(eventQuotaDays)>0?numberValue(eventQuotaDays):eventRecord?.marriageQuotaDays||(eventDate&&eventDate<'2026-10-01'?8:14);
+      const entitlement = perEvent ? marriageDays : fixedMonthlyMenstrual ? 1 : automaticAnnual ? numberValue(cycle.entitlement) : statutory ? STATUTORY_LEAVE_DAYS[type] : limited ? numberValue(policy.quotaDays) : null;
       if (!cycle.configured) return { ...cycle, type, policy, limited, entitlement, used: 0, reserved: 0, remaining: entitlement, exceeded: 0, usagePercent: 0 };
-      const daysByStatus = state.leaveRecords
-        .filter((record) => record.companyId === company.id && record.type === type && record.status !== 'cancelled')
-        .reduce((totals, record) => {
-          const days = leaveDateEntries(record)
-            .filter((entry) => entry.date >= cycle.start && entry.date < cycle.end)
-            .reduce((sum, entry) => sum + entry.days, 0);
-          if (record.status === 'planned') totals.reserved += days;
-          else totals.used += days;
-          return totals;
-        }, { used: 0, reserved: 0 });
+      const daysByStatus = leaveQuotaUsage(company,type,cycle,eventDate);
       const consumed = daysByStatus.used + daysByStatus.reserved;
-      const remaining = limited ? Math.max(0, entitlement - consumed) : null;
-      const exceeded = limited ? Math.max(0, consumed - entitlement) : 0;
+      const shared=type==='family'?leaveQuotaSummary(company,'personal',asOfDate):null;
+      const ownRemaining=limited?Math.max(0,entitlement-consumed):null;
+      const remaining = shared?.limited&&shared.configured ? Math.min(ownRemaining??Infinity,shared.remaining) : ownRemaining;
+      const exceeded = Math.max(limited?Math.max(0,consumed-entitlement):0,shared?.exceeded||0);
       const usagePercent = limited && entitlement > 0 ? Math.round(consumed / entitlement * 100) : limited && consumed > 0 ? 100 : 0;
-      return { ...cycle, type, policy, limited, entitlement, ...daysByStatus, remaining, exceeded, usagePercent };
+      return { ...cycle, type, policy, limited, entitlement, ...daysByStatus, remaining, exceeded, usagePercent, shared };
     };
     const annualLeaveSummary = (company, asOfDate = todayIso()) => leaveQuotaSummary(company, 'annual', asOfDate);
 
@@ -2190,7 +2201,12 @@
     const leaveQuotaRows = (companies) => companies.flatMap((company) => Object.keys(LEAVE_TYPES).map((type) => {
       const summary = leaveQuotaSummary(company, type, leaveQuotaAsOf(company));
       return { company, type, summary };
-    }).filter(({ type, summary }) => type === 'annual' || summary.limited || summary.used > 0 || summary.reserved > 0));
+    }).filter(({ type, summary }) => type === 'annual' || summary.limited || summary.used > 0 || summary.reserved > 0)
+      .flatMap(row=>{
+        if(!row.summary.perEvent)return [row];
+        const events=[...new Set(state.leaveRecords.filter(record=>record.companyId===company.id&&record.type==='marriage'&&record.marriageEventDate&&record.status!=='cancelled').map(record=>record.marriageEventDate))];
+        return events.length?events.map(eventDate=>({...row,summary:leaveQuotaSummary(company,'marriage',leaveQuotaAsOf(company),eventDate)})):[row];
+      }));
 
     const leaveKpiSummary = (companies, type) => {
       const summaries = companies.map((company) => leaveQuotaSummary(company, type, leaveQuotaAsOf(company)));
@@ -2250,12 +2266,14 @@
     };
 
     const leaveQuotaCycleText = (summary) => {
+      if(summary.perEvent)return summary.eventDate?'結婚登記 '+summary.eventDate:'每次結婚事件';
       if (!summary.configured) return '需設定到職日';
       if (!summary.start || !summary.end) return '—';
       return `${summary.start}～${addIsoDays(summary.end, -1)}`;
     };
 
     const leaveQuotaStatusHtml = (summary) => {
+      if(summary.perEvent&&!summary.configured)return '<span class="status leave-planned">登記請假時核對事件</span>';
       if (!summary.configured) return '<span class="status leave-planned">待設定</span>';
       if (!summary.limited) return '<span class="status former">持續追蹤</span>';
       if (summary.exceeded > 0) return `<span class="status leave-cancelled">超額 ${rateNumber(summary.exceeded)} 天</span>`;
@@ -2265,11 +2283,14 @@
 
     const renderLeaveQuotaPanel = (companies) => {
       const rows = leaveQuotaRows(companies);
-      return `<article class="card table-shell quota-table"><div class="card-pad section-title"><div><h3>假別額度總覽</h3><p>預計先保留、確認列為已用；自訂額度可在公司設定調整</p></div><button class="btn btn-small" type="button" data-action="manage-companies">調整假別額度</button></div>${rows.length ? `<div class="table-scroll"><table><thead><tr><th>公司／假別</th><th>額度週期</th><th>總額度</th><th>已確認</th><th>已預留</th><th>可用</th><th>使用狀態</th></tr></thead><tbody>${rows.map(({ company, type, summary }) => {
+      const eventCompanyIds=new Set(companies.filter(company=>normalizeLeavePolicies(company.leavePolicies).marriage.mode==='statutory').map(company=>company.id));
+      const unassignedMarriageCount=state.leaveRecords.filter(record=>eventCompanyIds.has(record.companyId)&&record.type==='marriage'&&record.status!=='cancelled'&&!record.marriageEventDate).length;
+      const eventNotice=unassignedMarriageCount?`<div class="card-pad"><p class="notice">另有 ${unassignedMarriageCount} 筆婚假尚未填結婚登記日，請編輯紀錄核對事件與核定額度；原紀錄仍保留。</p></div>`:'';
+      return `<article class="card table-shell quota-table"><div class="card-pad section-title"><div><h3>假別額度總覽</h3><p>預計先保留、確認列為已用；可在假別額度管理調整</p></div><button class="btn btn-small" type="button" data-action="v5-leave-settings" data-id="${escapeAttr(ui.companyFilter==='ALL'?'':ui.companyFilter)}">調整假別額度</button></div>${eventNotice}${rows.length ? `<div class="table-scroll"><table><thead><tr><th>公司／假別</th><th>額度週期</th><th>總額度</th><th>已確認</th><th>已預留</th><th>可用</th><th>使用狀態</th></tr></thead><tbody>${rows.map(({ company, type, summary }) => {
         const consumed = summary.used + summary.reserved;
         const progress = summary.limited && summary.entitlement > 0 ? Math.min(100, consumed / summary.entitlement * 100) : 0;
-        const modeText = type === 'menstrual' ? '每月固定' : type === 'annual' && summary.policy.mode === 'auto' ? '到職日自動' : summary.limited ? '公司自訂' : '未設上限';
-        return `<tr class="data-row"><td><b>${escapeHtml(leaveTypeName(type))}</b><small style="display:block;color:var(--muted)">${userHtml(company.name)}｜${escapeHtml(modeText)}</small></td><td class="money">${escapeHtml(leaveQuotaCycleText(summary))}</td><td class="money">${summary.limited && summary.configured ? `${rateNumber(summary.entitlement)} 天` : summary.limited ? '—' : '未設上限'}</td><td class="money">${rateNumber(summary.used)} 天</td><td class="money text-blue">${rateNumber(summary.reserved)} 天</td><td class="money ${summary.exceeded > 0 ? 'text-rose' : 'text-green'}">${summary.limited && summary.configured ? `${rateNumber(summary.remaining)} 天` : '—'}</td><td><div class="quota-usage">${leaveQuotaStatusHtml(summary)}${summary.limited && summary.configured ? `<div class="progress-track" style="margin-top:7px"><div class="progress-fill" style="width:${progress.toFixed(1)}%;${summary.exceeded > 0 ? 'background:var(--rose)' : ''}"></div></div>` : ''}</div></td></tr>`;
+        const modeText = type === 'menstrual' ? '每月固定' : type === 'annual' && summary.policy.mode === 'auto' ? '到職日自動' : summary.policy.mode==='statutory'?'法定預設':summary.limited ? '公司自訂' : '未設上限';
+        return `<tr class="data-row"><td><b>${escapeHtml(type==='personal'?'事假／家庭照顧共用':type==='family'?'家庭照顧假（共用內）':leaveTypeName(type))}</b><small style="display:block;color:var(--muted)">${userHtml(company.name)}｜${escapeHtml(modeText)}</small></td><td class="money">${escapeHtml(leaveQuotaCycleText(summary))}</td><td class="money">${summary.perEvent&&!summary.configured?'14 天／次（新制）':summary.limited && summary.configured ? `${rateNumber(summary.entitlement)} 天` : summary.limited ? '—' : '未設上限'}</td><td class="money">${(summary.perEvent&&!summary.configured?'—':rateNumber(summary.used))} 天</td><td class="money text-blue">${(summary.perEvent&&!summary.configured?'—':rateNumber(summary.reserved))} 天</td><td class="money ${summary.exceeded > 0 ? 'text-rose' : 'text-green'}">${summary.perEvent&&!summary.configured?'依事件':summary.remaining!==null && summary.configured ? `${rateNumber(summary.remaining)} 天` : '—'}</td><td><div class="quota-usage">${leaveQuotaStatusHtml(summary)}${summary.limited && summary.configured ? `<div class="progress-track" style="margin-top:7px"><div class="progress-fill" style="width:${progress.toFixed(1)}%;${summary.exceeded > 0 ? 'background:var(--rose)' : ''}"></div></div>` : ''}</div></td></tr>`;
       }).join('')}</tbody></table></div>` : '<div class="card-pad"><div class="notice">目前沒有可顯示的假別額度；可至公司設定建立管理規則。</div></div>'}</article>`;
     };
 
@@ -3058,15 +3079,49 @@
     const renderV5Settings = () => {
       const c=currentCompany();
       const settingRow=(title,detail,action,label='開啟',extra='')=>`<div class="v5-setting-row"><div><h3>${title}</h3><p>${detail}</p></div>${v5Button(label,action,extra)}</div>`;
-      return `<section class="view">${v5Title('設定')}<div class="v5-settings-columns"><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">工作與公司</span></summary><div class="v5-settings-content">${settingRow('公司管理',c?`${userHtml(c.name)} · 共 ${state.companies.length} 家公司`:'建立任職公司與薪資基礎','manage-companies')}${settingRow('薪資規則','本薪、津貼、扣項與計薪區間','company-salary-rules','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}${settingRow('特休與假別','到職日、假別額度與每日標準工時','v5-leave-settings','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">顯示與操作</span></summary><div class="v5-settings-content"><label class="v5-language-setting"><span>介面語言</span><select class="field-select" data-language-preference><option value="auto">跟隨系統</option><option value="zh">繁體中文</option><option value="en">English</option></select></label>${settingRow('版面設定',escapeHtml(INTERFACE_STYLES[normalizeInterfaceStyle(ui.interfaceStyle)].name)+' · 介面風格、文字與密度、重點色','open-interface-settings','調整')}</div></details></div><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">資料管理</span></summary><div class="v5-settings-content"><p class="hint">資料預設儲存在目前瀏覽器；啟用 Google Drive 備份後，備份會傳至你授權的 Google 帳戶。</p><p class="hint">各入口同步的是程式版本，個人資料不會自動互通。切換網址、瀏覽器，或移動／更名單一網頁檔前，請先匯出備份，再於新入口匯入並核對。</p>${settingRow('備份全部資料','一般 JSON 或密碼加密備份，包含薪資與全部投資資料','export-json','下載')}${settingRow('匯入備份','一般、加密或 SmartPortfolio 備份；可選覆蓋或新增','restore-backup-file','選擇檔案')}${settingRow('自己的 Google Drive','<span data-google-summary>'+escapeHtml(window.SalaryMateCloud?.summary()||'儲存至自己的 Google Drive，可選密碼加密')+'</span>','open-google-drive','開啟')}${settingRow('匯出報表','薪資、請假及出勤分析 CSV','v5-export-options','選擇報表')}${settingRow('資料檢查','檢查公司關聯、重複紀錄與補休餘額','data-health','檢查')}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">說明</span></summary><div class="v5-settings-content">${settingRow('授權、隱私與試算','資料保存方式、授權文字與試算範圍','open-legal','閱讀')}<p class="hint">v${APP_VERSION} · 開發測試版<br>v5 資料獨立保存。可手動匯入薪資備份，原版本的資料仍保留。</p><p class="hint">程式檢查與實機驗證分開記錄；手機與桌面的可讀性、動畫流暢度及 FPS 仍待實機驗證。</p><details class="v5-explanation"><summary>效能數字與驗證範圍</summary><p class="hint">R85 的 77 項程式檢查為該次列出的回歸範圍，不代表所有功能或手機實機驗收完成。</p><p class="hint">R85 測試使用虛構資料：1,000 筆收入收合時，動態產生的 HTML 由 320,942 bytes 減至 7,122 bytes。這是程式產生的內容大小，不是網站下載量、開啟秒數或 FPS。</p><p class="hint">200 檔／10,000 筆交易的測試仍完整走訪 10,000 筆交易一次；200 次是買入／期初交易的代號欄位讀取次數，不是只處理 200 筆交易。</p></details><details class="v5-cleanup"><summary>清除這個版本的資料</summary><p class="hint">請先匯出備份；只清除目前 v5 完整版的資料。</p>${v5Button('清除本機資料','clear-data')}</details></div></details></div></div></section>`;
+      return `<section class="view">${v5Title('設定')}<div class="v5-settings-columns"><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">工作與公司</span></summary><div class="v5-settings-content">${settingRow('公司管理',c?`${userHtml(c.name)} · 共 ${state.companies.length} 家公司`:'建立任職公司與薪資基礎','manage-companies')}${settingRow('薪資規則','本薪、津貼、扣項與計薪區間','company-salary-rules','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}${settingRow('假別額度管理','特休、共用額度與各假別設定','v5-leave-settings','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">顯示與操作</span></summary><div class="v5-settings-content"><label class="v5-language-setting"><span>介面語言</span><select class="field-select" data-language-preference><option value="auto">跟隨系統</option><option value="zh">繁體中文</option><option value="en">English</option></select></label>${settingRow('版面設定',escapeHtml(INTERFACE_STYLES[normalizeInterfaceStyle(ui.interfaceStyle)].name)+' · 介面風格、文字與密度、重點色','open-interface-settings','調整')}</div></details></div><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">資料管理</span></summary><div class="v5-settings-content"><p class="hint">資料預設儲存在目前瀏覽器；啟用 Google Drive 備份後，備份會傳至你授權的 Google 帳戶。</p><p class="hint">各入口同步的是程式版本，個人資料不會自動互通。切換網址、瀏覽器，或移動／更名單一網頁檔前，請先匯出備份，再於新入口匯入並核對。</p>${settingRow('備份全部資料','一般 JSON 或密碼加密備份，包含薪資與全部投資資料','export-json','下載')}${settingRow('匯入備份','一般、加密或 SmartPortfolio 備份；可選覆蓋或新增','restore-backup-file','選擇檔案')}${settingRow('自己的 Google Drive','<span data-google-summary>'+escapeHtml(window.SalaryMateCloud?.summary()||'儲存至自己的 Google Drive，可選密碼加密')+'</span>','open-google-drive','開啟')}${settingRow('匯出報表','薪資、請假及出勤分析 CSV','v5-export-options','選擇報表')}${settingRow('資料檢查','檢查公司關聯、重複紀錄與補休餘額','data-health','檢查')}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">說明</span></summary><div class="v5-settings-content">${settingRow('授權、隱私與試算','資料保存方式、授權文字與試算範圍','open-legal','閱讀')}<p class="hint">v${APP_VERSION} · 開發測試版<br>v5 資料獨立保存。可手動匯入薪資備份，原版本的資料仍保留。</p><p class="hint">程式檢查與實機驗證分開記錄；手機與桌面的可讀性、動畫流暢度及 FPS 仍待實機驗證。</p><details class="v5-explanation"><summary>效能數字與驗證範圍</summary><p class="hint">R85 的 77 項程式檢查為該次列出的回歸範圍，不代表所有功能或手機實機驗收完成。</p><p class="hint">R85 測試使用虛構資料：1,000 筆收入收合時，動態產生的 HTML 由 320,942 bytes 減至 7,122 bytes。這是程式產生的內容大小，不是網站下載量、開啟秒數或 FPS。</p><p class="hint">200 檔／10,000 筆交易的測試仍完整走訪 10,000 筆交易一次；200 次是買入／期初交易的代號欄位讀取次數，不是只處理 200 筆交易。</p></details><details class="v5-cleanup"><summary>清除這個版本的資料</summary><p class="hint">請先匯出備份；只清除目前 v5 完整版的資料。</p>${v5Button('清除本機資料','clear-data')}</details></div></details></div></div></section>`;
     };
     const renderV5Companies = () => `<div class="v5-breadcrumb"><button type="button" data-tab="settings">設定</button><span>／ 公司管理</span></div>${renderCompanies()}`;
-    const openV5LeaveSettings = id => {
-      const c=getCompany(id)||currentCompany();if(!c)return openCompanyBasicForm();
-      const policy=normalizeLeavePolicies(c.leavePolicies).annual;
-      beginDraftScope({entityType:'v5-leave-settings',companyId:c.id,entityId:c.id,operational:false});
-      openDialog('特休與假別設定',`<form id="v5LeaveSettingsForm"><input type="hidden" name="companyId" value="${escapeAttr(c.id)}"><p class="v5-form-context">${userHtml(c.name)}</p><div class="form-grid"><label><span class="field-label">到職日</span><input class="field" type="date" name="employmentStartDate" value="${escapeAttr(c.employmentStartDate)}"></label><label><span class="field-label">每日標準工時</span><input class="field" type="number" name="workHoursPerDay" value="${c.workHoursPerDay}" min="1" max="24" step="0.5" required></label><label class="span-2"><span class="field-label">特休額度方式</span><select class="field-select" name="quotaMode">${[['custom','填入公司核定額度'],['auto','依到職日與現有規則估算']].map(([v,t])=>`<option value="${v}" ${policy.mode===v?'selected':''}>${t}</option>`).join('')}</select></label><label><span class="field-label">核定額度（小時）</span><input class="field" type="number" name="quotaHours" min="0" max="8760" step="0.5" value="${policy.quotaDays*c.workHoursPerDay}"><span class="hint">選擇公司核定額度時使用。</span></label><label><span class="field-label">公司核定週期</span><select class="field-select" name="leaveQuotaCycle"><option value="calendar" ${c.leaveQuotaCycle!=='anniversary'?'selected':''}>曆年 1～12 月</option><option value="anniversary" ${c.leaveQuotaCycle==='anniversary'?'selected':''}>到職週年</option></select></label></div><p class="hint">自動估算依到職週期，結果請核對公司核定額度。修改標準工時會影響按天登記的請假換算。</p><div class="form-actions"><button class="btn" type="button" data-action="close-dialog">返回</button><button class="btn btn-primary" type="submit">儲存設定</button></div></form>`);
+    const readLeavePoliciesFromForm = (data, policies, hours) => {
+      const existing=normalizeLeavePolicies(policies);
+      return normalizeLeavePolicies(Object.fromEntries(Object.keys(LEAVE_TYPES).map(type=>{
+        const modeName='leavePolicy_'+type+'_mode',hoursName='leavePolicy_'+type+'_quotaHours';
+        if(type==='menstrual'||!data.has(modeName))return [type,existing[type]];
+        const mode=String(data.get(modeName));
+        return [type,{mode,quotaDays:mode==='custom'?Number(data.get(hoursName))/hours:mode==='statutory'?STATUTORY_LEAVE_DAYS[type]:existing[type].quotaDays}];
+      })));
     };
+    const collectLeaveSettingsDraft = () => {
+      const form=$('#v5LeaveSettingsForm'),draft=ui.leaveSettingsDraft;if(!form||!draft)return draft;
+      const data=new FormData(form),hours=Number(data.get('workHoursPerDay'));
+      if(!Number.isFinite(hours)||hours<1||hours>24){validateField(form,'workHoursPerDay','每日標準工時需介於 1～24 小時。');return null;}
+      ui.leaveSettingsDraft={...draft,employmentStartDate:String(data.get('employmentStartDate')||''),workHoursPerDay:hours,leaveQuotaCycle:data.get('leaveQuotaCycle'),leavePolicies:readLeavePoliciesFromForm(data,draft.leavePolicies,hours)};
+      return ui.leaveSettingsDraft;
+    };
+    const openV5LeaveSettings = id => {
+      if(hasDirtyDraft())return toast('目前有尚未儲存的變更，請先儲存或取消。','error');
+      const c=getCompany(id)||currentCompany();if(!c)return openCompanyBasicForm();
+      ui.leaveSettingsDraft=clone(c);
+      beginDraftScope({entityType:'v5-leave-settings',companyId:c.id,entityId:c.id,operational:false});
+      openDialog('假別額度管理',`<form id="v5LeaveSettingsForm"><input type="hidden" name="companyId" value="${escapeAttr(c.id)}"><p class="v5-form-context">${userHtml(c.name)}</p><div class="form-grid"><label><span class="field-label">到職日</span><input class="field" type="date" name="employmentStartDate" value="${escapeAttr(c.employmentStartDate)}"></label><label><span class="field-label">每日標準工時</span><input class="field" type="number" name="workHoursPerDay" value="${c.workHoursPerDay}" min="1" max="24" step="0.5" required></label><label class="span-2"><span class="field-label">公司自訂額度週期</span><select class="field-select" name="leaveQuotaCycle"><option value="calendar" ${c.leaveQuotaCycle!=='anniversary'?'selected':''}>曆年 1～12 月</option><option value="anniversary" ${c.leaveQuotaCycle==='anniversary'?'selected':''}>到職週年</option></select></label></div><p class="hint">法定年度預設採曆年；特休自動試算依到職週年。公司自訂額度沿用所選週期。修改每日工時會影響按天請假的小時換算。</p><div class="quota-management-actions"><button class="btn" type="button" data-action="apply-statutory-leave">套用法定預設</button><span class="hint">先更新這份設定草稿，按儲存才生效。</span></div><div class="quota-policy-list" id="leavePolicyFields">${companyLeavePolicyFieldsHtml(c)}</div><details class="v5-explanation"><summary>法定預設與適用範圍</summary><p>普通病假按未住院 30 日／年；事假與家庭照顧假共用 14 日／年，家庭照顧假自身另限 7 日／年；婚假自 2026/10/1 起每次結婚 14 日，工資照給。</p><p>婚假以結婚登記日區分事件。新制前已請完 8 日或已過請求期限者，不自動增加額度；仍在期限內且尚未請完者，請依公司核定填入本次事件額度。婚假請休期限通常為登記日前 10 日起 3 個月，雇主同意可延長至 1 年。</p><p>病假住院、癌症門診、安胎、兩年度合併限制、生理假超過全年 3 日併病假及部分工時比例，不在這組預設的自動核算範圍；請核對人事核定結果。時薪制不等於部分工時。</p><p><a href="https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=N0030006" target="_blank" rel="noopener noreferrer">勞工請假規則</a> · <a href="https://law.moj.gov.tw/LawClass/LawSingle.aspx?flno=20&amp;pcode=N0030014" target="_blank" rel="noopener noreferrer">家庭照顧假規定</a> · <a href="https://www.mol.gov.tw/1607/28162/28166/90735/99106/post" target="_blank" rel="noopener noreferrer">婚假新制</a></p></details><div class="form-actions"><button class="btn" type="button" data-action="close-dialog">返回</button><button class="btn btn-primary" type="submit">儲存設定</button></div></form>`,true);
+      captureDialogBaseline();
+    };
+    const applyStatutoryLeaveDefaults = () => {
+      const draft=collectLeaveSettingsDraft();if(!draft)return;
+      for(const type of Object.keys(STATUTORY_LEAVE_DAYS))draft.leavePolicies[type]={mode:'statutory',quotaDays:STATUTORY_LEAVE_DAYS[type]};
+      $('#leavePolicyFields').innerHTML=companyLeavePolicyFieldsHtml(draft);
+      enhanceFormAccessibility($('#v5LeaveSettingsForm'));markDraftDirty();toast('法定預設已帶入，請按儲存設定');
+    };
+    document.addEventListener('change',event=>{
+      if(!event.target.closest('#v5LeaveSettingsForm'))return;
+      if(event.target.name==='workHoursPerDay'||/^leavePolicy_.*_mode$/.test(event.target.name)){
+        const draft=collectLeaveSettingsDraft();if(!draft)return;
+        const name=event.target.name;
+        $('#leavePolicyFields').innerHTML=companyLeavePolicyFieldsHtml(draft);
+        enhanceFormAccessibility($('#v5LeaveSettingsForm'));
+        $('#v5LeaveSettingsForm [name="'+name+'"]')?.focus();markDraftDirty();
+      }
+    });
     const v5Clean = root => {
       if(!root?.querySelectorAll)return;
       root.querySelectorAll('.metric-icon,.empty-icon,.search-mark,.mode-preview,.theme-check').forEach(el=>el.remove());
@@ -3170,12 +3225,12 @@
       if(event.target.id!=='v5LeaveSettingsForm')return;event.preventDefault();const form=event.target;if(!validateNativeForm(form))return;
       const data=new FormData(form),c=getCompany(data.get('companyId'));if(!c)return;
       if(!assertDraftScope({entityType:'v5-leave-settings',companyId:c.id,entityId:c.id,operational:false}))return;
-      const hours=Number(data.get('workHoursPerDay')),quotaHours=Number(data.get('quotaHours')),start=String(data.get('employmentStartDate')||''),mode=String(data.get('quotaMode'));
-      if((start&&!validIsoDate(start))||!Number.isFinite(hours)||hours<1||hours>24||!Number.isFinite(quotaHours)||quotaHours<0||!['auto','custom'].includes(mode)){showValidationSummary(form,'請確認日期、標準工時與特休額度。');return;}
-      if((mode==='auto'||data.get('leaveQuotaCycle')==='anniversary')&&!start){showValidationSummary(form,'使用到職週期前，請先填寫到職日。');return;}
-      const next=normalizeCompany({...c,employmentStartDate:start,workHoursPerDay:hours,leaveQuotaCycle:data.get('leaveQuotaCycle'),leavePolicies:{...c.leavePolicies,annual:{mode,quotaDays:mode==='custom'?quotaHours/hours:0}}});
-      const ok=commitStateMutation(()=>{state.companies[state.companies.findIndex(x=>x.id===c.id)]=next;},'特休設定未儲存，原資料保持不變。','v5-leave-settings:'+c.id);
-      if(ok){closeDialog();renderAll();toast('特休設定已儲存');}
+      const draft=collectLeaveSettingsDraft();if(!draft)return;const hours=Number(draft.workHoursPerDay),start=draft.employmentStartDate;
+      if((start&&!validIsoDate(start))||!Number.isFinite(hours)||hours<1||hours>24){showValidationSummary(form,'請確認日期、標準工時與假別額度。');return;}
+      if((draft.leavePolicies.annual.mode==='auto'||draft.leaveQuotaCycle==='anniversary')&&!start){showValidationSummary(form,'使用到職週期前，請先填寫到職日。');return;}
+      const next=normalizeCompany(draft);
+      const ok=commitStateMutation(()=>{state.companies[state.companies.findIndex(x=>x.id===c.id)]=next;},'假別設定未儲存，原資料保持不變。','v5-leave-settings:'+c.id);
+      if(ok){closeDialog();renderAll();toast('假別額度設定已儲存');}
     });
 
     const renderAll = () => {
@@ -3931,15 +3986,16 @@
       return `目前自動週年基準為 ${summary.entitlement} 天；本期自 ${summary.start} 起至 ${summary.end} 前，下一次增加日為 ${summary.nextGrantDate}。`;
     };
 
-    const companyLeavePolicyFieldsHtml = (draft) => {
-      const policies = normalizeLeavePolicies(draft.leavePolicies);
-      return Object.entries(LEAVE_TYPES).map(([type, meta]) => {
-        if (type === 'menstrual') return `<div class="quota-policy-row" data-fixed-leave-policy="menstrual"><div class="quota-policy-name">${escapeHtml(meta.label)}</div><div><span class="field-label">額度方式</span><div class="field" style="display:flex;align-items:center;font-weight:800">每個曆月 1 天</div></div><div><span class="field-label">重置方式</span><div class="field" style="display:flex;align-items:center;font-weight:800">每月自動重置</div></div></div>`;
-        const policy = policies[type];
-        const modeOptions = type === 'annual'
-          ? `<option value="auto" ${policy.mode === 'auto' ? 'selected' : ''}>依到職日自動試算</option><option value="custom" ${policy.mode === 'custom' ? 'selected' : ''}>公司自訂額度</option>`
-          : `<option value="unlimited" ${policy.mode === 'unlimited' ? 'selected' : ''}>不設管理上限</option><option value="custom" ${policy.mode === 'custom' ? 'selected' : ''}>公司自訂額度</option>`;
-        return `<div class="quota-policy-row"><div class="quota-policy-name">${escapeHtml(meta.label)}</div><label><span class="field-label">額度方式</span><select class="field-select" name="leavePolicy_${type}_mode">${modeOptions}</select></label><label><span class="field-label">自訂天數</span><input class="field" name="leavePolicy_${type}_quotaDays" type="number" min="0" max="366" step="0.5" value="${escapeAttr(policy.quotaDays)}"><span class="hint">僅自訂額度時套用</span></label></div>`;
+    const companyLeavePolicyFieldsHtml = draft => {
+      const policies=normalizeLeavePolicies(draft.leavePolicies);
+      return Object.entries(LEAVE_TYPES).map(([type,meta])=>{
+        if(type==='menstrual')return '<div class="quota-policy-row"><div class="quota-policy-name">生理假</div><p>每個曆月 1 天，每月重置。</p></div>';
+        const policy=policies[type],statutory=Object.hasOwn(STATUTORY_LEAVE_DAYS,type);
+        const label=type==='personal'?'事假／家庭照顧共用額度':type==='family'?'家庭照顧自身上限':type==='sick'?'普通病假（未住院）':meta.label;
+        const choices=type==='annual'?[['auto','依到職日自動試算'],['custom','公司自訂額度']]:[...(statutory?[['statutory','台灣法定預設']]:[]),['custom',type==='marriage'?'公司自訂年度額度（舊設定）':'公司自訂額度'],['unlimited','不設管理上限']];
+        const days=policy.mode==='statutory'?STATUTORY_LEAVE_DAYS[type]:policy.quotaDays;
+        const note=policy.mode==='statutory'?(type==='marriage'?'14 日／結婚事件；舊事件須核對':days+' 日／曆年'):policy.mode==='custom'?'依公司自訂週期；以小時輸入':'僅自訂額度時使用';
+        return `<div class="quota-policy-row" data-leave-policy="${type}"><div class="quota-policy-name">${escapeHtml(label)}</div><label><span class="field-label">額度方式</span><select class="field-select" name="leavePolicy_${type}_mode">${choices.map(([value,text])=>`<option value="${value}" ${policy.mode===value?'selected':''}>${text}</option>`).join('')}</select></label><label><span class="field-label">額度（小時）</span><input class="field" name="leavePolicy_${type}_quotaHours" type="number" min="0" max="8784" step="any" value="${days*draft.workHoursPerDay}" ${policy.mode==='custom'?'':'readonly'} required><span class="hint">${escapeHtml(note)}</span></label></div>`;
       }).join('');
     };
 
@@ -3965,22 +4021,7 @@
         <div class="custom-list">${companyFixedRowsHtml(draft.fixedEarnings)}</div>
         <div class="form-actions"><button class="btn btn-small" type="button" data-action="add-company-fixed">＋ 自行加入固定加項</button></div>
       </div>
-      <div class="form-group" style="margin-top:14px">
-        <div class="group-head"><strong>出勤與特休設定</strong><span class="soft-badge">到職週年基準</span></div>
-        <div class="form-grid">
-          <label><span class="field-label">第一天上班日（到職日）</span><input class="field" name="employmentStartDate" type="date" value="${escapeAttr(draft.employmentStartDate)}"></label>
-          <label><span class="field-label">每日標準工時</span><input class="field" name="workHoursPerDay" type="number" min="1" max="24" step="0.5" value="${escapeAttr(draft.workHoursPerDay)}"><span class="hint">請假天數與半天會依此換算時數，預設 8 小時。</span></label>
-          <div class="notice span-2"><b>特休試算：</b>${escapeHtml(companyAnnualLeaveHint(draft))}</div>
-        </div>
-      </div>
-      <div class="form-group" style="margin-top:14px">
-        <div class="group-head"><strong>假別額度管理</strong><span class="soft-badge">可自行調整</span></div>
-        <div class="form-grid" style="margin-bottom:10px">
-          <label class="span-2"><span class="field-label">公司自訂額度週期</span><select class="field-select" name="leaveQuotaCycle"><option value="calendar" ${draft.leaveQuotaCycle === 'calendar' ? 'selected' : ''}>曆年制（每年 1/1 重置）</option><option value="anniversary" ${draft.leaveQuotaCycle === 'anniversary' ? 'selected' : ''}>到職週年制</option></select><span class="hint">特休選「自動試算」時仍依到職週年；此選項套用於所有公司自訂額度。</span></label>
-        </div>
-        <div class="quota-policy-list">${companyLeavePolicyFieldsHtml(draft)}</div>
-        <div class="notice" style="margin-top:10px"><b>管理原則：</b>預計請假會先保留額度、已確認會列入已用；生理假固定每個曆月 1 天並於每月重置，其他不設上限假別仍保留用量分析。這是公司內部管理設定，不會取代實際人事制度。</div>
-      </div>
+      <div class="form-group" style="margin-top:14px"><div class="group-head"><strong>假別額度管理</strong></div><p class="hint">到職日、每日工時、特休與各假別額度集中於設定的「假別額度管理」。</p>${editing?'<button class="btn" type="button" data-action="v5-leave-settings" data-id="'+escapeAttr(draft.id)+'">設定</button>':'<p class="hint">公司建立後即可設定。</p>'}</div>
       <div class="form-group" style="margin-top:14px">
         <div class="group-head"><strong>計薪區間與扣款規則</strong><span class="soft-badge">公司預設</span></div>
         <div class="form-grid">
@@ -4113,8 +4154,9 @@
         const cycleLabel = parts ? `${parts.year} 年 ${parts.month} 月` : '本月';
         return `生理假每個曆月可使用 1 天｜${cycleLabel}已確認 ${rateNumber(summary.used)} 天｜預留 ${rateNumber(summary.reserved)} 天｜目前可用 ${rateNumber(summary.remaining)} 天；本次申請 ${rateNumber(leaveDays(draft))} 天。`;
       }
-      if (summary?.limited && !summary.configured) return '此假別使用到職週年週期，但公司尚未設定第一天上班日；儲存時會提醒確認。';
-      if (summary?.limited) return `${leaveTypeName(draft.type)}本期額度 ${rateNumber(summary.entitlement)} 天｜已確認 ${rateNumber(summary.used)} 天｜預留 ${rateNumber(summary.reserved)} 天｜目前可用 ${rateNumber(summary.remaining)} 天；本次申請 ${rateNumber(leaveDays(draft))} 天。`;
+      const capacity=company?leaveQuotaCapacity(draft):null;
+      if(capacity?.limited&&!capacity.configured)return draft.type==='marriage'?'請填結婚登記日，核對本次事件額度與新舊制適用。':'請先設定到職日，才能核對此假別的到職週年額度。';
+      if(capacity?.details?.length)return capacity.details.map(item=>`${item.label}（${item.summary.perEvent?'本次結婚':item.summary.start+'～'+addIsoDays(item.summary.end,-1)}）本次 ${rateNumber(item.requested)} 天／可用 ${rateNumber(item.available)} 天${item.exceeded>1e-8?'，超過額度':''}`).join('；');
       if (draft.type === 'sick') return '普通病假預設半薪；目前未設管理上限，仍會列入出勤與用量分析。全勤／出勤扣款請依公司薪資單輸入。';
       return `${leaveTypeName(draft.type)}目前未設管理上限；已確認與預計用量仍會分開統計，給薪比例可自行修改。`;
     };
@@ -4125,6 +4167,12 @@
       return `<label><span class="field-label">結束日期 *</span><input class="field" name="endDate" type="date" required min="${escapeAttr(draft.startDate)}" value="${escapeAttr(draft.endDate || draft.startDate)}"></label><label><span class="field-label">開始日區段</span><select class="field-select" name="startPortion"><option value="full" ${draft.startPortion === 'full' ? 'selected' : ''}>整天</option><option value="pm" ${draft.startPortion === 'pm' ? 'selected' : ''}>下午半天起</option></select></label><label><span class="field-label">結束日區段</span><select class="field-select" name="endPortion"><option value="full" ${draft.endPortion === 'full' ? 'selected' : ''}>整天</option><option value="am" ${draft.endPortion === 'am' ? 'selected' : ''}>上午半天止</option></select></label><label style="align-self:end"><span class="field-label">非工作日</span><span class="field" style="display:flex;align-items:center;gap:8px"><input name="includeWeekends" type="checkbox" value="true" ${draft.includeWeekends ? 'checked' : ''}> 納入週六、週日</span></label>`;
     };
 
+    const leaveMarriageFieldsHtml = draft => {
+      if(draft.type!=='marriage'||normalizeLeavePolicies(getCompany(draft.companyId)?.leavePolicies).marriage.mode!=='statutory')return '';
+      const days=numberValue(draft.marriageQuotaDays)>0?draft.marriageQuotaDays:draft.marriageEventDate?leaveQuotaSummary(getCompany(draft.companyId),'marriage',draft.startDate,draft.marriageEventDate).entitlement:draft.startDate<'2026-10-01'?8:14;
+      return `<div class="form-grid span-2"><label><span class="field-label">結婚登記日</span><input class="field" type="date" name="marriageEventDate" value="${escapeAttr(draft.marriageEventDate)}"></label><label><span class="field-label">本次事件核定額度（天）</span><input class="field" type="number" name="marriageQuotaDays" min="0.5" max="366" step="0.5" required value="${days}"></label><p class="hint span-2">同一登記日的分次請假共用本次額度，儲存時同步該事件的額度標記。2026/10/1 起預設 14 天；舊事件先保留 8 天，符合新制過渡條件時可依核定改為 14 天。請休期限另依公司核對。</p></div>`;
+    };
+
     const leaveFormHtml = (draft, editing) => {
       const company=getCompany(draft.companyId);
       return `<form id="leaveForm"><input type="hidden" name="companyId" value="${escapeAttr(draft.companyId)}"><p class="v5-form-context">${(company?.name ? userHtml(company?.name) : escapeHtml(''))}</p><div class="form-grid">
@@ -4132,7 +4180,7 @@
       <label><span class="field-label">狀態</span><select class="field-select" name="status">${[['planned','預計'],['confirmed','已確認'],['cancelled','已取消']].map(([v,t])=>`<option value="${v}" ${draft.status===v?'selected':''}>${t}</option>`).join('')}</select></label>
       <label><span class="field-label">假別</span><select class="field-select" name="type">${Object.entries(LEAVE_TYPES).map(([v,t])=>`<option value="${v}" ${draft.type===v?'selected':''}>${escapeHtml(t.label)}${['sick','menstrual','personal','family'].includes(v) ? ` · ${t.paidRatio===50 ? '扣半薪' : '扣全薪'}` : ''}</option>`).join('')}</select></label>
       <label><span class="field-label">請假時間</span><select class="field-select" name="durationMode">${[['full_day','整天'],['half_am','上午半天'],['half_pm','下午半天'],['hours','自訂小時'],['range','連續多天']].map(([v,t])=>`<option value="${v}" ${draft.durationMode===v?'selected':''}>${t}</option>`).join('')}</select></label>
-      ${leaveDurationFieldsHtml(draft)}
+      ${leaveDurationFieldsHtml(draft)}${leaveMarriageFieldsHtml(draft)}
       ${draft.type==='compensatory'?`<label class="span-2 checkbox-line"><input name="compTimeLinked" type="checkbox" value="true" ${draft.compTimeLinked?'checked':''}> 從補休帳本扣除（確認後生效）</label>`:''}
       <label class="span-2"><span class="field-label">備註（選填）</span><input class="field" name="note" maxlength="160" value="${escapeAttr(draft.note)}" placeholder="例如：回診、家庭安排"></label></div>
       <div class="v5-leave-preview"><span>請假時數</span><strong id="leaveHoursPreview">${rateNumber(leaveHours(draft))} 小時</strong></div>
@@ -4157,6 +4205,8 @@
         companyId: data.get('companyId'),
         status: data.get('status'),
         type: data.get('type'),
+        marriageEventDate: data.has('marriageEventDate')?data.get('marriageEventDate'):ui.leaveDraft.marriageEventDate,
+        marriageQuotaDays: data.has('marriageQuotaDays')?data.get('marriageQuotaDays'):ui.leaveDraft.marriageQuotaDays,
         compTimeLinked: data.get('compTimeLinked')==='true',
         durationMode,
         startPortion: data.get('startPortion') || 'full',
@@ -4236,10 +4286,7 @@
       if (!form || !ui.companyDraft) return ui.companyDraft;
       const data = new FormData(form);
       const existingLeavePolicies = normalizeLeavePolicies(ui.companyDraft.leavePolicies);
-      const leavePolicies = Object.fromEntries(Object.keys(LEAVE_TYPES).map((type) => [type, {
-        mode: type === 'menstrual' ? existingLeavePolicies[type].mode : data.get(`leavePolicy_${type}_mode`),
-        quotaDays: type === 'menstrual' ? existingLeavePolicies[type].quotaDays : data.get(`leavePolicy_${type}_quotaDays`)
-      }]));
+      const leavePolicies = existingLeavePolicies;
       const fixedEarnings = (ui.companyDraft.fixedEarnings || []).map((item, index) => ({
         ...item,
         id: item.id || newId('fixed'),
@@ -4261,9 +4308,9 @@
         fixedEarnings,
         laborIns: data.get('laborIns'),
         healthIns: data.get('healthIns'),
-        employmentStartDate: data.get('employmentStartDate'),
-        workHoursPerDay: data.get('workHoursPerDay'),
-        leaveQuotaCycle: data.get('leaveQuotaCycle'),
+        employmentStartDate: data.has('employmentStartDate') ? data.get('employmentStartDate') : ui.companyDraft.employmentStartDate,
+        workHoursPerDay: data.has('workHoursPerDay') ? data.get('workHoursPerDay') : ui.companyDraft.workHoursPerDay,
+        leaveQuotaCycle: data.has('leaveQuotaCycle') ? data.get('leaveQuotaCycle') : ui.companyDraft.leaveQuotaCycle,
         leavePolicies,
         payrollPeriodType: data.get('payrollPeriodType'),
         payrollCycleStartDay: data.get('payrollCycleStartDay'),
@@ -4382,18 +4429,31 @@
       const company = getCompany(draft.companyId);
       if (!company || draft.status === 'cancelled') return null;
       if (draft.type === 'menstrual') return menstrualQuotaCapacity(draft, company);
-      const summary = leaveQuotaSummary(company, draft.type, draft.startDate || todayIso());
-      if (!summary.limited) return { configured: true, limited: false, requested: leaveDays(draft), available: null, summary };
-      if (!summary.configured) return { configured: false, limited: true, requested: leaveDays(draft), available: 0, summary };
-      const usedByOthers = state.leaveRecords
-        .filter((record) => record.id !== draft.id && record.companyId === draft.companyId && record.type === draft.type && record.status !== 'cancelled')
-        .reduce((sum, record) => sum + leaveDateEntries(record).filter((entry) => entry.date >= summary.start && entry.date < summary.end).reduce((days, entry) => days + entry.days, 0), 0);
-      return { configured: true, limited: true, requested: leaveDays(draft), available: Math.max(0, numberValue(summary.entitlement) - usedByOthers), cycle: summary, summary };
+      const summary=leaveQuotaSummary(company,draft.type,draft.startDate||todayIso(),draft.marriageEventDate,draft.marriageQuotaDays);
+      const buckets=new Map();
+      for(const entry of leaveDateEntries(draft))for(const type of draft.type==='family'?['family','personal']:[draft.type]){
+        const cycle=leaveQuotaSummary(company,type,entry.date,draft.marriageEventDate,draft.marriageQuotaDays);
+        if(!cycle.limited)continue;
+        const key=[type,cycle.perEvent?draft.marriageEventDate:cycle.start,cycle.end].join(':');
+        if(!buckets.has(key))buckets.set(key,{type,summary:cycle,requested:0});
+        buckets.get(key).requested+=entry.days;
+      }
+      const details=[...buckets.values()].map(item=>{
+        const others=item.summary.configured?leaveQuotaUsage(company,item.type,item.summary,draft.marriageEventDate,draft.id):{used:0,reserved:0};
+        const available=item.summary.configured?Math.max(0,numberValue(item.summary.entitlement)-others.used-others.reserved):0;
+        const label=item.type==='personal'?'事假／家庭照顧共用':leaveTypeName(item.type);
+        return {...item,label,available,exceeded:Math.max(0,item.requested-available)};
+      });
+      const primary=details.filter(item=>item.type===draft.type);
+      return {configured:details.every(item=>item.summary.configured),limited:details.length>0,requested:leaveDays(draft),available:primary.length?primary.reduce((sum,item)=>sum+item.available,0):null,summary,details,violations:details.filter(item=>item.summary.configured&&item.exceeded>1e-8)};
     };
     const annualLeaveCapacity = (draft) => draft.type === 'annual' ? leaveQuotaCapacity(draft) : null;
     const persistLeave = (draft) => {
       const index = state.leaveRecords.findIndex((record) => record.id === draft.id);
       const ok = commitStateMutation(() => {
+        if(draft.type==='marriage'&&draft.marriageEventDate&&numberValue(draft.marriageQuotaDays)>0&&normalizeLeavePolicies(getCompany(draft.companyId)?.leavePolicies).marriage.mode==='statutory'){
+          for(const record of state.leaveRecords)if(record.companyId===draft.companyId&&record.type==='marriage'&&record.marriageEventDate===draft.marriageEventDate)record.marriageQuotaDays=draft.marriageQuotaDays;
+        }
         if (index >= 0) state.leaveRecords[index] = draft;
         else state.leaveRecords.push(draft);
       }, '請假紀錄儲存失敗。原本資料保持不變。');
@@ -4431,8 +4491,8 @@
         const [year, month] = item.monthKey.split('-').map(Number);
         return `${year} 年 ${month} 月生理假每月額度 1 天，本次 ${rateNumber(item.requested)} 天超過目前可用 ${rateNumber(item.available)} 天`;
       }).join('；'));
-      else if (quota?.limited && !quota.configured) warnings.push(`公司尚未設定第一天上班日，無法檢查${leaveTypeName(draft.type)}額度`);
-      else if (quota?.limited && quota.requested > quota.available) warnings.push(`本次${leaveTypeName(draft.type)} ${rateNumber(quota.requested)} 天超過目前可用 ${rateNumber(quota.available)} 天`);
+      else if (quota?.limited && !quota.configured) warnings.push(draft.type==='marriage'?'尚未填寫結婚登記日，無法核對本次婚假事件額度':`公司尚未設定第一天上班日，無法檢查${leaveTypeName(draft.type)}額度`);
+      else if (quota?.violations?.length) warnings.push(quota.violations.map(item=>`${item.label}（${item.summary.perEvent?'本次結婚':item.summary.start+'～'+addIsoDays(item.summary.end,-1)}）本次 ${rateNumber(item.requested)} 天，超過可用 ${rateNumber(item.available)} 天`).join('；'));
       if (warnings.length) {
         confirm('儲存請假前確認', `${warnings.join('；')}。仍要儲存此筆請假紀錄嗎？`, () => persistLeave(draft), '仍要儲存');
         return;
@@ -5261,6 +5321,7 @@
         'picker-delete-company': () => { closeCompanyPicker(true); deleteCompany(id); },
         'v5-open-pay': () => { v5.salaryMonth = 0; ui.search = ''; ui.expandedRecords.add(id); selectPrimaryTab('records'); },
         'v5-leave-settings': () => openV5LeaveSettings(id),
+        'apply-statutory-leave': applyStatutoryLeaveDefaults,
         'v5-export-options': () => openDialog('匯出報表', `<div class="v5-export-options">${v5Button('薪資明細 CSV','export-csv')}${v5Button('請假紀錄 CSV','export-leave-csv')}${v5Button('出勤分析 CSV','export-attendance-csv')}${v5Button('年度整合 CSV','export-annual-report')}</div>`),
         'retry-load': retryAppLoad,
         'restore-backup-file': () => $('#jsonImport')?.click(),
@@ -5597,6 +5658,12 @@
       } else if (event.target.name === 'durationMode' && event.target.closest('#leaveForm')) {
         const draft = collectLeaveDraft();
         openDialog(state.leaveRecords.some((record) => record.id === draft.id) ? '編輯請假紀錄' : '新增請假紀錄', leaveFormHtml(draft, state.leaveRecords.some((record) => record.id === draft.id)));
+      } else if(event.target.name==='marriageEventDate'&&event.target.closest('#leaveForm')){
+        const draft=collectLeaveDraft(),date=String(event.target.value);
+        const saved=state.leaveRecords.find(record=>record.companyId===draft.companyId&&record.type==='marriage'&&record.marriageEventDate===date&&numberValue(record.marriageQuotaDays)>0);
+        const input=$('#leaveForm [name="marriageQuotaDays"]');
+        if(input)input.value=saved?.marriageQuotaDays||(date&&date<'2026-10-01'?8:14);
+        updateLeavePreview();
       } else if (event.target.closest('#leaveForm')) {
         updateLeavePreview();
       } else if (event.target.closest('#yearEndForm')) {
