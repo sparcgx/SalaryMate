@@ -1,0 +1,32 @@
+{
+  "environment": "Node production functions and plain callback spies; no browser, DOM emulator, private data, storage writes or HTTP",
+  "method": "Fictional 10,000 events; 2 warm-ups and median of 9 timing samples. Counts and timings are not download size, device opening time or FPS.",
+  "equivalence": {
+    "monthlyHtmlByteExact": true,
+    "fictionalBusinessDataUnchanged": true
+  },
+  "R91": {
+    "monthly": {
+      "events": 10000,
+      "eventVisits": 120000,
+      "nodeMedianMs": 26.223
+    },
+    "appearance": {
+      "mainViewRenders": 1,
+      "calculationCachesCleared": 10,
+      "fullStateWrites": 1
+    }
+  },
+  "R92": {
+    "monthly": {
+      "events": 10000,
+      "eventVisits": 10000,
+      "nodeMedianMs": 4.22
+    },
+    "appearance": {
+      "mainViewRenders": 0,
+      "calculationCachesCleared": 0,
+      "fullStateWrites": 1
+    }
+  }
+}

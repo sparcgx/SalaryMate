@@ -1,0 +1,54 @@
+{
+  "environment": "v24.19.0; native Node VM production execution; no browser or DOM emulator",
+  "method": "Decode: 2 warm-ups, median of 9 samples. Byte sizes, dictionary counts and decode microbenchmarks are not network latency, device startup timing or FPS.",
+  "equivalence": {
+    "baselineCatalogEntries": 2677,
+    "currentCatalogEntries": 2680,
+    "inputs": 2688,
+    "languageModes": 4,
+    "comparisons": 10752,
+    "allEqual": true
+  },
+  "dictionary": {
+    "chineseStartup": {
+      "R91": {
+        "builds": 1,
+        "sortComparisons": 21286
+      },
+      "R92": {
+        "builds": 0,
+        "sortComparisons": 0
+      }
+    },
+    "englishFirst": {
+      "builds": 1,
+      "sortComparisons": 21321
+    },
+    "repeatedLabels": 1000,
+    "additionalBuilds": 0,
+    "additionalSortComparisons": 0
+  },
+  "decode": [
+    {
+      "name": "styles.css",
+      "bytes": 281635,
+      "sha256": "3dc76a19ebc159b063ad5e90ba7791902b8694726b6db88b528763737633e30c",
+      "R91MedianMs": 19.238,
+      "R92MedianMs": 0.548
+    },
+    {
+      "name": "app.js",
+      "bytes": 503943,
+      "sha256": "34d08f01a32546ed1900876c321b843d2b911cb2f6d2a099752aa5dcf9f60b8a",
+      "R91MedianMs": 32.411,
+      "R92MedianMs": 1.016
+    },
+    {
+      "name": "art/jingyu-flight-r73-a.png",
+      "bytes": 2261630,
+      "sha256": "f8a492c94ae8686ee02a412e3383fe850d16bb4df79355095957c541c825f0f6",
+      "R91MedianMs": 148.248,
+      "R92MedianMs": 7.138
+    }
+  ]
+}

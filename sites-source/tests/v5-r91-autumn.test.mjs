@@ -45,6 +45,8 @@ function fixture(){
   setOperationStatus:(...args)=>calls.statuses.push(args),toast:(...args)=>calls.toasts.push(args),
   console:{error(){},warn(){}},
   renderAll(){calls.renders++;context.api.applyVisualPreferences();},
+  commitVisualPreference:mutation=>context.api.commitStateMutation(mutation,undefined,'',true,{preserveCalculations:true}),
+  refreshVisualPreferences(){calls.renders++;context.api.applyVisualPreferences();},
   openInterfaceSettings(){calls.reopens++;dialog.scrollTop=0;},
   normalizeCompany(){throw Error('Unexpected company normalization');},normalizeRecord(){throw Error('Unexpected record normalization');},
   normalizeOvertime(){throw Error('Unexpected overtime normalization');},normalizeLeave(){throw Error('Unexpected leave normalization');},
@@ -52,7 +54,7 @@ function fixture(){
   window:{SalaryMateCompanion:{stop:()=>calls.stops++},SalaryMateStocks:{empty:()=>({assets:[],transactions:[]}),normalize:value=>copy(value||{assets:[],transactions:[]})},SalaryMateCompTime:{normalizeCredit:copy,normalizeSettlement:copy},
    SalaryMateStorage:{setItem(name,value){assert.equal(name,'salarymate_v5_full_state');calls.writes++;if(failWrite)throw Error('Fixture quota');saved=value;}}}};
  vm.createContext(context);
- vm.runInContext(styles+calculators+visuals+normalization+saving+choices+setters+'\nglobalThis.api={normalizeInterfaceStyle,interfaceBaseStyle,normalizeAutumnBackground,normalizeHd2dBackground,applyInterfaceStyle,applyVisualPreferences,normalizeState,restoreUiPreferences,saveState,setAutumnBackground,hd2dBackgroundChoicesHtml,autumnBackgroundChoicesHtml,emptyState};',context);
+ vm.runInContext(styles+calculators+visuals+normalization+saving+choices+setters+'\nglobalThis.api={normalizeInterfaceStyle,interfaceBaseStyle,normalizeAutumnBackground,normalizeHd2dBackground,applyInterfaceStyle,applyVisualPreferences,normalizeState,restoreUiPreferences,saveState,commitStateMutation,setAutumnBackground,hd2dBackgroundChoicesHtml,autumnBackgroundChoicesHtml,emptyState};',context);
  return {context,calls,datasets,dialog,meta,api:context.api,get saved(){return saved;},fail:value=>{failWrite=value;}};
 }
 

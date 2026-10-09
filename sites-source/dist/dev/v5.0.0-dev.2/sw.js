@@ -1,4 +1,4 @@
-const CACHE='salarymate-v5-full-5.0.0-dev.2-R91';
+const CACHE='salarymate-v5-full-5.0.0-dev.2-R92';
 const BASE=new URL('./',self.location.href);
 const SCENE_CACHE='salarymate-v5-backgrounds-r79';
 const SCENES=new Map(['canyon','forest','harbor','aurora','sky','macaron'].map(id=>[id,new URL(`./art/background-${id}-r79.webp`,BASE).href]));
@@ -30,9 +30,9 @@ self.addEventListener('message',event=>{
   if(source.origin!==BASE.origin||!source.pathname.startsWith(BASE.pathname))return;
   event.waitUntil(cacheFirst(SCENE_CACHE,SCENES.get(event.data.scene)).catch(()=>{}));
 });
-const LOCALES=["./i18n-en.js?v=5.0.0-dev.2-R91","./i18n.js?v=5.0.0-dev.2-R91"];
-const STOCKS=["./google-drive.js?v=5.0.0-dev.2-R91","./google-drive-ui.js?v=5.0.0-dev.2-R91","./backup.js?v=5.0.0-dev.2-R91","./stocks.js?v=5.0.0-dev.2-R91","./stocks-integrations.js?v=5.0.0-dev.2-R91","./stocks-ui.js?v=5.0.0-dev.2-R91"];
-const SHELL=["./","./index.html","./styles.css?v=5.0.0-dev.2-R91","./bootstrap.js?v=5.0.0-dev.2-R91","./app.js?v=5.0.0-dev.2-R91","./reconcile.js?v=5.0.0-dev.2-R91","./copy-month.js?v=5.0.0-dev.2-R91","./comp-time.js?v=5.0.0-dev.2-R91","./annual-analysis.js?v=5.0.0-dev.2-R91","./legal-data.js?v=5.0.0-dev.2-R91","./legal.html","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
+const LOCALES=["./i18n-en.js?v=5.0.0-dev.2-R92","./i18n.js?v=5.0.0-dev.2-R92"];
+const STOCKS=["./google-drive.js?v=5.0.0-dev.2-R92","./google-drive-ui.js?v=5.0.0-dev.2-R92","./backup.js?v=5.0.0-dev.2-R92","./stocks.js?v=5.0.0-dev.2-R92","./stocks-integrations.js?v=5.0.0-dev.2-R92","./stocks-ui.js?v=5.0.0-dev.2-R92"];
+const SHELL=["./","./index.html","./styles.css?v=5.0.0-dev.2-R92","./bootstrap.js?v=5.0.0-dev.2-R92","./app.js?v=5.0.0-dev.2-R92","./reconcile.js?v=5.0.0-dev.2-R92","./copy-month.js?v=5.0.0-dev.2-R92","./comp-time.js?v=5.0.0-dev.2-R92","./annual-analysis.js?v=5.0.0-dev.2-R92","./legal-data.js?v=5.0.0-dev.2-R92","./legal.html","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
 const VERSIONED_URLS=new Set([...SHELL,...STOCKS,...LOCALES].filter(path=>path.includes('?v=')).map(path=>new URL(path,BASE).href));
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll([...SHELL,...STOCKS,...LOCALES])).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{

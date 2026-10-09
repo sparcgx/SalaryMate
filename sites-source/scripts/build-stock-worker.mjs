@@ -15,6 +15,11 @@ const dividends=(await readFile(path.join(root,'server/dividend-market.mjs'),'ut
 const intraday=(await readFile(path.join(root,'server/intraday-nav.mjs'),'utf8')).replace('export function createIntradayNavLookup','function createIntradayNavLookup');
 const portable=(await readFile(path.join(root,'server/portable-market.mjs'),'utf8')).replace('export function createPortableMarket','function createPortableMarket');
 const runtime=`
+function decodeStaticBody(encoded){
+ const binary=atob(encoded),bytes=new Uint8Array(binary.length);
+ for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+ return bytes;
+}
 const handleMarket=createStockMarket();
 const handlePortable=createPortableMarket(handleMarket);
 const DEV_SECURITY_HEADERS=${JSON.stringify({'content-security-policy':salaryMateCsp(),'permissions-policy':'camera=(), microphone=(), geolocation=()'})};
@@ -31,7 +36,7 @@ export default {async fetch(request){
  const headers={'content-type':file.type,'cache-control':'no-cache','x-content-type-options':'nosniff','referrer-policy':'strict-origin-when-cross-origin'};
  if(IMMUTABLE_ART.has(route)||VERSIONED_ASSETS.has(route+url.search))headers['cache-control']='public, max-age=31536000, immutable';
  if(route.startsWith('/dev/v5.0.0-dev.2/'))Object.assign(headers,DEV_SECURITY_HEADERS);
- const body=request.method==='HEAD'?null:Uint8Array.from(atob(file.body),c=>c.charCodeAt(0));
+ const body=request.method==='HEAD'?null:decodeStaticBody(file.body);
  return new Response(body,{headers});
 }};`;
 await mkdir(path.join(dist,'server'),{recursive:true});

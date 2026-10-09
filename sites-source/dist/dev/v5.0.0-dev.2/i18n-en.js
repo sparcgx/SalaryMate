@@ -2675,5 +2675,8 @@ globalThis.SalaryMateEnglish={
   "水彩玻璃、海洋圖案與窗邊暖光": "Watercolor glass, ocean motifs and warm window light",
   "適用：v5.0.0-dev.2-R91 網頁開發測試版與單一 HTML 版；說明修訂：2026-10-09。": "Applies to the v5.0.0-dev.2-R91 web development test edition and single HTML edition. Notice revised: 2026-10-09.",
   "R91 開發測試版": "R91 development test edition",
-  "R91 開發測試版 · 單一 HTML": "R91 development test edition · Single HTML"
+  "R91 開發測試版 · 單一 HTML": "R91 development test edition · Single HTML",
+  "適用：v5.0.0-dev.2-R92 網頁開發測試版與單一 HTML 版；說明修訂：2026-10-09。": "Applies to the v5.0.0-dev.2-R92 web development test edition and single HTML edition. Notice revised: 2026-10-09.",
+  "R92 開發測試版": "R92 development test edition",
+  "R92 開發測試版 · 單一 HTML": "R92 development test edition · Single HTML"
 };

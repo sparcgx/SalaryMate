@@ -130,10 +130,19 @@
       return `<aside class="stock-panel stock-allocation"><div class="stock-panel-head"><h3>持股配置</h3><span>TWD 市值</span></div>${rows.length?rows.map(s=>`<div class="stock-allocation-row"><div><span class="stock-allocation-identity">${icon(s.asset)}${user(s.asset.symbol)}</span><strong>${num(s.value/m.pricedValue*100,1)}%</strong></div><div class="stock-bar"><span style="width:${Math.max(0,Math.min(100,s.value/m.pricedValue*100))}%"></span></div><small>${money(s.value)}</small></div>`).join(''):'<p class="hint">登記買入並更新股價後，顯示持股占比。</p>'}${m.missing?'<p class="stock-warning">配置只含已有股價的持股，尚非完整組合。</p>':''}<hr><p class="hint">${api.year()} 年股息</p><strong class="stock-side-number">${money(m.yearDividends)}</strong><p class="hint">費稅後實收 · 不含未實現損益</p>${btn('登記股息','dividend')}${btn('預計配息','forecasts')}</aside>`;
     }
     function analysis(m) {
-      const rows=Array.from({length:12},(_,i)=>{
-        const es=m.events.filter(t=>t.inYear&&Number(t.date.slice(5,7))===i+1);
-        const sum=k=>es.reduce((n,t)=>n+t[k],0),profit=sum('realized'),dividend=sum('dividend');
-        return `<tr><th scope="row">${i+1} 月</th><td>${es.filter(t=>t.type==='buy').length}</td><td>${es.filter(t=>t.type==='sell').length}</td><td class="${tone(profit)}">${signed(profit)}</td><td>${money(dividend)}</td><td class="${tone(profit+dividend)}">${signed(profit+dividend)}</td></tr>`;
+      const months=Array.from({length:12},()=>({buy:0,sell:0,realized:0,dividend:0}));
+      for(const event of m.events){
+        if(!event.inYear)continue;
+        const index=Number(event.date.slice(5,7))-1;
+        if(!Number.isInteger(index)||index<0||index>=12)continue;
+        const month=months[index];
+        month.realized+=event.realized;month.dividend+=event.dividend;
+        if(event.type==='buy')month.buy++;
+        if(event.type==='sell')month.sell++;
+      }
+      const rows=months.map((month,i)=>{
+        const profit=month.realized,dividend=month.dividend;
+        return `<tr><th scope="row">${i+1} 月</th><td>${month.buy}</td><td>${month.sell}</td><td class="${tone(profit)}">${signed(profit)}</td><td>${money(dividend)}</td><td class="${tone(profit+dividend)}">${signed(profit+dividend)}</td></tr>`;
       }).join('');
       return `<div class="stock-stats">${stat('本年已實現損益',signed(m.yearRealized),'扣除賣出費稅與買入成本',tone(m.yearRealized))}${stat('本年實收股息',money(m.yearDividends),'已扣股息費用與稅額')}${stat('本年投資所得',signed(m.yearRealized+m.yearDividends),'已實現損益＋實收股息',tone(m.yearRealized+m.yearDividends))}${stat('本年記錄費稅',money(m.yearFees),'已計入成本或實收，不再重複扣除')}</div><section class="stock-panel"><div class="stock-panel-head"><h3>${api.year()} 年每月損益</h3><span>單位：TWD</span></div>${table(['月份','買入筆數','賣出筆數','已實現損益','實收股息','合計'],rows)}<p class="stock-footnote">這是記帳損益，不是年化報酬或報稅試算。手動收入未計入此股票交易分析，請見「股息與收入」。</p></section>`;
     }
@@ -168,11 +177,11 @@
     const select=(label,name,value,options)=>`<label><span class="field-label">${label}</span><select class="field-select" name="${name}">${options.map(([v,l])=>`<option value="${esc(v)}" ${v===value?'selected':''}>${esc(l)}</option>`).join('')}</select></label>`;
     const footer=(label='儲存')=>`<div class="form-actions"><button class="btn" type="button" data-action="close-dialog">取消</button><button class="btn btn-primary" type="submit">${label}</button></div>`;
     function openForm(kind,id,title,html,wide=false) {
+      cancelDialogRequests();
       api.begin({entityType:'stock-'+kind,entityId:id,companyId:'',operational:false});
       api.open(title,`<form id="stockForm" data-kind="${kind}" data-id="${esc(id)}">${html}${footer()}</form>`,wide);
     }
     function openAsset(id='',preset=null) {
-      catalogController?.abort();catalogSequence++;
       const a=p().assets.find(a=>a.id===id)||{symbol:'',name:'',market:'TW',currency:'TWD',account:'',note:'',...preset};
       const used=p().transactions.some(t=>t.assetId===id);
       openForm('asset',id,id?'編輯股票':'新增股票',`<div class="form-grid">${select('市場','market',a.market,Object.entries(markets))}${select('交易幣別','currency',a.currency,['TWD','USD','HKD','JPY','EUR'].map(x=>[x,x]))}${field('股票代號 *','symbol',a.symbol,'required maxlength="24" placeholder="例如：2330、0050、AAPL"')}${field('股票／ETF 名稱 *','name',a.name,'required maxlength="80"')}<div class="span-2 stock-lookup-row">${btn('查詢名稱','lookup')}<span id="stockLookupStatus" role="status">輸入代號後自動查詢，也可手動填寫名稱。</span></div>${field('券商／帳戶（選填）','account',a.account,'maxlength="60" placeholder="例如：證券帳戶 A"')}${field('備註','note',a.note,'maxlength="200"')}</div><p class="stock-footnote">${used?'已有交易的股票不可更換幣別；不同帳戶可分開建立同一股票。':'建立後可先放入觀察清單，再登記買入；股數以「股」為單位，支援零股與小數股。'}</p>`);
@@ -194,13 +203,14 @@
         status.textContent='正在處理圖片…';
         const data=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>reject(Error('圖片無法讀取。'));r.readAsDataURL(file);});
         const img=await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(Error('圖片無法讀取。'));img.src=data;});
+        if(!form.isConnected||form._iconSequence!==seq||!root.document?.querySelector('#appDialog')?.open)return;
         const canvas=document.createElement('canvas');canvas.width=canvas.height=96;const ctx=canvas.getContext('2d'),scale=Math.min(96/img.width,96/img.height);ctx.drawImage(img,(96-img.width*scale)/2,(96-img.height*scale)/2,img.width*scale,img.height*scale);
         if(!form.isConnected||form._iconSequence!==seq)return;
         form._iconData=canvas.toDataURL('image/png');form.elements.iconMode.value='custom';iconPreview(form);status.textContent='圖示已就緒，儲存股票後生效。';
       }catch(e){if(form.isConnected&&form._iconSequence===seq)status.textContent=e.message;}
     }
     function openCatalog(){
-      catalogController?.abort();catalogSequence++;catalogItems=[];
+      cancelDialogRequests();catalogItems=[];
       api.open('找股票',`<form id="stockCatalogForm" class="stock-catalog-search"><label><span class="sr-only">股票代號、名稱或產業</span><input name="query" type="search" class="field" maxlength="80" placeholder="輸入台股代號、名稱或產業"></label><button class="btn btn-primary" type="submit">搜尋</button>${btn('手動新增','asset')}</form><p class="hint">上市、上櫃與 ETF，依最近收盤成交量排序。加入清單後可登記買入。</p><div id="stockCatalogResults" aria-live="polite"></div>`,true);
       void searchCatalog('');
     }
@@ -439,12 +449,35 @@
       finally{if(sequence===dividendSequence&&root.document?.querySelector('#stockForm')===form){button.disabled=false;button.removeAttribute('aria-busy');root.SalaryMateI18n.apply(form);}}
     }
     let batchDraft=null;
+    // Cancel presentation requests without changing saved quotes or the forecast clock.
+    function cancelDialogRequests() {
+      clearTimeout(lookupTimer);lookupTimer=null;
+      catalogSequence++;lookupSequence++;dividendSequence++;
+      catalogController?.abort();catalogController=null;
+      lookupController?.abort();lookupController=null;
+      dividendController?.abort();dividendController=null;
+      const form=root.document?.querySelector('#stockForm');
+      if(form){
+        form._dividendKey='';form._iconSequence=(form._iconSequence||0)+1;
+        const button=form.querySelector('[data-stock="lookup-dividends"]');
+        if(button){button.disabled=false;button.removeAttribute('aria-busy');}
+      }
+      if(batchDraft){
+        batchDraft.dividendController?.abort();batchDraft.dividendController=null;
+        batchDraft.dividendCache.clear();
+        for(const row of batchRows()){
+          row._dividendSequence=(row._dividendSequence||0)+1;
+          row._dividendPending=false;row._dividendKey='';
+        }
+      }
+    }
     const batchValue=(row,name)=>row.querySelector(`[name="${name}"]`);
     const batchRows=()=>[...document.querySelectorAll('#stockBatchRows [data-batch-row]')];
     const batchData=row=>Object.fromEntries([...row.querySelectorAll('input,select')].filter(x=>x.name&&!x.disabled).map(x=>[x.name,x.type==='checkbox'?x.checked:x.value]));
     function openBatch() {
+      cancelDialogRequests();
       if(!p().assets.length){api.toast('請先新增一檔股票，再登記交易。');openAsset();return;}
-      batchDraft={baseline:JSON.stringify(p()),id:api.id('batch'),review:null,dividendCache:new Map()};
+      batchDraft={baseline:JSON.stringify(p()),id:api.id('batch'),review:null,dividendCache:new Map(),dividendController:null};
       api.begin({entityType:'stock-batch',entityId:batchDraft.id,companyId:'',operational:false});
       api.open('批次交易',`<form id="stockBatchForm"><p class="hint">每批最多 100 筆。先輸入並核對，全部通過後一次儲存；股數以「股」為單位。</p><details class="stock-batch-paste"><summary>從 Excel 貼上買賣</summary><p class="hint">欄位順序：類型、日期、時間、股票代號、股數、成交價、手續費、稅額、匯率、帳戶。用 Tab 分隔；類型填買入／賣出或 buy／sell。日期填 YYYY-MM-DD，時間可留空。同代號有多個帳戶時須填帳戶。</p><label><span class="field-label">貼上交易資料</span><textarea class="field" id="stockBatchPaste" rows="4" maxlength="100000" placeholder="買入&#9;2026-10-01&#9;09:00&#9;0050&#9;1000&#9;60&#9;20&#9;0&#9;1"></textarea></label>${btn('加入草稿','batch-paste')}</details><div id="stockBatchRows"></div><div class="stock-batch-toolbar">${btn('新增一筆','batch-add')}<span id="stockBatchCount" class="hint"></span></div><div id="stockBatchPreview" aria-live="polite"></div><div class="form-actions"><button class="btn" type="button" data-action="close-dialog">取消</button>${btn('預覽核對','batch-preview')}<button class="btn btn-primary" type="submit" disabled>確認整批儲存</button></div></form>`,true);
       appendBatchRow();
@@ -498,7 +531,7 @@
         if(JSON.stringify(p())!==batchDraft.baseline)throw Error('投資資料已變更，請重新開啟批次交易。');
         if(review.result.duplicates.length&&!form.querySelector('#stockBatchDuplicates')?.checked)throw Error('請先確認重複交易。');
         const result=core.prepareBatch(p(),JSON.parse(review.rows),api.today()),count=result.events.length;
-        if(api.commit(()=>{api.state().stockPortfolio=result.next;},'批次交易未儲存，原資料保持不變。')){batchDraft=null;view.tab='transactions';view.search='';view.filter='all';api.close();renderKeepingScroll();api.toast(`已儲存 ${count} 筆交易`);}
+        if(api.commit(()=>{api.state().stockPortfolio=result.next;},'批次交易未儲存，原資料保持不變。')){cancelDialogRequests();batchDraft=null;view.tab='transactions';view.search='';view.filter='all';api.close();renderKeepingScroll();api.toast(`已儲存 ${count} 筆交易`);}
       }catch(e){api.error(form,e.message);}
     }
     function pasteBatch() {
@@ -524,8 +557,8 @@
       }catch(e){api.error(form,e.message);}
     }
     async function loadBatchDividend(row,force=false) {
-      const draft=batchDraft;if(!draft||batchValue(row,'type').value!=='dividend')return;
-      const active=()=>!!root.document?.querySelector('#stockBatchForm')&&row.isConnected&&batchDraft===draft;
+      const draft=batchDraft;if(!draft||!root.document?.querySelector('#appDialog')?.open||batchValue(row,'type').value!=='dividend')return;
+      const active=()=>!!root.document?.querySelector('#appDialog')?.open&&!!root.document?.querySelector('#stockBatchForm')&&row.isConnected&&batchDraft===draft;
       const a=p().assets.find(a=>a.id===batchValue(row,'assetId').value),date=batchValue(row,'date').value,year=Number(date.slice(0,4));
       const status=row.querySelector('[data-batch-dividend-status]'),period=batchValue(row,'dividendPeriod'),key=a.id+':'+year,seq=(row._dividendSequence||0)+1;row._dividendSequence=seq;
       const show=()=>{period.innerHTML='<option value="">選擇配息期別</option>'+row._dividendRows.map((r,i)=>`<option value="${i}" ${r.cashDividend==null||r.exDividendDate>batchValue(row,'date').value?'disabled':''}>${esc(r.exDividendDate)} · ${r.cashDividend==null?'金額待公告':num(r.cashDividend,8)+' TWD／每股'}${r.paymentDate?' · '+esc(r.paymentDate):''}</option>`).join('');if(batchValue(row,'autoDividend').checked){const selected=services.dividendPeriod(row._dividendRows,batchValue(row,'date').value);period.value=selected<0?'':String(selected);if(selected>=0)applyBatchDividend(row);else{if(row._dividendAnnouncement){batchValue(row,'exDividendDate').value='';batchValue(row,'cashDividend').value='';row._dividendAnnouncement=null;invalidateBatch();}status.textContent='尚無可匹配的公告，或公告有多個金額，請選擇期別或手動填寫。';}}root.SalaryMateI18n.apply(row);};
@@ -533,13 +566,15 @@
       row._dividendKey=key;row._dividendRows=null;row._dividendPending=false;period.innerHTML='';
       if(a.market!=='TW'||a.currency!=='TWD'){status.textContent='官方公告查詢目前支援台股股票與 ETF；其他市場請依發行人公告填寫。';root.SalaryMateI18n.apply(row);return;}
       const cacheKey=a.symbol+':'+year;status.textContent='正在查詢官方配息公告…';row._dividendPending=true;invalidateBatch();root.SalaryMateI18n.apply(row);
+      let pending;
       try {
+        if(!draft.dividendController||draft.dividendController.signal.aborted)draft.dividendController=new AbortController();
         if(force)draft.dividendCache.delete(cacheKey);
-        if(!draft.dividendCache.has(cacheKey))draft.dividendCache.set(cacheKey,services.dividends(a.market,a.symbol,year));
-        const data=await draft.dividendCache.get(cacheKey);
+        if(!draft.dividendCache.has(cacheKey))draft.dividendCache.set(cacheKey,services.dividends(a.market,a.symbol,year,draft.dividendController.signal));
+        pending=draft.dividendCache.get(cacheKey);const data=await pending;
         if(!active()||seq!==row._dividendSequence||batchValue(row,'type').value!=='dividend')return;
         row._dividendRows=data.announcements.filter(r=>r.symbol===a.symbol&&r.market===a.market&&r.currency===a.currency&&core.dateOK(r.exDividendDate)&&(r.cashDividend===null||typeof r.cashDividend==='number'&&Number.isFinite(r.cashDividend)&&r.cashDividend>=0));row._dividendPending=false;status.textContent='請核對配息期別，股息總額依實際入帳明細填寫。';show();
-      }catch(e){draft.dividendCache.delete(cacheKey);if(active()&&seq===row._dividendSequence){status.textContent='官方公告查詢失敗，原欄位保留。';row._dividendKey='';}}
+      }catch(e){if(draft.dividendCache.get(cacheKey)===pending)draft.dividendCache.delete(cacheKey);if(active()&&seq===row._dividendSequence){status.textContent='官方公告查詢失敗，原欄位保留。';row._dividendKey='';}}
       finally{if(active()&&seq===row._dividendSequence){row._dividendPending=false;root.SalaryMateI18n.apply(row);}}
     }
     function applyBatchDividend(row) {
@@ -659,7 +694,7 @@
       }catch(e){if(seq===lookupSequence&&document.querySelector('#stockForm')===form)status.textContent=e.message;}
     }
     function openImport() {
-      importDraft=null;
+      cancelDialogRequests();importDraft=null;
       api.open('匯入 SmartPortfolio 備份',`<p>選擇智投資 SmartPortfolio 匯出的完整 JSON 備份。會先預覽，確認後才加入投資資料。</p><label class="stock-import-file"><span class="field-label">備份檔（最多 10 MB）</span><input id="smartPortfolioFile" type="file" accept="application/json,.json"></label><p class="hint">新增到 SmartPortfolio 帳戶；薪資、公司與既有投資紀錄會保留。匯入持股、交易及現金股息；收益目標、提醒與介面設定保留於原檔。檔案不會上傳到行情服務。</p><p id="stockImportReadStatus" role="status"></p>`);
     }
     async function readImport(file) {
@@ -779,14 +814,14 @@
       root.SalaryMateScrollbars?.refresh();
     },true);
     root.document.addEventListener('visibilitychange',()=>{
-      if(root.document.hidden){clearTimeout(marketTimer);marketTimer=null;marketController?.abort();pauseForecasts();return;}
+      if(root.document.hidden){cancelDialogRequests();clearTimeout(marketTimer);marketTimer=null;marketController?.abort();pauseForecasts();return;}
       if(!onInvestment()||root.document.querySelector('#appDialog')?.open)return;
       queueMarket();resumeForecasts();
     });
     function resumeForecasts(){if(!forecastInactive()){renderKeepingScroll();queueForecasts();}}
     root.addEventListener?.('offline',()=>{pauseForecasts();if(onInvestment()&&view.tab==='income')renderKeepingScroll();});
     root.addEventListener?.('online',resumeForecasts);
-    root.addEventListener?.('pagehide',pauseForecasts);
+    root.addEventListener?.('pagehide',()=>{cancelDialogRequests();pauseForecasts();});
     root.addEventListener?.('pageshow',resumeForecasts);
     root.document.addEventListener('keydown',event=>{if(event.key==='Escape'&&root.document.querySelector('.stock-action-menu-wrap.is-open')){event.preventDefault();closeStockActions(true);}});
     function click(el) {
@@ -845,6 +880,6 @@
       if(['stockSearchForm','stockListForm'].includes(form.id)){const d=new FormData(form);view.search=String(d.get('search')||'').trim();view.filter=String(d.get('filter')||'all');view.sort=String(d.get('sort')||view.sort);view.exchange=String(d.get('exchange')||'');view.category=String(d.get('category')||'');view.favorites=d.has('favorites');renderKeepingScroll();return true;}
       return false;
     }
-    return {render,click,submit,updateTradeForm,onInput,onChange,suspend:pauseForecasts,importFile:file=>{openImport();return readImport(file);}};
+    return {render,click,submit,updateTradeForm,onInput,onChange,cancelDialogRequests,suspend:()=>{cancelDialogRequests();pauseForecasts();},importFile:file=>{openImport();return readImport(file);}};
   }};
 })(globalThis);

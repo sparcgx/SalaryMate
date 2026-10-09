@@ -7,14 +7,19 @@
   try{const value=localStorage.getItem(KEY);if(['zh','en','auto'].includes(value))preference=value;}catch{}
   const systemLanguage=()=>String(navigator.languages?.[0]||navigator.language||'zh-TW').toLowerCase().startsWith('zh')?'zh':'en';
   const language=()=>preference==='auto'?systemLanguage():preference;
-  const entries=Object.entries(root.SalaryMateEnglish||{}).sort((a,b)=>b[0].length-a[0].length);
-  const exact=new Map(entries),phrases=entries.filter(([key])=>key.length>1);
+  let exact,phrases;
+  function prepareDictionary(){
+    if(exact)return;
+    const entries=Object.entries(root.SalaryMateEnglish||{}).sort((a,b)=>b[0].length-a[0].length);
+    exact=new Map(entries);phrases=entries.filter(([key])=>key.length>1);
+  }
   const segments=new Map(),userParts=/(\uE100[^\uE101]*\uE101)/g;
   let pattern;
   const phrasePattern=()=>pattern||(pattern=new RegExp(phrases.map(([key])=>key.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|'),'g'));
   function segment(text){
     if(language()!=='en')return text;
     if(!/\p{Script=Han}/u.test(text))return text;
+    prepareDictionary();
     if(segments.has(text))return segments.get(text);
     const trimmed=text.trim();
     const translated=exact.has(trimmed)?text.replace(trimmed,exact.get(trimmed)):text.replace(/共\s*(\d+)\s*家公司/g,'$1 companies').replace(/(\d{4})\s*對\s*(\d{4})/g,'$1 vs. $2')

@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0-dev.2-R91';
+    const APP_VERSION = '5.0.0-dev.2-R92';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -340,7 +340,7 @@
       const kind = ['home','heading','quiet','toast','preview','interactive'].includes(variant) ? variant : 'heading';
       if (kind !== 'preview' && interfaceBaseStyle(ui.interfaceStyle) !== 'pixel') return '';
       if (kind === 'interactive') return `<button type="button" class="v5-companion v5-companion--interactive" data-action="jingyu-fly" aria-label="晶羽：點一下飛行，再點停止" aria-pressed="false" title="點一下，晶羽陪你飛一圈"><img class="v5-companion-art" src="${HD2D_COMPANION_SRC}" width="128" height="128" alt="" decoding="async" draggable="false"></button>`;
-      return `<span class="v5-companion v5-companion--${kind}" aria-hidden="true"><img class="v5-companion-art" src="${HD2D_COMPANION_SRC}" width="128" height="128" alt="" decoding="async" draggable="false">${kind === 'home' ? '<span class="v5-companion-name">晶羽</span>' : ''}</span>`;
+      return `<span class="v5-companion v5-companion--${kind}" aria-hidden="true"><img class="v5-companion-art" src="${HD2D_COMPANION_SRC}" width="128" height="128" alt="" decoding="async"${kind === 'preview' ? ' loading="lazy"' : ''} draggable="false">${kind === 'home' ? '<span class="v5-companion-name">晶羽</span>' : ''}</span>`;
     };
     const normalizeSurfaceOpacity = value => value === 'transparent' ? 'translucent' : ['translucent','frosted','dynamic','multi-dynamic'].includes(value) ? value : 'frosted';
     // Retain R52's saved background choice only for backup compatibility.
@@ -891,9 +891,9 @@
       }
     };
 
-    const saveState = (resetSnapshots = false) => {
+    const saveState = (resetSnapshots = false, { preserveCalculations = false } = {}) => {
       try {
-        invalidateCalculationCache();
+        if (!preserveCalculations) invalidateCalculationCache();
         state.schemaVersion = SCHEMA_VERSION;
         state.appVersion = APP_VERSION;
         state.uiPreferences = {
@@ -929,7 +929,7 @@
       }
     };
 
-    const commitStateMutation = (mutation, failureMessage = '儲存失敗。原本資料保持不變，請重新嘗試。', operationKey = '', rememberSuccessfulSubmit = true) => {
+    const commitStateMutation = (mutation, failureMessage = '儲存失敗。原本資料保持不變，請重新嘗試。', operationKey = '', rememberSuccessfulSubmit = true, saveOptions = undefined) => {
       const scope = ui.draftScope;
       const key = operationKey || (scope
         ? `commit:${scope.operationId || scope.entityType}:${scope.companyId || 'none'}:${scope.entityId || 'new'}:${scope.payrollMonth || ''}`
@@ -945,7 +945,7 @@
       setOperationStatus('submitting', 'commit', '正在安全儲存…');
       try {
         mutation();
-        if (saveState()) {
+        if (saveState(false, saveOptions)) {
           succeeded = true;
           setOperationStatus('idle');
           return true;
@@ -3335,6 +3335,7 @@
     };
 
     const closeDialog = () => {
+      stocksUI.cancelDialogRequests();
       const dialog = $('#appDialog');
       const active = document.activeElement;
       if (dialog.contains?.(active) && typeof active?.blur === 'function') active.blur();
@@ -3387,11 +3388,21 @@
       dialog.classList.add('interface-settings-dialog');
     };
 
+    // Only these appearance-only mutations may retain business calculations.
+    // Ordinary data writes and every failed rollback still invalidate caches.
+    const commitVisualPreference = mutation => commitStateMutation(mutation, undefined, '', true, { preserveCalculations: true });
+    const refreshVisualPreferences = saved => {
+      if (!saved) { renderAll(); return; }
+      applyVisualPreferences();
+      $('#mainContent')?.setAttribute('aria-busy', 'false');
+      $$('#mainContent > .operation-state').forEach(notice => notice.remove());
+    };
+
     const setInterfaceStyle = value => {
       const before = ui.interfaceStyle;
       const next = normalizeInterfaceStyle(value);
       if (next === before) return;
-      const saved = commitStateMutation(() => { ui.interfaceStyle = next; });
+      const saved = commitVisualPreference(() => { ui.interfaceStyle = next; });
       if (!saved) ui.interfaceStyle = before;
       renderAll();
       openInterfaceSettings();
@@ -3405,9 +3416,9 @@
       if (next === before) return;
       const dialog = $('#appDialog');
       const scrollTop = dialog?.scrollTop || 0;
-      const saved = commitStateMutation(() => { ui.surfaceOpacity = next; });
+      const saved = commitVisualPreference(() => { ui.surfaceOpacity = next; });
       if (!saved) ui.surfaceOpacity = before;
-      renderAll();
+      refreshVisualPreferences(saved);
       openInterfaceSettings();
       if (dialog) dialog.scrollTop = scrollTop;
       $(`input[name="surfaceOpacity"][value="${ui.surfaceOpacity}"]`)?.focus({ preventScroll: true });
@@ -3421,9 +3432,9 @@
       if (next === before) return;
       const dialog = $('#appDialog');
       const scrollTop = dialog?.scrollTop || 0;
-      const saved = commitStateMutation(() => { ui.hd2dBackground = next; });
+      const saved = commitVisualPreference(() => { ui.hd2dBackground = next; });
       if (!saved) ui.hd2dBackground = before;
-      renderAll();
+      refreshVisualPreferences(saved);
       openInterfaceSettings();
       if (dialog) dialog.scrollTop = scrollTop;
       $(`input[name="hd2dBackground"][value="${ui.hd2dBackground}"]`)?.focus({ preventScroll: true });
@@ -3437,9 +3448,9 @@
       if (next === before) return;
       const dialog = $('#appDialog');
       const scrollTop = dialog?.scrollTop || 0;
-      const saved = commitStateMutation(() => { ui.autumnBackground = next; });
+      const saved = commitVisualPreference(() => { ui.autumnBackground = next; });
       if (!saved) ui.autumnBackground = before;
-      renderAll();
+      refreshVisualPreferences(saved);
       openInterfaceSettings();
       if (dialog) dialog.scrollTop = scrollTop;
       $(`input[name="autumnBackground"][value="${ui.autumnBackground}"]`)?.focus({ preventScroll: true });
@@ -3454,9 +3465,9 @@
       const body = dialog.querySelector('.dialog-body');
       const choice = dialog.querySelector(`[data-action="set-interface-mode"][data-mode="${nextMode}"]`);
       const offset = body && choice ? choice.getBoundingClientRect().top - body.getBoundingClientRect().top : null;
-      const saved = commitStateMutation(() => { ui.interfaceMode = nextMode; });
+      const saved = commitVisualPreference(() => { ui.interfaceMode = nextMode; });
       if (!saved) ui.interfaceMode = before;
-      renderAll();
+      refreshVisualPreferences(saved);
       // Keep the native scroll container and touched controls alive during a density change.
       dialog.querySelectorAll('[data-action="set-interface-mode"]').forEach(button => {
         const selected = button.dataset.mode === ui.interfaceMode || button.dataset.mode === 'minimal' && ui.interfaceMode === 'standard';
@@ -3472,9 +3483,9 @@
       const nextTheme = normalizeColorTheme(value);
       const before = ui.colorTheme;
       if (nextTheme === before) return;
-      const saved = commitStateMutation(() => { ui.colorTheme = nextTheme; });
+      const saved = commitVisualPreference(() => { ui.colorTheme = nextTheme; });
       if (!saved) ui.colorTheme = before;
-      renderAll();
+      refreshVisualPreferences(saved);
       openInterfaceSettings();
       $(`[data-action="set-color-theme"][data-theme="${ui.colorTheme}"]`)?.focus({ preventScroll: true });
       if (saved) toast(`已套用「${COLOR_THEMES[nextTheme].name}」配色`);

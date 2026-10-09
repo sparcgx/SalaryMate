@@ -7,7 +7,12 @@
     const client=g.createClient(state=>{if(!state.connected){stopAuto(false);files=[];pageToken='';lastSaved='';lastFingerprint='';}refreshStatus();});
     const $=selector=>root.document.querySelector(selector),panel=()=>$('#googleDrivePanel'),active=el=>!!el?.isConnected&&!!$('#appDialog')?.open;
     const text=value=>root.SalaryMateI18n?.text(value)||value;
-    const fingerprint=payload=>{const {exportInfo,updatedAt,uiPreferences,...data}=payload;return JSON.stringify(data);};
+    // Capture saved visual choices without backing up every filter movement.
+    const visualPreferenceKeys=['interfaceStyle','hd2dBackground','autumnBackground','surfaceOpacity','motionEffect','interfaceMode','colorTheme'];
+    const fingerprint=payload=>{
+      const {exportInfo,updatedAt,uiPreferences,...data}=payload;
+      return JSON.stringify({...data,uiPreferences:Object.fromEntries(visualPreferenceKeys.map(key=>[key,uiPreferences?.[key]]))});
+    };
     const localTime=value=>value?new Date(value).toLocaleString(root.SalaryMateI18n?.language?.()==='en'?'en-US':'zh-TW'):'';
     function summary(){return auto?'Google Drive 自動儲存已開啟':client.status().connected?'Google Drive 已連線':'儲存至自己的 Google Drive，可選密碼加密';}
     function refreshStatus(){
