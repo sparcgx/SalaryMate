@@ -27,7 +27,7 @@ const visuals=section(app,'    const normalizeInterfaceStyle =','    const month
 const normalization=section(app,'    const normalizeState =','    const ensureSupportedSchema =');
 const saving=section(app,'    const saveState =','    const getCompany =');
 const choices=section(app,'    const hd2dBackgroundChoicesHtml =','    const surfaceMotionInfoHtml =');
-const setters=section(app,'    const setAutumnBackground =','    const setInterfaceMode =');
+const setters=section(app,'    const setVisualChoice =','    const setInterfaceMode =');
 
 function fixture(){
  let failWrite=false,saved;

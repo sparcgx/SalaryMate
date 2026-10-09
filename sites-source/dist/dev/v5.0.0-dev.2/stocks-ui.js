@@ -120,20 +120,70 @@
     const EVENT_PAGE_SIZE=50;
     const eventPages=new Map(),eventFrames=new Map();
     let eventGeneration=0;
-    function eventTable(events,showActions=true,{scope='transactions',paged=true,signature=JSON.stringify([api.year(),view.tab,view.search,view.filter])}={}) {
-      const previousFrame=eventFrames.get(scope);
-      const hasDividends=previousFrame?.events===events?previousFrame.hasDividends:events.some(t=>t.type==='dividend'),dividendsOnly=previousFrame?.events===events?previousFrame.dividendsOnly:events.every(t=>t.type==='dividend');
-      const prior=eventPages.get(scope),pages=Math.max(1,Math.ceil(events.length/EVENT_PAGE_SIZE));
-      const page=paged&&prior?.signature===signature?Math.max(0,Math.min(pages-1,prior.page)):0;
-      eventPages.set(scope,{page,signature,pages});
-      const end=events.length-(paged?page*EVENT_PAGE_SIZE:0),start=paged?Math.max(0,end-EVENT_PAGE_SIZE):0;
-      const visible=events.slice(start,end).reverse(),generation=++eventGeneration;
-      eventFrames.set(scope,{events,hasDividends,dividendsOnly,showActions,options:{scope,paged,signature},generation,sales:new Map(visible.filter(t=>t.type==='sell').map(t=>[t.id,t]))});
-      const pager=paged&&events.length>EVENT_PAGE_SIZE?`<nav class="stock-event-pages" aria-label="交易分頁"><span role="status"><span>顯示</span> ${page*EVENT_PAGE_SIZE+1}–${Math.min(events.length,(page+1)*EVENT_PAGE_SIZE)} / ${events.length} <span>筆</span></span><div class="page-actions"><button type="button" class="btn" data-stock="event-page" data-scope="${esc(scope)}" data-generation="${generation}" data-page="${page-1}" ${page===0?'disabled':''}>上一頁</button><span>${page+1} / ${pages}</span><button type="button" class="btn" data-stock="event-page" data-scope="${esc(scope)}" data-generation="${generation}" data-page="${page+1}" ${page===pages-1?'disabled':''}>下一頁</button></div></nav>`:'';
-
-      if(!events.length)return '<div class="stock-empty"><h3>此範圍尚無紀錄</h3><p>可切換年度，或登記一筆交易。</p></div>';
-      const markup=table([dividendsOnly?'入帳日期／時間':'日期／時間','股票',...(hasDividends?['除息日期','現金股利']:[]),'類型','股數／金額','成交價／匯率','費用＋稅額','現金流 TWD','已實現損益 TWD',...(showActions?['操作']:[])],visible.map(t=>`<tr><td>${esc(t.date)}<small>${esc(t.time)}</small></td><td class="stock-asset-cell">${assetName(t.asset)}<small class="stock-event-note">${(t.asset.account?user(t.asset.account):'未分帳戶')}${t.note?' · '+user(t.note):''}</small></td>${hasDividends?`<td>${t.type==='dividend'&&t.exDividendDate?esc(t.exDividendDate):'—'}</td><td>${t.type==='dividend'&&t.cashDividend!=null?`${num(t.cashDividend,8)} ${t.asset.currency}<small>每股</small>`:'—'}</td>`:''}<td>${badge(types[t.type],`stock-${t.type}`)}</td><td>${t.type==='dividend'?num(t.amount)+' '+t.asset.currency:t.type==='split'?'× '+num(t.ratio,6):num(t.quantity,6)+' 股'}</td><td>${['buy','sell','opening'].includes(t.type)?num(t.price,4)+' '+t.asset.currency:'—'}<small>匯率 ${num(t.fx,6)}</small></td><td>${num(t.fee+t.tax)} ${t.asset.currency}</td><td class="${tone(t.cash)}">${signed(t.cash)}</td><td class="${tone(t.realized)}">${t.type==='sell'?signed(t.realized)+fifoDetail(t,scope,generation):'—'}</td>${showActions?`<td><div class="stock-row-actions">${btn('編輯','transaction',t.id)}${btn('刪除','delete-transaction',t.id)}</div></td>`:''}</tr>`).join(''),'stock-ledger stock-events-table');
-      return `<section data-stock-event-scope="${esc(scope)}">${markup}${pager}</section>`;
+    // Pagination state and rendered-event snapshots stay together; presentation
+    // helpers below only format this snapshot and never recalculate transactions.
+    function prepareEventFrame(events, showActions, options) {
+      const { scope, paged, signature } = options;
+      const previous = eventFrames.get(scope);
+      const sameEvents = previous?.events === events;
+      const hasDividends = sameEvents ? previous.hasDividends : events.some(t => t.type === 'dividend');
+      const dividendsOnly = sameEvents ? previous.dividendsOnly : events.every(t => t.type === 'dividend');
+      const prior = eventPages.get(scope);
+      const pages = Math.max(1, Math.ceil(events.length / EVENT_PAGE_SIZE));
+      const page = paged && prior?.signature === signature ? Math.max(0, Math.min(pages - 1, prior.page)) : 0;
+      eventPages.set(scope, { page, signature, pages });
+      const end = events.length - (paged ? page * EVENT_PAGE_SIZE : 0);
+      const start = paged ? Math.max(0, end - EVENT_PAGE_SIZE) : 0;
+      const visible = events.slice(start, end).reverse();
+      const frame = {
+        events, hasDividends, dividendsOnly, showActions, options,
+        generation: ++eventGeneration,
+        sales: new Map(visible.filter(t => t.type === 'sell').map(t => [t.id, t]))
+      };
+      eventFrames.set(scope, frame);
+      return { frame, visible, page, pages };
+    }
+    function eventColumns({ dividendsOnly, hasDividends, showActions }) {
+      return [dividendsOnly ? '入帳日期／時間' : '日期／時間', '股票',
+        ...(hasDividends ? ['除息日期', '現金股利'] : []),
+        '類型', '股數／金額', '成交價／匯率', '費用＋稅額', '現金流 TWD', '已實現損益 TWD',
+        ...(showActions ? ['操作'] : [])];
+    }
+    function eventDividendCells(t) {
+      const date = t.type === 'dividend' && t.exDividendDate ? esc(t.exDividendDate) : '—';
+      const amount = t.type === 'dividend' && t.cashDividend != null
+        ? `${num(t.cashDividend,8)} ${t.asset.currency}<small>每股</small>` : '—';
+      return `<td>${date}</td><td>${amount}</td>`;
+    }
+    function eventQuantity(t) {
+      if (t.type === 'dividend') return num(t.amount) + ' ' + t.asset.currency;
+      if (t.type === 'split') return '× ' + num(t.ratio,6);
+      return num(t.quantity,6) + ' 股';
+    }
+    function eventRow(t, { hasDividends, showActions, generation, options: { scope } }) {
+      return `<tr><td>${esc(t.date)}<small>${esc(t.time)}</small></td>` +
+        `<td class="stock-asset-cell">${assetName(t.asset)}<small class="stock-event-note">${(t.asset.account?user(t.asset.account):'未分帳戶')}${t.note?' · '+user(t.note):''}</small></td>` +
+        `${hasDividends?eventDividendCells(t):''}<td>${badge(types[t.type],`stock-${t.type}`)}</td>` +
+        `<td>${eventQuantity(t)}</td>` +
+        `<td>${['buy','sell','opening'].includes(t.type)?num(t.price,4)+' '+t.asset.currency:'—'}<small>匯率 ${num(t.fx,6)}</small></td>` +
+        `<td>${num(t.fee+t.tax)} ${t.asset.currency}</td>` +
+        `<td class="${tone(t.cash)}">${signed(t.cash)}</td>` +
+        `<td class="${tone(t.realized)}">${t.type==='sell'?signed(t.realized)+fifoDetail(t,scope,generation):'—'}</td>` +
+        `${showActions?`<td><div class="stock-row-actions">${btn('編輯','transaction',t.id)}${btn('刪除','delete-transaction',t.id)}</div></td>`:''}</tr>`;
+    }
+    function eventPager(total, page, pages, { generation, options: { scope, paged } }) {
+      if (!paged || total <= EVENT_PAGE_SIZE) return '';
+      return `<nav class="stock-event-pages" aria-label="交易分頁"><span role="status"><span>顯示</span> ${page*EVENT_PAGE_SIZE+1}–${Math.min(total,(page+1)*EVENT_PAGE_SIZE)} / ${total} <span>筆</span></span><div class="page-actions"><button type="button" class="btn" data-stock="event-page" data-scope="${esc(scope)}" data-generation="${generation}" data-page="${page-1}" ${page===0?'disabled':''}>上一頁</button><span>${page+1} / ${pages}</span><button type="button" class="btn" data-stock="event-page" data-scope="${esc(scope)}" data-generation="${generation}" data-page="${page+1}" ${page===pages-1?'disabled':''}>下一頁</button></div></nav>`;
+    }
+    function eventTable(events, showActions = true, {
+      scope = 'transactions', paged = true,
+      signature = JSON.stringify([api.year(), view.tab, view.search, view.filter])
+    } = {}) {
+      const { frame, visible, page, pages } = prepareEventFrame(events, showActions, { scope, paged, signature });
+      if (!events.length) return '<div class="stock-empty"><h3>此範圍尚無紀錄</h3><p>可切換年度，或登記一筆交易。</p></div>';
+      const rows = visible.map(t => eventRow(t, frame)).join('');
+      const markup = table(eventColumns(frame), rows, 'stock-ledger stock-events-table');
+      return `<section data-stock-event-scope="${esc(scope)}">${markup}${eventPager(events.length, page, pages, frame)}</section>`;
     }
     function fifoDetail(t,scope,generation) {
       return `<details class="stock-fifo" data-fifo-scope="${esc(scope)}" data-fifo-generation="${generation}" data-fifo-id="${esc(t.id)}"><summary>FIFO 成本 ${money(t.costBasisTwd)}</summary><div data-stock-fifo data-loaded="false"></div></details>`;

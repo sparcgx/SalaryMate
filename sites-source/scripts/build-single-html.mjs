@@ -3,6 +3,7 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {salaryMateCsp} from '../server/security-policy.mjs';
 import './build-locales.mjs';
+import {embedPortableArtwork} from './lib/portable-artwork.mjs';
 
 const output=process.argv[2],origin=process.argv[3];
 if(!output||!path.isAbsolute(output)||!origin||new URL(origin).protocol!=='https:'||new URL(origin).origin!==origin)throw new Error('Usage: node build-single-html.mjs /absolute/output.html https://verified-site-origin');
@@ -24,33 +25,7 @@ if(location.protocol==='file:')for(const name of ['pushState','replaceState']){
 for(const match of scripts){
   const name=match[1];if(path.basename(name)!==name)throw new Error('Unexpected module path');
   let source=await readFile(path.join(base,name),'utf8');
-  if(name==='app.js'){
-    const companionPath='./art/jingyu-hd2d-r74.png';
-    const marker="const HD2D_COMPANION_SRC = '"+companionPath+"';";
-    if(!source.includes(marker))throw new Error('Missing HD-2D companion asset declaration');
-    const bytes=await readFile(path.join(base,companionPath));
-    source=source.replace(marker,()=>"const HD2D_COMPANION_SRC = 'data:image/png;base64,"+bytes.toString('base64')+"';");
-    const flightPaths=['a','b','c','d'].map(id=>'./art/jingyu-flight-r73-'+id+'.png');
-    const flightMarker='const HD2D_FLIGHT_SOURCES = Object.freeze('+JSON.stringify(flightPaths)+');';
-    if(!source.includes(flightMarker))throw new Error('Missing HD-2D flight plates declaration');
-    const flightSources=await Promise.all(flightPaths.map(async name=>'data:image/png;base64,'+(await readFile(path.join(base,name))).toString('base64')));
-    source=source.replace(flightMarker,()=>'const HD2D_FLIGHT_SOURCES = Object.freeze('+JSON.stringify(flightSources)+');');
-    const castPath='./art/jingyu-cast-r76.png';
-    const castMarker="const HD2D_CAST_SRC = '"+castPath+"';";
-    if(!source.includes(castMarker))throw new Error('Missing HD-2D attack asset declaration');
-    const castBytes=await readFile(path.join(base,castPath));
-    source=source.replace(castMarker,()=>"const HD2D_CAST_SRC = 'data:image/png;base64,"+castBytes.toString('base64')+"';");
-    const extraPaths=['bullet','spear','vortex'].map(kind=>'./art/jingyu-wind-'+kind+'-r78.png');
-    const extraMarker='const HD2D_WIND_EXTRAS = Object.freeze('+JSON.stringify(extraPaths)+');';
-    if(!source.includes(extraMarker))throw new Error('Missing expanded wind magic declarations');
-    const extraSources=await Promise.all(extraPaths.map(async name=>'data:image/png;base64,'+(await readFile(path.join(base,name))).toString('base64')));
-    source=source.replace(extraMarker,()=>'const HD2D_WIND_EXTRAS = Object.freeze('+JSON.stringify(extraSources)+');');
-    const windPaths=['blade','tornado'].map(kind=>'./art/jingyu-wind-'+kind+'-r75.png');
-    const windMarker='const HD2D_WIND_SOURCES = Object.freeze('+JSON.stringify(windPaths)+');';
-    if(!source.includes(windMarker))throw new Error('Missing HD-2D wind spell declarations');
-    const windSources=await Promise.all(windPaths.map(async name=>'data:image/png;base64,'+(await readFile(path.join(base,name))).toString('base64')));
-    source=source.replace(windMarker,()=>'const HD2D_WIND_SOURCES = Object.freeze('+JSON.stringify(windSources)+');');
-  }
+  if(name==='app.js')source=await embedPortableArtwork(source,base);
   if(name==='i18n-en.js')source+='\nObject.assign(window.SalaryMateEnglish,'+JSON.stringify({
     '單一 HTML 版':'Single HTML edition',
     [notes]:"Single HTML edition: data is stored in this browser by default and does not synchronize from other locations when the software is updated. Before changing browsers or moving or renaming the file, export a backup, import it at the new location and check the records. Google Drive backups go to your authorized account; price, name, NAV and dividend lookups require an internet connection."

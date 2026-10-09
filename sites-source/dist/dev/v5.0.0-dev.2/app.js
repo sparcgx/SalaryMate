@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0-dev.2-R93';
+    const APP_VERSION = '5.0.0-dev.2-R94';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -3463,63 +3463,40 @@
       $$('#mainContent > .operation-state').forEach(notice => notice.remove());
     };
 
-    const setInterfaceStyle = value => {
-      const before = ui.interfaceStyle;
-      const next = normalizeInterfaceStyle(value);
+    // Shared save/render/focus sequence for choices that rebuild the settings body.
+    // Density changes keep their separate path to retain the touched control.
+    const setVisualChoice = (key, next, message, { fullRender = false, preserveScroll = false, focusSelector } = {}) => {
+      const before = ui[key];
       if (next === before) return;
-      const saved = commitUiPreferencePatch({ interfaceStyle: next });
-      if (!saved) ui.interfaceStyle = before;
-      renderAll();
+      const dialog = preserveScroll ? $('#appDialog') : null;
+      const scrollTop = dialog?.scrollTop || 0;
+      const saved = commitUiPreferencePatch({ [key]: next });
+      if (!saved) ui[key] = before;
+      if (fullRender) renderAll();
+      else refreshVisualPreferences(saved);
       openInterfaceSettings();
-      $(`input[name="interfaceStyle"][value="${ui.interfaceStyle}"]`)?.focus({ preventScroll: true });
-      if (saved) toast('介面風格已儲存');
+      if (dialog) dialog.scrollTop = scrollTop;
+      const selector = focusSelector ? focusSelector(ui[key]) : `input[name="${key}"][value="${ui[key]}"]`;
+      $(selector)?.focus({ preventScroll: true });
+      if (saved) toast(message);
+    };
+
+    const setInterfaceStyle = value => {
+      setVisualChoice('interfaceStyle', normalizeInterfaceStyle(value), '介面風格已儲存', { fullRender: true });
     };
 
     const setSurfaceOpacity = value => {
-      const before = ui.surfaceOpacity;
-      const next = normalizeSurfaceOpacity(value);
-      if (next === before) return;
-      const dialog = $('#appDialog');
-      const scrollTop = dialog?.scrollTop || 0;
-      const saved = commitUiPreferencePatch({ surfaceOpacity: next });
-      if (!saved) ui.surfaceOpacity = before;
-      refreshVisualPreferences(saved);
-      openInterfaceSettings();
-      if (dialog) dialog.scrollTop = scrollTop;
-      $(`input[name="surfaceOpacity"][value="${ui.surfaceOpacity}"]`)?.focus({ preventScroll: true });
-      if (saved) toast('背景與效果已儲存');
+      setVisualChoice('surfaceOpacity', normalizeSurfaceOpacity(value), '背景與效果已儲存', { preserveScroll: true });
     };
 
     const setHd2dBackground = value => {
       if (interfaceBaseStyle(ui.interfaceStyle) !== 'pixel') return;
-      const before = ui.hd2dBackground;
-      const next = normalizeHd2dBackground(value);
-      if (next === before) return;
-      const dialog = $('#appDialog');
-      const scrollTop = dialog?.scrollTop || 0;
-      const saved = commitUiPreferencePatch({ hd2dBackground: next });
-      if (!saved) ui.hd2dBackground = before;
-      refreshVisualPreferences(saved);
-      openInterfaceSettings();
-      if (dialog) dialog.scrollTop = scrollTop;
-      $(`input[name="hd2dBackground"][value="${ui.hd2dBackground}"]`)?.focus({ preventScroll: true });
-      if (saved) toast('背景已儲存');
+      setVisualChoice('hd2dBackground', normalizeHd2dBackground(value), '背景已儲存', { preserveScroll: true });
     };
 
     const setAutumnBackground = value => {
       if (interfaceBaseStyle(ui.interfaceStyle) !== 'autumn') return;
-      const before = ui.autumnBackground;
-      const next = normalizeAutumnBackground(value);
-      if (next === before) return;
-      const dialog = $('#appDialog');
-      const scrollTop = dialog?.scrollTop || 0;
-      const saved = commitUiPreferencePatch({ autumnBackground: next });
-      if (!saved) ui.autumnBackground = before;
-      refreshVisualPreferences(saved);
-      openInterfaceSettings();
-      if (dialog) dialog.scrollTop = scrollTop;
-      $(`input[name="autumnBackground"][value="${ui.autumnBackground}"]`)?.focus({ preventScroll: true });
-      if (saved) toast('背景已儲存');
+      setVisualChoice('autumnBackground', normalizeAutumnBackground(value), '背景已儲存', { preserveScroll: true });
     };
 
     const setInterfaceMode = (value) => {
@@ -3544,16 +3521,11 @@
       if (saved) toast(`已切換為「${INTERFACE_MODES[nextMode].name}」`);
     };
 
-    const setColorTheme = (value) => {
-      const nextTheme = normalizeColorTheme(value);
-      const before = ui.colorTheme;
-      if (nextTheme === before) return;
-      const saved = commitUiPreferencePatch({ colorTheme: nextTheme });
-      if (!saved) ui.colorTheme = before;
-      refreshVisualPreferences(saved);
-      openInterfaceSettings();
-      $(`[data-action="set-color-theme"][data-theme="${ui.colorTheme}"]`)?.focus({ preventScroll: true });
-      if (saved) toast(`已套用「${COLOR_THEMES[nextTheme].name}」配色`);
+    const setColorTheme = value => {
+      const next = normalizeColorTheme(value);
+      setVisualChoice('colorTheme', next, `已套用「${COLOR_THEMES[next].name}」配色`, {
+        focusSelector: current => `[data-action="set-color-theme"][data-theme="${current}"]`
+      });
     };
 
     const recordEditorFormHtml = (draft, editing) => {

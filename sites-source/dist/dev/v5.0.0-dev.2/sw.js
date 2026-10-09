@@ -1,4 +1,4 @@
-const CACHE='salarymate-v5-full-5.0.0-dev.2-R93';
+const CACHE='salarymate-v5-full-5.0.0-dev.2-R94';
 const BASE=new URL('./',self.location.href);
 const SCENE_CACHE='salarymate-v5-backgrounds-r79';
 const SCENES=new Map(['canyon','forest','harbor','aurora','sky','macaron'].map(id=>[id,new URL(`./art/background-${id}-r79.webp`,BASE).href]));
@@ -31,10 +31,10 @@ self.addEventListener('message',event=>{
   if(source.origin!==BASE.origin||!source.pathname.startsWith(BASE.pathname))return;
   event.waitUntil((legal?cacheFirst(CACHE,new URL(OPTIONAL[0],BASE).href):cacheFirst(SCENE_CACHE,SCENES.get(event.data.scene))).catch(()=>{}));
 });
-const LOCALES=["./i18n-en.js?v=5.0.0-dev.2-R93","./i18n.js?v=5.0.0-dev.2-R93"];
-const STOCKS=["./google-drive.js?v=5.0.0-dev.2-R93","./google-drive-ui.js?v=5.0.0-dev.2-R93","./backup.js?v=5.0.0-dev.2-R93","./stocks.js?v=5.0.0-dev.2-R93","./stocks-integrations.js?v=5.0.0-dev.2-R93","./stocks-ui.js?v=5.0.0-dev.2-R93"];
-const SHELL=["./","./index.html","./styles.css?v=5.0.0-dev.2-R93","./bootstrap.js?v=5.0.0-dev.2-R93","./app.js?v=5.0.0-dev.2-R93","./reconcile.js?v=5.0.0-dev.2-R93","./copy-month.js?v=5.0.0-dev.2-R93","./comp-time.js?v=5.0.0-dev.2-R93","./annual-analysis.js?v=5.0.0-dev.2-R93","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
-const OPTIONAL=["./legal-data.js?v=5.0.0-dev.2-R93"];
+const LOCALES=["./i18n-en.js?v=5.0.0-dev.2-R94","./i18n.js?v=5.0.0-dev.2-R94"];
+const STOCKS=["./google-drive.js?v=5.0.0-dev.2-R94","./google-drive-ui.js?v=5.0.0-dev.2-R94","./backup.js?v=5.0.0-dev.2-R94","./stocks.js?v=5.0.0-dev.2-R94","./stocks-integrations.js?v=5.0.0-dev.2-R94","./stocks-ui.js?v=5.0.0-dev.2-R94"];
+const SHELL=["./","./index.html","./styles.css?v=5.0.0-dev.2-R94","./bootstrap.js?v=5.0.0-dev.2-R94","./app.js?v=5.0.0-dev.2-R94","./reconcile.js?v=5.0.0-dev.2-R94","./copy-month.js?v=5.0.0-dev.2-R94","./comp-time.js?v=5.0.0-dev.2-R94","./annual-analysis.js?v=5.0.0-dev.2-R94","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
+const OPTIONAL=["./legal-data.js?v=5.0.0-dev.2-R94"];
 const VERSIONED_URLS=new Set([...SHELL,...STOCKS,...LOCALES,...OPTIONAL].filter(path=>path.includes('?v=')).map(path=>new URL(path,BASE).href));
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll([...SHELL,...STOCKS,...LOCALES])).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{
