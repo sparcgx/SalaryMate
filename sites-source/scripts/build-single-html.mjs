@@ -64,8 +64,8 @@ for(const match of scripts){
 let css=await readFile(path.join(base,'styles.css'),'utf8');
 // The hosted CSS references only used scenes. The portable edition deliberately
 // embeds the same bytes so every background remains available without a network.
-const scenes=[...css.matchAll(/url\("(\.\/art\/background-(?:canyon|forest|harbor|aurora|sky|macaron)-r79\.webp)"\)/g)];
-if(scenes.length!==6||new Set(scenes.map(match=>match[1])).size!==6)throw new Error('Unexpected background asset manifest');
+const scenes=[...css.matchAll(/url\("(\.\/art\/background-(?:(?:canyon|forest|harbor|aurora|sky|macaron)-r79|autumn-(?:cafe|fuji|desert|ocean)-r91)\.webp)"\)/g)];
+if(scenes.length!==10||new Set(scenes.map(match=>match[1])).size!==10)throw new Error('Unexpected background asset manifest');
 for(const match of scenes){
   const bytes=await readFile(path.join(base,match[1]));
   css=css.replace(match[0],()=>`url("data:image/webp;base64,${bytes.toString('base64')}")`);

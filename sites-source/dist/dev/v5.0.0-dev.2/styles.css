@@ -1773,3 +1773,58 @@ body.jingyu-screen-hit :is(.sidebar,.workspace-shell>.topbar,.workspace-shell>ma
  #v5LeaveSettingsForm .quota-policy-row{gap:12px;row-gap:16px;padding-block:18px}
  .quota-management-actions{align-items:flex-end;flex-direction:column}
 }
+
+/* R91: autumn watercolor journal. External scene bytes load only when used;
+   readable paper surfaces keep all original controls and financial colors. */
+:root{
+ --autumn-cafe-scene:url("./art/background-autumn-cafe-r91.webp");
+ --autumn-fuji-scene:url("./art/background-autumn-fuji-r91.webp");
+ --autumn-desert-scene:url("./art/background-autumn-desert-r91.webp");
+ --autumn-ocean-scene:url("./art/background-autumn-ocean-r91.webp");
+}
+@media screen{
+ html[data-interface-style=autumn]{color-scheme:light;background:#fffaf0}
+ body[data-interface-style=autumn][data-visual-family=reference]{
+  --bg:#fffaf0;--surface:#fffaf0;--surface-2:#f8edde;--ink:#503a30;--muted:#70594c;--line:#997b65;
+  --theme-radius:18px 14px 20px 13px;--theme-control-radius:11px 8px 12px 9px;
+  --theme-shadow:0 5px 18px #8d797319;--theme-marker:#dcb18c;--theme-marker-2:#d5a6aa;
+  --theme-accent:#86513d;--theme-accent-hover:#6e4130;--theme-accent-soft:#f5e4d2;
+  --ornament:#b18d70;--ornament-soft:#d4ab8826;--frame-light:#fffdf5;--heading-radius:18px 14px 20px 13px;
+  --header-decoration:radial-gradient(ellipse at 98% 4%,#efcbb64d,transparent 45%),linear-gradient(115deg,#f2ddba33,transparent 60%);
+  --nav-decoration:linear-gradient(115deg,#edc9b52b,transparent 55%,#d6a8b12b);
+  --autumn-scene:var(--autumn-cafe-scene);
+  --theme-background:var(--autumn-scene) right bottom/cover no-repeat,#fffaf0;
+ }
+ body[data-interface-style=autumn][data-autumn-background=fuji]{--autumn-scene:var(--autumn-fuji-scene)}
+ body[data-interface-style=autumn][data-autumn-background=desert]{--autumn-scene:var(--autumn-desert-scene)}
+ body[data-interface-style=autumn][data-autumn-background=ocean]{--autumn-scene:var(--autumn-ocean-scene)}
+ body[data-interface-style=autumn][data-visual-family=reference][data-surface-opacity]{--panel-rgb:255,250,240;--panel-alpha:.96;--panel-blur:none}
+ body[data-interface-style=autumn][data-visual-family=reference][data-surface-opacity=translucent]{--panel-alpha:.93}
+ body[data-interface-style=autumn] :is(.page-head h2,.dialog-head h3,.v5-group-title){font-family:"Iowan Old Style","Palatino Linotype","Noto Serif TC",serif;letter-spacing:.015em}
+ body[data-interface-style=autumn][data-visual-family=reference] .page-head{border-color:var(--line);box-shadow:0 5px 18px #8d797319}
+ body[data-interface-style=autumn][data-visual-family=reference] .page-head::after{inset:auto 22px -5px;width:72px;height:12px;border-radius:2px;opacity:.55;background:repeating-linear-gradient(90deg,#e5c6ac 0 4px,#eaccb3 4px 8px);transform:rotate(-3deg)}
+ body[data-interface-style=autumn][data-visual-family=reference] .page-head h2>.v5-ui-icon{background:#f7e8d4;border-color:#b18d70;border-radius:10px 7px 12px 8px;box-shadow:inset 0 1px 0 #fffaf0,0 2px 0 #d4ab8840;color:#86513d}
+ body[data-interface-style=autumn][data-visual-family=reference] :is(.v5-home-summary,.stock-stat)::after{right:16px;top:-6px;width:52px;height:16px;border:0;border-radius:1px;background:repeating-linear-gradient(90deg,#e4b9ba 0 4px,#ead0cd 4px 8px);box-shadow:none;opacity:.55;transform:rotate(7deg)}
+ body[data-interface-style=autumn][data-visual-family=reference] :is(.v5-home-summary,.stock-stat){border-top:1px solid var(--line)}
+ body[data-interface-style=autumn][data-visual-family=reference] :is(.section-title h3,.stock-panel-head h3,.v5-group-title){border-left:3px solid #b68a66}
+ body[data-interface-style=autumn][data-visual-family=reference] .tab-btn.active{border-color:var(--brand);box-shadow:inset 0 -3px 0 var(--brand);border-radius:10px 7px 12px 8px}
+ body[data-interface-style=autumn] .ambient-glass::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,#8a6d5510 0 1px,transparent 1px 5px),repeating-linear-gradient(90deg,#8a6d5508 0 1px,transparent 1px 7px);opacity:.25}
+ :is(body[data-interface-style=autumn][data-ui-mode],.v5-style-preview[data-preview-style=autumn]){
+  --detail-edge:#997b65;--detail-round:18px 14px 20px 13px;--detail-field-round:11px 8px 12px 9px;--detail-badge-round:5px 8px 4px 7px;--detail-glint:#fffdf5;
+  --detail-header:linear-gradient(115deg,#f2dec544,transparent 55%,#e7c2c12b);
+  --detail-field-shadow:inset 0 1px 2px #8d797312;--detail-button-shadow:inset 0 1px 0 #fffdf580,0 2px 0 #cfb29833;
+  --detail-panel-shadow:0 4px 15px #8d79731c;--detail-popup-shadow:inset 0 0 0 3px #fffaf0,0 18px 40px #8d797338;
+ }
+ .v5-reference-preview[data-preview-style=autumn]{--preview-bg:#fffaf0;--preview-card:#fffaf0f5;--preview-ink:#503a30;--preview-line:#997b65;--preview-mark:#ecd1ba;--preview-mark-2:#e8c3c5;border-radius:15px 11px 17px 10px;background:var(--autumn-cafe-scene) right bottom/cover no-repeat,#fffaf0;box-shadow:0 3px 9px #8d797319}
+ .v5-reference-preview[data-preview-style=autumn] .v5-preview-heading{background:#fffaf0f5;border-radius:4px}
+ .v5-reference-preview[data-preview-style=autumn] .v5-preview-money{border-radius:10px 7px 12px 8px}
+ .v5-reference-preview[data-preview-style=autumn]::after{border:0;background:#e6bfc3;box-shadow:none;width:38px;height:10px;right:12px;top:7px;transform:rotate(8deg);opacity:.55;border-radius:1px}
+ .v5-background-preview[data-autumn-preview]{background-color:#fffaf0;background-size:cover;background-position:right bottom}
+ .v5-background-preview[data-autumn-preview=cafe]{background-image:var(--autumn-cafe-scene)}
+ .v5-background-preview[data-autumn-preview=fuji]{background-image:var(--autumn-fuji-scene)}
+ .v5-background-preview[data-autumn-preview=desert]{background-image:var(--autumn-desert-scene)}
+ .v5-background-preview[data-autumn-preview=ocean]{background-image:var(--autumn-ocean-scene)}
+ @media(max-width:720px){body[data-interface-style=autumn] .ambient-glass{background-size:auto 100%;background-position:right bottom}body[data-interface-style=autumn][data-visual-family=reference] .page-head{padding:16px}}
+ @media(prefers-reduced-transparency:reduce),(prefers-contrast:more){body[data-interface-style=autumn][data-visual-family=reference][data-surface-opacity]{--panel-alpha:1;--panel-blur:none}}
+ @media(forced-colors:active){body[data-interface-style=autumn] .ambient-glass{display:none}body[data-interface-style=autumn][data-visual-family=reference] .page-head::after,body[data-interface-style=autumn][data-visual-family=reference] :is(.v5-home-summary,.stock-stat)::after{display:none}}
+}

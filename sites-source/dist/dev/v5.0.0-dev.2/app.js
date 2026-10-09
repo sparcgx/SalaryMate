@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0-dev.2-R90';
+    const APP_VERSION = '5.0.0-dev.2-R91';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -76,6 +76,7 @@
       slate: { name: '石墨灰', color: '#475569', accent: '#64748b', themeColor: '#475569' }
     });
     const INTERFACE_STYLES = Object.freeze({
+      autumn: { name: '秋天手帳水彩', note: '水彩紙頁、秋日建築與和紙貼籤', reference: true },
       doodle: { name: '繽紛手繪', note: '手繪粗框、貼紙按鈕與印章標籤', reference: true },
       cream: { name: '奶油暖陽', note: '香檳浮雕、陶瓷欄位與圓潤按鈕', reference: true },
       dusk: { name: '晚霧星紫', note: '銀紫晶框、星霧表頭與微光欄位', reference: true },
@@ -93,6 +94,12 @@
       harbor: { name: '夕陽港灣', note: '琥珀晚霞與寧靜海港' },
       aurora: { name: '極光雪城', note: '靛藍雪夜與青綠極光' },
       sky: { name: '天空浮島', note: '雲海、浮島與金色遺跡' }
+    });
+    const AUTUMN_BACKGROUNDS = Object.freeze({
+      cafe: { name: '秋日咖啡館', note: '暖燈小屋、杏色樹梢與午後拿鐵' },
+      fuji: { name: '富士山', note: '雪山湖面、粉色枝梢與柔光倒影' },
+      desert: { name: '沙漠公路', note: '杏橘岩山、蜿蜒公路與秋日留白' },
+      ocean: { name: '海洋藝術館', note: '水彩玻璃、海洋圖案與窗邊暖光' }
     });
     const PRIMARY_TABS = Object.freeze(['dashboard', 'records', 'calendar', 'investment', 'tax', 'settings']);
     const ROUTE_TABS = Object.freeze([...PRIMARY_TABS, 'hourly', 'overtime', 'companies']);
@@ -197,6 +204,7 @@
         raiseCompanyId: '',
         interfaceStyle: 'glass',
         hd2dBackground: 'canyon',
+        autumnBackground: 'cafe',
         surfaceOpacity: 'frosted',
         motionEffect: 'flow',
         interfaceMode: 'minimal',
@@ -228,6 +236,7 @@
       raiseCompanyId: '',
       interfaceStyle: 'glass',
       hd2dBackground: 'canyon',
+        autumnBackground: 'cafe',
         surfaceOpacity: 'frosted',
         motionEffect: 'flow',
       interfaceMode: 'minimal',
@@ -337,6 +346,7 @@
     // Retain R52's saved background choice only for backup compatibility.
     const normalizeMotionEffect = value => ['flow','aurora','particles','meteors','rings','grid'].includes(value) ? value : 'flow';
     const normalizeHd2dBackground = value => Object.prototype.hasOwnProperty.call(HD2D_BACKGROUNDS, value) ? value : 'canyon';
+    const normalizeAutumnBackground = value => Object.prototype.hasOwnProperty.call(AUTUMN_BACKGROUNDS, value) ? value : 'cafe';
     const normalizeInterfaceMode = (value) => Object.prototype.hasOwnProperty.call(INTERFACE_MODES, value) ? value : 'standard';
     const normalizeColorTheme = (value) => Object.prototype.hasOwnProperty.call(COLOR_THEMES, value) ? value : 'teal';
     const applyInterfaceMode = (value = ui.interfaceMode) => {
@@ -365,7 +375,7 @@
         else delete element.dataset.styleVariant;
       }
       document.body.dataset.visualFamily = INTERFACE_STYLES[style].reference ? 'reference' : 'classic';
-      $('meta[name="theme-color"]')?.setAttribute('content', ({ doodle: '#fffdf8', cream: '#fff8ed', dusk: '#19152c', pencil: '#fcf9f2', studio: '#f2f7fc', dark: '#151a21', cards: '#eef1f5', macaron: '#fffefa', pixel: '#102635' })[baseStyle] || COLOR_THEMES[normalizeColorTheme(ui.colorTheme)].themeColor);
+      $('meta[name="theme-color"]')?.setAttribute('content', ({ autumn: '#fffaf0', doodle: '#fffdf8', cream: '#fff8ed', dusk: '#19152c', pencil: '#fcf9f2', studio: '#f2f7fc', dark: '#151a21', cards: '#eef1f5', macaron: '#fffefa', pixel: '#102635' })[baseStyle] || COLOR_THEMES[normalizeColorTheme(ui.colorTheme)].themeColor);
       return style;
     };
     const applyVisualPreferences = () => {
@@ -375,6 +385,9 @@
       ui.hd2dBackground = normalizeHd2dBackground(ui.hd2dBackground);
       document.documentElement.dataset.hd2dBackground = ui.hd2dBackground;
       document.body.dataset.hd2dBackground = ui.hd2dBackground;
+      ui.autumnBackground = normalizeAutumnBackground(ui.autumnBackground);
+      document.documentElement.dataset.autumnBackground = ui.autumnBackground;
+      document.body.dataset.autumnBackground = ui.autumnBackground;
       ui.surfaceOpacity = normalizeSurfaceOpacity(ui.surfaceOpacity);
       document.body.dataset.surfaceOpacity = ui.surfaceOpacity;
       ui.motionEffect = normalizeMotionEffect(ui.motionEffect);
@@ -780,6 +793,7 @@
         raiseCompanyId: String(preferences.raiseCompanyId || ''),
         interfaceStyle: normalizeInterfaceStyle(preferences.interfaceStyle),
         hd2dBackground: normalizeHd2dBackground(preferences.hd2dBackground),
+        autumnBackground: normalizeAutumnBackground(preferences.autumnBackground),
         surfaceOpacity: normalizeSurfaceOpacity(preferences.surfaceOpacity),
         motionEffect: normalizeMotionEffect(preferences.motionEffect),
         interfaceMode: normalizeInterfaceMode(preferences.interfaceMode),
@@ -896,6 +910,7 @@
           raiseCompanyId: ui.raiseCompanyId,
           interfaceStyle: normalizeInterfaceStyle(ui.interfaceStyle),
           hd2dBackground: normalizeHd2dBackground(ui.hd2dBackground),
+          autumnBackground: normalizeAutumnBackground(ui.autumnBackground),
           surfaceOpacity: normalizeSurfaceOpacity(ui.surfaceOpacity),
           motionEffect: normalizeMotionEffect(ui.motionEffect),
           interfaceMode: normalizeInterfaceMode(ui.interfaceMode),
@@ -963,6 +978,7 @@
       ui.raiseCompanyId = String(preferences.raiseCompanyId || '');
       ui.interfaceStyle = normalizeInterfaceStyle(preferences.interfaceStyle);
       ui.hd2dBackground = normalizeHd2dBackground(preferences.hd2dBackground);
+      ui.autumnBackground = normalizeAutumnBackground(preferences.autumnBackground);
       ui.surfaceOpacity = normalizeSurfaceOpacity(preferences.surfaceOpacity);
       ui.motionEffect = normalizeMotionEffect(preferences.motionEffect);
       ui.interfaceMode = normalizeInterfaceMode(preferences.interfaceMode);
@@ -3345,13 +3361,14 @@
       : `<span class="v5-style-preview" data-preview-style="${key}" aria-hidden="true"><span class="v5-style-preview-nav"></span><span class="v5-style-preview-card"><i></i><i></i><i></i></span><span class="v5-style-preview-card"><i></i><i></i></span></span>`;
     const interfaceStyleChoicesHtml = () => `<fieldset class="v5-style-fieldset"><legend>介面風格</legend><p class="hint">點選預覽立即套用華麗風格，可搭配重點色與背景效果。</p>${[['ornate','華麗風格'],['classic','原有風格']].map(([group,title]) => `<h4 class="v5-style-group-title">${title}</h4><div class="v5-style-options">${Object.entries(INTERFACE_STYLES).filter(([,style]) => (style.ornate || style.reference ? 'ornate' : 'classic') === group).map(([key, style]) => `<label class="v5-style-choice"><input type="radio" name="interfaceStyle" value="${key}" ${ui.interfaceStyle === key ? 'checked' : ''}>${interfaceStylePreview(key, style)}<span class="v5-style-choice-title">${style.name}</span><span class="v5-style-choice-note">${style.note}</span><span class="v5-style-selection">${ui.interfaceStyle === key ? '使用中' : '選用'}</span></label>`).join('')}</div>`).join('')}</fieldset>`;
     const hd2dBackgroundChoicesHtml = () => interfaceBaseStyle(ui.interfaceStyle) !== 'pixel' ? '' : `<fieldset class="v5-background-fieldset"><legend>背景設定</legend><p class="hint">點選場景立即套用，會記住這次選擇。</p><div class="v5-background-options">${Object.entries(HD2D_BACKGROUNDS).map(([key, scene]) => `<label class="v5-background-choice"><input type="radio" name="hd2dBackground" value="${key}" ${ui.hd2dBackground === key ? 'checked' : ''}><span class="v5-background-preview" data-background-preview="${key}" aria-hidden="true"></span><span class="v5-background-name">${scene.name}</span><span class="v5-background-note">${scene.note}</span><span class="v5-background-selection">${ui.hd2dBackground === key ? '使用中' : '選用'}</span></label>`).join('')}</div></fieldset>`;
+    const autumnBackgroundChoicesHtml = () => interfaceBaseStyle(ui.interfaceStyle) !== 'autumn' ? '' : `<fieldset class="v5-background-fieldset"><legend>水彩背景</legend><p class="hint">點選場景立即套用，會記住這次選擇。</p><div class="v5-background-options">${Object.entries(AUTUMN_BACKGROUNDS).map(([key, scene]) => `<label class="v5-background-choice"><input type="radio" name="autumnBackground" value="${key}" ${ui.autumnBackground === key ? 'checked' : ''}><span class="v5-background-preview" data-autumn-preview="${key}" aria-hidden="true"></span><span class="v5-background-name">${scene.name}</span><span class="v5-background-note">${scene.note}</span><span class="v5-background-selection">${ui.autumnBackground === key ? '使用中' : '選用'}</span></label>`).join('')}</div></fieldset>`;
     const surfaceMotionInfoHtml = () => {
       if (ui.surfaceOpacity === 'multi-dynamic') return '<p class="v5-motion-composite-note">選單加入光感動態，背景保留流光、光環、粒子與流星層次。</p>';
       if (ui.surfaceOpacity === 'dynamic') return '<p class="v5-motion-composite-note">主選單、分頁與展開選單會套用動態回饋。</p>';
       return '';
     };
     const surfaceOpacityChoicesHtml = () => `<fieldset class="v5-opacity-fieldset"><legend>背景與效果</legend><div class="v5-opacity-options">${[['translucent','半透明','保留淡色底，背景仍可見'],['frosted','霧面','靜態霧面，模糊背景'],['dynamic','動態','選單滑入、切換與點選動畫'],['multi-dynamic','多樣式動態效果','選單光感動畫與多層背景特效']].map(([key,title,note])=>`<label class="v5-opacity-choice"><input type="radio" name="surfaceOpacity" value="${key}" ${ui.surfaceOpacity===key?'checked':''}><b>${title}</b><span>${note}</span><small>${ui.surfaceOpacity===key?'使用中':'選用'}</small></label>`).join('')}</div>${surfaceMotionInfoHtml()}<p class="hint">動態模式會套用選單動畫；開啟減少動態效果時會停止動畫。</p></fieldset>`;
-    const interfaceSettingsHtml = () => `<div class="v5-preferences">${interfaceStyleChoicesHtml()}${hd2dBackgroundChoicesHtml()}${surfaceOpacityChoicesHtml()}<h4>文字與密度</h4><div class="v5-choice-list" role="radiogroup" aria-label="文字與密度">${[['minimal','標準','一般字體與舒適間距'],['compact','緊湊','較小字體、縮短列高，顯示更多紀錄'],['large','大字','文字放大 25%，按鈕與間距一起加大']].map(([key,title,note])=>`<button type="button" role="radio" aria-checked="${ui.interfaceMode===key||key==='minimal'&&ui.interfaceMode==='standard'}" class="v5-preference-choice" data-action="set-interface-mode" data-mode="${key}"><span class="v5-mode-description"><b>${title}</b><span>${note}</span></span><span class="v5-mode-demo ${key}" aria-hidden="true"><span>薪資紀錄 <strong>$48,000</strong></span><span>加班紀錄 <strong>8 小時</strong></span></span><span class="v5-mode-selected">${ui.interfaceMode===key||key==='minimal'&&ui.interfaceMode==='standard'?'使用中':'選用'}</span></button>`).join('')}</div><h4>重點色</h4><div class="v5-theme-options" role="radiogroup" aria-label="重點色">${['slate','blue','teal','pink','violet','amber','rose'].map(key=>`<button class="btn" type="button" role="radio" aria-checked="${ui.colorTheme===key}" data-action="set-color-theme" data-theme="${key}"><span class="v5-accent-dot" style="--swatch:${COLOR_THEMES[key].color}" aria-hidden="true"></span>${COLOR_THEMES[key].name}</button>`).join('')}</div></div>`;
+    const interfaceSettingsHtml = () => `<div class="v5-preferences">${interfaceStyleChoicesHtml()}${hd2dBackgroundChoicesHtml()}${autumnBackgroundChoicesHtml()}${surfaceOpacityChoicesHtml()}<h4>文字與密度</h4><div class="v5-choice-list" role="radiogroup" aria-label="文字與密度">${[['minimal','標準','一般字體與舒適間距'],['compact','緊湊','較小字體、縮短列高，顯示更多紀錄'],['large','大字','文字放大 25%，按鈕與間距一起加大']].map(([key,title,note])=>`<button type="button" role="radio" aria-checked="${ui.interfaceMode===key||key==='minimal'&&ui.interfaceMode==='standard'}" class="v5-preference-choice" data-action="set-interface-mode" data-mode="${key}"><span class="v5-mode-description"><b>${title}</b><span>${note}</span></span><span class="v5-mode-demo ${key}" aria-hidden="true"><span>薪資紀錄 <strong>$48,000</strong></span><span>加班紀錄 <strong>8 小時</strong></span></span><span class="v5-mode-selected">${ui.interfaceMode===key||key==='minimal'&&ui.interfaceMode==='standard'?'使用中':'選用'}</span></button>`).join('')}</div><h4>重點色</h4><div class="v5-theme-options" role="radiogroup" aria-label="重點色">${['slate','blue','teal','pink','violet','amber','rose'].map(key=>`<button class="btn" type="button" role="radio" aria-checked="${ui.colorTheme===key}" data-action="set-color-theme" data-theme="${key}"><span class="v5-accent-dot" style="--swatch:${COLOR_THEMES[key].color}" aria-hidden="true"></span>${COLOR_THEMES[key].name}</button>`).join('')}</div></div>`;
 
     const openInterfaceSettings = () => {
       const dialog = $('#appDialog');
@@ -3410,6 +3427,22 @@
       openInterfaceSettings();
       if (dialog) dialog.scrollTop = scrollTop;
       $(`input[name="hd2dBackground"][value="${ui.hd2dBackground}"]`)?.focus({ preventScroll: true });
+      if (saved) toast('背景已儲存');
+    };
+
+    const setAutumnBackground = value => {
+      if (interfaceBaseStyle(ui.interfaceStyle) !== 'autumn') return;
+      const before = ui.autumnBackground;
+      const next = normalizeAutumnBackground(value);
+      if (next === before) return;
+      const dialog = $('#appDialog');
+      const scrollTop = dialog?.scrollTop || 0;
+      const saved = commitStateMutation(() => { ui.autumnBackground = next; });
+      if (!saved) ui.autumnBackground = before;
+      renderAll();
+      openInterfaceSettings();
+      if (dialog) dialog.scrollTop = scrollTop;
+      $(`input[name="autumnBackground"][value="${ui.autumnBackground}"]`)?.focus({ preventScroll: true });
       if (saved) toast('背景已儲存');
     };
 
@@ -5585,6 +5618,7 @@
       if (event.target.name === 'interfaceStyle' && event.target.closest('.v5-style-fieldset')) { setInterfaceStyle(event.target.value); return; }
       if (event.target.name === 'surfaceOpacity' && event.target.closest('.v5-opacity-fieldset')) { setSurfaceOpacity(event.target.value); return; }
       if (event.target.name === 'hd2dBackground' && event.target.closest('.v5-background-fieldset')) { setHd2dBackground(event.target.value); return; }
+      if (event.target.name === 'autumnBackground' && event.target.closest('.v5-background-fieldset')) { setAutumnBackground(event.target.value); return; }
       stocksUI.onChange(event);
       if(event.target.closest('#stockForm[data-kind="transaction"]'))stocksUI.updateTradeForm(event.target.name==='assetId');
       if(event.target.id==='annualThroughMonth'){

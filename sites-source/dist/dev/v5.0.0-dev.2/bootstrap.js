@@ -24,8 +24,8 @@
         const registration = await navigator.serviceWorker.ready;
         // The first page may load its selected scene before the worker takes
         // control. Retain that one scene for offline use, never prefetch the set.
-        const { interfaceStyle, hd2dBackground } = document.body.dataset;
-        const scene = interfaceStyle === 'pixel' ? hd2dBackground : interfaceStyle === 'macaron' ? 'macaron' : '';
+        const { interfaceStyle, hd2dBackground, autumnBackground } = document.body.dataset;
+        const scene = interfaceStyle === 'pixel' ? hd2dBackground : interfaceStyle === 'macaron' ? 'macaron' : interfaceStyle === 'autumn' ? 'autumn-' + autumnBackground : '';
         if (scene) registration.active?.postMessage({ type: 'salarymate:cache-background', scene });
       } catch {}
     });

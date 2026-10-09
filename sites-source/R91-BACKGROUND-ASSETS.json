@@ -1,0 +1,47 @@
+{
+  "version": "5.0.0-dev.2-R91",
+  "style": "autumn",
+  "source_commit": "273dfc87f5e45299acd7989ede76cdfd751f92eb",
+  "assets": [
+    {
+      "id": "cafe",
+      "path": "dist/dev/v5.0.0-dev.2/art/background-autumn-cafe-r91.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 262258,
+      "sha256": "34274a5cb993695413b332762e0174d06bb16e62596dbb55fe6da5dc55e84741",
+      "format": "webp",
+      "generation": "built-in imagegen; Pillow format conversion quality88 method6"
+    },
+    {
+      "id": "fuji",
+      "path": "dist/dev/v5.0.0-dev.2/art/background-autumn-fuji-r91.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 301944,
+      "sha256": "9c9f8a5c990dbbcd81aaed759484a2b7802adf9c6750032b89aedfbe104ac561",
+      "format": "webp",
+      "generation": "built-in imagegen; Pillow format conversion quality88 method6"
+    },
+    {
+      "id": "desert",
+      "path": "dist/dev/v5.0.0-dev.2/art/background-autumn-desert-r91.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 268362,
+      "sha256": "8c13803445a4395b47d01389955c68086a23c74598c379178410cdc8ca776ed2",
+      "format": "webp",
+      "generation": "built-in imagegen; Pillow format conversion quality88 method6"
+    },
+    {
+      "id": "ocean",
+      "path": "dist/dev/v5.0.0-dev.2/art/background-autumn-ocean-r91.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 284088,
+      "sha256": "24404591a40be2c6cfef1c954b83a6b1ad340d3b563a57828410eca861d2cef8",
+      "format": "webp",
+      "generation": "built-in imagegen; Pillow format conversion quality88 method6"
+    }
+  ]
+}

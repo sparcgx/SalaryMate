@@ -1,7 +1,8 @@
-const CACHE='salarymate-v5-full-5.0.0-dev.2-R90';
+const CACHE='salarymate-v5-full-5.0.0-dev.2-R91';
 const BASE=new URL('./',self.location.href);
 const SCENE_CACHE='salarymate-v5-backgrounds-r79';
 const SCENES=new Map(['canyon','forest','harbor','aurora','sky','macaron'].map(id=>[id,new URL(`./art/background-${id}-r79.webp`,BASE).href]));
+for(const id of ['cafe','fuji','desert','ocean'])SCENES.set('autumn-'+id,new URL(`./art/background-autumn-${id}-r91.webp`,BASE).href);
 const SCENE_URLS=new Set(SCENES.values());
 // Named art survives app releases. No mascot art belongs to mandatory install.
 const ART_CACHE='salarymate-v5-art-v1';
@@ -29,9 +30,9 @@ self.addEventListener('message',event=>{
   if(source.origin!==BASE.origin||!source.pathname.startsWith(BASE.pathname))return;
   event.waitUntil(cacheFirst(SCENE_CACHE,SCENES.get(event.data.scene)).catch(()=>{}));
 });
-const LOCALES=["./i18n-en.js?v=5.0.0-dev.2-R90","./i18n.js?v=5.0.0-dev.2-R90"];
-const STOCKS=["./google-drive.js?v=5.0.0-dev.2-R90","./google-drive-ui.js?v=5.0.0-dev.2-R90","./backup.js?v=5.0.0-dev.2-R90","./stocks.js?v=5.0.0-dev.2-R90","./stocks-integrations.js?v=5.0.0-dev.2-R90","./stocks-ui.js?v=5.0.0-dev.2-R90"];
-const SHELL=["./","./index.html","./styles.css?v=5.0.0-dev.2-R90","./bootstrap.js?v=5.0.0-dev.2-R90","./app.js?v=5.0.0-dev.2-R90","./reconcile.js?v=5.0.0-dev.2-R90","./copy-month.js?v=5.0.0-dev.2-R90","./comp-time.js?v=5.0.0-dev.2-R90","./annual-analysis.js?v=5.0.0-dev.2-R90","./legal-data.js?v=5.0.0-dev.2-R90","./legal.html","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
+const LOCALES=["./i18n-en.js?v=5.0.0-dev.2-R91","./i18n.js?v=5.0.0-dev.2-R91"];
+const STOCKS=["./google-drive.js?v=5.0.0-dev.2-R91","./google-drive-ui.js?v=5.0.0-dev.2-R91","./backup.js?v=5.0.0-dev.2-R91","./stocks.js?v=5.0.0-dev.2-R91","./stocks-integrations.js?v=5.0.0-dev.2-R91","./stocks-ui.js?v=5.0.0-dev.2-R91"];
+const SHELL=["./","./index.html","./styles.css?v=5.0.0-dev.2-R91","./bootstrap.js?v=5.0.0-dev.2-R91","./app.js?v=5.0.0-dev.2-R91","./reconcile.js?v=5.0.0-dev.2-R91","./copy-month.js?v=5.0.0-dev.2-R91","./comp-time.js?v=5.0.0-dev.2-R91","./annual-analysis.js?v=5.0.0-dev.2-R91","./legal-data.js?v=5.0.0-dev.2-R91","./legal.html","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
 const VERSIONED_URLS=new Set([...SHELL,...STOCKS,...LOCALES].filter(path=>path.includes('?v=')).map(path=>new URL(path,BASE).href));
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll([...SHELL,...STOCKS,...LOCALES])).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{
