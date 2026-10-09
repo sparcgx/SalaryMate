@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0-dev.2-R94';
+    const APP_VERSION = '5.0.0-dev.2-R95';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -920,8 +920,10 @@
         window.SalaryMateStorage.setItem(STORAGE_KEY, JSON.stringify(state), resetSnapshots);
       } catch (error) {
         console.error('資料儲存失敗', error);
-        setOperationStatus('failure', 'save', '儲存失敗。原本資料保持不變，請重新嘗試。');
-        toast('儲存失敗。原本資料保持不變，請重新嘗試。', 'error');
+        try {
+          setOperationStatus('failure', 'save', '儲存失敗。原本資料保持不變，請重新嘗試。');
+          toast('儲存失敗。原本資料保持不變，請重新嘗試。', 'error');
+        } catch (notificationError) { console.warn('儲存失敗提示未顯示', notificationError); }
         return false;
       }
       try { syncDataStatusFromState(); } catch(error) { console.warn('儲存狀態顯示未更新',error); }
@@ -939,11 +941,12 @@
         toast('操作正在處理或剛完成，已阻止重複送出。', 'info');
         return false;
       }
-      const before = clone(state);
-      let succeeded = false;
+      let before, snapshotReady = false, succeeded = false;
       const rememberSuccess = rememberSuccessfulSubmit && Boolean(operationKey || scope?.operationId);
-      setOperationStatus('submitting', 'commit', '正在安全儲存…');
       try {
+        before = clone(state);
+        snapshotReady = true;
+        setOperationStatus('submitting', 'commit', '正在安全儲存…');
         mutation();
         if (saveState(false, saveOptions)) {
           succeeded = true;
@@ -955,11 +958,13 @@
       } finally {
         releaseOperationLock(key, succeeded && rememberSuccess);
       }
-      state = before;
+      if (snapshotReady) state = before;
       invalidateCalculationCache();
-      syncDataStatusFromState();
-      setOperationStatus('failure', 'commit', failureMessage);
-      toast(failureMessage, 'error');
+      try {
+        syncDataStatusFromState();
+        setOperationStatus('failure', 'commit', failureMessage);
+        toast(failureMessage, 'error');
+      } catch (notificationError) { console.warn('儲存失敗提示未顯示', notificationError); }
       return false;
     };
 
@@ -1136,8 +1141,7 @@
         const dates = enumerateIsoDates(startDate, endDate).filter((date) => record.includeWeekends || !isWeekend(date));
         return dates.map((date) => {
           let factor = 1;
-          if (dates.length === 1 && (record.startPortion === 'pm' || record.endPortion === 'am')) factor = .5;
-          else if (date === startDate && record.startPortion === 'pm') factor = .5;
+          if (date === startDate && record.startPortion === 'pm') factor = .5;
           else if (date === endDate && record.endPortion === 'am') factor = .5;
           return { date, hours: workHours * factor, days: factor };
         });
@@ -3439,8 +3443,8 @@
       const metadata=['schemaVersion','appVersion','uiPreferences','updatedAt'].map(name=>[name,Object.hasOwn(state,name),state[name]]);
       const previous=entries.map(([name])=>[name,Object.hasOwn(ui,name),ui[name]]);
       let succeeded=false;
-      setOperationStatus('submitting','commit','正在安全儲存…');
       try {
+        setOperationStatus('submitting','commit','正在安全儲存…');
         const unchanged=state.schemaVersion===SCHEMA_VERSION&&state.appVersion===APP_VERSION&&entries.every(([name,value])=>ui[name]===value&&state.uiPreferences?.[name]===value);
         if(unchanged)window.SalaryMateStorage.assertCurrent();
         else {for(const [name,value] of entries)ui[name]=value;if(!saveState(false,{preserveCalculations:true}))return false;}
@@ -4554,6 +4558,7 @@
       if (!validIsoDate(draft.startDate)) { validateField(form, 'startDate', '開始日期格式不正確，請重新選擇。'); return; }
       if (!validIsoDate(draft.endDate)) { validateField(form, 'endDate', '結束日期格式不正確，請重新選擇。'); return; }
       if (draft.endDate < draft.startDate) { validateField(form, 'endDate', '結束日期不可早於開始日期。'); return; }
+      if (draft.durationMode === 'range' && draft.startDate === draft.endDate && draft.startPortion === 'pm' && draft.endPortion === 'am') { validateField(form, 'endPortion', '同日請假的結束時段不可早於開始時段。'); return; }
       if (draft.durationMode === 'range' && !enumerateIsoDates(draft.startDate, draft.endDate).length) { validateField(form, 'endDate', '跨日請假最多可輸入 366 天。'); return; }
       if (!leaveDateEntries(draft).length) { showValidationSummary(form, '此區間沒有可計算的工作日。請勾選納入週末或調整日期。'); return; }
       if (draft.durationMode === 'hours' && leaveHours(draft) > (numberValue(getCompany(draft.companyId)?.workHoursPerDay) || 8)) { validateField(form, 'customHours', '單日小時請假不可超過公司每日標準工時。'); return; }
