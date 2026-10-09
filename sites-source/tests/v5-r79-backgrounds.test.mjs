@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
+import postcss from 'postcss';
 
 // Native Node fixtures only: no browser, DOM emulator, user data or live network.
 const base=new URL('../dist/dev/v5.0.0-dev.2/',import.meta.url);
@@ -14,7 +15,7 @@ const ids=['canyon','forest','harbor','aurora','sky','macaron'];
 const scene=id=>origin+'art/background-'+id+'-r79.webp';
 const manifest=JSON.parse(fs.readFileSync(new URL('../R79-BACKGROUND-ASSETS.json',import.meta.url)));
 
-test('six scenes retain exact R78 bytes and all CSS selectors while removing embedded payloads',()=>{
+test('six original scenes retain exact image bytes and CSS rules alongside four autumn scenes within budget',()=>{
   const old=execFileSync('git',['show',manifest.source_commit+':'+manifest.source],{cwd:new URL('..',import.meta.url),maxBuffer:3_000_000,encoding:'utf8'});
   let restored=css;
   for(const asset of manifest.assets){
@@ -25,12 +26,17 @@ test('six scenes retain exact R78 bytes and all CSS selectors while removing emb
     assert.ok(old.includes(asset.property+':url("'+encoded+'")'));
     restored=restored.replace('./art/'+asset.path.split('/').at(-1),encoded);
   }
-  // R81 appends component styling; R79's original scene rules stay byte-exact.
-  assert.equal(restored.slice(0,old.length),old);
+  // Compare executable CSS, allowing non-functional comments to be removed.
+  const rules=text=>{const ast=postcss.parse(text);ast.walkComments(node=>node.remove());return JSON.parse(JSON.stringify(ast.toJSON(),(key,value)=>['raws','source','inputs'].includes(key)?undefined:value)).nodes;};
+  const originalRules=rules(old);
+  assert.deepEqual(rules(restored).slice(0,originalRules.length),originalRules);
   assert.equal(manifest.assets.length,6);
   assert.ok(Buffer.byteLength(css)<280000);
   assert.ok(!css.includes('data:image/'));
-  assert.equal([...css.matchAll(/url\("\.\/art\/background-/g)].length,6);
+  const backgrounds=[...css.matchAll(/url\("(\.\/art\/background-[^"]+)"\)/g)].map(match=>match[1]);
+  const expected=[...ids.map(id=>'./art/background-'+id+'-r79.webp'),...['cafe','fuji','desert','ocean'].map(id=>'./art/background-autumn-'+id+'-r91.webp')];
+  assert.deepEqual(backgrounds.sort(),expected.sort());
+  for(const path of backgrounds)assert.ok(fs.statSync(new URL(path,base)).size>0);
 });
 
 function worker({failPut=false}={}){

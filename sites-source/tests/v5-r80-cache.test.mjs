@@ -36,8 +36,12 @@ function runtime(){
 
 test('R80 install contains the full interface but no flight, cast, spell or perched image',async()=>{
  const h=runtime();h.install();await h.settle();
- assert.equal(h.installed.length,22);assert.ok(h.installed.every(url=>!url.includes('/art/')));
  const index=fs.readFileSync(new URL('index.html',base),'utf8');
+ const scripts=[...index.matchAll(/<script defer src="([^"]+)"/g)].map(match=>match[1]);
+ const expected=['./','./index.html','./styles.css?v='+version,'./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png',...scripts];
+ assert.equal(new Set(h.installed).size,h.installed.length,'No duplicate precache entries');
+ assert.deepEqual([...h.installed].sort(),expected.sort(),'Cache exactly the current interface and required assets');
+ assert.ok(h.installed.every(url=>!url.includes('/art/')&&!/legal/.test(url)),'Artwork and legal content remain on demand');
  for(const [,url]of index.matchAll(/<script defer src="([^"]+)"/g))assert.ok(h.installed.includes(url));
  assert.ok(h.installed.includes('./styles.css?v='+version));
  const bytes=h.installed.reduce((total,path)=>total+fs.statSync(new URL(path.split('?')[0]==='./'?'index.html':path.split('?')[0],base)).size,0);
