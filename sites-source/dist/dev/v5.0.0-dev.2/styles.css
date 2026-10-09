@@ -1735,3 +1735,8 @@ body.jingyu-screen-hit :is(.sidebar,.workspace-shell>.topbar,.workspace-shell>ma
   .stock-workspace{grid-template-columns:minmax(0,1fr) 280px}
  }
 }
+
+/* R84: keep allocation accessible below the holdings on narrow screens. */
+@media screen and (max-width:1180px){
+ .stock-allocation{display:block}
+}

@@ -100,6 +100,7 @@
    return {next,assets:assets.length,transactions:transactions.length,archived:archived.length,warnings,fxFallbacks,mode,replaced,replacedTransactions};
  }
  async function request(path,body,signal){
+   if(signal?.aborted)fail('行情查詢逾時或已取消，原價格保持不變。');
    if(typeof navigator!=='undefined'&&navigator.onLine===false)fail('目前離線，原有價格保持不變。');
    if(root.SalaryMatePortable)path=root.SalaryMatePortable.marketOrigin+path.replace('/api/stocks/','/api/stocks/portable/');
    const c=new AbortController(),timer=setTimeout(()=>c.abort(),45000);const abort=()=>c.abort();signal?.addEventListener('abort',abort,{once:true});

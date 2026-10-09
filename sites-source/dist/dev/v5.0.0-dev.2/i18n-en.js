@@ -2567,5 +2567,6 @@ globalThis.SalaryMateEnglish={
   "晶羽夥伴、藍金對話框與嵌金欄位": "Jingyu companion, blue-gold dialogs and gold-inlaid fields",
   "透亮邊線、磨砂卡片與內凹欄位": "Clear edges, frosted cards and inset fields",
   "文件卡片、整齊表頭與清晰層次": "Document cards, tidy headers and clear hierarchy",
-  "石墨面板、霧銀邊線與深色內凹欄位": "Graphite panels, satin-silver edges and dark inset fields"
+  "石墨面板、霧銀邊線與深色內凹欄位": "Graphite panels, satin-silver edges and dark inset fields",
+  "目前離線，保留上次配息公告。": "Offline. Keeping the previous dividend announcements."
 };
