@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0-dev.2-R89';
+    const APP_VERSION = '5.0.0-dev.2-R90';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -5251,18 +5251,26 @@
       }, '刪除');
     };
 
-    const selectPrimaryTab = (value, behavior = 'smooth', historyMode = 'push') => {
+    const selectPrimaryTab = (value, behavior = 'smooth', historyMode = 'push', companyRoute = null) => {
       const nextTab = ROUTE_TABS.includes(value) ? value : 'dashboard';
-      const changed = ui.tab !== nextTab;
+      const companyId = nextTab === 'companies' ? String(companyRoute?.id || '') : ui.companyDetailId;
+      const companySection = nextTab === 'companies'
+        ? ['overview', 'salary-rules', 'advanced-rules'].includes(companyRoute?.section) ? companyRoute.section : 'overview'
+        : ui.companyDetailSection;
+      const changed = ui.tab !== nextTab || (nextTab === 'companies' && (ui.companyDetailId !== companyId || ui.companyDetailSection !== companySection));
       if (changed && ui.draftScope?.dirty && !$('#appDialog')?.open) {
         toast('目前有尚未儲存的變更，請先儲存或取消。', 'error');
         return false;
       }
       if (!selectedEntityIsInCurrentScope()) clearOperationalSelection();
+      if (nextTab === 'companies') {
+        ui.companyDetailId = companyId;
+        ui.companyDetailSection = companySection;
+      }
       ui.tab = nextTab;
       renderView();
       if (changed) focusPageHeading();
-      if (historyMode === 'push' && changed && typeof history?.pushState === 'function') history.pushState({ salaryMateTab: nextTab }, '', `#${nextTab}`);
+      if (historyMode === 'push' && changed && typeof history?.pushState === 'function') history.pushState(currentHistoryState(), '', `#${nextTab}`);
       window.scrollTo?.({ top: 0, left: 0, behavior });
       return true;
     };
@@ -5279,10 +5287,7 @@
     const openCompanyDetailRoute = (companyId, section = 'overview') => {
       const targetCompany = getCompany(companyId);
       if (!targetCompany) { toast('公司資料不存在，請重新整理公司管理。', 'error'); return; }
-      ui.companyDetailId = targetCompany.id;
-      ui.companyDetailSection = ['overview', 'salary-rules', 'advanced-rules'].includes(section) ? section : 'overview';
-      selectPrimaryTab('companies', 'smooth', 'none');
-      renderView();
+      if (!selectPrimaryTab('companies', 'smooth', 'none', { id: targetCompany.id, section })) return;
       focusPageHeading();
       pushCompanyDetailHistory();
     };
@@ -5348,8 +5353,7 @@
         'view-company': () => openCompanyDetailRoute(id, 'overview'),
         'company-back': () => {
           if (hasDirtyDraft()) return toast('目前有尚未儲存的變更，請先儲存或取消。', 'error');
-          if (history.state?.companyDetailId && typeof history?.back === 'function') history.back();
-          else { ui.companyDetailId = ''; ui.companyDetailSection = 'overview'; renderView(); focusPageHeading(); }
+          selectPrimaryTab('companies');
         },
         'company-salary-rules': () => openCompanyDetailRoute(id || currentCompany()?.id || '', 'salary-rules'),
         'salary-rules-back': () => { ui.companyDetailSection = 'overview'; renderView(); focusPageHeading(); },
@@ -5738,14 +5742,14 @@
       if (hasDirtyDraft()) { if (typeof history?.pushState === 'function') history.pushState(currentHistoryState(), '', `#${ui.tab}`); toast('目前有尚未儲存的變更，請先儲存或取消', 'error'); return; }
       const target = event.state?.salaryMateTab || String(location.hash || '').replace(/^#/, '') || 'dashboard';
       if (!selectedEntityIsInCurrentScope()) clearOperationalSelection();
-      if (target === 'companies') {
-        ui.companyDetailId = String(event.state?.companyDetailId || '');
-        ui.companyDetailSection = ['overview', 'salary-rules', 'advanced-rules'].includes(event.state?.companyDetailSection) ? event.state.companyDetailSection : 'overview';
-      } else {
+      const companyRoute = target === 'companies'
+        ? { id: String(event.state?.companyDetailId || ''), section: event.state?.companyDetailSection }
+        : null;
+      if (target !== 'companies') {
         ui.companyDetailId = '';
         ui.companyDetailSection = 'overview';
       }
-      selectPrimaryTab(target, 'auto', 'none');
+      selectPrimaryTab(target, 'auto', 'none', companyRoute);
       focusPageHeading();
     });
     window.addEventListener('beforeunload', (event) => { if (hasDirtyDraft()) { event.preventDefault(); event.returnValue = ''; } });
