@@ -1,4 +1,5 @@
-SalaryMate v4.3.3-dev.1 — Third-party notices
+SalaryMate — inherited dependency/build-tool notices
+Scope: historical inventory, retained for v5 web reference; not an R86 audit.
 Generated 2026-10-01.
 Includes installed npm dependency/build-tool notices; inclusion does not imply every build tool ships in the app. JSZip dual license: MIT option selected.
 Native Gradle transitive artifacts and their individual NOTICE files must be reconciled against the release runtime dependency graph before legal clearance. This inventory is not a final APK SBOM.

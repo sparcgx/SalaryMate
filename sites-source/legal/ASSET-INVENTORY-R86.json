@@ -1,0 +1,196 @@
+{
+  "version": "v5.0.0-dev.2-R86",
+  "reviewedAt": "2026-10-09",
+  "scope": "provenance inventory, not a certificate of exclusive rights",
+  "removedBundledIssuerIcons": [
+    {
+      "symbol": "TW:2330",
+      "sha256": "6183ebbea1434dd032588fe0ae4b4421016f1316ade51217eacc7ff00a72f81d",
+      "status": "removed-from-current-bundle; permission-record-unconfirmed"
+    },
+    {
+      "symbol": "TW:2409",
+      "sha256": "9df599339bc326be979ffc54f8cacc654b3cffb0b21ee59add3528c55cde8e3c",
+      "status": "removed-from-current-bundle; permission-record-unconfirmed"
+    },
+    {
+      "symbol": "TW:0050",
+      "sha256": "3282acf465378844dd81c91b916ab20939b53876fef6905c33ed4be0e1e8bbfc",
+      "status": "removed-from-current-bundle; permission-record-unconfirmed"
+    }
+  ],
+  "art": [
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/background-aurora-r79.webp",
+      "sha256": "da820a688d2c405054766570df6fe7fe423c016e369fb1d3c8c68b1e73c14df4",
+      "records": [
+        "assets/hd2d-backgrounds-r19-prompts.json",
+        "R79-BACKGROUND-ASSETS.json",
+        "R79-BACKGROUND-LOADING.md"
+      ],
+      "status": "existing-generation-record"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/background-canyon-r79.webp",
+      "sha256": "bd6fc533f80c3df07ce09335227f7c9095bab92a654756fcced0429dce94e4c3",
+      "records": [
+        "assets/hd2d-canyon-r17-prompt.txt",
+        "R79-BACKGROUND-ASSETS.json",
+        "R79-BACKGROUND-LOADING.md"
+      ],
+      "status": "existing-generation-record"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/background-forest-r79.webp",
+      "sha256": "e8678dcbb05aba317f7e2b10dd8b7968e77b1128aead15a0a4873cab7bc59a8c",
+      "records": [
+        "assets/hd2d-backgrounds-r19-prompts.json",
+        "R79-BACKGROUND-ASSETS.json",
+        "R79-BACKGROUND-LOADING.md"
+      ],
+      "status": "existing-generation-record"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/background-harbor-r79.webp",
+      "sha256": "af7d00b323e7fdf3ff87b50b5f364926b810f5585e0e1d0ab4f421351eb30182",
+      "records": [
+        "assets/hd2d-backgrounds-r19-prompts.json",
+        "R79-BACKGROUND-ASSETS.json",
+        "R79-BACKGROUND-LOADING.md"
+      ],
+      "status": "existing-generation-record"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/background-macaron-r79.webp",
+      "sha256": "b3f00c8eda688c82026a067b4fa487fe0e76d98023b9bbd53ca29792853eb698",
+      "records": [
+        "assets/macaron-paper-r18-prompt.json",
+        "R79-BACKGROUND-ASSETS.json",
+        "R79-BACKGROUND-LOADING.md"
+      ],
+      "status": "existing-generation-record"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/background-sky-r79.webp",
+      "sha256": "fc16beb15410725e80f8238a41198b0f833af3efdd5b9134eb5f6927e535d498",
+      "records": [
+        "assets/hd2d-backgrounds-r19-prompts.json",
+        "R79-BACKGROUND-ASSETS.json",
+        "R79-BACKGROUND-LOADING.md"
+      ],
+      "status": "existing-generation-record"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/jingyu-cast-r76.png",
+      "sha256": "2802f4c9d9e93438edfc8a018f9dc27286b11cf88cad913fcdfb156f3d9a74ef",
+      "records": [
+        "R76-CAST-ASSET-PROMPT.json"
+      ],
+      "status": "existing-generation-record"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/jingyu-flight-r68.png",
+      "sha256": "3147bb1e6298f9c85d8cf1bf6e2b5a07c6a1be5a519b00046c1162d10d89c02e",
+      "records": [],
+      "status": "legacy-provenance-not-reconciled"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/jingyu-flight-r70.png",
+      "sha256": "3a06b6f5a1ad07aec8e0063afbd7c55890344e03ebb34aaba9dd83c79c731421",
+      "records": [],
+      "status": "legacy-provenance-not-reconciled"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/jingyu-flight-r73-a.png",
+      "sha256": "f8a492c94ae8686ee02a412e3383fe850d16bb4df79355095957c541c825f0f6",
+      "records": [
+        "R73-ASSET-PROMPTS.json"
+      ],
+      "status": "existing-generation-record"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/jingyu-flight-r73-b.png",
+      "sha256": "3257e5c9d8a59a86e6a90148099343d9a14f9e1efe12d9b87c2c2cd8cb4bf7b9",
+      "records": [
+        "R73-ASSET-PROMPTS.json"
+      ],
+      "status": "existing-generation-record"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/jingyu-flight-r73-c.png",
+      "sha256": "99c9063f1469f9dd9768f4c61afb15a25cfbcffce37aadccd90a3acbaa93f095",
+      "records": [
+        "R73-ASSET-PROMPTS.json"
+      ],
+      "status": "existing-generation-record"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/jingyu-flight-r73-d.png",
+      "sha256": "66884a9813483d7b70198fbea483aed40b0312d994da3f72c40485f5f5014c54",
+      "records": [
+        "R73-ASSET-PROMPTS.json"
+      ],
+      "status": "existing-generation-record"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/jingyu-hd2d-r61.png",
+      "sha256": "c41e40656f52d55d832e524de6ccc035483f0e0271d2b13813ea781a37c0c60a",
+      "records": [],
+      "status": "legacy-provenance-not-reconciled"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/jingyu-hd2d-r62.webp",
+      "sha256": "fd0afcf019e025ad7736c47ef9b5d2735175c9324bfb34104624cb18f96cad57",
+      "records": [],
+      "status": "legacy-provenance-not-reconciled"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/jingyu-hd2d-r74.png",
+      "sha256": "86ff7fd73e16ebe0cc85b65a82cbf877aa28d51808912e5b1d76efcb7a0ba723",
+      "records": [
+        "R74-ASSET-PROMPT.json"
+      ],
+      "status": "existing-generation-record"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/jingyu-wind-blade-r75.png",
+      "sha256": "a5dd03ecb36e0ac8aac6deec42486cfd04e3e2bc4f13a0998cb81524176f76c4",
+      "records": [
+        "R75-WIND-ASSET-PROMPTS.json"
+      ],
+      "status": "existing-generation-record"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/jingyu-wind-bullet-r78.png",
+      "sha256": "08ef8aebab8fca1f236f68adb8b65e5fce61f6bfe979a1f78b59df04b27ed362",
+      "records": [
+        "R78-MAGIC-ASSETS.json"
+      ],
+      "status": "existing-generation-record"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/jingyu-wind-spear-r78.png",
+      "sha256": "73c75cd938cd7b56e278990d16b7a9d97488af6daf462c0319e50220588f9932",
+      "records": [
+        "R78-MAGIC-ASSETS.json"
+      ],
+      "status": "existing-generation-record"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/jingyu-wind-tornado-r75.png",
+      "sha256": "1c40d6bb46fe45bf24e9572516588c51442a4e9ae325cb16a3cfd2958f1a65f1",
+      "records": [
+        "R75-WIND-ASSET-PROMPTS.json"
+      ],
+      "status": "existing-generation-record"
+    },
+    {
+      "path": "dist/dev/v5.0.0-dev.2/art/jingyu-wind-vortex-r78.png",
+      "sha256": "39c97dc2c63203b8930738a6da8025cd24ce0de714dc26f683732c45e0de4ba6",
+      "records": [
+        "R78-MAGIC-ASSETS.json"
+      ],
+      "status": "existing-generation-record"
+    }
+  ]
+}

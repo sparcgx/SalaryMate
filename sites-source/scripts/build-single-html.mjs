@@ -10,7 +10,7 @@ const base=path.resolve(import.meta.dirname,'../dist/dev/v5.0.0-dev.2');
 let html=await readFile(path.join(base,'index.html'),'utf8');
 const scripts=[...html.matchAll(/<script defer src="\.\/([^"?]+)(?:\?[^"]*)?"><\/script>/g)];
 if(scripts.length!==15)throw new Error('Unexpected script manifest; inspect dependencies before bundling.');
-const notes='單一 HTML 版：資料保存在目前瀏覽器。網站資料可由備份匯入；移動檔案或更換瀏覽器前請先備份。股價、名稱、盤中淨值與配息公告查詢需要連線。';
+const notes="單一 HTML 版：資料預設儲存在目前瀏覽器，不會隨程式更新自動從其他入口同步。更換瀏覽器，或移動／更名檔案前，請先匯出備份，再於新入口匯入並核對。Google Drive 備份會傳至你授權的帳戶；股價、名稱、淨值與配息查詢需要連線。";
 const scriptsInline=[`<script>
 window.SalaryMatePortable=Object.freeze(${JSON.stringify({marketOrigin:origin})});
 // Some local-file browser contexts reject URL rewrites. Keep history state usable.
@@ -51,9 +51,13 @@ for(const match of scripts){
   }
   if(name==='i18n-en.js')source+='\nObject.assign(window.SalaryMateEnglish,'+JSON.stringify({
     '單一 HTML 版':'Single HTML edition',
-    [notes]:'Single HTML edition: data stays in this browser. Import a backup to bring over website data. Back up before moving the file or changing browsers. Price, name, intraday NAV and dividend announcement lookup require an internet connection.'
+    [notes]:"Single HTML edition: data is stored in this browser by default and does not synchronize from other locations when the software is updated. Before changing browsers or moving or renaming the file, export a backup, import it at the new location and check the records. Google Drive backups go to your authorized account; price, name, NAV and dividend lookups require an internet connection."
   })+');';
-  if(name==='app.js')source=source.replace('<span class="v5-group-title">資料管理</span></summary><div class="v5-settings-content">',`<span class="v5-group-title">資料管理</span></summary><div class="v5-settings-content"><p class="hint">${notes}</p>`);
+  if(name==='app.js'){
+    const dataNotes=/(<span class="v5-group-title">資料管理<\/span><\/summary><div class="v5-settings-content">)<p class="hint">資料預設儲存在目前瀏覽器[^<]*<\/p><p class="hint">各入口同步的是程式版本[^<]*<\/p>/;
+    if(!dataNotes.test(source))throw new Error('Missing data-transfer notice; inspect before bundling.');
+    source=source.replace(dataNotes,(_match,heading)=>`${heading}<p class="hint">${notes}</p>`);
+  }
   scriptsInline.push(`<script data-module="${name}">\n${source.replace(/<\/script/gi,'<\\/script')}\n</script>`);
   html=html.replace(match[0],'');
 }
@@ -73,7 +77,7 @@ for(const rel of ['icon','apple-touch-icon']){
   const pattern=new RegExp(`<link rel="${rel}" href="\\./([^"?]+)(?:\\?[^\"]*)?">`),match=html.match(pattern);
   if(match){const bytes=await readFile(path.join(base,match[1]));html=html.replace(match[0],`<link rel="${rel}" href="data:image/png;base64,${bytes.toString('base64')}">`);}
 }
-html=html.replace('SalaryMate · 全介面重製開發版','SalaryMate · 單一 HTML 版');
+html=html.replace(/SalaryMate · (R\d+) 開發測試版/g,'SalaryMate · $1 開發測試版 · 單一 HTML');
 const scriptHashes=scriptsInline.map(block=>{
   const content=block.match(/^<script\b[^>]*>([\s\S]*)<\/script>$/)?.[1];
   if(content===undefined)throw new Error('Cannot hash portable script');
