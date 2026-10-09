@@ -54,7 +54,8 @@ function fixture(){
   window:{SalaryMateCompanion:{stop:()=>calls.stops++},SalaryMateStocks:{empty:()=>({assets:[],transactions:[]}),normalize:value=>copy(value||{assets:[],transactions:[]})},SalaryMateCompTime:{normalizeCredit:copy,normalizeSettlement:copy},
    SalaryMateStorage:{setItem(name,value){assert.equal(name,'salarymate_v5_full_state');calls.writes++;if(failWrite)throw Error('Fixture quota');saved=value;}}}};
  vm.createContext(context);
- vm.runInContext(styles+calculators+visuals+normalization+saving+choices+setters+'\nglobalThis.api={normalizeInterfaceStyle,interfaceBaseStyle,normalizeAutumnBackground,normalizeHd2dBackground,applyInterfaceStyle,applyVisualPreferences,normalizeState,restoreUiPreferences,saveState,commitStateMutation,setAutumnBackground,hd2dBackgroundChoicesHtml,autumnBackgroundChoicesHtml,emptyState};',context);
+ const preferencePatch=section(app,'    const UI_PREFERENCE_KEYS=','    const refreshVisualPreferences =');
+ vm.runInContext(styles+calculators+visuals+normalization+saving+choices+preferencePatch+setters+'\nglobalThis.api={normalizeInterfaceStyle,interfaceBaseStyle,normalizeAutumnBackground,normalizeHd2dBackground,applyInterfaceStyle,applyVisualPreferences,normalizeState,restoreUiPreferences,saveState,commitStateMutation,setAutumnBackground,hd2dBackgroundChoicesHtml,autumnBackgroundChoicesHtml,emptyState};',context);
  return {context,calls,datasets,dialog,meta,api:context.api,get saved(){return saved;},fail:value=>{failWrite=value;}};
 }
 

@@ -56,7 +56,7 @@ function appClosingFixture(h,{dirty=true,allowed=false,onClose=()=>{}}={}){
  h.dialog.contains=value=>value===active;
  h.dialog.close=()=>{onClose();calls.closes++;h.dialog.open=false;};
  const target={isConnected:true,focus:()=>calls.focuses++};
- const context={stocksUI:h.api,document:h.document,ui:{confirmAction:()=>{},dialogBaseline:'fixture-dirty',draftScope:{entityType:'stock-batch'}},
+ const context={dialogRevision:0,stocksUI:h.api,document:h.document,ui:{confirmAction:()=>{},dialogBaseline:'fixture-dirty',draftScope:{entityType:'stock-batch'}},
   $:name=>name==='#appDialog'?h.dialog:target,
   dialogHasUnsavedChanges:()=>dirty,clearDraftScope(){calls.scopeClears++;context.ui.draftScope=null;},
   afterPaint:fn=>{calls.painted++;fn();},dialogReturnScrollY:37,dialogReturnFocus:target,

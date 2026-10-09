@@ -9,7 +9,9 @@ if(!output||!path.isAbsolute(output)||!origin||new URL(origin).protocol!=='https
 const base=path.resolve(import.meta.dirname,'../dist/dev/v5.0.0-dev.2');
 let html=await readFile(path.join(base,'index.html'),'utf8');
 const scripts=[...html.matchAll(/<script defer src="\.\/([^"?]+)(?:\?[^"]*)?"><\/script>/g)];
-if(scripts.length!==15)throw new Error('Unexpected script manifest; inspect dependencies before bundling.');
+if(scripts.length!==14||scripts.some(match=>match[1]==='legal-data.js'))throw new Error('Unexpected script manifest; inspect dependencies before bundling.');
+// Full offline edition includes the on-demand legal module before application startup.
+scripts.unshift(['','legal-data.js']);
 const notes="單一 HTML 版：資料預設儲存在目前瀏覽器，不會隨程式更新自動從其他入口同步。更換瀏覽器，或移動／更名檔案前，請先匯出備份，再於新入口匯入並核對。Google Drive 備份會傳至你授權的帳戶；股價、名稱、淨值與配息查詢需要連線。";
 const scriptsInline=[`<script>
 window.SalaryMatePortable=Object.freeze(${JSON.stringify({marketOrigin:origin})});

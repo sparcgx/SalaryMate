@@ -9,6 +9,10 @@ await scan(dist);
 const devBase='/dev/v5.0.0-dev.2/';
 const devHtml=await readFile(path.join(dist,devBase,'index.html'),'utf8');
 const versionedUrls=[...devHtml.matchAll(/(?:href|src)="\.\/([^"?]+\.(?:js|css))\?v=([^"]+)"/g)].map(match=>devBase+match[1]+'?v='+match[2]);
+const swSource=await readFile(path.join(dist,devBase,'sw.js'),'utf8');
+const optionalMatch=swSource.match(/const OPTIONAL=(\[[^\n;]*\]);/);
+if(!optionalMatch)throw Error('Missing optional asset manifest');
+for(const asset of JSON.parse(optionalMatch[1])){if(!/^\.\/[a-z-]+\.js\?v=[a-zA-Z0-9.-]+$/.test(asset))throw Error('Unexpected optional asset');versionedUrls.push(devBase+asset.slice(2));}
 const immutableArt=Object.keys(files).filter(name=>name.startsWith(devBase+'art/')&&/-(?:r\d+|r\d+-[a-d])\.(?:png|webp)$/.test(name));
 const market=(await readFile(path.join(root,'server/stock-market.mjs'),'utf8')).replace("import {createDividendLookup} from './dividend-market.mjs';",'').replace("import {createIntradayNavLookup} from './intraday-nav.mjs';",'').replace('export function createStockMarket','function createStockMarket');
 const dividends=(await readFile(path.join(root,'server/dividend-market.mjs'),'utf8')).replace('export function createDividendLookup','function createDividendLookup');

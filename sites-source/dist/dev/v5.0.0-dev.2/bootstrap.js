@@ -4,11 +4,14 @@
   let lastRead, read = false;
   window.SalaryMateStorage = Object.freeze({
     getItem(name) { const value = localStorage.getItem(name); if (name === key) { lastRead = value; read = true; } return value; },
-    setItem(name, value) {
+    assertCurrent() { if (read && localStorage.getItem(key) !== lastRead) throw new Error('資料已由另一分頁更新，請重新整理。'); },
+    setItem(name, value, resetSnapshots=false) {
       if (name !== key) throw new Error('Unexpected storage key');
-      if (read && localStorage.getItem(key) !== lastRead) throw new Error('資料已由另一分頁更新，請重新整理。');
-      localStorage.setItem(key, value); lastRead = String(value); read = true;
-      const label = document.getElementById('saveStatus'); if (label) label.textContent = '已儲存';
+      const current=localStorage.getItem(key),next=String(value);
+      if (read && current !== lastRead) throw new Error('資料已由另一分頁更新，請重新整理。');
+      if(current!==next||resetSnapshots)localStorage.setItem(key,next);
+      lastRead=next;read=true;
+      try { const label=document.getElementById('saveStatus');if(label)label.textContent='已儲存'; } catch {}
     },
     removeItem(name) { if (name !== key) throw new Error('Unexpected storage key'); localStorage.removeItem(name); lastRead = null; }
   });

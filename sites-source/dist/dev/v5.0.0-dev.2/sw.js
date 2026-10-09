@@ -1,4 +1,4 @@
-const CACHE='salarymate-v5-full-5.0.0-dev.2-R92';
+const CACHE='salarymate-v5-full-5.0.0-dev.2-R93';
 const BASE=new URL('./',self.location.href);
 const SCENE_CACHE='salarymate-v5-backgrounds-r79';
 const SCENES=new Map(['canyon','forest','harbor','aurora','sky','macaron'].map(id=>[id,new URL(`./art/background-${id}-r79.webp`,BASE).href]));
@@ -25,15 +25,17 @@ async function cacheFirst(cacheName,url,legacy=false){
   try{return (await pending).clone();}finally{if(resourceRequests.get(key)===pending)resourceRequests.delete(key);}
 }
 self.addEventListener('message',event=>{
-  if(event.data?.type!=='salarymate:cache-background'||!SCENES.has(event.data.scene)||!event.source?.url)return;
+  const legal=event.data?.type==='salarymate:cache-legal';
+  if(!event.source?.url||!legal&&(event.data?.type!=='salarymate:cache-background'||!SCENES.has(event.data.scene)))return;
   const source=new URL(event.source.url);
   if(source.origin!==BASE.origin||!source.pathname.startsWith(BASE.pathname))return;
-  event.waitUntil(cacheFirst(SCENE_CACHE,SCENES.get(event.data.scene)).catch(()=>{}));
+  event.waitUntil((legal?cacheFirst(CACHE,new URL(OPTIONAL[0],BASE).href):cacheFirst(SCENE_CACHE,SCENES.get(event.data.scene))).catch(()=>{}));
 });
-const LOCALES=["./i18n-en.js?v=5.0.0-dev.2-R92","./i18n.js?v=5.0.0-dev.2-R92"];
-const STOCKS=["./google-drive.js?v=5.0.0-dev.2-R92","./google-drive-ui.js?v=5.0.0-dev.2-R92","./backup.js?v=5.0.0-dev.2-R92","./stocks.js?v=5.0.0-dev.2-R92","./stocks-integrations.js?v=5.0.0-dev.2-R92","./stocks-ui.js?v=5.0.0-dev.2-R92"];
-const SHELL=["./","./index.html","./styles.css?v=5.0.0-dev.2-R92","./bootstrap.js?v=5.0.0-dev.2-R92","./app.js?v=5.0.0-dev.2-R92","./reconcile.js?v=5.0.0-dev.2-R92","./copy-month.js?v=5.0.0-dev.2-R92","./comp-time.js?v=5.0.0-dev.2-R92","./annual-analysis.js?v=5.0.0-dev.2-R92","./legal-data.js?v=5.0.0-dev.2-R92","./legal.html","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
-const VERSIONED_URLS=new Set([...SHELL,...STOCKS,...LOCALES].filter(path=>path.includes('?v=')).map(path=>new URL(path,BASE).href));
+const LOCALES=["./i18n-en.js?v=5.0.0-dev.2-R93","./i18n.js?v=5.0.0-dev.2-R93"];
+const STOCKS=["./google-drive.js?v=5.0.0-dev.2-R93","./google-drive-ui.js?v=5.0.0-dev.2-R93","./backup.js?v=5.0.0-dev.2-R93","./stocks.js?v=5.0.0-dev.2-R93","./stocks-integrations.js?v=5.0.0-dev.2-R93","./stocks-ui.js?v=5.0.0-dev.2-R93"];
+const SHELL=["./","./index.html","./styles.css?v=5.0.0-dev.2-R93","./bootstrap.js?v=5.0.0-dev.2-R93","./app.js?v=5.0.0-dev.2-R93","./reconcile.js?v=5.0.0-dev.2-R93","./copy-month.js?v=5.0.0-dev.2-R93","./comp-time.js?v=5.0.0-dev.2-R93","./annual-analysis.js?v=5.0.0-dev.2-R93","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
+const OPTIONAL=["./legal-data.js?v=5.0.0-dev.2-R93"];
+const VERSIONED_URLS=new Set([...SHELL,...STOCKS,...LOCALES,...OPTIONAL].filter(path=>path.includes('?v=')).map(path=>new URL(path,BASE).href));
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll([...SHELL,...STOCKS,...LOCALES])).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{
   const previous=(await caches.keys()).filter(key=>key.startsWith('salarymate-v5-full-')&&key!==CACHE);
@@ -45,6 +47,9 @@ self.addEventListener('activate',event=>event.waitUntil((async()=>{
         if(await art.match(url))continue;
         const cached=await old.match(url);if(cached?.ok)await art.put(url,cached);
       }
+      // A previously active worker may have fetched the current optional URL.
+      const current=await caches.open(CACHE);
+      for(const path of OPTIONAL){const url=new URL(path,BASE).href,cached=await old.match(url);if(cached?.ok&&!await current.match(url))await current.put(url,cached);}
       await caches.delete(key);
     }catch{} // Preserve the old cache if migration fails; art can still reuse it.
   }

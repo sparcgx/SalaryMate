@@ -117,13 +117,47 @@
         return `<tr><td class="stock-asset-cell">${list?`<div class="stock-list-main">${assetName(a)}${favorite(a)}</div>`:assetName(a)}</td><td class="stock-classification-cell">${tags(a)}<small>${markets[a.market]}</small></td><td>${watch?badge('觀察／已出清'):`<strong>${num(s.quantity,6)} 股</strong><small>${num(s.average,4)} ${a.currency}</small>`}</td><td class="stock-quote-cell">${quoteSummary(a,true)}</td><td>${money(s.costTwd)}</td><td>${s.value==null?'待更新股價':money(s.value)}</td><td class="${tone(s.unrealized)}"><strong>${signed(s.unrealized)}</strong><small>${s.returnPct==null?'—':num(s.returnPct)+'%'}</small></td><td class="stock-account-cell">${a.account?user(a.account):'未分帳戶'}</td><td><div class="stock-row-actions">${btn('買入','buy',a.id)}${list?btn('編輯','asset',a.id)+btn('刪除','delete-asset',a.id):s.quantity>0?btn('賣出','sell',a.id):btn('編輯','asset',a.id)}</div></td></tr>`;
       }).join(''),'stock-ledger stock-holdings-table'+(list?' stock-list-table':''));
     }
-    function eventTable(events,showActions=true) {
+    const EVENT_PAGE_SIZE=50;
+    const eventPages=new Map(),eventFrames=new Map();
+    let eventGeneration=0;
+    function eventTable(events,showActions=true,{scope='transactions',paged=true,signature=JSON.stringify([api.year(),view.tab,view.search,view.filter])}={}) {
+      const previousFrame=eventFrames.get(scope);
+      const hasDividends=previousFrame?.events===events?previousFrame.hasDividends:events.some(t=>t.type==='dividend'),dividendsOnly=previousFrame?.events===events?previousFrame.dividendsOnly:events.every(t=>t.type==='dividend');
+      const prior=eventPages.get(scope),pages=Math.max(1,Math.ceil(events.length/EVENT_PAGE_SIZE));
+      const page=paged&&prior?.signature===signature?Math.max(0,Math.min(pages-1,prior.page)):0;
+      eventPages.set(scope,{page,signature,pages});
+      const end=events.length-(paged?page*EVENT_PAGE_SIZE:0),start=paged?Math.max(0,end-EVENT_PAGE_SIZE):0;
+      const visible=events.slice(start,end).reverse(),generation=++eventGeneration;
+      eventFrames.set(scope,{events,hasDividends,dividendsOnly,showActions,options:{scope,paged,signature},generation,sales:new Map(visible.filter(t=>t.type==='sell').map(t=>[t.id,t]))});
+      const pager=paged&&events.length>EVENT_PAGE_SIZE?`<nav class="stock-event-pages" aria-label="交易分頁"><span role="status"><span>顯示</span> ${page*EVENT_PAGE_SIZE+1}–${Math.min(events.length,(page+1)*EVENT_PAGE_SIZE)} / ${events.length} <span>筆</span></span><div class="page-actions"><button type="button" class="btn" data-stock="event-page" data-scope="${esc(scope)}" data-generation="${generation}" data-page="${page-1}" ${page===0?'disabled':''}>上一頁</button><span>${page+1} / ${pages}</span><button type="button" class="btn" data-stock="event-page" data-scope="${esc(scope)}" data-generation="${generation}" data-page="${page+1}" ${page===pages-1?'disabled':''}>下一頁</button></div></nav>`:'';
+
       if(!events.length)return '<div class="stock-empty"><h3>此範圍尚無紀錄</h3><p>可切換年度，或登記一筆交易。</p></div>';
-      const hasDividends=events.some(t=>t.type==='dividend'),dividendsOnly=events.every(t=>t.type==='dividend');
-      return table([dividendsOnly?'入帳日期／時間':'日期／時間','股票',...(hasDividends?['除息日期','現金股利']:[]),'類型','股數／金額','成交價／匯率','費用＋稅額','現金流 TWD','已實現損益 TWD',...(showActions?['操作']:[])],events.slice().reverse().map(t=>`<tr><td>${esc(t.date)}<small>${esc(t.time)}</small></td><td class="stock-asset-cell">${assetName(t.asset)}<small class="stock-event-note">${(t.asset.account?user(t.asset.account):'未分帳戶')}${t.note?' · '+user(t.note):''}</small></td>${hasDividends?`<td>${t.type==='dividend'&&t.exDividendDate?esc(t.exDividendDate):'—'}</td><td>${t.type==='dividend'&&t.cashDividend!=null?`${num(t.cashDividend,8)} ${t.asset.currency}<small>每股</small>`:'—'}</td>`:''}<td>${badge(types[t.type],`stock-${t.type}`)}</td><td>${t.type==='dividend'?num(t.amount)+' '+t.asset.currency:t.type==='split'?'× '+num(t.ratio,6):num(t.quantity,6)+' 股'}</td><td>${['buy','sell','opening'].includes(t.type)?num(t.price,4)+' '+t.asset.currency:'—'}<small>匯率 ${num(t.fx,6)}</small></td><td>${num(t.fee+t.tax)} ${t.asset.currency}</td><td class="${tone(t.cash)}">${signed(t.cash)}</td><td class="${tone(t.realized)}">${t.type==='sell'?signed(t.realized)+fifoDetail(t):'—'}</td>${showActions?`<td><div class="stock-row-actions">${btn('編輯','transaction',t.id)}${btn('刪除','delete-transaction',t.id)}</div></td>`:''}</tr>`).join(''),'stock-ledger stock-events-table');
+      const markup=table([dividendsOnly?'入帳日期／時間':'日期／時間','股票',...(hasDividends?['除息日期','現金股利']:[]),'類型','股數／金額','成交價／匯率','費用＋稅額','現金流 TWD','已實現損益 TWD',...(showActions?['操作']:[])],visible.map(t=>`<tr><td>${esc(t.date)}<small>${esc(t.time)}</small></td><td class="stock-asset-cell">${assetName(t.asset)}<small class="stock-event-note">${(t.asset.account?user(t.asset.account):'未分帳戶')}${t.note?' · '+user(t.note):''}</small></td>${hasDividends?`<td>${t.type==='dividend'&&t.exDividendDate?esc(t.exDividendDate):'—'}</td><td>${t.type==='dividend'&&t.cashDividend!=null?`${num(t.cashDividend,8)} ${t.asset.currency}<small>每股</small>`:'—'}</td>`:''}<td>${badge(types[t.type],`stock-${t.type}`)}</td><td>${t.type==='dividend'?num(t.amount)+' '+t.asset.currency:t.type==='split'?'× '+num(t.ratio,6):num(t.quantity,6)+' 股'}</td><td>${['buy','sell','opening'].includes(t.type)?num(t.price,4)+' '+t.asset.currency:'—'}<small>匯率 ${num(t.fx,6)}</small></td><td>${num(t.fee+t.tax)} ${t.asset.currency}</td><td class="${tone(t.cash)}">${signed(t.cash)}</td><td class="${tone(t.realized)}">${t.type==='sell'?signed(t.realized)+fifoDetail(t,scope,generation):'—'}</td>${showActions?`<td><div class="stock-row-actions">${btn('編輯','transaction',t.id)}${btn('刪除','delete-transaction',t.id)}</div></td>`:''}</tr>`).join(''),'stock-ledger stock-events-table');
+      return `<section data-stock-event-scope="${esc(scope)}">${markup}${pager}</section>`;
     }
-    function fifoDetail(t) {
-      return `<details class="stock-fifo"><summary>FIFO 成本 ${money(t.costBasisTwd)}</summary><ul>${t.matchedLots.map(l=>`<li>${esc(l.date)} ${esc(l.time)} · ${num(l.quantity,8)} 股 · ${money(l.costTwd)} TWD</li>`).join('')}</ul></details>`;
+    function fifoDetail(t,scope,generation) {
+      return `<details class="stock-fifo" data-fifo-scope="${esc(scope)}" data-fifo-generation="${generation}" data-fifo-id="${esc(t.id)}"><summary>FIFO 成本 ${money(t.costBasisTwd)}</summary><div data-stock-fifo data-loaded="false"></div></details>`;
+    }
+    function expandFifo(details) {
+      if(!details.open||details.isConnected===false)return;
+      const frame=eventFrames.get(details.dataset.fifoScope),content=details.querySelector('[data-stock-fifo]');
+      if(!frame||String(frame.generation)!==details.dataset.fifoGeneration||!content||content.dataset.loaded==='true')return;
+      const event=frame.sales.get(details.dataset.fifoId);if(!event)return;
+      content.innerHTML=`<ul>${event.matchedLots.map(l=>`<li>${esc(l.date)} ${esc(l.time)} · ${num(l.quantity,8)} 股 · ${money(l.costTwd)} TWD</li>`).join('')}</ul>`;
+      content.dataset.loaded='true';root.SalaryMateI18n?.apply(content);root.SalaryMateScrollbars?.refresh();
+    }
+    function changeEventPage(el) {
+      const scope=el.dataset.scope,frame=eventFrames.get(scope),state=eventPages.get(scope),page=Number(el.dataset.page);
+      if(el.isConnected===false||!frame||!state||String(frame.generation)!==el.dataset.generation||!Number.isInteger(page)||page<0||page>=state.pages||page===state.page)return;
+      const section=el.closest('[data-stock-event-scope]');if(!section||section.dataset.stockEventScope!==scope)return;
+      const scroller=section.querySelector('.stock-table-wrap'),left=scroller?.scrollLeft||0;
+      state.page=page;
+      section.innerHTML=eventTable(frame.events,frame.showActions,frame.options);
+      // Unwrap the replacement's outer section to preserve the live focus/scroll host.
+      const replacement=section.firstElementChild;section.replaceChildren(...replacement.childNodes);
+      const next=section.querySelector('.stock-table-wrap');if(next)next.scrollLeft=left;
+      root.SalaryMateI18n?.apply(section);root.SalaryMateScrollbars?.refresh();
+      section.querySelector(`[data-stock="event-page"][data-page="${page+(page<state.pages-1?1:-1)}"]`)?.focus({preventScroll:true});
     }
     function allocation(m) {
       const rows=m.holdings.filter(s=>s.quantity>0&&s.value>0).sort((a,b)=>b.value-a.value);
@@ -164,7 +198,7 @@
       } else if(view.tab==='transactions') {
         body=`<section class="stock-panel"><div class="stock-panel-head"><h3>${api.year()} 年交易</h3>${btn('匯出交易','export-transactions')}</div><form id="stockSearchForm" class="stock-toolbar"><label><span class="sr-only">搜尋股票或帳戶</span><input name="search" class="field" type="search" placeholder="代號、名稱或帳戶" value="${esc(view.search)}"></label><label><span class="sr-only">交易類型</span><select class="field-select" name="filter">${Object.entries({all:'全部交易',...types}).map(([v,l])=>`<option value="${v}" ${view.filter===v?'selected':''}>${l}</option>`).join('')}</select></label><button class="btn" type="submit">篩選</button>${btn('分割／合併','split')}</form>${eventTable(m.events.filter(t=>t.inYear&&matches(t.asset)&&(view.filter==='all'||view.filter===t.type)))}</section>`;
       } else if(view.tab==='income') {
-        body=`<div class="stock-stats">${stat('本年實收股息',money(m.yearDividends),'股票交易簿中的股息')}${stat('本年其他收入',money(legacyTotal),'保留原投資收入紀錄')}${stat('年度收入合計',money(income),'股息＋原投資收入，不含買賣損益')}</div>${forecastSection()}<section class="stock-panel"><div class="stock-panel-head"><h3>${api.year()} 年股票股息</h3>${btn('登記股息','dividend','',true)}</div>${eventTable(m.events.filter(t=>t.inYear&&t.type==='dividend'))}</section><section class="stock-legacy"><p class="stock-footnote">原有收入仍保留在下方，不會自動轉成持股。已在股票交易簿登記的股息／損益，請勿再次手動新增。</p>${renderLegacy()}</section>`;
+        body=`<div class="stock-stats">${stat('本年實收股息',money(m.yearDividends),'股票交易簿中的股息')}${stat('本年其他收入',money(legacyTotal),'保留原投資收入紀錄')}${stat('年度收入合計',money(income),'股息＋原投資收入，不含買賣損益')}</div>${forecastSection()}<section class="stock-panel"><div class="stock-panel-head"><h3>${api.year()} 年股票股息</h3>${btn('登記股息','dividend','',true)}</div>${eventTable(m.events.filter(t=>t.inYear&&t.type==='dividend'),true,{scope:'income'})}</section><section class="stock-legacy"><p class="stock-footnote">原有收入仍保留在下方，不會自動轉成持股。已在股票交易簿登記的股息／損益，請勿再次手動新增。</p>${renderLegacy()}</section>`;
       } else body=analysis(m);
       // The compact income shortcut preserves the original ledger's one-click entry point.
       const legacyAccess=view.tab==='income'?'':`<details class="stock-legacy-shortcut"${view.legacyExpanded?' open':''}><summary>其他投資收入 · ${api.year()} 年 $${num(legacyTotal)}</summary><div data-stock-legacy data-loaded="${view.legacyExpanded}">${view.legacyExpanded?renderLegacy():''}</div></details>`;
@@ -518,7 +552,7 @@
         if(batchRows().some(r=>r._dividendPending&&batchValue(r,'autoDividend').checked))throw Error('配息公告查詢中，請稍候再核對。');
         if(JSON.stringify(p())!==batchDraft.baseline)throw Error('投資資料已變更，請重新開啟批次交易。');
         const rows=readBatchTransactions(),result=core.prepareBatch(p(),rows,api.today());batchDraft.review={rows:JSON.stringify(rows),result};
-        form.querySelector('#stockBatchPreview').innerHTML=`<div class="stock-sync-result"><strong>核對 ${rows.length} 筆交易</strong><p>整本帳簿的持有成本變動：${signed(result.costChange)} TWD<br>整本帳簿的已實現損益變動：${signed(result.realizedChange)} TWD</p><p class="hint">補登舊交易也會重算後續賣出的 FIFO 成本。儲存後可在交易紀錄逐筆編輯或刪除。</p></div>${result.duplicates.length?`<label class="stock-import-ack"><input type="checkbox" id="stockBatchDuplicates">相同交易列：${result.duplicates.join('、')} · 確認仍要新增</label>`:''}${eventTable(result.events,false)}`;
+        form.querySelector('#stockBatchPreview').innerHTML=`<div class="stock-sync-result"><strong>核對 ${rows.length} 筆交易</strong><p>整本帳簿的持有成本變動：${signed(result.costChange)} TWD<br>整本帳簿的已實現損益變動：${signed(result.realizedChange)} TWD</p><p class="hint">補登舊交易也會重算後續賣出的 FIFO 成本。儲存後可在交易紀錄逐筆編輯或刪除。</p></div>${result.duplicates.length?`<label class="stock-import-ack"><input type="checkbox" id="stockBatchDuplicates">相同交易列：${result.duplicates.join('、')} · 確認仍要新增</label>`:''}${eventTable(result.events,false,{scope:'batch',paged:false,signature:batchDraft.id})}`;
         form.querySelector('[type="submit"]').disabled=!!result.duplicates.length;root.SalaryMateI18n.apply(form);
       }catch(e){api.error(form,e.message);}
     }
@@ -594,8 +628,8 @@
     }
     function detail(id) {
       const m=model(),s=m.holdings.find(s=>s.asset.id===id);if(!s)return;
-      const a=s.asset;
-      api.open(root.SalaryMateI18n.user(`${a.symbol} · ${a.name}`),`<div class="stock-detail-heading"><div class="stock-detail-identity">${icon(a)}${tags(a)}${favorite(a)}</div><p>${markets[a.market]} · ${a.currency} · ${(a.account?user(a.account):'未分帳戶')}</p><div class="page-actions">${btn('買入','buy',id,true)}${btn('賣出','sell',id)}${btn('股息','dividend',id)}${btn('編輯股票','asset',id)}${btn('刪除股票','delete-asset',id)}</div></div><div class="stock-stats">${stat('持有股數',num(s.quantity,6),'股')}${stat('剩餘持股均價',num(s.average,4),a.currency+'／股 · FIFO 剩餘成本')}${stat('未實現損益',signed(s.unrealized),'TWD',tone(s.unrealized))}${stat('累計已實現＋股息',signed(s.realized+s.dividends),'全部年度 · TWD',tone(s.realized+s.dividends))}</div>${navInfo(a)}<p class="hint">參考股價：${a.quotePrice==null?'尚未設定':num(a.quotePrice,4)+' '+a.currency+' · 匯率 '+num(a.quoteFx,6)}</p>${quoteMeta(a,'尚無行情')}${a.note?`<p>${user(a.note)}</p>`:''}<h3>全部年度紀錄</h3>${eventTable(m.events.filter(t=>t.assetId===id))}`,true);
+      const a=s.asset;eventPages.delete('detail');
+      api.open(root.SalaryMateI18n.user(`${a.symbol} · ${a.name}`),`<div class="stock-detail-heading"><div class="stock-detail-identity">${icon(a)}${tags(a)}${favorite(a)}</div><p>${markets[a.market]} · ${a.currency} · ${(a.account?user(a.account):'未分帳戶')}</p><div class="page-actions">${btn('買入','buy',id,true)}${btn('賣出','sell',id)}${btn('股息','dividend',id)}${btn('編輯股票','asset',id)}${btn('刪除股票','delete-asset',id)}</div></div><div class="stock-stats">${stat('持有股數',num(s.quantity,6),'股')}${stat('剩餘持股均價',num(s.average,4),a.currency+'／股 · FIFO 剩餘成本')}${stat('未實現損益',signed(s.unrealized),'TWD',tone(s.unrealized))}${stat('累計已實現＋股息',signed(s.realized+s.dividends),'全部年度 · TWD',tone(s.realized+s.dividends))}</div>${navInfo(a)}<p class="hint">參考股價：${a.quotePrice==null?'尚未設定':num(a.quotePrice,4)+' '+a.currency+' · 匯率 '+num(a.quoteFx,6)}</p>${quoteMeta(a,'尚無行情')}${a.note?`<p>${user(a.note)}</p>`:''}<h3>全部年度紀錄</h3>${eventTable(m.events.filter(t=>t.assetId===id),true,{scope:'detail',signature:id})}`,true);
     }
     function save(form) {
       if(!api.validate(form))return;
@@ -805,6 +839,7 @@
     root.document.addEventListener('error',event=>{if(event.target.matches?.('.stock-avatar img[data-stock-logo]'))event.target.remove();},true);
     root.document.addEventListener('toggle',event=>{
       const details=event.target;
+      if(details.matches?.('.stock-fifo')){expandFifo(details);return;}
       if(!details.matches?.('.stock-legacy-shortcut')||details.isConnected===false)return;
       view.legacyExpanded=details.open;
       const content=details.querySelector('[data-stock-legacy]');
@@ -826,12 +861,13 @@
     root.document.addEventListener('keydown',event=>{if(event.key==='Escape'&&root.document.querySelector('.stock-action-menu-wrap.is-open')){event.preventDefault();closeStockActions(true);}});
     function click(el) {
       const action=el.dataset.stock,id=el.dataset.id||'';
+      if(action==='event-page'){changeEventPage(el);return true;}
       if(action==='toggle-market-details'){toggleMarketDetails(el);return true;}
       if(action==='toggle-market-auto'){toggleMarket('autoRefresh');return true;}
       if(action==='toggle-market-quotes'){toggleMarket('quoteEnabled');return true;}
       if(action==='toggle-actions'){const wrap=el.closest('.stock-action-menu-wrap');const open=wrap.classList.toggle('is-open');el.setAttribute('aria-expanded',String(open));return;}
       if(el.closest('.stock-head-actions')&&root.document.querySelector('.stock-action-menu-wrap.is-open'))closeStockActions(true);
-      if(action==='tab'){if(id!==view.tab)pauseForecasts();view.tab=id;view.search='';view.filter='all';view.exchange='';view.category='';view.favorites=false;renderKeepingScroll();}
+      if(action==='tab'){eventPages.clear();if(id!==view.tab)pauseForecasts();view.tab=id;view.search='';view.filter='all';view.exchange='';view.category='';view.favorites=false;renderKeepingScroll();}
       else if(action==='forecasts'){view.tab='income';renderKeepingScroll();}
       else if(action==='refresh-forecasts')void refreshForecasts(true);
       else if(action==='edit-forecast')editForecast(id);
@@ -877,7 +913,7 @@
       if(form.id==='stockImportForm'){saveImport(form);return true;}
       if(form.id==='stockForm'){save(form);return true;}
       if(form.id==='stockCatalogForm'){void searchCatalog(String(new FormData(form).get('query')||''));return true;}
-      if(['stockSearchForm','stockListForm'].includes(form.id)){const d=new FormData(form);view.search=String(d.get('search')||'').trim();view.filter=String(d.get('filter')||'all');view.sort=String(d.get('sort')||view.sort);view.exchange=String(d.get('exchange')||'');view.category=String(d.get('category')||'');view.favorites=d.has('favorites');renderKeepingScroll();return true;}
+      if(['stockSearchForm','stockListForm'].includes(form.id)){const d=new FormData(form);view.search=String(d.get('search')||'').trim();view.filter=String(d.get('filter')||'all');view.sort=String(d.get('sort')||view.sort);view.exchange=String(d.get('exchange')||'');view.category=String(d.get('category')||'');view.favorites=d.has('favorites');eventPages.clear();renderKeepingScroll();return true;}
       return false;
     }
     return {render,click,submit,updateTradeForm,onInput,onChange,cancelDialogRequests,suspend:()=>{cancelDialogRequests();pauseForecasts();},importFile:file=>{openImport();return readImport(file);}};

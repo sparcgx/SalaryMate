@@ -2678,5 +2678,16 @@ globalThis.SalaryMateEnglish={
   "R91 開發測試版 · 單一 HTML": "R91 development test edition · Single HTML",
   "適用：v5.0.0-dev.2-R92 網頁開發測試版與單一 HTML 版；說明修訂：2026-10-09。": "Applies to the v5.0.0-dev.2-R92 web development test edition and single HTML edition. Notice revised: 2026-10-09.",
   "R92 開發測試版": "R92 development test edition",
-  "R92 開發測試版 · 單一 HTML": "R92 development test edition · Single HTML"
+  "R92 開發測試版 · 單一 HTML": "R92 development test edition · Single HTML",
+  "正在載入授權與隱私說明…": "Loading licenses and privacy information…",
+  "說明載入失敗，請檢查連線後重試。": "Could not load the information. Check your connection and retry.",
+  "完整離線版缺少授權內容，請重新下載完整檔案。": "The offline edition is missing its license information. Download the complete file again.",
+  "交易分頁": "Transaction pages",
+  "上一頁": "Previous",
+  "下一頁": "Next",
+  "顯示": "Showing",
+  "SalaryMate · R93 開發測試版": "SalaryMate · R93 Development Test Edition",
+  "SalaryMate · R93 開發測試版 · 單一 HTML": "SalaryMate · R93 Development Test Edition · Single HTML",
+  "SalaryMate R93 開發測試版：個人薪資、加班、特休與投資管理。資料預設儲存在目前瀏覽器，支援自己的 Google Drive 備份。": "SalaryMate R93 development test edition: personal salary, overtime, annual leave and investment management. Data is stored in this browser by default, with backups to your own Google Drive.",
+  "重試": "Retry"
 };

@@ -1828,3 +1828,9 @@ body.jingyu-screen-hit :is(.sidebar,.workspace-shell>.topbar,.workspace-shell>ma
  @media(prefers-reduced-transparency:reduce),(prefers-contrast:more){body[data-interface-style=autumn][data-visual-family=reference][data-surface-opacity]{--panel-alpha:1;--panel-blur:none}}
  @media(forced-colors:active){body[data-interface-style=autumn] .ambient-glass{display:none}body[data-interface-style=autumn][data-visual-family=reference] .page-head::after,body[data-interface-style=autumn][data-visual-family=reference] :is(.v5-home-summary,.stock-stat)::after{display:none}}
 }
+
+/* R93 bounded transaction pages, using each existing theme's surfaces. */
+.stock-event-pages{display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap;margin-top:.75rem;font-size:.875rem}
+.stock-event-pages .page-actions{align-items:center;gap:.5rem}
+.stock-fifo [data-stock-fifo]:empty{display:none}
+@media(min-width:721px){.stock-panel>[data-stock-event-scope]>.table-top-scroll{margin:0 18px 6px}}

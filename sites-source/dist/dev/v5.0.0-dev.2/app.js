@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0-dev.2-R92';
+    const APP_VERSION = '5.0.0-dev.2-R93';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -918,15 +918,15 @@
         };
         state.updatedAt = new Date().toISOString();
         window.SalaryMateStorage.setItem(STORAGE_KEY, JSON.stringify(state), resetSnapshots);
-        syncDataStatusFromState();
-        window.SalaryMateCloud?.changed();
-        return true;
       } catch (error) {
         console.error('資料儲存失敗', error);
         setOperationStatus('failure', 'save', '儲存失敗。原本資料保持不變，請重新嘗試。');
         toast('儲存失敗。原本資料保持不變，請重新嘗試。', 'error');
         return false;
       }
+      try { syncDataStatusFromState(); } catch(error) { console.warn('儲存狀態顯示未更新',error); }
+      try { window.SalaryMateCloud?.changed(); } catch(error) { console.warn('備份通知未完成',error); }
+      return true;
     };
 
     const commitStateMutation = (mutation, failureMessage = '儲存失敗。原本資料保持不變，請重新嘗試。', operationKey = '', rememberSuccessfulSubmit = true, saveOptions = undefined) => {
@@ -947,7 +947,7 @@
         mutation();
         if (saveState(false, saveOptions)) {
           succeeded = true;
-          setOperationStatus('idle');
+          try { setOperationStatus('idle'); } catch(error) { console.warn('儲存狀態顯示未更新',error); }
           return true;
         }
       } catch (error) {
@@ -3276,6 +3276,7 @@
 
     const dialogShell = (title, body, footer = '') => `<div class="dialog-head"><h3 id="dialogTitle">${escapeHtml(title)}</h3><button class="close-btn" type="button" data-action="close-dialog" aria-label="關閉">關閉</button></div><div class="dialog-body">${body}</div>${footer}`;
 
+    let dialogRevision=0;
     let dialogReturnFocus = null;
     let dialogReturnScrollY = 0;
     const afterPaint = (callback) => typeof window.requestAnimationFrame === 'function'
@@ -3283,6 +3284,7 @@
       : setTimeout(callback, 0);
 
     const openDialog = (title, body, wide = false, footer = '') => {
+      dialogRevision++;
       window.SalaryMateCompanion?.stop();
       const dialog = $('#appDialog');
       const opening = !dialog.open;
@@ -3306,6 +3308,42 @@
       enhanceVisualHierarchy(dialog);
       window.SalaryMateI18n.apply(dialog);
       focusTarget?.focus({ preventScroll: true });
+    };
+
+    let legalPending=null,legalControllerWatch=false;
+    const retainLegalForOffline = () => {
+      if(window.SalaryMatePortable||location.protocol!=='https:')return;
+      const worker=navigator.serviceWorker;if(!worker)return;
+      if(!legalControllerWatch&&worker.addEventListener){legalControllerWatch=true;worker.addEventListener('controllerchange',()=>worker.controller?.postMessage({type:'salarymate:cache-legal'}),{once:true});}
+      worker.ready?.then(registration=>registration.active?.postMessage({type:'salarymate:cache-legal'})).catch(()=>{});
+    };
+    const legalHtml = () => typeof window.SalaryMateLegal?.html==='string'&&window.SalaryMateLegal.html.trim()?window.SalaryMateLegal.html:null;
+    const loadLegalContent = () => {
+      const ready=legalHtml();if(ready)return Promise.resolve(ready);
+      if(window.SalaryMatePortable||location.protocol==='file:')return Promise.reject(Error('完整離線版缺少授權內容，請重新下載完整檔案。'));
+      if(legalPending)return legalPending;
+      const pending=new Promise((resolve,reject)=>{
+        const script=document.createElement('script');let settled=false,timer;
+        const finish=error=>{
+          if(settled)return;settled=true;clearTimeout(timer);script.onload=script.onerror=null;script.remove();
+          const html=legalHtml();if(error||!html)reject(error||Error('Missing legal content'));else {resolve(html);retainLegalForOffline();}
+        };
+        script.src=new URL('./legal-data.js?v='+APP_VERSION,document.baseURI).href;script.async=true;
+        script.onload=()=>finish();script.onerror=()=>finish(Error('Legal load failed'));
+        timer=setTimeout(()=>finish(Error('Legal load timed out')),20000);
+        try { document.head.append(script); } catch(error) { finish(error); }
+      });
+      legalPending=pending;
+      const clear=()=>{if(legalPending===pending)legalPending=null;};pending.then(clear,clear);
+      return pending;
+    };
+    const openLegal = async () => {
+      const title='授權、隱私與試算說明',ready=legalHtml();
+      if(ready){openDialog(title,ready,true);return;}
+      openDialog(title,'<div id="legalLoadState"><p role="status">正在載入授權與隱私說明…</p></div>',true);
+      const revision=dialogRevision,active=()=>revision===dialogRevision&&$('#appDialog')?.open&&$('#legalLoadState');
+      try {const html=await loadLegalContent();if(active())openDialog(title,html,true);}
+      catch(error){if(active())openDialog(title,`<p role="status">${window.SalaryMatePortable||location.protocol==='file:'?'完整離線版缺少授權內容，請重新下載完整檔案。':'說明載入失敗，請檢查連線後重試。'}</p><button type="button" class="btn" data-action="open-legal">重試</button>`,true);}
     };
 
     const dialogFocusableElements = () => $$(FOCUSABLE_SELECTOR, $('#appDialog')).filter((element) => !element.hidden && !element.closest?.('[hidden]') && element.getAttribute('aria-hidden') !== 'true');
@@ -3335,6 +3373,7 @@
     };
 
     const closeDialog = () => {
+      dialogRevision++;
       stocksUI.cancelDialogRequests();
       const dialog = $('#appDialog');
       const active = document.activeElement;
@@ -3391,6 +3430,32 @@
     // Only these appearance-only mutations may retain business calculations.
     // Ordinary data writes and every failed rollback still invalidate caches.
     const commitVisualPreference = mutation => commitStateMutation(mutation, undefined, '', true, { preserveCalculations: true });
+    const UI_PREFERENCE_KEYS=Object.freeze(['companyFilter','selectedYear','attendanceTab','overtimeMonth','leaveMonth','leaveStatus','hourlyMonth','salaryCalcTab','hourlyAdvancedOpen','yearEndCompanyId','raiseCompanyId','interfaceStyle','hd2dBackground','autumnBackground','surfaceOpacity','motionEffect','interfaceMode','colorTheme']);
+    const commitUiPreferencePatch = patch => {
+      const entries=Object.entries(patch);
+      if(!entries.length||entries.some(([key,value])=>!UI_PREFERENCE_KEYS.includes(key)||!['string','number','boolean'].includes(typeof value)||typeof value==='number'&&!Number.isFinite(value)))throw Error('Invalid UI preference patch');
+      const key='commit:ui-preferences';
+      if(!acquireOperationLock(key)){toast('操作正在處理或剛完成，已阻止重複送出。','info');return false;}
+      const metadata=['schemaVersion','appVersion','uiPreferences','updatedAt'].map(name=>[name,Object.hasOwn(state,name),state[name]]);
+      const previous=entries.map(([name])=>[name,Object.hasOwn(ui,name),ui[name]]);
+      let succeeded=false;
+      setOperationStatus('submitting','commit','正在安全儲存…');
+      try {
+        const unchanged=state.schemaVersion===SCHEMA_VERSION&&state.appVersion===APP_VERSION&&entries.every(([name,value])=>ui[name]===value&&state.uiPreferences?.[name]===value);
+        if(unchanged)window.SalaryMateStorage.assertCurrent();
+        else {for(const [name,value] of entries)ui[name]=value;if(!saveState(false,{preserveCalculations:true}))return false;}
+        succeeded=true;try { setOperationStatus('idle'); } catch(error) { console.warn('儲存狀態顯示未更新',error); }return true;
+      } catch(error){console.error('介面設定未儲存',error);return false;}
+      finally {
+        releaseOperationLock(key,false);
+        if(!succeeded){
+          for(const [name,own,value] of metadata){if(own)state[name]=value;else delete state[name];}
+          for(const [name,own,value] of previous){if(own)ui[name]=value;else delete ui[name];}
+          invalidateCalculationCache();
+          try { syncDataStatusFromState();setOperationStatus('failure','commit','儲存失敗。原本資料保持不變，請重新嘗試。');toast('儲存失敗。原本資料保持不變，請重新嘗試。','error'); } catch(error) { console.warn('儲存失敗提示未顯示',error); }
+        }
+      }
+    };
     const refreshVisualPreferences = saved => {
       if (!saved) { renderAll(); return; }
       applyVisualPreferences();
@@ -3402,7 +3467,7 @@
       const before = ui.interfaceStyle;
       const next = normalizeInterfaceStyle(value);
       if (next === before) return;
-      const saved = commitVisualPreference(() => { ui.interfaceStyle = next; });
+      const saved = commitUiPreferencePatch({ interfaceStyle: next });
       if (!saved) ui.interfaceStyle = before;
       renderAll();
       openInterfaceSettings();
@@ -3416,7 +3481,7 @@
       if (next === before) return;
       const dialog = $('#appDialog');
       const scrollTop = dialog?.scrollTop || 0;
-      const saved = commitVisualPreference(() => { ui.surfaceOpacity = next; });
+      const saved = commitUiPreferencePatch({ surfaceOpacity: next });
       if (!saved) ui.surfaceOpacity = before;
       refreshVisualPreferences(saved);
       openInterfaceSettings();
@@ -3432,7 +3497,7 @@
       if (next === before) return;
       const dialog = $('#appDialog');
       const scrollTop = dialog?.scrollTop || 0;
-      const saved = commitVisualPreference(() => { ui.hd2dBackground = next; });
+      const saved = commitUiPreferencePatch({ hd2dBackground: next });
       if (!saved) ui.hd2dBackground = before;
       refreshVisualPreferences(saved);
       openInterfaceSettings();
@@ -3448,7 +3513,7 @@
       if (next === before) return;
       const dialog = $('#appDialog');
       const scrollTop = dialog?.scrollTop || 0;
-      const saved = commitVisualPreference(() => { ui.autumnBackground = next; });
+      const saved = commitUiPreferencePatch({ autumnBackground: next });
       if (!saved) ui.autumnBackground = before;
       refreshVisualPreferences(saved);
       openInterfaceSettings();
@@ -3465,7 +3530,7 @@
       const body = dialog.querySelector('.dialog-body');
       const choice = dialog.querySelector(`[data-action="set-interface-mode"][data-mode="${nextMode}"]`);
       const offset = body && choice ? choice.getBoundingClientRect().top - body.getBoundingClientRect().top : null;
-      const saved = commitVisualPreference(() => { ui.interfaceMode = nextMode; });
+      const saved = commitUiPreferencePatch({ interfaceMode: nextMode });
       if (!saved) ui.interfaceMode = before;
       refreshVisualPreferences(saved);
       // Keep the native scroll container and touched controls alive during a density change.
@@ -3483,7 +3548,7 @@
       const nextTheme = normalizeColorTheme(value);
       const before = ui.colorTheme;
       if (nextTheme === before) return;
-      const saved = commitVisualPreference(() => { ui.colorTheme = nextTheme; });
+      const saved = commitUiPreferencePatch({ colorTheme: nextTheme });
       if (!saved) ui.colorTheme = before;
       refreshVisualPreferences(saved);
       openInterfaceSettings();
@@ -4951,7 +5016,7 @@
       form.dataset.busy = 'true'; button.disabled = true;
       status.textContent = encrypted ? '正在加密備份…' : '正在準備備份…';
       try {
-        let payload = { ...clone(state), exportInfo: { app: '個人薪資與投資管理', appVersion: APP_VERSION, schemaVersion: SCHEMA_VERSION, exportedAt: new Date().toISOString() } };
+        let payload = { ...state, exportInfo: { app: '個人薪資與投資管理', appVersion: APP_VERSION, schemaVersion: SCHEMA_VERSION, exportedAt: new Date().toISOString() } };
         if (encrypted) payload = await window.SalaryMateBackup.encrypt(payload, form.elements.password.value);
         if (!form.isConnected || !$('#appDialog').open) return;
         downloadBlob(JSON.stringify(payload, null, 2), 'application/json;charset=utf-8', `個人薪資與投資管理_v${APP_VERSION}_${encrypted ? 'encrypted' : 'backup'}_${todayIso()}.json`);
@@ -5346,15 +5411,13 @@
       }
       const attendanceButton = event.target.closest('[data-attendance-tab]');
       if (attendanceButton) {
-        ui.attendanceTab = attendanceButton.dataset.attendanceTab === 'leave' ? 'leave' : 'overtime';
-        saveState();
+        commitUiPreferencePatch({ attendanceTab: attendanceButton.dataset.attendanceTab === 'leave' ? 'leave' : 'overtime' });
         renderView();
         return;
       }
       const salaryButton = event.target.closest('[data-salary-tab]');
       if (salaryButton) {
-        ui.salaryCalcTab = ['overtime', 'yearend', 'raises'].includes(salaryButton.dataset.salaryTab) ? salaryButton.dataset.salaryTab : 'overtime';
-        saveState();
+        commitUiPreferencePatch({ salaryCalcTab: ['overtime', 'yearend', 'raises'].includes(salaryButton.dataset.salaryTab) ? salaryButton.dataset.salaryTab : 'overtime' });
         renderView();
         return;
       }
@@ -5384,7 +5447,7 @@
         'duplicate-record': duplicateLatestRecord,
         'manage-companies': () => selectPrimaryTab('companies'),
         'open-interface-settings': openInterfaceSettings,
-        'open-legal': () => openDialog('授權、隱私與試算說明', window.SalaryMateLegal?.html || '<p>說明尚未載入，請重新開啟。</p>', true),
+        'open-legal': () => { void openLegal(); },
         'save-company': saveCompanyForm,
         'edit-company': () => openCompanyManager(getCompany(id)),
         'delete-company': () => deleteCompany(id),
@@ -5405,7 +5468,7 @@
         'advanced-rules-back': () => { ui.companyDetailSection = 'overview'; renderView(); focusPageHeading(); },
         'edit-payroll-cycle': () => openPayrollCycleRule(getCompany(id)),
         'add-annual-raise': () => { const company = getCompany(id); if (!company) return; ui.raiseCompanyId = company.id; openSalaryAdjustmentForm(); },
-        'open-year-end-rule': () => { const company = getCompany(id); if (!company) return; ui.yearEndCompanyId = company.id; ui.yearEndDraft = null; ui.salaryCalcTab = 'yearend'; ui.companyFilter = company.id; saveState(); selectPrimaryTab('hourly'); },
+        'open-year-end-rule': () => { const company = getCompany(id); if (!company) return; if(!commitUiPreferencePatch({yearEndCompanyId:company.id,salaryCalcTab:'yearend',companyFilter:company.id}))return; ui.yearEndDraft = null; selectPrimaryTab('hourly'); },
         'company-special-rules': () => openCompanyManager(getCompany(id)),
         'edit-basic-salary-rule': () => openCompanyBasicForm(getCompany(id)),
         'add-investment': () => openInvestment(),
@@ -5441,7 +5504,7 @@
         'load-calculator-record': loadCalculatorRecord,
         'edit-calculator-company': () => openCompanyManager(activeCalculatorCompany()),
         'reset-calculator': resetCalculator,
-        'toggle-hourly-advanced': () => { ui.hourlyAdvancedOpen = !ui.hourlyAdvancedOpen; saveState(); renderView(); },
+        'toggle-hourly-advanced': () => { commitUiPreferencePatch({hourlyAdvancedOpen:!ui.hourlyAdvancedOpen}); renderView(); },
         'save-yearend': saveYearEndEstimate,
         'add-salary-adjustment': () => openSalaryAdjustmentForm(),
         'edit-salary-adjustment': () => openSalaryAdjustmentForm(state.salaryAdjustments.find((record) => record.id === id)),
@@ -5659,42 +5722,32 @@
         if (companyId) setCurrentCompany(companyId);
         else toast('請選擇一家公司設為目前公司', 'error');
       } else if (event.target.id === 'yearFilter') {
-        ui.selectedYear = Number(event.target.value);
-        saveState();
+        commitUiPreferencePatch({ selectedYear: Number(event.target.value) });
         renderView();
       } else if (event.target.id === 'overtimeMonth') {
-        ui.overtimeMonth = Number(event.target.value);
-        saveState();
+        commitUiPreferencePatch({ overtimeMonth: Number(event.target.value) });
         renderView();
       } else if (event.target.id === 'leaveMonth') {
-        ui.leaveMonth = Number(event.target.value);
-        saveState();
+        commitUiPreferencePatch({ leaveMonth: Number(event.target.value) });
         renderView();
       } else if (event.target.id === 'leaveStatus') {
-        ui.leaveStatus = ['active', 'confirmed', 'planned', 'cancelled', 'all'].includes(event.target.value) ? event.target.value : 'active';
-        saveState();
+        commitUiPreferencePatch({ leaveStatus: ['active', 'confirmed', 'planned', 'cancelled', 'all'].includes(event.target.value) ? event.target.value : 'active' });
         renderView();
       } else if (event.target.id === 'hourlyMonth') {
-        ui.hourlyMonth = Number(event.target.value);
-        saveState();
+        commitUiPreferencePatch({ hourlyMonth: Number(event.target.value) });
         renderView();
       } else if (event.target.id === 'yearEndCompany') {
         if (ui.draftScope?.entityType === 'year-end' && hasDirtyDraft() && !window.confirm('年終規則有尚未儲存的變更。要放棄變更並切換公司嗎？')) { renderView(); return; }
-        clearDraftScope();
-        ui.yearEndCompanyId = String(event.target.value || '');
-        ui.yearEndDraft = null;
-        saveState();
+        if(commitUiPreferencePatch({yearEndCompanyId:String(event.target.value || '')})){clearDraftScope();ui.yearEndDraft=null;}
         renderView();
       } else if (event.target.id === 'raiseCompany') {
-        ui.raiseCompanyId = String(event.target.value || '');
-        saveState();
+        commitUiPreferencePatch({ raiseCompanyId: String(event.target.value || '') });
         renderView();
       } else if (event.target.id === 'calculatorCompany') {
         const company = getCompany(String(event.target.value || ''));
         if (company) setCurrentCompany(company.id);
         else {
-          state.overtimeCalculator.companyId = '';
-          saveState();
+          commitStateMutation(()=>{state.overtimeCalculator.companyId='';});
           renderAll();
         }
       } else if (event.target.id === 'jsonImport') {
@@ -5920,7 +5973,7 @@
     if (runtimeState.dataStatus !== 'failure') restoreUiPreferences();
     renderAll();
     window.SalaryMateData = Object.freeze({
-      exportPayload: () => JSON.stringify({ ...clone(state), exportInfo: { app: '個人薪資與投資管理', appVersion: APP_VERSION, schemaVersion: SCHEMA_VERSION, exportedAt: new Date().toISOString() } }, null, 2),
+      exportPayload: () => JSON.stringify({ ...state, exportInfo: { app: '個人薪資與投資管理', appVersion: APP_VERSION, schemaVersion: SCHEMA_VERSION, exportedAt: new Date().toISOString() } }, null, 2),
       operationalScope: () => clone({ currentCompanyId: currentCompany()?.id || '', draftScope: ui.draftScope, selectedEntityScope: ui.selectedEntityScope, contextGeneration: runtimeState.generation, operationStatus: runtimeState.operationStatus }),
       importPayload: payload => importJson({ text: async () => payload }),
       handleBackButton: () => {

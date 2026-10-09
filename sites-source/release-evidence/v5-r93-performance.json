@@ -1,0 +1,26 @@
+{
+  "environment": "Native Node VM production functions, fictional 100 assets / 10,000 alternating buy-sell events; no browser, DOM emulator, private data or HTTP",
+  "scope": "Generated HTML bytes and operation counts, not network download size, device startup time, measured memory or FPS",
+  "R92": {
+    "events": 10000,
+    "visibleRows": 10000,
+    "generatedHtmlBytes": 11843433,
+    "closedFifoLotReads": 5000,
+    "closedFifoLotRows": 5000
+  },
+  "R93": {
+    "events": 10000,
+    "visibleRows": 50,
+    "generatedHtmlBytes": 61953,
+    "closedFifoLotReads": 0,
+    "closedFifoLotRows": 0
+  },
+  "unchangedFinancialCalculationSha256": "3d8267d3571c658da3ca3bb40eb08f594ad1d0a7d60e7ff2a630dedd2fb1be76",
+  "hosted": {
+    "eagerModulesBefore": 15,
+    "eagerModulesAfter": 14,
+    "deferredLegalDataBytes": 346889,
+    "removedInstallPrefetchBytes": 688008
+  },
+  "storageProof": "See tests/v5-r93-storage.test.mjs: UI clone 0, financial clone 1; identical UI patch serialization/write 0; rollback and durable notification cases checked"
+}
