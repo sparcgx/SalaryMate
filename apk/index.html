@@ -30,16 +30,17 @@
     <h1>下載 SalaryMate</h1>
     <p>適用 Android 7.0 以上，APK 約 45.6 MB。</p>
     <p class="muted" role="status">即將自動開始下載；若未開始，請點下方按鈕。</p>
-    <a class="download" id="download" href="https://github.com/sparcgx/SalaryMate/releases/download/v5.0.0-dev.2-R100-android/SalaryMate_v5.0.0-dev.2-R100_Android.apk">下載 APK</a>
+    <a class="download" id="download" target="_blank" rel="noopener noreferrer" href="https://github.com/sparcgx/SalaryMate/releases/download/v5.0.0-dev.2-R100-android/SalaryMate_v5.0.0-dev.2-R100_Android.apk">下載 APK</a>
     <p class="tip"><strong>請先備份，再覆蓋安裝。</strong><br>不要先解除安裝或清除資料。開發版可與正式版並存。</p>
     <a class="details" href="https://github.com/sparcgx/SalaryMate/releases/tag/v5.0.0-dev.2-R100-android">版本說明與 SHA256</a>
     <noscript><p class="muted">自動下載未啟用，請點「下載 APK」。</p></noscript>
   </main>
+  <iframe id="download-frame" title="APK 下載" hidden></iframe>
   <script>
     (function () {
       var link = document.getElementById('download');
       var timer = window.setTimeout(function () {
-        window.location.assign(link.href);
+        document.getElementById('download-frame').src = link.href;
       }, 1500);
       link.addEventListener('click', function () { window.clearTimeout(timer); });
       window.addEventListener('pagehide', function () { window.clearTimeout(timer); }, { once: true });
