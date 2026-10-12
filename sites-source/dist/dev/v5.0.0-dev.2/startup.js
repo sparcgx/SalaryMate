@@ -2494,7 +2494,7 @@ globalThis.SalaryMateEnglish={
   "行情時間較舊，保留最新成交價。": "The quote is older. The latest saved trade price is preserved.",
   "匯率暫時無法更新，保留上次資料。": "The exchange rate could not be updated. Its previous value is preserved.",
   "TWSE 最新成交": "TWSE latest trade",
-  "市場資料每 5 分鐘自動查詢，也可立即更新。台股優先採 TWSE 最新成交，未取得成交時使用 TWSE／TPEx 收盤資料；美股採 Nasdaq 最新可用行情，匯率採 Frankfurter 參考值，不保證即時。手動模式與基金保留自行填寫的價格。停用個股連動後僅更新參考匯率；關閉自動更新仍可立即更新。投資頁隱藏、離線或正在編輯時暫停自動查詢。查詢只傳送市場與股票代號，不傳送持股、交易、薪資或帳戶資料。來源失敗、日期較舊或編輯期間收到回應時，保留原資料。": "Market data refreshes every 5 minutes or on demand. Taiwan quotes use the latest TWSE trade, falling back to TWSE / TPEx closing data. US quotes use the latest available Nasdaq data and FX uses Frankfurter reference rates; real-time delivery is not guaranteed. Manual prices and fund NAV are preserved. Disabling quote sync updates only reference FX. Pausing automatic updates still allows Update now. Automatic requests pause while the investment page is hidden, offline or being edited. Requests contain only markets and symbols, never holdings, transactions, salaries or account details. Failed, older or conflicting responses preserve saved data.",
+  "市場資料每 5 分鐘自動查詢，也可立即更新。上市股票同日優先採有效 TWSE 收盤價，較新交易日可使用最新成交；上櫃股票沿用 TWSE 最新成交／TPEx 收盤資料；美股採 Nasdaq 最新可用行情，匯率採 Frankfurter 參考值，不保證即時。手動模式與基金保留自行填寫的價格。停用個股連動後僅更新參考匯率；關閉自動更新仍可立即更新。投資頁隱藏、離線或正在編輯時暫停自動查詢。查詢只傳送市場與股票代號，不傳送持股、交易、薪資或帳戶資料。來源失敗、日期較舊或編輯期間收到回應時，保留原資料。": "Market data refreshes every 5 minutes or on demand. Listed stocks prefer a valid TWSE close for the same trading date; a trade from a later date can be used. OTC stocks retain the latest TWSE trade / TPEx closing-data policy. US quotes use the latest available Nasdaq data and FX uses Frankfurter reference rates; real-time delivery is not guaranteed. Manual prices and fund NAV are preserved. Disabling quote sync updates only reference FX. Pausing automatic updates still allows Update now. Automatic requests pause while the investment page is hidden, offline or being edited. Requests contain only markets and symbols, never holdings, transactions, salaries or account details. Failed, older or conflicting responses preserve saved data.",
   "交易匯率與成本不會被行情更新改寫。新臺幣損益採先進先出（FIFO）；買入費稅加入成本，賣出費稅從收入扣除。資料預設儲存在目前瀏覽器；啟用 Google Drive 備份後，備份會傳至你授權的 Google 帳戶。可於設定匯出一般或加密備份。盤中預估淨值支援群益、富邦投信公布的台幣 ETF，與股價一起查詢，顯示來源時間；預估值獨立保存，不會改寫每日公告或持股市值。": "Market updates never change transaction exchange rates or costs. TWD gains use FIFO; buy fees are included in cost and sell fees are deducted from proceeds. Data is stored in this browser by default. If you enable Google Drive backup, backups are sent to the Google account you authorize. Export a standard or encrypted backup in Settings. Intraday estimated NAV supports TWD ETFs published by Capital and Fubon, refreshes with quotes and shows the source timestamp. Estimates are saved separately from daily NAV and do not change holdings valuation.",
   "目前離線，保留上次匯率與價格。": "Offline. Previous exchange rates and prices are preserved.",
   "行情時間": "Quote time",
@@ -2698,7 +2698,28 @@ globalThis.SalaryMateEnglish={
   "華麗風格下載失敗，已保留目前風格；請稍後重試。": "The ornate style could not download. Your current style is unchanged; please retry later.",
   "正在載入 SalaryMate，讀取本機資料…": "Loading SalaryMate and reading local data…",
   "載入中": "Loading",
-  "介面樣式載入失敗，請重新整理；本機資料仍保留。": "Interface styles could not load. Reload the page; your local data is retained."
+  "介面樣式載入失敗，請重新整理；本機資料仍保留。": "Interface styles could not load. Reload the page; your local data is retained.",
+  "目前離線，請連上網路後重新載入 Google 登入。": "You are offline. Reconnect to the internet, then reload Google sign-in.",
+  "正在載入 Google 登入…": "Loading Google sign-in…",
+  "重新載入 Google 登入": "Reload Google sign-in",
+  "程式載入失敗，請檢查連線後重試。本機資料不會被清除。": "The application could not load. Check your connection and retry. Your local data will not be cleared.",
+  "重新載入程式": "Reload application",
+  "重新載入可能放棄尚未儲存的輸入。要重新載入嗎？": "Reloading may discard unsaved input. Reload now?",
+  "介面樣式載入失敗；本機資料仍保留。": "Interface styles could not load. Your local data is retained.",
+  "重新載入樣式": "Reload styles",
+  "收盤快取已過期，更新失敗": "The closing-price cache has expired and could not be refreshed",
+  "同日收盤價已保存，不改用盤中成交": "A closing price is already saved for this date; an intraday trade will not replace it",
+  "資料日期": "Data date",
+  "TWSE 收盤資料更新失敗，過期快取不會改寫原價格。": "TWSE closing data could not be refreshed. Expired cache data will not replace saved prices.",
+  "行情時間格式不正確": "The quote timestamp is invalid",
+  "部分資料更新失敗，已保留未更新項目的原價格。": "Some data could not be updated. Previous prices were kept for the affected holdings.",
+  "上市收盤資料來源：": "Listed-stock closing-price source:",
+  "金管會證期局／臺灣證券交易所－上市個股日成交資訊": "Securities and Futures Bureau / Taiwan Stock Exchange — daily trading data for listed securities",
+  "政府資料開放授權條款第 1 版": "Open Government Data License, version 1.0",
+  "收盤價不是盤中即時行情；資料日期為交易日，非抓取時間。": "Closing prices are not intraday live quotes. The data date is the trading date, not the retrieval time.",
+  "正在重試…": "Retrying…",
+  "備份缺少關聯資料，無法安全匯入。": "The backup is missing linked data and cannot be imported safely.",
+  "匯入後的補休來源或餘額不一致，請檢查加班、請假與補休結算。": "Imported compensatory time sources or balances are inconsistent. Check overtime, leave and settlements."
 };
 
 
@@ -3024,19 +3045,33 @@ globalThis.SalaryMateEnglish={
 (() => {
   'use strict';
   const coreStyle=document.querySelector('link[data-style-core]');
-  let applicationReady=false,styleReady=!coreStyle||!!coreStyle.sheet,styleFailed=false,reported=false;
+  let applicationReady=false,styleFailed=coreStyle?.getAttribute('data-startup-load')==='error',styleReady=!coreStyle||(!styleFailed&&!!coreStyle.sheet),alternateStyleReady=false,notice=null,retry=null,retrySequence=0;
+  const originalStyle=coreStyle?.href;
   const finishStartup=()=>{
     if(!applicationReady)return;
     document.querySelectorAll('[data-startup-inert]').forEach(element=>{element.removeAttribute('inert');element.removeAttribute('data-startup-inert');});
-    if(styleReady)document.body.removeAttribute('data-startup');
-    else if(styleFailed&&!reported){reported=true;const notice=document.createElement('p');notice.className='notice warning';notice.setAttribute('role','alert');notice.textContent='介面樣式載入失敗，請重新整理；本機資料仍保留。';document.getElementById('mainContent')?.prepend(notice);}
+    if(styleReady||(alternateStyleReady&&coreStyle?.disabled)){document.body.removeAttribute('data-startup');notice?.remove();notice=null;}
+    else if(styleFailed){
+      document.body.setAttribute('data-startup','loading');
+      if(!notice){
+        notice=document.createElement('p');notice.className='notice warning';notice.setAttribute('role','alert');notice.textContent='介面樣式載入失敗；本機資料仍保留。';
+        retry=document.createElement('button');retry.type='button';retry.className='btn btn-small';retry.textContent='重新載入樣式';
+        retry.addEventListener('click',()=>{
+          if(retry.disabled||styleReady)return;
+          retry.disabled=true;retry.textContent='正在重試…';styleFailed=false;
+          const url=new URL(originalStyle,document.baseURI);url.searchParams.set('startupRetry',Date.now()+'-'+(++retrySequence));coreStyle.href=url.href;
+        });
+        notice.append(' ',retry);document.getElementById('mainContent')?.before(notice);
+      }
+      retry.disabled=false;retry.textContent='重新載入樣式';
+    }
   };
   if(coreStyle){
-    coreStyle.addEventListener('load',()=>{styleReady=true;finishStartup();},{once:true});
-    coreStyle.addEventListener('error',()=>{styleFailed=true;finishStartup();},{once:true});
+    coreStyle.addEventListener('load',()=>{styleReady=true;styleFailed=false;finishStartup();});
+    coreStyle.addEventListener('error',()=>{styleReady=false;styleFailed=true;finishStartup();});
     coreStyle.media='all';
   }
-  window.SalaryMateStartup=Object.freeze({complete(){applicationReady=true;finishStartup();},styled(){styleReady=true;finishStartup();}});
+  window.SalaryMateStartup=Object.freeze({complete(){applicationReady=true;window.SalaryMateStartupLoad?.complete();finishStartup();},styled(){styleReady=true;alternateStyleReady=!!coreStyle?.disabled;finishStartup();}});
 })();
 
 // Desktop horizontal scroll runtime.
@@ -3077,7 +3112,7 @@ globalThis.SalaryMateEnglish={
 
 // Website-only style packages. The portable edition already contains all code and CSS.
 (() => {
- const version='5.0.0-dev.2-R99';
+ const version='5.0.0-dev.2-R101';
  const base=new URL('./',document.baseURI);
  const core=document.querySelector('link[data-style-core]');
  let css=null,cssReady=false,cssPending=null,flightPending=null;
@@ -3482,6 +3517,22 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
    return result;
  }
  function marketInfo(q){return Object.fromEntries(['exchange','industry','instrumentType','classificationSource'].filter(k=>typeof q[k]==='string'&&q[k].trim()).map(k=>[k,q[k].trim().slice(0,100)]));}
+ function quoteMarketAt(q,now=Date.now()){
+   // A date-only close has no intraday timestamp; never invent one from fetch time.
+   if(q?.priceKind==='close')return '';
+   const at=q?.quoteAt;
+   return typeof at==='string'&&/^\d{4}-\d\d-\d\dT([01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d{1,3})?(?:Z|[+-]\d\d:\d\d)$/.test(at)&&at.slice(0,10)===q.date&&Number.isFinite(Date.parse(at))&&Date.parse(at)<=now+120000?at:'';
+ }
+ function quoteIssue(a,q,today,now=Date.now()){
+   if(!q||!positive(q.price)||q.currency!==a.currency||!core.dateOK(q.date)||q.date>today)return '未取得有效股價與日期';
+   if(q.quoteCacheStatus&&q.quoteCacheStatus!=='fresh')return '收盤快取已過期，更新失敗';
+   if(a.quoteDate&&q.date<a.quoteDate)return '來源日期比現有價格舊';
+   if(a.market==='TW'&&['TWSE 上市收盤','TWSE 收盤'].includes(a.quoteSource)&&q.date===a.quoteDate&&q.priceKind!=='close'&&!['TWSE 上市收盤','TWSE 收盤'].includes(q.source))return '同日收盤價已保存，不改用盤中成交';
+   const at=quoteMarketAt(q,now);
+   if(q.priceKind!=='close'&&q.quoteAt&&!at)return '行情時間格式不正確';
+   if(a.quoteMarketAt&&q.date===a.quoteDate&&(!at||Date.parse(at)<Date.parse(a.quoteMarketAt)))return '行情時間較舊，保留最新成交價';
+   return '';
+ }
  function updateIntraday(a,q,snapshot,today,updated,errors){
    if(a.market!=='TW'||!q?.intradayNavStatus&&!q?.intradayNav)return;
    const before=JSON.stringify([a.intradayNav,a.intradayNavStatus,a.intradayCheckedAt]),n=q?.intradayNav;
@@ -3524,15 +3575,15 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
        }
      }
 
-     if(!q||!positive(q.price)||q.currency!==a.currency||!core.dateOK(q.date)||q.date>today){errors.push(`${a.symbol}：${error?.message||'未取得有效股價與日期'}，保留原價格。`);continue;}
-     if(a.quoteDate&&q.date<a.quoteDate){errors.push(`${a.symbol}：來源日期比現有價格舊，保留原價格。`);continue;}
-     const at=typeof q.quoteAt==='string'&&/^\d{4}-\d\d-\d\dT.*(?:Z|[+-]\d\d:\d\d)$/.test(q.quoteAt)&&Number.isFinite(Date.parse(q.quoteAt))&&Date.parse(q.quoteAt)<=Date.now()+120000?q.quoteAt:'';
-     if(a.quoteMarketAt&&q.date===a.quoteDate&&(!at||Date.parse(at)<Date.parse(a.quoteMarketAt))){errors.push(`${a.symbol}：行情時間較舊，保留最新成交價。`);continue;}
+     const issue=quoteIssue(a,q,today);
+     if(issue){errors.push(`${a.symbol}：${error?.message||issue}，保留原價格。`);continue;}
+     const at=quoteMarketAt(q);
      const fx=a.currency==='TWD'?1:snapshot.fx?.rate;
      if(!positive(fx)||a.currency!=='TWD'&&(!core.dateOK(snapshot.fx?.date)||snapshot.fx.date>today||a.quoteFxDate&&snapshot.fx.date<a.quoteFxDate||current.marketData?.fx&&snapshot.fx.date<current.marketData.fx.date)){errors.push(`${a.symbol}：匯率查詢失敗，股價與匯率皆保留。`);continue;}
-     Object.assign(a,{quotePrice:q.price,quoteDate:q.date,quoteFx:fx,quoteSource:String(q.source||''),quoteProviderTime:String(q.providerTime||q.date),quoteCheckedAt:String(snapshot.fetchedAt||''),quoteMode:'auto',quoteFxDate:a.currency==='TWD'?q.date:String(snapshot.fx?.date||''),quoteChange:typeof q.change==='number'&&Number.isFinite(q.change)?q.change:null,quoteChangePercent:typeof q.changePercent==='number'&&Number.isFinite(q.changePercent)?q.changePercent:null,marketInfo:{...a.marketInfo,...marketInfo(q)}});if(!updated.includes(a.id))updated.push(a.id);
+     Object.assign(a,{quotePrice:q.price,quoteDate:q.date,quoteFx:fx,quoteSource:String(q.source||''),quoteProviderTime:String(q.priceKind==='close'?q.date:q.providerTime||q.date),quoteCheckedAt:String(snapshot.fetchedAt||''),quoteMode:'auto',quoteFxDate:a.currency==='TWD'?q.date:String(snapshot.fx?.date||''),quoteChange:typeof q.change==='number'&&Number.isFinite(q.change)?q.change:null,quoteChangePercent:typeof q.changePercent==='number'&&Number.isFinite(q.changePercent)?q.changePercent:null,marketInfo:{...a.marketInfo,...marketInfo(q)}});if(!updated.includes(a.id))updated.push(a.id);
      a.quoteMarketAt=at;priceUpdated.push(a.id);
    }
+   for(const error of snapshot.errors)if(!error.symbol&&error.source==='TWSE 上市收盤'&&typeof error.message==='string'&&!errors.includes(error.message))errors.push(error.message);
    const m=next.marketData||{},fx=snapshot.fx;
    const fxOK=positive(fx?.rate)&&core.dateOK(fx.date)&&fx.date<=today&&(!m.fx||fx.date>=m.fx.date);
    if(!fxOK)errors.push('匯率暫時無法更新，保留上次資料。');
@@ -3541,7 +3592,7 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
      lastAttemptAt:new Date().toISOString(),...(useful?{lastSyncAt:new Date().toISOString()}:{}),requested:targets.length,updated:priceUpdated.length,status:!useful?'error':errors.length?'partial':'success'};
    core.validate(next);return {next,updated,priceUpdated,errors,useful};
  }
- root.SalaryMateStockServices={marketInfo,catalog:(query,signal)=>request('/api/stocks/catalog',{query},signal),forecasts:(market,symbol,year,signal)=>request('/api/stocks/dividends',{market,symbol,year,forecast:true},signal),forecastCache,dividendPeriod,dividends:(market,symbol,year,signal)=>request('/api/stocks/dividends',{market,symbol,year},signal),parseSmart,prepareSmart,fetchQuotes,fetchIntraday:assets=>fetchQuotes(assets.filter(a=>a.market==='TW'),'/api/stocks/nav'),applyIntraday,applyQuotes,lookup:(market,symbol,signal)=>request('/api/stocks/lookup',{market,symbol},signal)};
+ root.SalaryMateStockServices={marketInfo,quoteIssue,quoteMarketAt,catalog:(query,signal)=>request('/api/stocks/catalog',{query},signal),forecasts:(market,symbol,year,signal)=>request('/api/stocks/dividends',{market,symbol,year,forecast:true},signal),forecastCache,dividendPeriod,dividends:(market,symbol,year,signal)=>request('/api/stocks/dividends',{market,symbol,year},signal),parseSmart,prepareSmart,fetchQuotes,fetchIntraday:assets=>fetchQuotes(assets.filter(a=>a.market==='TW'),'/api/stocks/nav'),applyIntraday,applyQuotes,lookup:(market,symbol,signal)=>request('/api/stocks/lookup',{market,symbol},signal)};
 })(globalThis);
 
 
@@ -3597,8 +3648,21 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
   const stockKey = a => JSON.stringify([a.market, a.symbol.trim().toUpperCase(), a.account || '']);
   const collections = ['companies', 'records', 'overtimeLogs', 'leaveRecords', 'compTimeCredits', 'compTimeSettlements', 'salaryAdjustments', 'yearEndEstimates', 'investmentRecords'];
   const labels = ['公司', '薪資', '加班', '請假', '補休來源', '補休結算', '調薪', '年終設定', '投資收入'];
+  function validateReferences(data) {
+    const ids = Object.fromEntries(collections.map(name => [name, new Set((data[name] || []).map(row => row.id))]));
+    const check = (rows, field, target) => {
+      // Older backups may omit optional links; an explicit link must resolve
+      // within the incoming backup, including for complete replacement.
+      for (const row of rows || []) if (row[field] && !ids[target].has(row[field])) fail('備份缺少關聯資料，無法安全匯入。');
+    };
+    for (const name of collections.slice(1, -1)) check(data[name], 'companyId', 'companies');
+    check(data.compTimeCredits, 'sourceId', 'overtimeLogs');
+    check(data.compTimeSettlements, 'creditId', 'compTimeCredits');
+    // Income survives payroll deletion; sourceRecordId is historical provenance.
+  }
   function merge(current, incoming, mode = 'overwrite', token = root.crypto.randomUUID()) {
     if (!['overwrite', 'copy', 'restore'].includes(mode)) fail('請選擇匯入方式。');
+    validateReferences(incoming);
     const next = mode === 'restore' ? copy(incoming) : copy(current), data = copy(incoming), stats = [];
     if (mode === 'restore') return { next, stats: [], mode };
     const maps = {}, prefix = 'import-' + token + '-', allIds = new Set(); let serial = 0;
@@ -3711,14 +3775,18 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
   function loadIdentity(){
     if(!supported())return Promise.reject(new Error('Google 連線需要 HTTPS 網站或 localhost；直接開啟 HTML 檔案時，請改用網站版或下載備份。'));
     if(root.google?.accounts?.oauth2)return Promise.resolve();
-    if(loading)return loading;
-    loading=new Promise((resolve,reject)=>{
+    if(root.navigator?.onLine===false)return Promise.reject(new Error('目前離線，請連上網路後重新載入 Google 登入。'));
+    if(loading)return loading.promise;
+    const attempt={};loading=attempt;
+    attempt.promise=new Promise((resolve,reject)=>{
       const script=root.document.createElement('script');script.src='https://accounts.google.com/gsi/client';script.async=true;script.referrerPolicy='no-referrer';
-      const timer=root.setTimeout(()=>done(new Error('Google 登入元件載入失敗，請檢查網路後重試。')),15000);
-      const done=error=>{root.clearTimeout(timer);if(error){script.remove();loading=null;reject(error);}else resolve();};
+      let settled=false,timer;
+      const done=error=>{if(settled)return;settled=true;root.clearTimeout(timer);script.onload=script.onerror=null;if(error){script.remove();if(loading===attempt)loading=null;reject(error);}else resolve();};
+      timer=root.setTimeout(()=>done(new Error('Google 登入元件載入失敗，請檢查網路後重試。')),15000);
       script.onload=()=>root.google?.accounts?.oauth2?done():done(new Error('Google 登入元件載入失敗，請檢查網路後重試。'));
-      script.onerror=()=>done(new Error('Google 登入元件載入失敗，請檢查網路後重試。'));root.document.head.append(script);
-    });return loading;
+      script.onerror=()=>done(new Error('Google 登入元件載入失敗，請檢查網路後重試。'));
+      try{root.document.head.append(script);}catch{done(new Error('Google 登入元件載入失敗，請檢查網路後重試。'));}
+    });return attempt.promise;
   }
   function createClient(onChange=()=>{}){
     let token='',expires=0,user=null,generation=0,pendingAuth=null,busy=false,expiryTimer;
@@ -3780,28 +3848,35 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
       }
       return `${operation}失敗：${advice}（Google 原因代碼：${reason||'未提供'}）`;
     }
-    async function request(url,init={},acceptIncomplete=false){
+    async function request(url,init={},acceptIncomplete=false,consume=response=>response){
       const u=new URL(url);
       if(u.origin!=='https://www.googleapis.com'||(!u.pathname.startsWith('/drive/v3/')&&!u.pathname.startsWith('/upload/drive/v3/files'))||u.username||u.password)fail('已阻止非 Google Drive 的資料傳輸。');
       if(!connected()){disconnect();fail('Google 授權已過期，請重新連線。');}
       const session=generation,controller=new root.AbortController();requests.add(controller);
       const timer=root.setTimeout(()=>controller.abort(),60000);
+      let abort;
+      const interrupted=new Promise((resolve,reject)=>{abort=()=>{const error=new Error('Request interrupted');error.name='AbortError';reject(error);};controller.signal.addEventListener('abort',abort,{once:true});});
       try{
+        return await Promise.race([(async()=>{
         const response=await root.fetch(url,{...init,headers:{...init.headers,Authorization:'Bearer '+token},credentials:'omit',cache:'no-store',redirect:'error',referrerPolicy:'no-referrer',signal:controller.signal});
+        if(controller.signal.aborted)throw Object.assign(new Error('Request interrupted'),{name:'AbortError'});
         if(session!==generation)fail('Google 連線已取消。');
         if(response.status===401){disconnect();fail('Google 授權已過期，請重新連線。');}
         if(response.status===403)fail(await forbidden(response,operationOf(u,init.method||'GET')));
         if(response.status===404)fail('找不到這份雲端備份，請重新整理清單。');
         if(response.status===429)fail('Google Drive 暫時限制請求，請稍後重試。');
         if(!response.ok&&!(acceptIncomplete&&response.status===308))fail('Google Drive 暫時無法完成操作，請重新整理清單後再試。');
-        return response;
+        const result=await consume(response,controller.signal);
+        if(session!==generation||!connected())fail('Google 連線已取消。');
+        return result;
+        })(),interrupted]);
       }catch(error){
         if(session!==generation)fail('Google 連線已取消。');
         if(error.name==='AbortError'||error instanceof TypeError)fail('連線中斷或逾時。上傳結果尚未確認，請重新整理雲端清單；本機資料仍保留。');
         throw error;
-      }finally{root.clearTimeout(timer);requests.delete(controller);}
+      }finally{root.clearTimeout(timer);controller.signal.removeEventListener('abort',abort);requests.delete(controller);}
     }
-    async function json(path,params,init){const session=generation,result=await (await request(endpoint(path,params),init)).json();if(session!==generation)fail('Google 連線已取消。');return result;}
+    async function json(path,params,init){return request(endpoint(path,params),init,false,response=>response.json());}
     // Must be called directly from a user gesture, after loadIdentity has completed.
     function connect(){
       if(!supported())return Promise.reject(new Error('Google 連線需要 HTTPS 網站或 localhost；直接開啟 HTML 檔案時，請改用網站版或下載備份。'));
@@ -3811,7 +3886,7 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
       disconnect();const session=generation;
       return new Promise((resolve,reject)=>{
         const timeout=root.setTimeout(()=>finish(new Error('Google 授權未完成，請重新連線。')),120000);
-        const finish=(error,value)=>{if(pendingAuth!==cancel)return;pendingAuth=null;root.clearTimeout(timeout);error?reject(error):resolve(value);};
+        const finish=(error,value)=>{if(pendingAuth!==cancel)return;pendingAuth=null;root.clearTimeout(timeout);if(error&&session===generation)disconnect();error?reject(error):resolve(value);};
         const cancel=error=>finish(error);pendingAuth=cancel;
         try{
           const auth=root.google.accounts.oauth2.initTokenClient({client_id:clientId(),scope:SCOPE,include_granted_scopes:false,
@@ -3823,10 +3898,10 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
               token=response.access_token;expires=Date.now()+(seconds-30)*1000;
               try{
                 const about=await json('about',{fields:'user(displayName,emailAddress,permissionId)'});
-                if(session!==generation)return;
+                if(session!==generation||pendingAuth!==cancel)return;
                 if(!about.user?.permissionId)fail('無法確認 Google 帳戶，請重新連線。');
                 user=about.user;expiryTimer=root.setTimeout(()=>disconnect(),expires-Date.now());notify();finish(null,status());
-              }catch(error){token='';expires=0;user=null;notify();finish(error);}
+              }catch(error){if(session===generation&&pendingAuth===cancel)finish(error);}
             }});
           auth.requestAccessToken({prompt:'select_account'});
         }catch{finish(new Error('Google 授權未完成，請檢查用戶端 ID 與授權來源網址。'));}
@@ -3861,18 +3936,21 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
       const response=await request(UPLOAD+'?'+new URLSearchParams({uploadType:'resumable',fields}),{method:'POST',headers:{'Content-Type':'application/json; charset=UTF-8','X-Upload-Content-Type':'application/json','X-Upload-Content-Length':String(bytes.length)},body:JSON.stringify(metadata)});
       const location=response.headers.get('Location');if(!location)fail('Google Drive 未提供上傳位置，請重試。');
       const target=new URL(location);if(target.origin!=='https://www.googleapis.com'||target.pathname!=='/upload/drive/v3/files'||target.searchParams.get('uploadType')!=='resumable')fail('已阻止非 Google Drive 的資料傳輸。');
-      const file=validateFile(await (await request(location,{method:'PUT',headers:{'Content-Type':'application/json'},body:bytes})).json());known.set(file.id,file);return file;
+      const result=await request(location,{method:'PUT',headers:{'Content-Type':'application/json'},body:bytes},false,response=>response.json());
+      if(session!==generation||!connected())fail('Google 連線已取消。');
+      const file=validateFile(result);known.set(file.id,file);return file;
     });}
     async function download(id){
       const session=generation;
       const file=await owned(id);if(Number(file.size)>MAX_BYTES)fail('備份檔案超過 45 MB。');
-      const response=await request(endpoint('files/'+encodeURIComponent(id),{alt:'media'}));
+      return request(endpoint('files/'+encodeURIComponent(id),{alt:'media'}),{},false,async(response,signal)=>{
       if(Number(response.headers.get('Content-Length'))>MAX_BYTES)fail('備份檔案超過 45 MB。');
-      let text='';
-      if(response.body?.getReader){const reader=response.body.getReader(),decoder=new TextDecoder('utf-8',{fatal:true});let size=0;try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>MAX_BYTES)fail('備份檔案超過 45 MB。');text+=decoder.decode(value,{stream:true});}text+=decoder.decode();}finally{await reader.cancel();}}
-      else{text=await response.text();if(new TextEncoder().encode(text).length>MAX_BYTES)fail('備份檔案超過 45 MB。');}
+      let text='',byteSize=0;
+      if(response.body?.getReader){const reader=response.body.getReader(),decoder=new TextDecoder('utf-8',{fatal:true}),cancel=()=>{reader.cancel().catch(()=>{});};signal.addEventListener('abort',cancel,{once:true});try{while(true){const {done,value}=await reader.read();if(done)break;byteSize+=value.byteLength;if(byteSize>MAX_BYTES)fail('備份檔案超過 45 MB。');text+=decoder.decode(value,{stream:true});}text+=decoder.decode();}finally{signal.removeEventListener('abort',cancel);await reader.cancel();}}
+      else{text=await response.text();byteSize=new TextEncoder().encode(text).length;if(byteSize>MAX_BYTES)fail('備份檔案超過 45 MB。');}
       if(session!==generation||!connected())fail('Google 連線已取消。');
-      return {name:file.name,size:new TextEncoder().encode(text).length,text:async()=>text};
+      return {name:file.name,size:byteSize,text:async()=>text};
+      });
     }
     const rename=(id,name)=>mutate(async()=>{await owned(id);name=String(name||'').trim();if(!name||name.length>160)fail('備份名稱請填寫 1 至 160 個字元。');const result=await json('files/'+encodeURIComponent(id),{fields},{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({name})});validateFile(result);known.set(id,result);return result;});
     const trash=id=>mutate(async()=>{await owned(id);await json('files/'+encodeURIComponent(id),{fields:'id,trashed'},{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({trashed:true})});known.delete(id);});
@@ -3888,7 +3966,7 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
   'use strict';
   function create(api){
     const g=root.SalaryMateGoogleDrive,esc=api.escapeHtml,user=api.userHtml||esc;
-    let ready=false,busy=false,files=[],pageToken='',message='',panelSerial=0,auto=null,timer=null,lastSaved='',lastFingerprint='';
+    let ready=false,identityLoading=false,identityError='',busy=false,files=[],pageToken='',message='',panelSerial=0,auto=null,timer=null,lastSaved='',lastFingerprint='';
     const client=g.createClient(state=>{if(!state.connected){stopAuto(false);files=[];pageToken='';lastSaved='';lastFingerprint='';}refreshStatus();});
     const $=selector=>root.document.querySelector(selector),panel=()=>$('#googleDrivePanel'),active=el=>!!el?.isConnected&&!!$('#appDialog')?.open;
     const text=value=>root.SalaryMateI18n?.text(value)||value;
@@ -3906,12 +3984,13 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
       root.document.querySelectorAll('[data-google-summary]').forEach(el=>el.textContent=text(summary()));
       if(!p)return;
       $('[data-drive-account]').textContent=state.user?(state.user.emailAddress||state.user.displayName):text('尚未連線');
-      $('[data-drive-message]').textContent=text(message);
+      const setupMessage=identityError||(identityLoading?'正在載入 Google 登入…':!g.validClientId(client.clientId())?'請先完成 Google 連線設定。':'');
+      $('[data-drive-message]').textContent=text(busy?message:setupMessage||message);
       $('[data-drive-session]').textContent=text(auto?(auto.password?'本次開啟期間自動加密儲存':'本次開啟期間自動儲存'):'自動儲存未開啟');
       $('[data-drive-last]').textContent=lastSaved?text('最近儲存')+' · '+localTime(lastSaved):'';
       p.querySelectorAll('[data-drive-connected]').forEach(el=>el.hidden=!state.connected);
       p.querySelectorAll('[data-drive-disconnected]').forEach(el=>el.hidden=state.connected);
-      p.querySelectorAll('[data-drive-action]').forEach(button=>{const action=button.dataset.driveAction;button.disabled=busy||state.busy||(action==='connect'&&(!ready||!g.supported()||!g.validClientId(client.clientId())))||(action==='stop-auto'&&!auto);});
+      p.querySelectorAll('[data-drive-action]').forEach(button=>{const action=button.dataset.driveAction;button.disabled=busy||state.busy||(action==='connect'&&(!ready||!g.supported()||!g.validClientId(client.clientId())))||(action==='retry-identity'&&identityLoading)||(action==='stop-auto'&&!auto);if(action==='retry-identity')button.hidden=!identityError||!g.supported()||state.connected;if(action==='connect')button.title=text(setupMessage);});
       root.SalaryMateI18n?.apply(p);
     }
     function renderFiles(){
@@ -3925,12 +4004,19 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
       finally{busy=false;refreshStatus();}
     }
     async function refresh(more=false){const result=await client.list(more?pageToken:'');files=more?[...files,...result.files]:result.files;files=[...new Map(files.map(f=>[f.id,f])).values()];pageToken=result.nextPageToken;message='雲端備份清單已更新';renderFiles();}
+    async function prepareIdentity(){
+      if(identityLoading||!g.supported())return;
+      identityLoading=true;identityError='';ready=false;refreshStatus();
+      try{await g.loadIdentity();ready=true;}catch(error){identityError=error.message||'Google 登入元件載入失敗，請檢查網路後重試。';}
+      finally{identityLoading=false;refreshStatus();}
+    }
     function open(){
       panelSerial++;
       const supported=g.supported(),id=client.clientId(),origin=supported?root.location.origin:'https://salarymate.sparcgx2420.chatgpt.site';
       api.openDialog('自己的 Google Drive',`<section id="googleDrivePanel"><p>薪資、加班、請假與投資備份由瀏覽器直接傳送到你選擇的 Google 帳戶。網站伺服器不接收備份內容。</p><div class="drive-connection"><div><b data-drive-account></b><small data-drive-session></small><small data-drive-last></small></div><div class="form-actions"><button class="btn btn-primary" type="button" data-drive-action="connect" data-drive-disconnected>連線 Google Drive</button><button class="btn" type="button" data-drive-action="disconnect" data-drive-connected>中斷連線</button><button class="btn" type="button" data-drive-action="revoke" data-drive-connected>撤銷授權</button></div></div>${!supported?'<p class="notice warning">Google 連線需要 HTTPS 網站或 localhost；直接開啟 HTML 檔案時，請改用網站版或下載備份。</p>':''}<details class="drive-setup" ${!id?'open':''}><summary>首次連線設定</summary><p>使用自己的 Google Cloud 專案；只需設定一次，之後在這個瀏覽器直接連線。</p><ol><li>在 Google Cloud 建立專案並啟用 Google Drive API。</li><li>設定 Google Auth Platform 的品牌資訊、目標對象與資料存取權，加入 drive.file 權限。測試模式須加入自己的 Google 帳戶。</li><li>建立「網頁應用程式」OAuth 用戶端，將下列網址加入「已授權的 JavaScript 來源」。請只填網域來源，不包含頁面路徑。</li></ol><input class="field drive-origin" aria-label="已授權的 JavaScript 來源" value="${esc(origin)}" readonly><p><a href="https://console.cloud.google.com/apis/library/drive.googleapis.com" target="_blank" rel="noopener noreferrer">開啟 Google Cloud 設定</a> · <a href="https://developers.google.com/identity/oauth2/web/guides/get-google-api-clientid" target="_blank" rel="noopener noreferrer">Google 官方設定說明</a></p><form id="googleDriveConfig"><label><span class="field-label">Google OAuth 用戶端 ID</span><input class="field" name="clientId" value="${esc(id)}" placeholder="123456789-example.apps.googleusercontent.com" maxlength="220" autocomplete="off" spellcheck="false" required></label><p class="hint">只需用戶端 ID，不需要密鑰、Google 密碼或 API 金鑰。此設定只保存在目前瀏覽器，不會放進備份。</p><div class="form-actions"><button class="btn" type="button" data-drive-action="clear-config">刪除連線設定</button><button class="btn btn-primary" type="submit">儲存連線設定</button></div></form></details><div data-drive-connected><div class="drive-toolbar"><button class="btn btn-primary" type="button" data-drive-action="save">儲存一份</button><button class="btn" type="button" data-drive-action="auto">自動儲存設定</button><button class="btn" type="button" data-drive-action="stop-auto">停止自動儲存</button><button class="btn" type="button" data-drive-action="refresh">重新整理</button></div><p class="hint">備份存放於 Google Drive 的「個人薪資與投資管理」資料夾。每次儲存都新增一份，方便保留各裝置的版本；不會自動合併或取代本機資料。</p><ul class="drive-files" data-drive-files></ul><button class="btn" type="button" data-drive-action="more" hidden>載入更多</button></div><p class="drive-status" data-drive-message role="status" aria-live="polite"></p><p class="hint">本機仍保留離線資料。關閉頁面或授權到期後須重新連線；關閉頁面期間不會同步。一般備份可直接讀取，加密備份需自行保管密碼。只要求本工具建立或你明確授權的檔案權限。</p><a href="https://myaccount.google.com/connections" target="_blank" rel="noopener noreferrer">管理 Google 帳戶的第三方連線</a></section>`,true);
+      const retry=root.document.createElement('button');retry.className='btn';retry.type='button';retry.dataset.driveAction='retry-identity';retry.textContent='重新載入 Google 登入';retry.hidden=true;panel().querySelector('.drive-connection .form-actions').append(retry);
       renderFiles();refreshStatus();
-      if(supported)g.loadIdentity().then(()=>{ready=true;refreshStatus();}).catch(error=>{message=error.message;refreshStatus();});
+      if(supported&&!ready)prepareIdentity();
       $('#googleDriveConfig').addEventListener('submit',event=>{event.preventDefault();if(busy)return;try{client.configure(event.target.elements.clientId.value);message='連線設定已儲存，請點擊連線 Google Drive。';refreshStatus();}catch(error){message=error.message;refreshStatus();}});
     }
     const nameForBackup=()=>`PSIMS_${new Date().toISOString().replace(/[:.]/g,'-')}`;
@@ -3943,13 +4029,15 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
         event.preventDefault();if(busy||!form.reportValidity())return;
         const encrypted=form.elements.encrypted.checked,password=encrypted?form.elements.password.value:'';
         if(encrypted&&password!==form.elements.confirmation.value){form.querySelector('[role="status"]').textContent=text('兩次密碼不一致，請重新確認。');return;}
-        const account=client.status().user?.permissionId,snapshot=api.snapshot(),plainFingerprint=fingerprint(snapshot),button=form.querySelector('[type="submit"]');
+        const account=client.status().user?.permissionId,button=form.querySelector('[type="submit"]');
         button.disabled=true;const result=await run(async()=>{
+          const snapshot=api.snapshot(),plainFingerprint=fingerprint(snapshot);
           let payload=encrypted?await root.SalaryMateBackup.encrypt(snapshot,password):snapshot;
           if(!active(form)||!client.status().connected||client.status().user?.permissionId!==account)throw new Error('Google 連線已取消。');
           const file=await client.upload(payload,autoMode?nameForBackup():form.elements.name.value);
+          if(!client.status().connected||client.status().user?.permissionId!==account)throw new Error('Google 連線已取消。');
           lastSaved=new Date().toISOString();lastFingerprint=plainFingerprint;
-          if(autoMode){auto={password,account};message='自動儲存已開啟';changed();}else message='備份已儲存至自己的 Google Drive';
+          if(autoMode&&active(form)){auto={password,account};message='自動儲存已開啟';changed();}else message='備份已儲存至自己的 Google Drive';
           files=[file,...files.filter(x=>x.id!==file.id)];form.elements.password.value='';form.elements.confirmation.value='';return true;
         });
         if(active(form)){button.disabled=false;if(result)open();else form.querySelector('[role="status"]').textContent=text(message);}
@@ -3982,6 +4070,7 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
     root.document.addEventListener('click',event=>{
       const button=event.target.closest?.('[data-drive-action]');if(!button||button.disabled)return;
       const action=button.dataset.driveAction,file=files.find(f=>f.id===button.dataset.id);
+      if(action==='retry-identity'){message='';prepareIdentity();return;}
       if(action==='connect')return run(async()=>{await client.connect();await refresh();});
       if(action==='disconnect'){client.disconnect();message='已中斷連線，雲端備份仍保留';open();return;}
       if(action==='revoke'){api.confirm('撤銷 Google 授權','停止本工具的 Google Drive 存取；已存放的雲端備份與本機資料仍保留。',()=>run(async()=>{await client.revoke();message='Google 授權已撤銷';open();}),'撤銷授權');return;}
@@ -3995,6 +4084,7 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
       if(action==='restore'&&file){const p=panel(),serial=panelSerial;return run(async()=>{const backup=await client.download(file.id);if(!active(p)||serial!==panelSerial||!client.status().connected)return;stopAuto(false);api.closeDialog();await api.importFile(backup);});}
     });
     root.addEventListener('pagehide',()=>{stopAuto(false);client.disconnect();});
+    root.addEventListener('online',()=>{if(panel()&&!ready)prepareIdentity();});
     root.addEventListener('storage',event=>{if(event.key==='salarymate_v5_google_client_id'){client.disconnect();message='Google 連線設定已變更，請重新連線。';refreshStatus();}});
     return Object.freeze({open,changed,stopAuto,summary});
   }
@@ -4067,7 +4157,7 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
     };
     const quoteMeta=(a,emptyLabel='不會當作 0 元')=>{
       if(a.quotePrice==null)return `<small class="stock-quote-meta">${emptyLabel}</small>`;
-      const at=String(a.quoteProviderTime||'').trim()||a.quoteMarketAt||a.quoteDate;
+       const at=['TWSE 上市收盤','TPEx 上櫃收盤','TWSE 收盤','TPEx 收盤'].includes(a.quoteSource)?a.quoteDate:String(a.quoteProviderTime||'').trim()||a.quoteMarketAt||a.quoteDate;
       return `<small class="stock-quote-meta"><span>${esc(a.quoteSource||'手動')}</span><span class="stock-quote-time" aria-label="行情時間">${esc(at)}</span></small>`;
     };
     const dailyChange=a=>`<span class="stock-daily-change ${tone(a.quoteChange)}">${a.quoteChange==null?'漲跌待更新':`${a.quoteChange>0?'+':''}${num(a.quoteChange,4)}${a.quoteChangePercent==null?'':` / ${a.quoteChangePercent>0?'+':''}${num(a.quoteChangePercent,2)}%`}`}</span>`;
@@ -4080,7 +4170,7 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
       const label=closed?'收盤':source.includes('最新')||a.quoteMode==='auto'?'最新價':'價格';
       const dated=quoted&&core.dateOK(a.quoteDate);
       const date=dated?`${Number(a.quoteDate.slice(5,7))}/${Number(a.quoteDate.slice(8,10))}`:'—';
-      const at=String(a.quoteProviderTime||'').trim()||String(a.quoteMarketAt||a.quoteDate||'');
+       const at=closed?a.quoteDate:String(a.quoteProviderTime||'').trim()||String(a.quoteMarketAt||a.quoteDate||'');
       const meta=quoted?[a.currency,source||'手動',at].filter(Boolean).join(' · '):'尚無行情';
       // Show the provider's own time beside the holdings price. Do not convert
       // time zones, infer a closing time, or substitute the fetch/check time.
@@ -4090,7 +4180,8 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
         : dated?`<time class="stock-quote-date" datetime="${esc(a.quoteDate)}" aria-label="${esc(at||a.quoteDate)}">${date}</time>`:'<span class="stock-quote-date">—</span>';
       const percent=quoted&&typeof a.quoteChangePercent==='number'&&Number.isFinite(a.quoteChangePercent)?a.quoteChangePercent:null;
       const change=percent==null?'—':`${percent>0?'+':''}${listPercentFormat.format(Object.is(percent,-0)?0:percent)}%`;
-      return `<div class="stock-list-price stock-list-price-summary"><dl class="stock-quote-summary" title="${esc(meta)}"><div><dt>${label}</dt><dd><strong class="stock-quote-value">${quoted?listPriceFormat.format(a.quotePrice):'待更新'}</strong>${stamp}</dd></div><div><dt>漲跌</dt><dd><strong class="stock-quote-value ${tone(percent)}"${percent==null?' aria-label="漲跌待更新"':''}>${change}</strong></dd></div></dl>${navInfo(a)}</div>`;
+       const closeMeta=closed&&dated?`<small class="stock-quote-meta stock-close-meta"><span>${esc(source)}</span><span>資料日期 <time datetime="${esc(a.quoteDate)}">${esc(a.quoteDate)}</time></span></small>`:'';
+       return `<div class="stock-list-price stock-list-price-summary"><dl class="stock-quote-summary" title="${esc(meta)}"><div><dt>${label}</dt><dd><strong class="stock-quote-value">${quoted?listPriceFormat.format(a.quotePrice):'待更新'}</strong>${stamp}</dd></div><div><dt>漲跌</dt><dd><strong class="stock-quote-value ${tone(percent)}"${percent==null?' aria-label="漲跌待更新"':''}>${change}</strong></dd></div></dl>${closeMeta}${navInfo(a)}</div>`;
     }
     const empty=(label,action)=>`<div class="stock-empty"><h3>${label}</h3><p>輸入自己的實際資料，這裡不會預先放入示範持股。</p>${action||btn('新增股票','asset','',true)}</div>`;
     const stat=(label,value,hint='',cls='')=>`<div class="stock-stat"><span>${label}</span><strong class="${cls}">${value}</strong><small>${hint}</small></div>`;
@@ -4244,7 +4335,7 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
       const m=model(),held=m.holdings.filter(s=>s.quantity>0),legacyTotal=api.legacyTotal(),income=m.yearDividends+legacyTotal;
       const tabs=[['overview','持股總覽'],['stocks','股票清單'],['transactions','交易紀錄'],['income','股息與收入'],['analysis','損益分析'],['watchlist','觀察清單']];
       const top=`<div class="stock-heading page-head"><div><p class="stock-eyebrow">投資工作區 <span>本機記帳 · 跨公司共用</span></p><h2>股票投資</h2><p class="stock-heading-summary"><span>台股・美股・ETF</span><span>${api.year()} 年損益 · 持股累計至今</span></p></div></div><nav class="stock-tabs" aria-label="投資功能">${tabs.map(([id,label])=>`<button type="button" data-stock="tab" data-id="${id}" aria-current="${view.tab===id?'page':'false'}" class="${view.tab===id?'active':''}">${label}</button>`).join('')}</nav>`;
-      const help='<details class="stock-method"><summary>資料與計算方式</summary><p>市場資料每 5 分鐘自動查詢，也可立即更新。台股優先採 TWSE 最新成交，未取得成交時使用 TWSE／TPEx 收盤資料；美股採 Nasdaq 最新可用行情，匯率採 Frankfurter 參考值，不保證即時。手動模式與基金保留自行填寫的價格。停用個股連動後僅更新參考匯率；關閉自動更新仍可立即更新。投資頁隱藏、離線或正在編輯時暫停自動查詢。查詢只傳送市場與股票代號，不傳送持股、交易、薪資或帳戶資料。來源失敗、日期較舊或編輯期間收到回應時，保留原資料。</p><p>交易匯率與成本不會被行情更新改寫。新臺幣損益採先進先出（FIFO）；買入費稅加入成本，賣出費稅從收入扣除。資料預設儲存在目前瀏覽器；啟用 Google Drive 備份後，備份會傳至你授權的 Google 帳戶。可於設定匯出一般或加密備份。盤中預估淨值支援群益、富邦投信公布的台幣 ETF，與股價一起查詢，顯示來源時間；預估值獨立保存，不會改寫每日公告或持股市值。</p></details>';
+      const help='<details class="stock-method"><summary>資料與計算方式</summary><p>市場資料每 5 分鐘自動查詢，也可立即更新。上市股票同日優先採有效 TWSE 收盤價，較新交易日可使用最新成交；上櫃股票沿用 TWSE 最新成交／TPEx 收盤資料；美股採 Nasdaq 最新可用行情，匯率採 Frankfurter 參考值，不保證即時。手動模式與基金保留自行填寫的價格。停用個股連動後僅更新參考匯率；關閉自動更新仍可立即更新。投資頁隱藏、離線或正在編輯時暫停自動查詢。查詢只傳送市場與股票代號，不傳送持股、交易、薪資或帳戶資料。來源失敗、日期較舊或編輯期間收到回應時，保留原資料。</p><p>交易匯率與成本不會被行情更新改寫。新臺幣損益採先進先出（FIFO）；買入費稅加入成本，賣出費稅從收入扣除。資料預設儲存在目前瀏覽器；啟用 Google Drive 備份後，備份會傳至你授權的 Google 帳戶。可於設定匯出一般或加密備份。盤中預估淨值支援群益、富邦投信公布的台幣 ETF，與股價一起查詢，顯示來源時間；預估值獨立保存，不會改寫每日公告或持股市值。</p></details>';
       let body='';
       if(view.tab==='overview'||view.tab==='watchlist') {
         body=`<div class="stock-stats">${stat(m.missing?'已定價持股市值':'持股總市值',money(m.pricedValue),m.missing?`${m.missing} 檔缺少股價；此為部分市值`:`${held.length} 檔持股 · 依各檔價格日期`)}${stat('持有成本',money(m.cost),'含買入費稅 · TWD')}${stat('未實現損益',m.missing?'待補齊股價':signed(m.unrealized),'目前持股估值 − 剩餘成本',tone(m.unrealized))}${stat('本年投資所得',signed(m.yearRealized+m.yearDividends),'已實現損益＋股票實收股息',tone(m.yearRealized+m.yearDividends))}</div><div class="stock-workspace"><section class="stock-panel"><div class="stock-panel-head"><h3>${view.tab==='watchlist'?'觀察／已出清股票':'我的持股'}</h3>${btn('匯出持股','export-holdings')}</div><form id="stockSearchForm" class="stock-toolbar"><label><span class="sr-only">搜尋股票或帳戶</span><input class="field" name="search" type="search" placeholder="代號、名稱或帳戶" value="${esc(view.search)}"></label><label><span class="sr-only">排序</span><select name="sort" class="field-select">${[['value','市值由高到低'],['profit','損益由高到低'],['symbol','股票代號']].map(([v,l])=>`<option value="${v}" ${view.sort===v?'selected':''}>${l}</option>`).join('')}</select></label>${classificationFilters()}<button class="btn" type="submit">篩選</button></form>${holdingsTable(m.holdings,view.tab==='watchlist')}</section>${allocation(m)}</div>`;
@@ -4361,8 +4452,10 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
       return `<section class="stock-panel stock-market-card" data-market-card aria-label="市場資料連動">
         <div class="stock-market-actions"><button type="button" class="btn btn-small" data-stock="toggle-market-details" aria-expanded="${view.marketExpanded}" aria-controls="stockMarketDetails" aria-label="${view.marketExpanded?'收合市場資訊':'展開市場資訊'}" aria-describedby="stockMarketStatus" title="${label}"><span class="stock-market-dot" data-sync-state="${status}" aria-hidden="true"></span><span data-market-details-label>${view.marketExpanded?'收合':'展開'}</span></button><button type="button" class="btn btn-small" data-stock="toggle-market-quotes" aria-pressed="${prefs.quoteEnabled}" aria-label="個股連動" title="${prefs.quoteEnabled?'停用個股連動':'啟用個股連動'}">${prefs.quoteEnabled?'連動：開':'連動：關'}</button><button type="button" class="btn btn-small stock-market-auto" data-stock="toggle-market-auto" aria-pressed="${prefs.autoRefresh}" aria-label="每 5 分鐘自動更新" title="${prefs.autoRefresh?(prefs.quoteEnabled?'每 5 分鐘自動更新':'匯率每 5 分鐘更新'):'自動更新已暫停'}">${prefs.autoRefresh?'自動：開':'自動：關'}</button>${btn(view.refreshing?'更新中…':'更新','refresh','',true)}<button type="button" class="btn btn-small" data-stock="quotes" aria-label="手動價格／淨值" title="手動價格／淨值">手動</button><div class="stock-action-menu-wrap"><button type="button" class="btn stock-action-toggle" data-stock="toggle-actions" aria-expanded="false" aria-controls="stockHeadActions">選項</button><div id="stockHeadActions" class="stock-head-actions">${btn('新增','asset')}${btn('交易','buy')}${btn('批次','batch')}</div></div></div>
         <span id="stockMarketStatus" class="sr-only" role="status">${label}</span>
+        ${!view.refreshing&&(view.marketIssue||status==='error'||status==='partial')?`<p class="stock-warning stock-market-update-warning" role="status">${esc(view.marketIssue||(status==='error'?'更新失敗，已保留上次匯率與價格。':'部分資料更新失敗，已保留未更新項目的原價格。'))}</p>`:''}
         <div id="stockMarketDetails" class="stock-market-copy" ${view.marketExpanded?'':'hidden'}><div class="stock-market-title"><h3>市場資料連動</h3><span class="stock-badge">${label}</span><strong class="stock-market-fx">USD/TWD ${fx?num(fx.rate,3):'—'}</strong><span class="stock-badge">${fxLabel}</span></div>
         <p>台股：TWSE 最新成交／TWSE、TPEx 收盤 · 美股：Nasdaq 最新可用行情 · 基金：手動維護公布淨值</p>
+        <p class="stock-close-attribution"><span>上市收盤資料來源：</span><a href="https://data.gov.tw/dataset/11549" target="_blank" rel="noopener noreferrer">金管會證期局／臺灣證券交易所－上市個股日成交資訊</a> · <a href="https://data.gov.tw/license" target="_blank" rel="noopener noreferrer">政府資料開放授權條款第 1 版</a>。<span>收盤價不是盤中即時行情；資料日期為交易日，非抓取時間。</span></p>
         <p class="stock-market-time">${last?`<span>上次同步</span> ${esc(last)} <span>台北時間</span>`:'尚未完成首次同步'}${fx?` · <span>匯率基準</span> ${esc(fx.date)}`:''}${m.requested?` · ${m.updated||0}/${m.requested} <span>檔已更新</span>`:''}</p>
         ${Object.values(fresh).some(Boolean)?`<p class="stock-market-freshness"><span>持股估值採用已保存價格：</span><span>${fresh.recent} <span>檔近期</span></span> · <span>${fresh.older} <span>檔逾 24 小時</span></span> · <span>${fresh.unknown} <span>檔時間待確認</span></span> · <span>${fresh.manual} <span>檔手動</span></span></p>`:''}
         ${view.marketIssue?`<p class="stock-warning">${esc(view.marketIssue)}</p>`:status==='error'?'<p class="stock-warning">更新失敗，已保留上次匯率與價格。</p>':status==='partial'?'<p class="stock-warning">部分來源未更新，保留各檔上次成功資料。</p>':''}${sync}</div>
@@ -4699,7 +4792,7 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
           if(old&&(old.symbol!==row.symbol||old.market!==row.market||old.currency!==row.currency)){delete row.dividendForecast;delete row.dividendPlanOverrides;delete row.netAssetValue;delete row.navStatus;delete row.navCheckedAt;delete row.intradayNav;delete row.intradayNavStatus;delete row.intradayCheckedAt;}
           if(!old||old.symbol!==row.symbol||old.market!==row.market||old.currency!==row.currency){row.quotePrice=null;row.quoteDate='';row.quoteFx=null;row.quoteChange=null;row.quoteChangePercent=null;row.quoteSource='';row.quoteProviderTime='';row.quoteMarketAt='';row.quoteCheckedAt='';row.quoteFxDate='';row.quoteMode='manual';}
           const q=form._lookupQuote;
-          if(core.quoteEligible(row)&&q&&q.symbol===row.symbol&&q.market===row.market&&q.currency===row.currency&&row.currency==='TWD'&&q.price>0&&core.dateOK(q.date)&&q.date<=api.today()&&(!row.quoteDate||q.date>=row.quoteDate))Object.assign(row,{quotePrice:q.price,quoteDate:q.date,quoteFx:1,quoteChange:q.change??null,quoteChangePercent:q.changePercent??null,quoteSource:q.source,quoteMode:'auto',quoteProviderTime:q.providerTime,quoteMarketAt:q.quoteAt||'',quoteCheckedAt:new Date().toISOString()});
+           if(core.quoteEligible(row)&&q&&q.symbol===row.symbol&&q.market===row.market&&row.currency==='TWD'&&!services.quoteIssue(row,q,api.today()))Object.assign(row,{quotePrice:q.price,quoteDate:q.date,quoteFx:1,quoteChange:q.change??null,quoteChangePercent:q.changePercent??null,quoteSource:q.source,quoteMode:'auto',quoteProviderTime:q.priceKind==='close'?q.date:q.providerTime,quoteMarketAt:services.quoteMarketAt(q),quoteCheckedAt:new Date().toISOString()});
           const i=next.assets.findIndex(a=>a.id===id);if(i<0)next.assets.push(row);else next.assets[i]=row;
         } else if(kind==='forecast') {
           const forecast=core.dividendForecasts(next,api.today(),true).find(r=>r.key===id);if(!forecast)throw Error('預計配息內容已變更，請重新開啟。');
@@ -4981,7 +5074,7 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0-dev.2-R99';
+    const APP_VERSION = '5.0.0-dev.2-R101';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -6129,9 +6222,9 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
     const leavePaidTone = (record) => numberValue(record.paidRatio) >= 100 ? 'leave-paid' : numberValue(record.paidRatio) > 0 ? 'leave-partial' : 'leave-unpaid';
     const leaveStatusName = (status) => ({ planned: '預計', confirmed: '已確認', cancelled: '已取消' })[status] || '已確認';
     const leaveStatusTone = (status) => ({ planned: 'leave-planned', confirmed: 'leave-confirmed', cancelled: 'leave-cancelled' })[status] || 'leave-confirmed';
-    const computeLeaveDateEntries = (record) => {
+    const computeLeaveDateEntries = (record, company = getCompany(record?.companyId)) => {
       const startDate = String(record?.startDate || record?.date || '');
-      const workHours = numberValue(getCompany(record?.companyId)?.workHoursPerDay) || 8;
+      const workHours = numberValue(company?.workHoursPerDay) || 8;
       if (!validIsoDate(startDate)) return [];
       if (record?.durationMode === 'range') {
         const endDate = String(record.endDate || startDate);
@@ -7316,7 +7409,7 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
         const month = index + 1;
         return { month, analysis: attendanceAnalysis(ui.selectedYear, month, ui.companyFilter) };
       });
-      return `<div class="table-scroll attendance-trend-scroll" aria-label="每月推估出勤率"><div class="attendance-trend">${months.map(({ month, analysis }) => {
+      return `<div class="table-scroll attendance-trend-scroll" role="region" tabindex="0" aria-label="每月推估出勤率"><div class="attendance-trend">${months.map(({ month, analysis }) => {
         const hasData = analysis.expectedHours > 0;
         const height = hasData ? Math.max(4, analysis.attendanceRate * 1.72) : 3;
         return `<div class="attendance-month ${hasData ? '' : 'missing'} ${Number(ui.leaveMonth) === month ? 'active' : ''}" title="${month} 月：${hasData ? `${rateNumber(analysis.attendanceRate)}%` : '無資料'}"><span>${hasData ? `${rateNumber(analysis.attendanceRate)}%` : '—'}</span><div class="attendance-month-bar" style="height:${height}px"></div><b>${month}月</b></div>`;
@@ -7338,8 +7431,8 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
       const month = isLeave ? ui.leaveMonth : ui.overtimeMonth;
       const selectId = isLeave ? 'leaveMonth' : 'overtimeMonth';
       const options = `<option value="0">全年薪資區間</option>${Array.from({ length: 12 }, (_, index) => `<option value="${index + 1}" ${Number(month) === index + 1 ? 'selected' : ''}>${index + 1} 月薪資</option>`).join('')}`;
-      const statusSelect = isLeave ? `<label class="sr-only" for="leaveStatus">請假狀態</label><select id="leaveStatus" class="field-select" style="width:170px"><option value="active" ${ui.leaveStatus === 'active' ? 'selected' : ''}>進行中（預計＋確認）</option><option value="confirmed" ${ui.leaveStatus === 'confirmed' ? 'selected' : ''}>僅已確認</option><option value="planned" ${ui.leaveStatus === 'planned' ? 'selected' : ''}>僅預計</option><option value="cancelled" ${ui.leaveStatus === 'cancelled' ? 'selected' : ''}>僅已取消</option><option value="all" ${ui.leaveStatus === 'all' ? 'selected' : ''}>全部狀態</option></select>` : '';
-      return `<div class="page-actions"><label class="sr-only" for="${selectId}">薪資月份</label><select id="${selectId}" class="field-select" style="width:150px">${options}</select>${statusSelect}<button class="btn btn-primary" type="button" data-action="${isLeave ? 'add-leave' : 'add-overtime'}">＋ ${isLeave ? '新增請假' : '新增加班'}</button></div>`;
+      const statusSelect = isLeave ? `<label class="sr-only" for="leaveStatus">請假狀態</label><select id="leaveStatus" class="field-select"><option value="active" ${ui.leaveStatus === 'active' ? 'selected' : ''}>進行中（預計＋確認）</option><option value="confirmed" ${ui.leaveStatus === 'confirmed' ? 'selected' : ''}>僅已確認</option><option value="planned" ${ui.leaveStatus === 'planned' ? 'selected' : ''}>僅預計</option><option value="cancelled" ${ui.leaveStatus === 'cancelled' ? 'selected' : ''}>僅已取消</option><option value="all" ${ui.leaveStatus === 'all' ? 'selected' : ''}>全部狀態</option></select>` : '';
+      return `<label class="sr-only" for="${selectId}">薪資月份</label><select id="${selectId}" class="field-select">${options}</select>${statusSelect}<button class="btn btn-primary" type="button" data-action="${isLeave ? 'add-leave' : 'add-overtime'}">＋ ${isLeave ? '新增請假' : '新增加班'}</button>`;
     };
 
     const renderOvertimePanel = () => {
@@ -7395,8 +7488,8 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
     };
 
     const renderOvertime = () => `
-      <section class="view" aria-labelledby="attendanceTitle">
-        <div class="page-head"><div><h2 id="attendanceTitle">工時／出勤管理</h2><p>加班與請假分開記錄，共用公司計薪區間與薪資月份。</p></div>${attendancePageActions()}</div>
+      <section class="view v5-worklog-view" aria-labelledby="attendanceTitle">
+        <div class="page-head"><div><h2 id="attendanceTitle">工時／出勤管理</h2><p>加班與請假分開記錄，共用公司計薪區間與薪資月份。</p></div><div class="page-actions">${attendancePageActions()}</div></div>
         ${attendanceTabsHtml()}
         ${ui.attendanceTab === 'leave' ? renderLeavePanel() : renderOvertimePanel()}
       </section>`;
@@ -8083,7 +8176,7 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
       const active=v5.attendanceTab,leave=active==='leave';ui.attendanceTab=leave?'leave':'overtime';
       const tabs=v5Tabs([['calendar','月曆'],['overtime','加班紀錄'],['leave','請假紀錄'],['comp','補休帳本']],active,'work-tab');
       const body=active==='comp'?renderCompTimePanel():leave?renderLeavePanel():renderOvertimePanel();
-      return `<section class="view">${v5Title(active==='comp'?'補休帳本':leave?'請假紀錄':'加班紀錄',active==='comp'?'':attendancePageActions())}${tabs}<div class="v5-work-list">${body}</div></section>`;
+      return `<section class="view v5-worklog-view">${v5Title(active==='comp'?'補休帳本':leave?'請假紀錄':'加班紀錄',active==='comp'?'':attendancePageActions())}${tabs}<div class="v5-work-list">${body}</div></section>`;
     };
     const renderV5Annual = () => {
       const stats=annualStats(), rows=filteredRecords(), c=currentCompany();
@@ -10203,6 +10296,14 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
         try {
           const mode = form.elements.mode.value;
           planned = backupService.merge(state, imported, mode, token);
+          const candidate = planned.next, companies = new Map(candidate.companies.map(company => [company.id, company]));
+          // Derived leave entries must use the candidate's company hours and IDs,
+          // not the live state or cached rows; keep these entries out of storage.
+          const ledger = window.SalaryMateCompTime.ledger({
+            credits: candidate.compTimeCredits, settlements: candidate.compTimeSettlements, logs: candidate.overtimeLogs,
+            leaves: candidate.leaveRecords.map(row => ({ ...row, compTimeEntries: computeLeaveDateEntries(row, companies.get(row.companyId) || null) }))
+          });
+          if (ledger.violations.length) throw new Error('匯入後的補休來源或餘額不一致，請檢查加班、請假與補休結算。');
           preview.innerHTML = mode === 'restore'
             ? '<p class="notice warning">確認還原後，所有本機資料會由這份備份取代。</p>'
             : '<div class="backup-summary">' + planned.stats.filter(s => s.added || s.replaced).map(s => `<div><b>${userHtml(s.name)}</b><span>新增 ${s.added} · 覆蓋 ${s.replaced}</span></div>`).join('') + '</div><p class="hint">偏好設定沿用目前裝置。</p>';

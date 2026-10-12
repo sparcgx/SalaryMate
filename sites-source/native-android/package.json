@@ -6,7 +6,7 @@
   "scripts": {
     "android:sync": "node ../scripts/build-android-assets.mjs && cap sync android",
     "android:build": "npm run android:sync && cd android && ./gradlew assembleRelease",
-    "android:check": "node --test ../tests/v5-r99-android-package.test.mjs ../tests/v5-r99-android-legacy-backup.test.mjs ../tests/v5-android-runtime.test.mjs"
+    "android:check": "node --test ../tests/v5-r99-android-package.test.mjs ../tests/v5-r99-android-legacy-backup.test.mjs ../tests/v5-android-runtime.test.mjs ../tests/v5-r101-android-refactor.test.mjs"
   },
   "dependencies": {
     "@capacitor-community/sqlite": "^8.1.1",

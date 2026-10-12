@@ -17,12 +17,20 @@ test('Android development identity is isolated and keeps frozen source out of it
  assert.equal((manifest.match(/android.intent.category.LAUNCHER/g)||[]).length,1);
  assert.ok(manifest.indexOf('android:name=".ComposeShellActivity"')<manifest.indexOf('android:exported="false"'));
 });
-test('Android assets are complete R99 files and preserve the non-blocking first screen and integration order',()=>{
- const meta=JSON.parse(read('native-android/www/android-asset-manifest.json'));assert.equal(meta.version,'5.0.0-dev.2-R99');
+test('Android assets preserve the selected release, non-blocking first screen and integration order',()=>{
+ const meta=JSON.parse(read('native-android/www/android-asset-manifest.json'));
+ const version=read('dist/dev/v5.0.0-dev.2/app.js').match(/const APP_VERSION = '([^']+)'/)[1];assert.equal(meta.version,version);
+ const baseline=meta.source.startsWith('verified APK:')?JSON.parse(read('tests/fixtures/android-assets-r101.json')):null;
+ if(baseline)assert.equal(meta.version,baseline.version);
  for(const file of meta.files){
   const bytes=fs.readFileSync(new URL('native-android/www/'+file.path,root));
   assert.equal(bytes.length,file.bytes,file.path);assert.equal(createHash('sha256').update(bytes).digest('hex'),file.sha256,file.path);
-  if(['android-runtime.js','android-legacy-backup.js'].includes(file.path))assert.deepEqual(bytes,fs.readFileSync(new URL('scripts/lib/'+file.path,root)),file.path);
+  if(file.path==='android-runtime.js')assert.deepEqual(bytes,fs.readFileSync(new URL('scripts/lib/'+file.path,root)),file.path);
+  else if(baseline){
+   const original=baseline.files.find(item=>item.path===file.path);assert.ok(original,file.path);
+   assert.equal(file.sha256,original.sha256,file.path);assert.equal(file.bytes,original.bytes,file.path);
+  }
+  else if(file.path==='android-legacy-backup.js')assert.deepEqual(bytes,fs.readFileSync(new URL('scripts/lib/'+file.path,root)),file.path);
   else if(file.path!=='index.html')assert.deepEqual(bytes,fs.readFileSync(new URL('dist/dev/v5.0.0-dev.2/'+file.path,root)),file.path);
  }
  for(const file of ['styles-core.css','styles.css','ornate-flight.js','startup.js','legal-data.js','art/jingyu-flight-r70.png'])assert.ok(meta.files.some(item=>item.path===file));

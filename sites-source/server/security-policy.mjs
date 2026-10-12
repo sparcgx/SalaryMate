@@ -1,7 +1,7 @@
 // Build-time policy shared by the hosted development pages and portable export.
 // Frozen routes retain their existing response headers.
 export function salaryMateCsp({scriptHashes=[],marketOrigin='',portable=false}={}) {
-  const scripts=portable?scriptHashes:["'self'"];
+  const scripts=portable?scriptHashes:["'self'",...scriptHashes];
   if(portable&&!scriptHashes.length)throw new Error('Portable scripts require CSP hashes');
   if(marketOrigin&&(!/^https:\/\//.test(marketOrigin)||new URL(marketOrigin).origin!==marketOrigin))throw new Error('Invalid market origin');
   const policy=[

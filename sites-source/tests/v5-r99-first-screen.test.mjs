@@ -6,14 +6,15 @@ import postcss from 'postcss';
 const base=new URL('../dist/dev/v5.0.0-dev.2/',import.meta.url),read=name=>fs.readFileSync(new URL(name,base),'utf8');
 function harness({embedded=false,preloaded=false}={}){
  const bootstrap=read('bootstrap.js'),start=bootstrap.indexOf('// R99 startup screen:'),end=bootstrap.indexOf('// Desktop horizontal scroll runtime.',start);
- const callbacks={},removed=[],notices=[],core={sheet:preloaded?{}:null,addEventListener:(type,fn)=>{callbacks[type]=fn;}};
- const context={document:{querySelector:()=>embedded?null:core,querySelectorAll:()=>[{removeAttribute:name=>removed.push(name)}],body:{removeAttribute:name=>removed.push(name)},createElement:()=>({setAttribute(){}}),getElementById:()=>({prepend:notice=>notices.push(notice)})}};
+ const callbacks={},removed=[],notices=[],core={sheet:preloaded?{}:null,getAttribute:()=>null,addEventListener:(type,fn)=>{callbacks[type]=fn;}};
+ const context={document:{querySelector:()=>embedded?null:core,querySelectorAll:()=>[{removeAttribute:name=>removed.push(name)}],body:{removeAttribute:name=>removed.push(name),setAttribute(){}},createElement:()=>({setAttribute(){},addEventListener(){},append(){},remove(){}}),getElementById:()=>({before:notice=>notices.push(notice)})}};
  context.window=context;vm.runInNewContext(bootstrap.slice(start,end),context);
  return {api:context.SalaryMateStartup,callbacks,removed,notices,core};
 }
 test('R99 initial HTML has an inline styled, truthful screen without blocking on external CSS or fabricated amounts',()=>{
  const html=read('index.html'),style=html.match(/<style data-startup-style>([\s\S]*?)<\/style>/)?.[1];
  assert.ok(style);postcss.parse(style);assert.doesNotMatch(style,/url\(|@import|animation:/);
+ assert.match(style,/\.v5-ui-icon\{width:1\.25em;height:1\.25em;vertical-align:middle\}/);
  assert.match(html,/<link rel="stylesheet"[^>]+data-style-core media="print" fetchpriority="high">/);
  assert.ok(html.indexOf('data-startup-style')<html.indexOf('startup.js?v='));
  const screen=html.match(/<section class="startup-panel"[\s\S]*?<\/section>/)?.[0];assert.ok(screen);

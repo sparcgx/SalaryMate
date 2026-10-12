@@ -1,0 +1,286 @@
+{
+  "version": "5.0.0-dev.2-R101",
+  "apkSHA256": "d679fb2f10aef369d664a2eb5cf6145f0aea85d21dc7c08dcae5d85a8b12269c",
+  "files": [
+    {
+      "path": "android-legacy-backup.js",
+      "bytes": 3971,
+      "sha256": "e038ca3a11421c5f74a4c3d0aaddae262c6bb7a14ddf820d35aae19aa0ef8c09"
+    },
+    {
+      "path": "android-runtime.js",
+      "bytes": 13820,
+      "sha256": "31305b1ef45dbe06500c34d0f6bf2847dbdf4c05a96cfb1c5e1260fe9fe4e20b"
+    },
+    {
+      "path": "annual-analysis.js",
+      "bytes": 3650,
+      "sha256": "591d860cbe6807790d37947600446a5f4a541f2758f478de560b10c80b638f64"
+    },
+    {
+      "path": "app.js",
+      "bytes": 516592,
+      "sha256": "2121d7aec1d83eb0c6a93b0edc60e3324af57b2ec7d0925998ffe9ca35e74626"
+    },
+    {
+      "path": "art/background-aurora-r79.webp",
+      "bytes": 230834,
+      "sha256": "da820a688d2c405054766570df6fe7fe423c016e369fb1d3c8c68b1e73c14df4"
+    },
+    {
+      "path": "art/background-autumn-cafe-r91.webp",
+      "bytes": 262258,
+      "sha256": "34274a5cb993695413b332762e0174d06bb16e62596dbb55fe6da5dc55e84741"
+    },
+    {
+      "path": "art/background-autumn-desert-r91.webp",
+      "bytes": 268362,
+      "sha256": "8c13803445a4395b47d01389955c68086a23c74598c379178410cdc8ca776ed2"
+    },
+    {
+      "path": "art/background-autumn-fuji-r91.webp",
+      "bytes": 301944,
+      "sha256": "9c9f8a5c990dbbcd81aaed759484a2b7802adf9c6750032b89aedfbe104ac561"
+    },
+    {
+      "path": "art/background-autumn-ocean-r91.webp",
+      "bytes": 284088,
+      "sha256": "24404591a40be2c6cfef1c954b83a6b1ad340d3b563a57828410eca861d2cef8"
+    },
+    {
+      "path": "art/background-canyon-r79.webp",
+      "bytes": 161768,
+      "sha256": "bd6fc533f80c3df07ce09335227f7c9095bab92a654756fcced0429dce94e4c3"
+    },
+    {
+      "path": "art/background-forest-r79.webp",
+      "bytes": 322218,
+      "sha256": "e8678dcbb05aba317f7e2b10dd8b7968e77b1128aead15a0a4873cab7bc59a8c"
+    },
+    {
+      "path": "art/background-harbor-r79.webp",
+      "bytes": 190156,
+      "sha256": "af7d00b323e7fdf3ff87b50b5f364926b810f5585e0e1d0ab4f421351eb30182"
+    },
+    {
+      "path": "art/background-macaron-r79.webp",
+      "bytes": 21536,
+      "sha256": "b3f00c8eda688c82026a067b4fa487fe0e76d98023b9bbd53ca29792853eb698"
+    },
+    {
+      "path": "art/background-sky-r79.webp",
+      "bytes": 268472,
+      "sha256": "fc16beb15410725e80f8238a41198b0f833af3efdd5b9134eb5f6927e535d498"
+    },
+    {
+      "path": "art/jingyu-cast-r76.png",
+      "bytes": 2235973,
+      "sha256": "2802f4c9d9e93438edfc8a018f9dc27286b11cf88cad913fcdfb156f3d9a74ef"
+    },
+    {
+      "path": "art/jingyu-flight-r68.png",
+      "bytes": 1050791,
+      "sha256": "3147bb1e6298f9c85d8cf1bf6e2b5a07c6a1be5a519b00046c1162d10d89c02e"
+    },
+    {
+      "path": "art/jingyu-flight-r70.png",
+      "bytes": 2016501,
+      "sha256": "3a06b6f5a1ad07aec8e0063afbd7c55890344e03ebb34aaba9dd83c79c731421"
+    },
+    {
+      "path": "art/jingyu-flight-r73-a.png",
+      "bytes": 2261630,
+      "sha256": "f8a492c94ae8686ee02a412e3383fe850d16bb4df79355095957c541c825f0f6"
+    },
+    {
+      "path": "art/jingyu-flight-r73-b.png",
+      "bytes": 2233238,
+      "sha256": "3257e5c9d8a59a86e6a90148099343d9a14f9e1efe12d9b87c2c2cd8cb4bf7b9"
+    },
+    {
+      "path": "art/jingyu-flight-r73-c.png",
+      "bytes": 2228520,
+      "sha256": "99c9063f1469f9dd9768f4c61afb15a25cfbcffce37aadccd90a3acbaa93f095"
+    },
+    {
+      "path": "art/jingyu-flight-r73-d.png",
+      "bytes": 2289177,
+      "sha256": "66884a9813483d7b70198fbea483aed40b0312d994da3f72c40485f5f5014c54"
+    },
+    {
+      "path": "art/jingyu-hd2d-r61.png",
+      "bytes": 1488589,
+      "sha256": "c41e40656f52d55d832e524de6ccc035483f0e0271d2b13813ea781a37c0c60a"
+    },
+    {
+      "path": "art/jingyu-hd2d-r62.webp",
+      "bytes": 1155728,
+      "sha256": "fd0afcf019e025ad7736c47ef9b5d2735175c9324bfb34104624cb18f96cad57"
+    },
+    {
+      "path": "art/jingyu-hd2d-r74.png",
+      "bytes": 1695695,
+      "sha256": "86ff7fd73e16ebe0cc85b65a82cbf877aa28d51808912e5b1d76efcb7a0ba723"
+    },
+    {
+      "path": "art/jingyu-wind-blade-r75.png",
+      "bytes": 791493,
+      "sha256": "a5dd03ecb36e0ac8aac6deec42486cfd04e3e2bc4f13a0998cb81524176f76c4"
+    },
+    {
+      "path": "art/jingyu-wind-bullet-r78.png",
+      "bytes": 1437722,
+      "sha256": "08ef8aebab8fca1f236f68adb8b65e5fce61f6bfe979a1f78b59df04b27ed362"
+    },
+    {
+      "path": "art/jingyu-wind-spear-r78.png",
+      "bytes": 1498522,
+      "sha256": "73c75cd938cd7b56e278990d16b7a9d97488af6daf462c0319e50220588f9932"
+    },
+    {
+      "path": "art/jingyu-wind-tornado-r75.png",
+      "bytes": 1966033,
+      "sha256": "1c40d6bb46fe45bf24e9572516588c51442a4e9ae325cb16a3cfd2958f1a65f1"
+    },
+    {
+      "path": "art/jingyu-wind-vortex-r78.png",
+      "bytes": 1660661,
+      "sha256": "39c97dc2c63203b8930738a6da8025cd24ce0de714dc26f683732c45e0de4ba6"
+    },
+    {
+      "path": "backup.js",
+      "bytes": 10517,
+      "sha256": "f302927a68b30e1f65c8e5dc29153f8d7bff5ad125bda5995e4021ec85e742a6"
+    },
+    {
+      "path": "bootstrap.js",
+      "bytes": 48466,
+      "sha256": "de1855bcba19a37d23c314a1e68fa79855c8e04f6dfef453002cc236d6bafe68"
+    },
+    {
+      "path": "comp-time.js",
+      "bytes": 5352,
+      "sha256": "db4cd72b91f3ec72925c41a5f5d0ed3d316c9acf9ca57f4b731980bea422789b"
+    },
+    {
+      "path": "copy-month.js",
+      "bytes": 2879,
+      "sha256": "c97444b3b12fd2366d7bb3f825c1dec0dad31e035292af465098114c837a067a"
+    },
+    {
+      "path": "cordova.js",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "cordova_plugins.js",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "google-drive-ui.js",
+      "bytes": 16807,
+      "sha256": "12a7425db865b25aa2eb8ed861c2353b27433c3cff71879fabb63d859a6abf8e"
+    },
+    {
+      "path": "google-drive.js",
+      "bytes": 16433,
+      "sha256": "fc340997c505a3b8c6c3658c218b6c64cfd3caa22009ea0093aed9250c39377b"
+    },
+    {
+      "path": "i18n-en.js",
+      "bytes": 219483,
+      "sha256": "d0db14e91cd4178690f8a743cb61fe4cc9b63b6512b5e808e847751fe27a1b72"
+    },
+    {
+      "path": "i18n.js",
+      "bytes": 7196,
+      "sha256": "ca83f05b7a456113e78c80ddab145678b449bf518bde0b59e63caf721f60084e"
+    },
+    {
+      "path": "icons/app-icon.svg",
+      "bytes": 797,
+      "sha256": "555a2a98803adbed0f9858bcb83eeb3472a30e86db4bd4e32331e8854fff9a64"
+    },
+    {
+      "path": "icons/icon-192.png",
+      "bytes": 7483,
+      "sha256": "4688c9f2e1db290be5a7f377075e7cced909546a09ba3b95a729bee74c6b950d"
+    },
+    {
+      "path": "icons/icon-512.png",
+      "bytes": 25021,
+      "sha256": "c7513317fff6a936f67b2fbed768da55d65d771349bbe250baa9066f0d0457b8"
+    },
+    {
+      "path": "icons/icon-maskable-512.png",
+      "bytes": 24506,
+      "sha256": "7b0e00ae8ca8de1b5da96aa40e90b5d612467ad408daac2ae51e0dc3d47e4b86"
+    },
+    {
+      "path": "index.html",
+      "bytes": 8921,
+      "sha256": "efeeed99bc8c3b4c1f582498f7cce62bb6082092d68cf17788c8c7e012bdad37"
+    },
+    {
+      "path": "legal-data.js",
+      "bytes": 346890,
+      "sha256": "3a26a781e51bea3c892d333c0e17ada7e2f641210b1df16312b26415f1f1cf16"
+    },
+    {
+      "path": "legal.html",
+      "bytes": 347518,
+      "sha256": "a2875f04430769fc29c9236f8bb0a6eb6791222ae1ccc3318ab7c57d1f03ff66"
+    },
+    {
+      "path": "manifest.webmanifest",
+      "bytes": 352,
+      "sha256": "072c78315c4736705f7cf5c1e0ee8068ea6adea74175909dc34264e87d33c1ac"
+    },
+    {
+      "path": "ornate-flight.js",
+      "bytes": 41860,
+      "sha256": "7bcec38a48c342222cd3197f9fefdb8a06d8a8493a1f9794693cdc543c19f698"
+    },
+    {
+      "path": "reconcile.js",
+      "bytes": 2979,
+      "sha256": "7af49de2b7a9ebf7943aca8843d9ba1e5b7ec52f18ff184ece043dcd0d4d8642"
+    },
+    {
+      "path": "startup.js",
+      "bytes": 974813,
+      "sha256": "c460f5602315e2661e3c7414ef85fa7bbbc44fadcd830cd9a091b026098fee32"
+    },
+    {
+      "path": "stocks-integrations.js",
+      "bytes": 20995,
+      "sha256": "ff8523c311c2064f9dac9a68a05a7133c0f5676ea3008f955eec1da653cf07f9"
+    },
+    {
+      "path": "stocks-ui.js",
+      "bytes": 121939,
+      "sha256": "7030d539381e6bc0842e08554987866a1128ad9909e0dd1aa0c8edb0b28f6c0c"
+    },
+    {
+      "path": "stocks.js",
+      "bytes": 19929,
+      "sha256": "b54618cf1a75771248299def4baf1b78172d3f2e6a9685807cb3c699c9b8c05c"
+    },
+    {
+      "path": "styles-core.css",
+      "bytes": 184580,
+      "sha256": "cac0bdd471b561c587ef4b1b7055ca5aa5b1c650f506f3944a86d8c6df03bc53"
+    },
+    {
+      "path": "styles.css",
+      "bytes": 278525,
+      "sha256": "791ef45cdf994e7ce513d369e9123548efe734c760e5d6008cddb4106f93756d"
+    },
+    {
+      "path": "sw.js",
+      "bytes": 6628,
+      "sha256": "1df970e04833604cef090cd4c037291590bbb5fec67e138c9e84278c8ff6c098"
+    }
+  ]
+}

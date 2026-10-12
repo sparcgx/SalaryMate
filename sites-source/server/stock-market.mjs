@@ -1,5 +1,6 @@
 import {createDividendLookup} from './dividend-market.mjs';
 import {createIntradayNavLookup} from './intraday-nav.mjs';
+import {createTwseCloseLookup} from './twse-close.mjs';
 // Public instruments only. No holdings, account names or transaction data leave the device.
 export function createStockMarket(fetcher=fetch, clock=()=>Date.now()) {
   const cache=new Map(),clients=new Map();
@@ -94,6 +95,7 @@ export function createStockMarket(fetcher=fetch, clock=()=>Date.now()) {
     }));
   }
   const attachIntradayNav=createIntradayNavLookup(read,clock);
+  const lookupTwseClose=createTwseCloseLookup(fetcher,clock);
   async function taiwanLatest(symbols){
     if(!symbols)return [];
     const url=new URL('https://mis.twse.com.tw/stock/api/getStockInfo.jsp');
@@ -113,26 +115,35 @@ export function createStockMarket(fetcher=fetch, clock=()=>Date.now()) {
   }
   async function taiwan(symbols) {
     const profileTask=profiles(),latestTask=taiwanLatest(symbols);
-    const results=await Promise.allSettled([
-      read('https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL',300000),
-      read('https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes',300000)
+    const [twse,tpex]=await Promise.all([
+      lookupTwseClose(),
+      read('https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes',300000).then(rows=>({rows,ok:Array.isArray(rows)})).catch(()=>({rows:[],ok:false}))
     ]);
-    const rows=[];
-    results.forEach((result,index)=>{if(result.status!=='fulfilled'||!Array.isArray(result.value))return;for(const r of result.value){
-      const symbol=String(index?r.SecuritiesCompanyCode:r.Code).toUpperCase();if(symbols&&!symbols.includes(symbol))continue;
-      const price=number(index?r.Close:r.ClosingPrice),date=rocDate(r.Date),name=String(index?r.CompanyName:r.Name);
+    // Older Android clients do not recognize cache metadata. Withhold expired
+    // prices on the wire so they also retain their last saved valid quote.
+    const rows=twse.rows.filter(r=>!symbols||symbols.includes(r.symbol)).map(r=>({...r,price:twse.status==='fresh'?r.price:null,quoteCacheStatus:twse.status,quoteCacheAt:twse.fetchedAt}));
+    for(const r of tpex.ok?tpex.rows:[]){
+      const symbol=String(r.SecuritiesCompanyCode).toUpperCase();if(symbols&&!symbols.includes(symbol))continue;
+      const price=number(r.Close),date=rocDate(r.Date),name=String(r.CompanyName);
       if(!name||!validDate(date))continue;
       const change=numeric(r.Change),previous=price-(change??0);
-      rows.push({market:'TW',symbol,name,currency:'TWD',price:Number.isFinite(price)&&price>0?price:null,date,source:index?'TPEx 上櫃收盤':'TWSE 上市收盤',providerTime:date,priceKind:'close',exchange:index?'TPEx':'TWSE',change,changePercent:change!==null&&price>0&&previous>0?change/previous*100:null,volume:numeric(index?r.TradingShares:r.TradeVolume)});
-    }});
+      rows.push({market:'TW',symbol,name,currency:'TWD',price:Number.isFinite(price)&&price>0?price:null,date,source:'TPEx 上櫃收盤',providerTime:date,priceKind:'close',exchange:'TPEx',change,changePercent:change!==null&&price>0&&previous>0?change/previous*100:null,volume:numeric(r.TradingShares)});
+    }
     const profile=await profileTask;
     for(const q of await latestTask){
-      const row=rows.find(r=>r.symbol===q.symbol);
-      if(row){if(q.date>=row.date)Object.assign(row,q);}else rows.push(q);
+      // A legacy client cannot tell that a same-day trade predates its saved
+      // close. During a TWSE close outage, keep its price rather than downgrade.
+      if(q.exchange==='TWSE'&&twse.status!=='fresh')continue;
+      const row=rows.find(r=>r.symbol===q.symbol&&r.exchange===q.exchange);
+      // Official daily closes win same-day ties; a later trading day still uses
+      // its valid latest trade. Never present an expired close cache as fresh.
+      const officialClose=row?.exchange==='TWSE'&&row.price>0&&row.quoteCacheStatus==='fresh';
+      if(row){if(q.date>row.date||q.date===row.date&&!officialClose){Object.assign(row,q);delete row.quoteCacheStatus;delete row.quoteCacheAt;}}else rows.push(q);
     }
-    for(const row of rows)Object.assign(row,profile.items.get(row.symbol)||{});
+    for(const row of rows){const info=profile.items.get(row.symbol);if(info&&info.exchange===row.exchange)Object.assign(row,info);}
     if(symbols)await Promise.all([attachNav(rows),attachIntradayNav(rows)]);
-    return {rows:symbols?rows:rows.filter(r=>profile.items.has(r.symbol)),incomplete:profile.incomplete||results.some(r=>r.status!=='fulfilled'||!Array.isArray(r.value))};
+    const errors=twse.status==='fresh'?[]:[{source:'TWSE 上市收盤',message:'TWSE 收盤資料更新失敗，過期快取不會改寫原價格。'}];
+    return {rows:symbols?rows:rows.filter(r=>profile.items.has(r.symbol)),errors,incomplete:profile.incomplete||twse.status!=='fresh'||!tpex.ok};
   }
   async function us(symbol) {
     for(const assetClass of ['stocks','etf']) {
@@ -153,7 +164,7 @@ export function createStockMarket(fetcher=fetch, clock=()=>Date.now()) {
       await attachIntradayNav(rows,{discover:true});return {fetchedAt,quotes:rows,fx:null,errors};
     }
     const tw=instruments.filter(x=>x.market==='TW').map(x=>x.symbol),usa=instruments.filter(x=>x.market==='US');
-    const twTask=tw.length?taiwan(tw).then(({rows})=>quotes.push(...rows)):Promise.resolve();
+    const twTask=tw.length?taiwan(tw).then(({rows,errors:issues})=>{quotes.push(...rows);errors.push(...issues);}):Promise.resolve();
     const fxTask=usa.length||includeFx?read('https://api.frankfurter.dev/v2/rate/usd/twd',300000).then(d=>Number.isFinite(d.rate)&&d.rate>0&&validDate(d.date)?{rate:d.rate,date:d.date,source:'Frankfurter 參考匯率'}:null).catch(()=>null):Promise.resolve(null);
     // At most four US requests concurrently. Issuer feeds are shared across symbols.
     for(let i=0;i<usa.length;i+=4){await Promise.all(usa.slice(i,i+4).map(async item=>{try{quotes.push(await us(item.symbol));}catch(e){errors.push({market:'US',symbol:item.symbol,message:e.message});}}));}

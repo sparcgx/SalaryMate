@@ -48,12 +48,18 @@ test('Stocks: strict backups reject duplicate IDs, invalid dates, Infinity, miss
  for(const p of invalid)assert.throws(()=>core.validate(p));
 });
 test('Stocks UI: no-company create, buy, quote refresh, partial sell, dividend and reload preserve payroll',async()=>{
- const b=boot();b.tab('investment');action(b,'asset');fill(b,{symbol:'2330',name:'台積電'});b.submit('#stockForm');const id=b.state().stockPortfolio.assets[0].id;
- action(b,'buy',id);fill(b,{date:'2026-09-01',quantity:100,price:100,fee:10});b.submit('#stockForm');assert.equal(b.state().stockPortfolio.transactions.length,1);
- assert.match(b.q('main').textContent,/待補齊股價/);b.w.fetch=async()=>({ok:true,json:async()=>({quotes:[{market:'TW',symbol:'2330',currency:'TWD',price:120,date:'2026-09-30',source:'TWSE 上市收盤'}],errors:[]})});action(b,'refresh');for(let i=0;i<40&&!b.q('.stock-sync-result');i++)await new Promise(r=>setTimeout(r,10));assert.match(b.q('main').textContent,/12,000/);
- action(b,'sell',id);fill(b,{date:'2026-09-02',quantity:40,price:150,fee:5,tax:18});b.submit('#stockForm');action(b,'dividend');fill(b,{date:'2026-09-03',amount:100,fee:0,tax:10});b.submit('#stockForm');
- const payload=b.w.SalaryMateData.exportPayload(),m=core.calculate(b.state().stockPortfolio,2026);near(m.cost,6006);near(m.yearRealized,1973);near(m.yearDividends,90);assert.equal(b.state().investmentRecords.length,0);assert.equal(b.state().companies.length,0);
- const c=boot(payload);c.tab('investment');assert.equal(c.state().stockPortfolio.transactions.length,3);assert.match(c.q('main').textContent,/7,200/);for(const app of [b,c]){assert.deepEqual(app.errors,[]);app.close();}
+ const b=boot();let c;
+ try{
+  b.tab('investment');action(b,'asset');fill(b,{symbol:'2330',name:'台積電'});b.submit('#stockForm');const id=b.state().stockPortfolio.assets[0].id;
+  action(b,'buy',id);fill(b,{date:'2026-09-01',quantity:100,price:100,fee:10});b.submit('#stockForm');assert.equal(b.state().stockPortfolio.transactions.length,1);
+  assert.match(b.q('main').textContent,/待補齊股價/);b.w.fetch=async()=>({ok:true,json:async()=>({quotes:[{market:'TW',symbol:'2330',currency:'TWD',price:120,date:'2026-09-30',source:'TWSE 上市收盤'}],errors:[]})});
+  // Market requests pause in hidden tabs; this interaction models a visible page.
+  Object.defineProperty(b.w.document,'hidden',{value:false,configurable:true});
+  action(b,'refresh');for(let i=0;i<40&&b.state().stockPortfolio.assets[0].quotePrice!==120;i++)await new Promise(r=>setTimeout(r,10));assert.match(b.q('main').textContent,/12,000/);
+  action(b,'sell',id);fill(b,{date:'2026-09-02',quantity:40,price:150,fee:5,tax:18});b.submit('#stockForm');action(b,'dividend');fill(b,{date:'2026-09-03',amount:100,fee:0,tax:10});b.submit('#stockForm');
+  const payload=b.w.SalaryMateData.exportPayload(),m=core.calculate(b.state().stockPortfolio,2026);near(m.cost,6006);near(m.yearRealized,1973);near(m.yearDividends,90);assert.equal(b.state().investmentRecords.length,0);assert.equal(b.state().companies.length,0);
+  c=boot(payload);c.tab('investment');assert.equal(c.state().stockPortfolio.transactions.length,3);assert.match(c.q('main').textContent,/7,200/);for(const app of [b,c])assert.deepEqual(app.errors,[]);
+ }finally{c?.close();b.close();}
 });
 test('Stocks UI: transaction edits/deletes cannot invalidate later sales; sold asset cannot be deleted',()=>{
  const b=boot(seed(book([tx('b','buy'),tx('s','sell',{date:'2026-09-02',quantity:60})])));b.tab('investment');action(b,'tab','transactions');
@@ -85,8 +91,14 @@ test('Stocks UI: imported labels are escaped; schema migration never touches old
  const b=boot(seed(book([],[asset({symbol:'<img src=x onerror=alert(1)>',name:'<script>bad</script>'})])));b.tab('investment');action(b,'tab','watchlist');assert.equal(b.q('main img'),null);assert.equal(b.q('main script'),null);assert.equal(b.state().schemaVersion,15);assert.equal(b.w.localStorage.getItem('salarymate_v310_state'),'v4-original');assert.deepEqual(b.errors,[]);b.close();
 });
 test('Stocks shell includes modules in correct order and service-worker cache, desktop/mobile styles',()=>{
- const base=new URL('../dist/dev/v5.0.0-dev.2/',import.meta.url),html=fs.readFileSync(new URL('index.html',base),'utf8'),sw=fs.readFileSync(new URL('sw.js',base),'utf8'),css=fs.readFileSync(new URL('styles.css',base),'utf8');
- assert.ok(html.indexOf('./stocks.js')<html.indexOf('./stocks-ui.js'));assert.ok(html.indexOf('./stocks-ui.js')<html.indexOf('./app.js'));assert.match(sw,/stocks\.js/);assert.match(sw,/stocks-ui\.js/);assert.match(css,/\.stock-workspace\{display:grid/);assert.match(css,/@media\(max-width:720px\).*\.stock-stats/);
+ const base=new URL('../dist/dev/v5.0.0-dev.2/',import.meta.url),html=fs.readFileSync(new URL('index.html',base),'utf8'),sw=fs.readFileSync(new URL('sw.js',base),'utf8'),css=fs.readFileSync(new URL('styles.css',base),'utf8'),bundle=fs.readFileSync(new URL('startup.js',base),'utf8');
+ const startup=html.match(/<script\b[^>]*\bdefer\b[^>]*\bsrc="(\.\/startup\.js\?v=[^"]+)"/),styles=html.match(/href="(\.\/styles-core\.css\?v=[^"]+)"/);
+ assert.ok(startup,'The shell loads the deferred startup bundle');assert.ok(styles,'The shell loads core styles');
+ const modules=['stocks.js','stocks-integrations.js','stocks-ui.js','app.js'].map(name=>{const index=bundle.indexOf(`/* SalaryMate module: ${name} */`);assert.ok(index>=0,`${name} exists in startup.js`);return index;});
+ for(let i=1;i<modules.length;i++)assert.ok(modules[i-1]<modules[i],'Stock dependencies precede their consumers');
+ const shell=JSON.parse(sw.match(/const SHELL=(\[[^\r\n]+\]);/)[1]),stylePacks=JSON.parse(sw.match(/const STYLE_PACKS=(\[[^\r\n]+\]);/)[1]);
+ assert.ok(shell.includes('./index.html'));assert.ok(shell.includes(startup[1]));assert.ok(shell.includes(styles[1]));assert.ok(stylePacks.includes(styles[1].replace('styles-core.css','styles.css')));
+ assert.match(css,/\.stock-workspace\{display:grid/);assert.match(css,/@media\(max-width:720px\).*\.stock-stats/);
 });
 test('Stocks UI: stock-only historical years appear in filter and do not change current holdings',()=>{
  const b=boot(seed(book([tx('old','buy',{date:'2020-09-01'}),tx('s','sell',{quantity:10,date:'2021-09-01',price:200})])));b.tab('investment');assert.ok([...b.q('#yearFilter').options].some(x=>x.value==='2020'));b.change('#yearFilter','2021');action(b,'tab','transactions');assert.match(b.q('main').textContent,/2021-09-01/);assert.ok(![...b.q('.stock-table').querySelectorAll('tbody tr>td:first-child')].some(td=>td.textContent.includes('2020-09-01')));action(b,'tab','overview');assert.match(b.q('.stock-table').textContent,/90 股/);assert.deepEqual(b.errors,[]);b.close();

@@ -3,7 +3,7 @@
   'use strict';
   function create(api){
     const g=root.SalaryMateGoogleDrive,esc=api.escapeHtml,user=api.userHtml||esc;
-    let ready=false,busy=false,files=[],pageToken='',message='',panelSerial=0,auto=null,timer=null,lastSaved='',lastFingerprint='';
+    let ready=false,identityLoading=false,identityError='',busy=false,files=[],pageToken='',message='',panelSerial=0,auto=null,timer=null,lastSaved='',lastFingerprint='';
     const client=g.createClient(state=>{if(!state.connected){stopAuto(false);files=[];pageToken='';lastSaved='';lastFingerprint='';}refreshStatus();});
     const $=selector=>root.document.querySelector(selector),panel=()=>$('#googleDrivePanel'),active=el=>!!el?.isConnected&&!!$('#appDialog')?.open;
     const text=value=>root.SalaryMateI18n?.text(value)||value;
@@ -21,12 +21,13 @@
       root.document.querySelectorAll('[data-google-summary]').forEach(el=>el.textContent=text(summary()));
       if(!p)return;
       $('[data-drive-account]').textContent=state.user?(state.user.emailAddress||state.user.displayName):text('尚未連線');
-      $('[data-drive-message]').textContent=text(message);
+      const setupMessage=identityError||(identityLoading?'正在載入 Google 登入…':!g.validClientId(client.clientId())?'請先完成 Google 連線設定。':'');
+      $('[data-drive-message]').textContent=text(busy?message:setupMessage||message);
       $('[data-drive-session]').textContent=text(auto?(auto.password?'本次開啟期間自動加密儲存':'本次開啟期間自動儲存'):'自動儲存未開啟');
       $('[data-drive-last]').textContent=lastSaved?text('最近儲存')+' · '+localTime(lastSaved):'';
       p.querySelectorAll('[data-drive-connected]').forEach(el=>el.hidden=!state.connected);
       p.querySelectorAll('[data-drive-disconnected]').forEach(el=>el.hidden=state.connected);
-      p.querySelectorAll('[data-drive-action]').forEach(button=>{const action=button.dataset.driveAction;button.disabled=busy||state.busy||(action==='connect'&&(!ready||!g.supported()||!g.validClientId(client.clientId())))||(action==='stop-auto'&&!auto);});
+      p.querySelectorAll('[data-drive-action]').forEach(button=>{const action=button.dataset.driveAction;button.disabled=busy||state.busy||(action==='connect'&&(!ready||!g.supported()||!g.validClientId(client.clientId())))||(action==='retry-identity'&&identityLoading)||(action==='stop-auto'&&!auto);if(action==='retry-identity')button.hidden=!identityError||!g.supported()||state.connected;if(action==='connect')button.title=text(setupMessage);});
       root.SalaryMateI18n?.apply(p);
     }
     function renderFiles(){
@@ -40,12 +41,19 @@
       finally{busy=false;refreshStatus();}
     }
     async function refresh(more=false){const result=await client.list(more?pageToken:'');files=more?[...files,...result.files]:result.files;files=[...new Map(files.map(f=>[f.id,f])).values()];pageToken=result.nextPageToken;message='雲端備份清單已更新';renderFiles();}
+    async function prepareIdentity(){
+      if(identityLoading||!g.supported())return;
+      identityLoading=true;identityError='';ready=false;refreshStatus();
+      try{await g.loadIdentity();ready=true;}catch(error){identityError=error.message||'Google 登入元件載入失敗，請檢查網路後重試。';}
+      finally{identityLoading=false;refreshStatus();}
+    }
     function open(){
       panelSerial++;
       const supported=g.supported(),id=client.clientId(),origin=supported?root.location.origin:'https://salarymate.sparcgx2420.chatgpt.site';
       api.openDialog('自己的 Google Drive',`<section id="googleDrivePanel"><p>薪資、加班、請假與投資備份由瀏覽器直接傳送到你選擇的 Google 帳戶。網站伺服器不接收備份內容。</p><div class="drive-connection"><div><b data-drive-account></b><small data-drive-session></small><small data-drive-last></small></div><div class="form-actions"><button class="btn btn-primary" type="button" data-drive-action="connect" data-drive-disconnected>連線 Google Drive</button><button class="btn" type="button" data-drive-action="disconnect" data-drive-connected>中斷連線</button><button class="btn" type="button" data-drive-action="revoke" data-drive-connected>撤銷授權</button></div></div>${!supported?'<p class="notice warning">Google 連線需要 HTTPS 網站或 localhost；直接開啟 HTML 檔案時，請改用網站版或下載備份。</p>':''}<details class="drive-setup" ${!id?'open':''}><summary>首次連線設定</summary><p>使用自己的 Google Cloud 專案；只需設定一次，之後在這個瀏覽器直接連線。</p><ol><li>在 Google Cloud 建立專案並啟用 Google Drive API。</li><li>設定 Google Auth Platform 的品牌資訊、目標對象與資料存取權，加入 drive.file 權限。測試模式須加入自己的 Google 帳戶。</li><li>建立「網頁應用程式」OAuth 用戶端，將下列網址加入「已授權的 JavaScript 來源」。請只填網域來源，不包含頁面路徑。</li></ol><input class="field drive-origin" aria-label="已授權的 JavaScript 來源" value="${esc(origin)}" readonly><p><a href="https://console.cloud.google.com/apis/library/drive.googleapis.com" target="_blank" rel="noopener noreferrer">開啟 Google Cloud 設定</a> · <a href="https://developers.google.com/identity/oauth2/web/guides/get-google-api-clientid" target="_blank" rel="noopener noreferrer">Google 官方設定說明</a></p><form id="googleDriveConfig"><label><span class="field-label">Google OAuth 用戶端 ID</span><input class="field" name="clientId" value="${esc(id)}" placeholder="123456789-example.apps.googleusercontent.com" maxlength="220" autocomplete="off" spellcheck="false" required></label><p class="hint">只需用戶端 ID，不需要密鑰、Google 密碼或 API 金鑰。此設定只保存在目前瀏覽器，不會放進備份。</p><div class="form-actions"><button class="btn" type="button" data-drive-action="clear-config">刪除連線設定</button><button class="btn btn-primary" type="submit">儲存連線設定</button></div></form></details><div data-drive-connected><div class="drive-toolbar"><button class="btn btn-primary" type="button" data-drive-action="save">儲存一份</button><button class="btn" type="button" data-drive-action="auto">自動儲存設定</button><button class="btn" type="button" data-drive-action="stop-auto">停止自動儲存</button><button class="btn" type="button" data-drive-action="refresh">重新整理</button></div><p class="hint">備份存放於 Google Drive 的「個人薪資與投資管理」資料夾。每次儲存都新增一份，方便保留各裝置的版本；不會自動合併或取代本機資料。</p><ul class="drive-files" data-drive-files></ul><button class="btn" type="button" data-drive-action="more" hidden>載入更多</button></div><p class="drive-status" data-drive-message role="status" aria-live="polite"></p><p class="hint">本機仍保留離線資料。關閉頁面或授權到期後須重新連線；關閉頁面期間不會同步。一般備份可直接讀取，加密備份需自行保管密碼。只要求本工具建立或你明確授權的檔案權限。</p><a href="https://myaccount.google.com/connections" target="_blank" rel="noopener noreferrer">管理 Google 帳戶的第三方連線</a></section>`,true);
+      const retry=root.document.createElement('button');retry.className='btn';retry.type='button';retry.dataset.driveAction='retry-identity';retry.textContent='重新載入 Google 登入';retry.hidden=true;panel().querySelector('.drive-connection .form-actions').append(retry);
       renderFiles();refreshStatus();
-      if(supported)g.loadIdentity().then(()=>{ready=true;refreshStatus();}).catch(error=>{message=error.message;refreshStatus();});
+      if(supported&&!ready)prepareIdentity();
       $('#googleDriveConfig').addEventListener('submit',event=>{event.preventDefault();if(busy)return;try{client.configure(event.target.elements.clientId.value);message='連線設定已儲存，請點擊連線 Google Drive。';refreshStatus();}catch(error){message=error.message;refreshStatus();}});
     }
     const nameForBackup=()=>`PSIMS_${new Date().toISOString().replace(/[:.]/g,'-')}`;
@@ -58,13 +66,15 @@
         event.preventDefault();if(busy||!form.reportValidity())return;
         const encrypted=form.elements.encrypted.checked,password=encrypted?form.elements.password.value:'';
         if(encrypted&&password!==form.elements.confirmation.value){form.querySelector('[role="status"]').textContent=text('兩次密碼不一致，請重新確認。');return;}
-        const account=client.status().user?.permissionId,snapshot=api.snapshot(),plainFingerprint=fingerprint(snapshot),button=form.querySelector('[type="submit"]');
+        const account=client.status().user?.permissionId,button=form.querySelector('[type="submit"]');
         button.disabled=true;const result=await run(async()=>{
+          const snapshot=api.snapshot(),plainFingerprint=fingerprint(snapshot);
           let payload=encrypted?await root.SalaryMateBackup.encrypt(snapshot,password):snapshot;
           if(!active(form)||!client.status().connected||client.status().user?.permissionId!==account)throw new Error('Google 連線已取消。');
           const file=await client.upload(payload,autoMode?nameForBackup():form.elements.name.value);
+          if(!client.status().connected||client.status().user?.permissionId!==account)throw new Error('Google 連線已取消。');
           lastSaved=new Date().toISOString();lastFingerprint=plainFingerprint;
-          if(autoMode){auto={password,account};message='自動儲存已開啟';changed();}else message='備份已儲存至自己的 Google Drive';
+          if(autoMode&&active(form)){auto={password,account};message='自動儲存已開啟';changed();}else message='備份已儲存至自己的 Google Drive';
           files=[file,...files.filter(x=>x.id!==file.id)];form.elements.password.value='';form.elements.confirmation.value='';return true;
         });
         if(active(form)){button.disabled=false;if(result)open();else form.querySelector('[role="status"]').textContent=text(message);}
@@ -97,6 +107,7 @@
     root.document.addEventListener('click',event=>{
       const button=event.target.closest?.('[data-drive-action]');if(!button||button.disabled)return;
       const action=button.dataset.driveAction,file=files.find(f=>f.id===button.dataset.id);
+      if(action==='retry-identity'){message='';prepareIdentity();return;}
       if(action==='connect')return run(async()=>{await client.connect();await refresh();});
       if(action==='disconnect'){client.disconnect();message='已中斷連線，雲端備份仍保留';open();return;}
       if(action==='revoke'){api.confirm('撤銷 Google 授權','停止本工具的 Google Drive 存取；已存放的雲端備份與本機資料仍保留。',()=>run(async()=>{await client.revoke();message='Google 授權已撤銷';open();}),'撤銷授權');return;}
@@ -110,6 +121,7 @@
       if(action==='restore'&&file){const p=panel(),serial=panelSerial;return run(async()=>{const backup=await client.download(file.id);if(!active(p)||serial!==panelSerial||!client.status().connected)return;stopAuto(false);api.closeDialog();await api.importFile(backup);});}
     });
     root.addEventListener('pagehide',()=>{stopAuto(false);client.disconnect();});
+    root.addEventListener('online',()=>{if(panel()&&!ready)prepareIdentity();});
     root.addEventListener('storage',event=>{if(event.key==='salarymate_v5_google_client_id'){client.disconnect();message='Google 連線設定已變更，請重新連線。';refreshStatus();}});
     return Object.freeze({open,changed,stopAuto,summary});
   }

@@ -127,7 +127,7 @@ test('R93 failed persistence releases UI lock even when rollback notifications a
 });
 
 test('R93 production exportPayload preserves exact JSON with no full-state clone',()=>{
-  const h=appHarness(),expression=source.match(/exportPayload:\s*\(\)\s*=>\s*(JSON\.stringify\([^\n]+\)),\n/)[1];
+  const h=appHarness(),expression=source.match(/exportPayload:\s*\(\)\s*=>\s*(JSON\.stringify\([^\r\n]+\)),\r?\n/)[1];
   vm.runInContext('globalThis.exportPayload=()=>'+expression+';',h.context);
   const actual=h.context.exportPayload(),exportedAt=JSON.parse(actual).exportInfo.exportedAt;
   const expected=JSON.stringify({...copy(h.state),exportInfo:{app:'個人薪資與投資管理',appVersion:'fixture',schemaVersion:15,exportedAt}},null,2);

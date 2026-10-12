@@ -10,14 +10,18 @@
   function loadIdentity(){
     if(!supported())return Promise.reject(new Error('Google 連線需要 HTTPS 網站或 localhost；直接開啟 HTML 檔案時，請改用網站版或下載備份。'));
     if(root.google?.accounts?.oauth2)return Promise.resolve();
-    if(loading)return loading;
-    loading=new Promise((resolve,reject)=>{
+    if(root.navigator?.onLine===false)return Promise.reject(new Error('目前離線，請連上網路後重新載入 Google 登入。'));
+    if(loading)return loading.promise;
+    const attempt={};loading=attempt;
+    attempt.promise=new Promise((resolve,reject)=>{
       const script=root.document.createElement('script');script.src='https://accounts.google.com/gsi/client';script.async=true;script.referrerPolicy='no-referrer';
-      const timer=root.setTimeout(()=>done(new Error('Google 登入元件載入失敗，請檢查網路後重試。')),15000);
-      const done=error=>{root.clearTimeout(timer);if(error){script.remove();loading=null;reject(error);}else resolve();};
+      let settled=false,timer;
+      const done=error=>{if(settled)return;settled=true;root.clearTimeout(timer);script.onload=script.onerror=null;if(error){script.remove();if(loading===attempt)loading=null;reject(error);}else resolve();};
+      timer=root.setTimeout(()=>done(new Error('Google 登入元件載入失敗，請檢查網路後重試。')),15000);
       script.onload=()=>root.google?.accounts?.oauth2?done():done(new Error('Google 登入元件載入失敗，請檢查網路後重試。'));
-      script.onerror=()=>done(new Error('Google 登入元件載入失敗，請檢查網路後重試。'));root.document.head.append(script);
-    });return loading;
+      script.onerror=()=>done(new Error('Google 登入元件載入失敗，請檢查網路後重試。'));
+      try{root.document.head.append(script);}catch{done(new Error('Google 登入元件載入失敗，請檢查網路後重試。'));}
+    });return attempt.promise;
   }
   function createClient(onChange=()=>{}){
     let token='',expires=0,user=null,generation=0,pendingAuth=null,busy=false,expiryTimer;
@@ -79,28 +83,35 @@
       }
       return `${operation}失敗：${advice}（Google 原因代碼：${reason||'未提供'}）`;
     }
-    async function request(url,init={},acceptIncomplete=false){
+    async function request(url,init={},acceptIncomplete=false,consume=response=>response){
       const u=new URL(url);
       if(u.origin!=='https://www.googleapis.com'||(!u.pathname.startsWith('/drive/v3/')&&!u.pathname.startsWith('/upload/drive/v3/files'))||u.username||u.password)fail('已阻止非 Google Drive 的資料傳輸。');
       if(!connected()){disconnect();fail('Google 授權已過期，請重新連線。');}
       const session=generation,controller=new root.AbortController();requests.add(controller);
       const timer=root.setTimeout(()=>controller.abort(),60000);
+      let abort;
+      const interrupted=new Promise((resolve,reject)=>{abort=()=>{const error=new Error('Request interrupted');error.name='AbortError';reject(error);};controller.signal.addEventListener('abort',abort,{once:true});});
       try{
+        return await Promise.race([(async()=>{
         const response=await root.fetch(url,{...init,headers:{...init.headers,Authorization:'Bearer '+token},credentials:'omit',cache:'no-store',redirect:'error',referrerPolicy:'no-referrer',signal:controller.signal});
+        if(controller.signal.aborted)throw Object.assign(new Error('Request interrupted'),{name:'AbortError'});
         if(session!==generation)fail('Google 連線已取消。');
         if(response.status===401){disconnect();fail('Google 授權已過期，請重新連線。');}
         if(response.status===403)fail(await forbidden(response,operationOf(u,init.method||'GET')));
         if(response.status===404)fail('找不到這份雲端備份，請重新整理清單。');
         if(response.status===429)fail('Google Drive 暫時限制請求，請稍後重試。');
         if(!response.ok&&!(acceptIncomplete&&response.status===308))fail('Google Drive 暫時無法完成操作，請重新整理清單後再試。');
-        return response;
+        const result=await consume(response,controller.signal);
+        if(session!==generation||!connected())fail('Google 連線已取消。');
+        return result;
+        })(),interrupted]);
       }catch(error){
         if(session!==generation)fail('Google 連線已取消。');
         if(error.name==='AbortError'||error instanceof TypeError)fail('連線中斷或逾時。上傳結果尚未確認，請重新整理雲端清單；本機資料仍保留。');
         throw error;
-      }finally{root.clearTimeout(timer);requests.delete(controller);}
+      }finally{root.clearTimeout(timer);controller.signal.removeEventListener('abort',abort);requests.delete(controller);}
     }
-    async function json(path,params,init){const session=generation,result=await (await request(endpoint(path,params),init)).json();if(session!==generation)fail('Google 連線已取消。');return result;}
+    async function json(path,params,init){return request(endpoint(path,params),init,false,response=>response.json());}
     // Must be called directly from a user gesture, after loadIdentity has completed.
     function connect(){
       if(!supported())return Promise.reject(new Error('Google 連線需要 HTTPS 網站或 localhost；直接開啟 HTML 檔案時，請改用網站版或下載備份。'));
@@ -110,7 +121,7 @@
       disconnect();const session=generation;
       return new Promise((resolve,reject)=>{
         const timeout=root.setTimeout(()=>finish(new Error('Google 授權未完成，請重新連線。')),120000);
-        const finish=(error,value)=>{if(pendingAuth!==cancel)return;pendingAuth=null;root.clearTimeout(timeout);error?reject(error):resolve(value);};
+        const finish=(error,value)=>{if(pendingAuth!==cancel)return;pendingAuth=null;root.clearTimeout(timeout);if(error&&session===generation)disconnect();error?reject(error):resolve(value);};
         const cancel=error=>finish(error);pendingAuth=cancel;
         try{
           const auth=root.google.accounts.oauth2.initTokenClient({client_id:clientId(),scope:SCOPE,include_granted_scopes:false,
@@ -122,10 +133,10 @@
               token=response.access_token;expires=Date.now()+(seconds-30)*1000;
               try{
                 const about=await json('about',{fields:'user(displayName,emailAddress,permissionId)'});
-                if(session!==generation)return;
+                if(session!==generation||pendingAuth!==cancel)return;
                 if(!about.user?.permissionId)fail('無法確認 Google 帳戶，請重新連線。');
                 user=about.user;expiryTimer=root.setTimeout(()=>disconnect(),expires-Date.now());notify();finish(null,status());
-              }catch(error){token='';expires=0;user=null;notify();finish(error);}
+              }catch(error){if(session===generation&&pendingAuth===cancel)finish(error);}
             }});
           auth.requestAccessToken({prompt:'select_account'});
         }catch{finish(new Error('Google 授權未完成，請檢查用戶端 ID 與授權來源網址。'));}
@@ -160,18 +171,21 @@
       const response=await request(UPLOAD+'?'+new URLSearchParams({uploadType:'resumable',fields}),{method:'POST',headers:{'Content-Type':'application/json; charset=UTF-8','X-Upload-Content-Type':'application/json','X-Upload-Content-Length':String(bytes.length)},body:JSON.stringify(metadata)});
       const location=response.headers.get('Location');if(!location)fail('Google Drive 未提供上傳位置，請重試。');
       const target=new URL(location);if(target.origin!=='https://www.googleapis.com'||target.pathname!=='/upload/drive/v3/files'||target.searchParams.get('uploadType')!=='resumable')fail('已阻止非 Google Drive 的資料傳輸。');
-      const file=validateFile(await (await request(location,{method:'PUT',headers:{'Content-Type':'application/json'},body:bytes})).json());known.set(file.id,file);return file;
+      const result=await request(location,{method:'PUT',headers:{'Content-Type':'application/json'},body:bytes},false,response=>response.json());
+      if(session!==generation||!connected())fail('Google 連線已取消。');
+      const file=validateFile(result);known.set(file.id,file);return file;
     });}
     async function download(id){
       const session=generation;
       const file=await owned(id);if(Number(file.size)>MAX_BYTES)fail('備份檔案超過 45 MB。');
-      const response=await request(endpoint('files/'+encodeURIComponent(id),{alt:'media'}));
+      return request(endpoint('files/'+encodeURIComponent(id),{alt:'media'}),{},false,async(response,signal)=>{
       if(Number(response.headers.get('Content-Length'))>MAX_BYTES)fail('備份檔案超過 45 MB。');
-      let text='';
-      if(response.body?.getReader){const reader=response.body.getReader(),decoder=new TextDecoder('utf-8',{fatal:true});let size=0;try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>MAX_BYTES)fail('備份檔案超過 45 MB。');text+=decoder.decode(value,{stream:true});}text+=decoder.decode();}finally{await reader.cancel();}}
-      else{text=await response.text();if(new TextEncoder().encode(text).length>MAX_BYTES)fail('備份檔案超過 45 MB。');}
+      let text='',byteSize=0;
+      if(response.body?.getReader){const reader=response.body.getReader(),decoder=new TextDecoder('utf-8',{fatal:true}),cancel=()=>{reader.cancel().catch(()=>{});};signal.addEventListener('abort',cancel,{once:true});try{while(true){const {done,value}=await reader.read();if(done)break;byteSize+=value.byteLength;if(byteSize>MAX_BYTES)fail('備份檔案超過 45 MB。');text+=decoder.decode(value,{stream:true});}text+=decoder.decode();}finally{signal.removeEventListener('abort',cancel);await reader.cancel();}}
+      else{text=await response.text();byteSize=new TextEncoder().encode(text).length;if(byteSize>MAX_BYTES)fail('備份檔案超過 45 MB。');}
       if(session!==generation||!connected())fail('Google 連線已取消。');
-      return {name:file.name,size:new TextEncoder().encode(text).length,text:async()=>text};
+      return {name:file.name,size:byteSize,text:async()=>text};
+      });
     }
     const rename=(id,name)=>mutate(async()=>{await owned(id);name=String(name||'').trim();if(!name||name.length>160)fail('備份名稱請填寫 1 至 160 個字元。');const result=await json('files/'+encodeURIComponent(id),{fields},{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({name})});validateFile(result);known.set(id,result);return result;});
     const trash=id=>mutate(async()=>{await owned(id);await json('files/'+encodeURIComponent(id),{fields:'id,trashed'},{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({trashed:true})});known.delete(id);});

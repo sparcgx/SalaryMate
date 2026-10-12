@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0-dev.2-R99';
+    const APP_VERSION = '5.0.0-dev.2-R101';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -1150,9 +1150,9 @@
     const leavePaidTone = (record) => numberValue(record.paidRatio) >= 100 ? 'leave-paid' : numberValue(record.paidRatio) > 0 ? 'leave-partial' : 'leave-unpaid';
     const leaveStatusName = (status) => ({ planned: '預計', confirmed: '已確認', cancelled: '已取消' })[status] || '已確認';
     const leaveStatusTone = (status) => ({ planned: 'leave-planned', confirmed: 'leave-confirmed', cancelled: 'leave-cancelled' })[status] || 'leave-confirmed';
-    const computeLeaveDateEntries = (record) => {
+    const computeLeaveDateEntries = (record, company = getCompany(record?.companyId)) => {
       const startDate = String(record?.startDate || record?.date || '');
-      const workHours = numberValue(getCompany(record?.companyId)?.workHoursPerDay) || 8;
+      const workHours = numberValue(company?.workHoursPerDay) || 8;
       if (!validIsoDate(startDate)) return [];
       if (record?.durationMode === 'range') {
         const endDate = String(record.endDate || startDate);
@@ -2337,7 +2337,7 @@
         const month = index + 1;
         return { month, analysis: attendanceAnalysis(ui.selectedYear, month, ui.companyFilter) };
       });
-      return `<div class="table-scroll attendance-trend-scroll" aria-label="每月推估出勤率"><div class="attendance-trend">${months.map(({ month, analysis }) => {
+      return `<div class="table-scroll attendance-trend-scroll" role="region" tabindex="0" aria-label="每月推估出勤率"><div class="attendance-trend">${months.map(({ month, analysis }) => {
         const hasData = analysis.expectedHours > 0;
         const height = hasData ? Math.max(4, analysis.attendanceRate * 1.72) : 3;
         return `<div class="attendance-month ${hasData ? '' : 'missing'} ${Number(ui.leaveMonth) === month ? 'active' : ''}" title="${month} 月：${hasData ? `${rateNumber(analysis.attendanceRate)}%` : '無資料'}"><span>${hasData ? `${rateNumber(analysis.attendanceRate)}%` : '—'}</span><div class="attendance-month-bar" style="height:${height}px"></div><b>${month}月</b></div>`;
@@ -2359,8 +2359,8 @@
       const month = isLeave ? ui.leaveMonth : ui.overtimeMonth;
       const selectId = isLeave ? 'leaveMonth' : 'overtimeMonth';
       const options = `<option value="0">全年薪資區間</option>${Array.from({ length: 12 }, (_, index) => `<option value="${index + 1}" ${Number(month) === index + 1 ? 'selected' : ''}>${index + 1} 月薪資</option>`).join('')}`;
-      const statusSelect = isLeave ? `<label class="sr-only" for="leaveStatus">請假狀態</label><select id="leaveStatus" class="field-select" style="width:170px"><option value="active" ${ui.leaveStatus === 'active' ? 'selected' : ''}>進行中（預計＋確認）</option><option value="confirmed" ${ui.leaveStatus === 'confirmed' ? 'selected' : ''}>僅已確認</option><option value="planned" ${ui.leaveStatus === 'planned' ? 'selected' : ''}>僅預計</option><option value="cancelled" ${ui.leaveStatus === 'cancelled' ? 'selected' : ''}>僅已取消</option><option value="all" ${ui.leaveStatus === 'all' ? 'selected' : ''}>全部狀態</option></select>` : '';
-      return `<div class="page-actions"><label class="sr-only" for="${selectId}">薪資月份</label><select id="${selectId}" class="field-select" style="width:150px">${options}</select>${statusSelect}<button class="btn btn-primary" type="button" data-action="${isLeave ? 'add-leave' : 'add-overtime'}">＋ ${isLeave ? '新增請假' : '新增加班'}</button></div>`;
+      const statusSelect = isLeave ? `<label class="sr-only" for="leaveStatus">請假狀態</label><select id="leaveStatus" class="field-select"><option value="active" ${ui.leaveStatus === 'active' ? 'selected' : ''}>進行中（預計＋確認）</option><option value="confirmed" ${ui.leaveStatus === 'confirmed' ? 'selected' : ''}>僅已確認</option><option value="planned" ${ui.leaveStatus === 'planned' ? 'selected' : ''}>僅預計</option><option value="cancelled" ${ui.leaveStatus === 'cancelled' ? 'selected' : ''}>僅已取消</option><option value="all" ${ui.leaveStatus === 'all' ? 'selected' : ''}>全部狀態</option></select>` : '';
+      return `<label class="sr-only" for="${selectId}">薪資月份</label><select id="${selectId}" class="field-select">${options}</select>${statusSelect}<button class="btn btn-primary" type="button" data-action="${isLeave ? 'add-leave' : 'add-overtime'}">＋ ${isLeave ? '新增請假' : '新增加班'}</button>`;
     };
 
     const renderOvertimePanel = () => {
@@ -2416,8 +2416,8 @@
     };
 
     const renderOvertime = () => `
-      <section class="view" aria-labelledby="attendanceTitle">
-        <div class="page-head"><div><h2 id="attendanceTitle">工時／出勤管理</h2><p>加班與請假分開記錄，共用公司計薪區間與薪資月份。</p></div>${attendancePageActions()}</div>
+      <section class="view v5-worklog-view" aria-labelledby="attendanceTitle">
+        <div class="page-head"><div><h2 id="attendanceTitle">工時／出勤管理</h2><p>加班與請假分開記錄，共用公司計薪區間與薪資月份。</p></div><div class="page-actions">${attendancePageActions()}</div></div>
         ${attendanceTabsHtml()}
         ${ui.attendanceTab === 'leave' ? renderLeavePanel() : renderOvertimePanel()}
       </section>`;
@@ -3104,7 +3104,7 @@
       const active=v5.attendanceTab,leave=active==='leave';ui.attendanceTab=leave?'leave':'overtime';
       const tabs=v5Tabs([['calendar','月曆'],['overtime','加班紀錄'],['leave','請假紀錄'],['comp','補休帳本']],active,'work-tab');
       const body=active==='comp'?renderCompTimePanel():leave?renderLeavePanel():renderOvertimePanel();
-      return `<section class="view">${v5Title(active==='comp'?'補休帳本':leave?'請假紀錄':'加班紀錄',active==='comp'?'':attendancePageActions())}${tabs}<div class="v5-work-list">${body}</div></section>`;
+      return `<section class="view v5-worklog-view">${v5Title(active==='comp'?'補休帳本':leave?'請假紀錄':'加班紀錄',active==='comp'?'':attendancePageActions())}${tabs}<div class="v5-work-list">${body}</div></section>`;
     };
     const renderV5Annual = () => {
       const stats=annualStats(), rows=filteredRecords(), c=currentCompany();
@@ -5224,6 +5224,14 @@
         try {
           const mode = form.elements.mode.value;
           planned = backupService.merge(state, imported, mode, token);
+          const candidate = planned.next, companies = new Map(candidate.companies.map(company => [company.id, company]));
+          // Derived leave entries must use the candidate's company hours and IDs,
+          // not the live state or cached rows; keep these entries out of storage.
+          const ledger = window.SalaryMateCompTime.ledger({
+            credits: candidate.compTimeCredits, settlements: candidate.compTimeSettlements, logs: candidate.overtimeLogs,
+            leaves: candidate.leaveRecords.map(row => ({ ...row, compTimeEntries: computeLeaveDateEntries(row, companies.get(row.companyId) || null) }))
+          });
+          if (ledger.violations.length) throw new Error('匯入後的補休來源或餘額不一致，請檢查加班、請假與補休結算。');
           preview.innerHTML = mode === 'restore'
             ? '<p class="notice warning">確認還原後，所有本機資料會由這份備份取代。</p>'
             : '<div class="backup-summary">' + planned.stats.filter(s => s.added || s.replaced).map(s => `<div><b>${userHtml(s.name)}</b><span>新增 ${s.added} · 覆蓋 ${s.replaced}</span></div>`).join('') + '</div><p class="hint">偏好設定沿用目前裝置。</p>';

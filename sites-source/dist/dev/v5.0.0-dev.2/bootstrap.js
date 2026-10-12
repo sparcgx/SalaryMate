@@ -40,19 +40,33 @@
 (() => {
   'use strict';
   const coreStyle=document.querySelector('link[data-style-core]');
-  let applicationReady=false,styleReady=!coreStyle||!!coreStyle.sheet,styleFailed=false,reported=false;
+  let applicationReady=false,styleFailed=coreStyle?.getAttribute('data-startup-load')==='error',styleReady=!coreStyle||(!styleFailed&&!!coreStyle.sheet),alternateStyleReady=false,notice=null,retry=null,retrySequence=0;
+  const originalStyle=coreStyle?.href;
   const finishStartup=()=>{
     if(!applicationReady)return;
     document.querySelectorAll('[data-startup-inert]').forEach(element=>{element.removeAttribute('inert');element.removeAttribute('data-startup-inert');});
-    if(styleReady)document.body.removeAttribute('data-startup');
-    else if(styleFailed&&!reported){reported=true;const notice=document.createElement('p');notice.className='notice warning';notice.setAttribute('role','alert');notice.textContent='介面樣式載入失敗，請重新整理；本機資料仍保留。';document.getElementById('mainContent')?.prepend(notice);}
+    if(styleReady||(alternateStyleReady&&coreStyle?.disabled)){document.body.removeAttribute('data-startup');notice?.remove();notice=null;}
+    else if(styleFailed){
+      document.body.setAttribute('data-startup','loading');
+      if(!notice){
+        notice=document.createElement('p');notice.className='notice warning';notice.setAttribute('role','alert');notice.textContent='介面樣式載入失敗；本機資料仍保留。';
+        retry=document.createElement('button');retry.type='button';retry.className='btn btn-small';retry.textContent='重新載入樣式';
+        retry.addEventListener('click',()=>{
+          if(retry.disabled||styleReady)return;
+          retry.disabled=true;retry.textContent='正在重試…';styleFailed=false;
+          const url=new URL(originalStyle,document.baseURI);url.searchParams.set('startupRetry',Date.now()+'-'+(++retrySequence));coreStyle.href=url.href;
+        });
+        notice.append(' ',retry);document.getElementById('mainContent')?.before(notice);
+      }
+      retry.disabled=false;retry.textContent='重新載入樣式';
+    }
   };
   if(coreStyle){
-    coreStyle.addEventListener('load',()=>{styleReady=true;finishStartup();},{once:true});
-    coreStyle.addEventListener('error',()=>{styleFailed=true;finishStartup();},{once:true});
+    coreStyle.addEventListener('load',()=>{styleReady=true;styleFailed=false;finishStartup();});
+    coreStyle.addEventListener('error',()=>{styleReady=false;styleFailed=true;finishStartup();});
     coreStyle.media='all';
   }
-  window.SalaryMateStartup=Object.freeze({complete(){applicationReady=true;finishStartup();},styled(){styleReady=true;finishStartup();}});
+  window.SalaryMateStartup=Object.freeze({complete(){applicationReady=true;window.SalaryMateStartupLoad?.complete();finishStartup();},styled(){styleReady=true;alternateStyleReady=!!coreStyle?.disabled;finishStartup();}});
 })();
 
 // Desktop horizontal scroll runtime.

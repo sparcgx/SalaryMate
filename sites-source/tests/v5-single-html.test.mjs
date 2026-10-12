@@ -51,8 +51,13 @@ test('Single HTML: embedded resources, local-file navigation, language and encry
 test('Single HTML: live buttons send only public instrument identifiers to the portable route',async()=>{
   const f=fixture();f.stockPortfolio={assets:[{id:'a',symbol:'2330',name:'Test',market:'TW',currency:'TWD',account:'Private account'}],transactions:[]};
   const b=boot(f),sent=[],handle=createPortableMarket(createStockMarket(fakeSource));
-  b.w.fetch=async(url,init)=>{sent.push({url,body:JSON.parse(init.body),credentials:init.credentials});return handle(new Request(url,{method:init.method,body:init.body,headers:{...init.headers,origin:'null'}}));};
-  b.tab('investment');b.click('[data-stock="refresh"]');
-  for(let i=0;i<50&&!b.q('.stock-sync-result');i++)await new Promise(r=>setTimeout(r,5));
-  assert.equal(b.state().stockPortfolio.assets[0].quotePrice,1200);assert.match(sent[0].url,/\/api\/stocks\/portable\/quotes$/);assert.deepEqual(sent[0].body,{instruments:[{market:'TW',symbol:'2330'}]});assert.equal(sent[0].credentials,'omit');assert.deepEqual(b.errors,[]);b.close();
+  try{
+    b.w.fetch=async(url,init)=>{sent.push({url,body:JSON.parse(init.body),credentials:init.credentials});return handle(new Request(url,{method:init.method,body:init.body,headers:{...init.headers,origin:'null'}}));};
+    b.tab('investment');
+    // JSDOM defaults to a hidden document; quotes require a visible investment page.
+    Object.defineProperty(b.w.document,'hidden',{value:false,configurable:true});
+    b.click('[data-stock="refresh"]');
+    for(let i=0;i<50&&b.state().stockPortfolio.assets[0].quotePrice!==1200;i++)await new Promise(r=>setTimeout(r,5));
+    assert.equal(b.state().stockPortfolio.assets[0].quotePrice,1200);assert.match(sent[0].url,/\/api\/stocks\/portable\/quotes$/);assert.deepEqual(sent[0].body,{instruments:[{market:'TW',symbol:'2330'}],includeFx:true});assert.equal(sent[0].credentials,'omit');assert.deepEqual(b.errors,[]);
+  }finally{b.close();}
 });

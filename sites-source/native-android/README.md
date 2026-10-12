@@ -28,3 +28,16 @@
 程式驗證涵蓋既有原生編譯、APK 簽章、完整資源雜湊、原生文件儲存／取消／驗證、返回保護、舊備份解密與 Schema 13 → 15，以及中英文 Drive 提示。原生 JavaScript 測試使用 Node callback spies 和 WebCrypto，沒有虛擬瀏覽器或 Android 模擬器。
 
 手機安裝、重開後資料保留、文件供應者、實際行情連線、動畫觀感、開啟秒數與 FPS 均仍待實機驗收。請先測試：安裝後開啟、建立一筆測試資料再重開、普通／加密備份往返、Drive 文件選取、返回與對話框取消；之後再驗收晶羽、魔法及寬螢幕畫面。
+
+
+## R101 功能等效重構（2026-10-12）
+
+本段使用已發布 R101 APK 為基準，保留原生類別與全部其他素材。上方 R99 是原生編譯套件的來源記錄；請勿將它與 R101 網頁混合後直接宣稱為 R101。詳見 `../R101-REFACTOR.md`。
+
+1. 在專案根目錄執行 `node scripts/build-android-assets.mjs --baseline-apk /absolute/path/SalaryMate_v5.0.0-dev.2-R101_Android.apk`。原 APK 的 ZIP 與 manifest 雜湊會先驗證，舊加密備份 adapter 必須一致。
+2. 執行 `node --test --test-concurrency=1 tests/v5-r101-android-refactor.test.mjs tests/v5-android-runtime.test.mjs tests/v5-r99-android-legacy-backup.test.mjs tests/v5-r99-android-package.test.mjs`。測試 fixture 是實際 R101 發布 adapter，使用 native callback spies 與 WebCrypto。
+3. 設定 `ANDROID_HOME`（Build Tools 36.0.0）及 `SALARYMATE_SIGNING_CONFIG`（私人簽章備份內 signing.json 的絕對路徑）；keystore 可為同資料夾的相對路徑。
+4. 執行 `python3 scripts/repack-android-apk.py /absolute/path/baseline.apk /absolute/path/native-android/www /absolute/path/output.apk`，再執行 `python3 scripts/verify-android-apk.py /absolute/path/output.apk`。只允許 adapter／資產清單更新，相同簽章與其餘項目完全一致後才替換輸出。
+5. 目前同一版本名稱及 versionCode 是刻意保留的功能等效交付。未來功能升版需另增 versionCode，並以對應來源建置；不要把這個重打包路徑當成改 Java／Kotlin／manifest 的方法。
+
+手機覆蓋更新與資料保留仍待實機驗收；不要先移除 App。

@@ -59,10 +59,11 @@ for(const rel of ['icon','apple-touch-icon']){
   if(match){const bytes=await readFile(path.join(base,match[1]));html=html.replace(match[0],`<link rel="${rel}" href="data:image/png;base64,${bytes.toString('base64')}">`);}
 }
 html=html.replace(/SalaryMate · (R\d+) 開發測試版/g,'SalaryMate · $1 開發測試版 · 單一 HTML');
-const scriptHashes=scriptsInline.map(block=>{
+const existingInline=[...html.matchAll(/<script\b(?![^>]*\bsrc=)[^>]*>[\s\S]*?<\/script>/gi)].map(match=>match[0]);
+const scriptHashes=[...existingInline,...scriptsInline].map(block=>{
   const content=block.match(/^<script\b[^>]*>([\s\S]*)<\/script>$/)?.[1];
   if(content===undefined)throw new Error('Cannot hash portable script');
-  return "'sha256-"+createHash('sha256').update(content).digest('base64')+"'";
+  return "'sha256-"+createHash('sha256').update(content.replace(/\r\n?/g,'\n')).digest('base64')+"'";
 });
 const csp=salaryMateCsp({scriptHashes,marketOrigin:origin,portable:true});
 html=html.replace('<meta charset="utf-8">',()=>`<meta charset="utf-8">\n  <meta http-equiv="Content-Security-Policy" content="${csp}">`);

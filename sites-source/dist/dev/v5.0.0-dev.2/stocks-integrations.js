@@ -120,6 +120,22 @@
    return result;
  }
  function marketInfo(q){return Object.fromEntries(['exchange','industry','instrumentType','classificationSource'].filter(k=>typeof q[k]==='string'&&q[k].trim()).map(k=>[k,q[k].trim().slice(0,100)]));}
+ function quoteMarketAt(q,now=Date.now()){
+   // A date-only close has no intraday timestamp; never invent one from fetch time.
+   if(q?.priceKind==='close')return '';
+   const at=q?.quoteAt;
+   return typeof at==='string'&&/^\d{4}-\d\d-\d\dT([01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d{1,3})?(?:Z|[+-]\d\d:\d\d)$/.test(at)&&at.slice(0,10)===q.date&&Number.isFinite(Date.parse(at))&&Date.parse(at)<=now+120000?at:'';
+ }
+ function quoteIssue(a,q,today,now=Date.now()){
+   if(!q||!positive(q.price)||q.currency!==a.currency||!core.dateOK(q.date)||q.date>today)return '未取得有效股價與日期';
+   if(q.quoteCacheStatus&&q.quoteCacheStatus!=='fresh')return '收盤快取已過期，更新失敗';
+   if(a.quoteDate&&q.date<a.quoteDate)return '來源日期比現有價格舊';
+   if(a.market==='TW'&&['TWSE 上市收盤','TWSE 收盤'].includes(a.quoteSource)&&q.date===a.quoteDate&&q.priceKind!=='close'&&!['TWSE 上市收盤','TWSE 收盤'].includes(q.source))return '同日收盤價已保存，不改用盤中成交';
+   const at=quoteMarketAt(q,now);
+   if(q.priceKind!=='close'&&q.quoteAt&&!at)return '行情時間格式不正確';
+   if(a.quoteMarketAt&&q.date===a.quoteDate&&(!at||Date.parse(at)<Date.parse(a.quoteMarketAt)))return '行情時間較舊，保留最新成交價';
+   return '';
+ }
  function updateIntraday(a,q,snapshot,today,updated,errors){
    if(a.market!=='TW'||!q?.intradayNavStatus&&!q?.intradayNav)return;
    const before=JSON.stringify([a.intradayNav,a.intradayNavStatus,a.intradayCheckedAt]),n=q?.intradayNav;
@@ -162,15 +178,15 @@
        }
      }
 
-     if(!q||!positive(q.price)||q.currency!==a.currency||!core.dateOK(q.date)||q.date>today){errors.push(`${a.symbol}：${error?.message||'未取得有效股價與日期'}，保留原價格。`);continue;}
-     if(a.quoteDate&&q.date<a.quoteDate){errors.push(`${a.symbol}：來源日期比現有價格舊，保留原價格。`);continue;}
-     const at=typeof q.quoteAt==='string'&&/^\d{4}-\d\d-\d\dT.*(?:Z|[+-]\d\d:\d\d)$/.test(q.quoteAt)&&Number.isFinite(Date.parse(q.quoteAt))&&Date.parse(q.quoteAt)<=Date.now()+120000?q.quoteAt:'';
-     if(a.quoteMarketAt&&q.date===a.quoteDate&&(!at||Date.parse(at)<Date.parse(a.quoteMarketAt))){errors.push(`${a.symbol}：行情時間較舊，保留最新成交價。`);continue;}
+     const issue=quoteIssue(a,q,today);
+     if(issue){errors.push(`${a.symbol}：${error?.message||issue}，保留原價格。`);continue;}
+     const at=quoteMarketAt(q);
      const fx=a.currency==='TWD'?1:snapshot.fx?.rate;
      if(!positive(fx)||a.currency!=='TWD'&&(!core.dateOK(snapshot.fx?.date)||snapshot.fx.date>today||a.quoteFxDate&&snapshot.fx.date<a.quoteFxDate||current.marketData?.fx&&snapshot.fx.date<current.marketData.fx.date)){errors.push(`${a.symbol}：匯率查詢失敗，股價與匯率皆保留。`);continue;}
-     Object.assign(a,{quotePrice:q.price,quoteDate:q.date,quoteFx:fx,quoteSource:String(q.source||''),quoteProviderTime:String(q.providerTime||q.date),quoteCheckedAt:String(snapshot.fetchedAt||''),quoteMode:'auto',quoteFxDate:a.currency==='TWD'?q.date:String(snapshot.fx?.date||''),quoteChange:typeof q.change==='number'&&Number.isFinite(q.change)?q.change:null,quoteChangePercent:typeof q.changePercent==='number'&&Number.isFinite(q.changePercent)?q.changePercent:null,marketInfo:{...a.marketInfo,...marketInfo(q)}});if(!updated.includes(a.id))updated.push(a.id);
+     Object.assign(a,{quotePrice:q.price,quoteDate:q.date,quoteFx:fx,quoteSource:String(q.source||''),quoteProviderTime:String(q.priceKind==='close'?q.date:q.providerTime||q.date),quoteCheckedAt:String(snapshot.fetchedAt||''),quoteMode:'auto',quoteFxDate:a.currency==='TWD'?q.date:String(snapshot.fx?.date||''),quoteChange:typeof q.change==='number'&&Number.isFinite(q.change)?q.change:null,quoteChangePercent:typeof q.changePercent==='number'&&Number.isFinite(q.changePercent)?q.changePercent:null,marketInfo:{...a.marketInfo,...marketInfo(q)}});if(!updated.includes(a.id))updated.push(a.id);
      a.quoteMarketAt=at;priceUpdated.push(a.id);
    }
+   for(const error of snapshot.errors)if(!error.symbol&&error.source==='TWSE 上市收盤'&&typeof error.message==='string'&&!errors.includes(error.message))errors.push(error.message);
    const m=next.marketData||{},fx=snapshot.fx;
    const fxOK=positive(fx?.rate)&&core.dateOK(fx.date)&&fx.date<=today&&(!m.fx||fx.date>=m.fx.date);
    if(!fxOK)errors.push('匯率暫時無法更新，保留上次資料。');
@@ -179,5 +195,5 @@
      lastAttemptAt:new Date().toISOString(),...(useful?{lastSyncAt:new Date().toISOString()}:{}),requested:targets.length,updated:priceUpdated.length,status:!useful?'error':errors.length?'partial':'success'};
    core.validate(next);return {next,updated,priceUpdated,errors,useful};
  }
- root.SalaryMateStockServices={marketInfo,catalog:(query,signal)=>request('/api/stocks/catalog',{query},signal),forecasts:(market,symbol,year,signal)=>request('/api/stocks/dividends',{market,symbol,year,forecast:true},signal),forecastCache,dividendPeriod,dividends:(market,symbol,year,signal)=>request('/api/stocks/dividends',{market,symbol,year},signal),parseSmart,prepareSmart,fetchQuotes,fetchIntraday:assets=>fetchQuotes(assets.filter(a=>a.market==='TW'),'/api/stocks/nav'),applyIntraday,applyQuotes,lookup:(market,symbol,signal)=>request('/api/stocks/lookup',{market,symbol},signal)};
+ root.SalaryMateStockServices={marketInfo,quoteIssue,quoteMarketAt,catalog:(query,signal)=>request('/api/stocks/catalog',{query},signal),forecasts:(market,symbol,year,signal)=>request('/api/stocks/dividends',{market,symbol,year,forecast:true},signal),forecastCache,dividendPeriod,dividends:(market,symbol,year,signal)=>request('/api/stocks/dividends',{market,symbol,year},signal),parseSmart,prepareSmart,fetchQuotes,fetchIntraday:assets=>fetchQuotes(assets.filter(a=>a.market==='TW'),'/api/stocks/nav'),applyIntraday,applyQuotes,lookup:(market,symbol,signal)=>request('/api/stocks/lookup',{market,symbol},signal)};
 })(globalThis);

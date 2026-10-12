@@ -4,16 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
-  <meta name="description" content="SalaryMate R99 開發測試版：個人薪資、加班、特休與投資管理。資料預設儲存在目前瀏覽器，支援自己的 Google Drive 備份。">
+  <meta name="description" content="SalaryMate R101 開發測試版：個人薪資、加班、特休與投資管理。資料預設儲存在目前瀏覽器，支援自己的 Google Drive 備份。">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="SalaryMate 開發版">
-  <title>SalaryMate · R99 開發測試版</title>
+  <title>SalaryMate · R101 開發測試版</title>
   <link rel="icon" href="./icons/icon-192.png">
   <link rel="apple-touch-icon" href="./icons/icon-192.png">
   <link rel="manifest" href="./manifest.webmanifest">
   <style data-startup-style>
 body[data-startup="loading"]{margin:0;background:#f5f7fb;color:#253247;font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
 body[data-startup="loading"] *{box-sizing:border-box}
+body[data-startup="loading"] .v5-ui-icon{width:1.25em;height:1.25em;vertical-align:middle}
 body[data-startup="loading"] .ambient-glass,body[data-startup="loading"] .v5-surface-effects,body[data-startup="loading"] .sidebar-bottom,body[data-startup="loading"] .workspace-context,body[data-startup="loading"] .top-actions,body[data-startup="loading"] .app-footer{display:none}
 body[data-startup="loading"] .skip-link{position:absolute;left:-10000px}
 body[data-startup="loading"] .skip-link:focus{left:16px;top:8px;background:#fff;padding:8px;z-index:5}
@@ -35,8 +36,39 @@ body[data-startup="loading"] .startup-sections span{padding:16px;background:#f5f
 body[data-startup="loading"] .startup-state{display:inline-block;margin-top:16px;padding:4px 12px;border-radius:20px;background:#eaf0f8;color:#53627a;font-size:14px}
 @media(max-width:600px){body[data-startup="loading"] .sidebar{padding:14px 16px}body[data-startup="loading"] .wordmark{font-size:16px}body[data-startup="loading"] .wordmark small{display:block;margin:0}body[data-startup="loading"] .nav-inner{gap:6px}body[data-startup="loading"] .tab-btn{padding:6px 10px;font-size:14px}body[data-startup="loading"] .topbar{padding:12px 16px}body[data-startup="loading"] #mainContent{padding:12px 16px}body[data-startup="loading"] .startup-panel{padding:22px 18px}body[data-startup="loading"] .startup-sections{gap:8px}body[data-startup="loading"] .startup-sections span{padding:12px 4px;font-size:14px}}
   </style>
-  <link rel="stylesheet" href="./styles-core.css?v=5.0.0-dev.2-R99" data-style-core media="print" fetchpriority="high">
-  <script defer src="./startup.js?v=5.0.0-dev.2-R99"></script>
+  <script data-startup-guard>
+(() => {
+  'use strict';
+  let failed=false,ready=false,notice=null,retrying=false;
+  const report=()=>{
+    if(!failed||ready||notice||!document.body)return;
+    const main=document.getElementById('mainContent');if(!main)return;
+    notice=document.querySelector('[data-startup-panel]')||document.createElement('section');
+    notice.className='startup-panel';notice.setAttribute('role','alert');notice.removeAttribute('aria-labelledby');
+    const message=document.createElement('p');
+    message.textContent='程式載入失敗，請檢查連線後重試。本機資料不會被清除。';
+    const retry=document.createElement('button');retry.type='button';retry.className='btn';retry.textContent='重新載入程式';
+    retry.addEventListener('click',()=>{
+      if(ready||retrying||!window.confirm('重新載入可能放棄尚未儲存的輸入。要重新載入嗎？'))return;
+      retrying=true;retry.disabled=true;window.location.reload();
+    });
+    notice.replaceChildren(message,retry);if(!notice.isConnected)main.prepend(notice);
+  };
+  window.addEventListener('error',event=>{
+    const target=event.target;
+    if(target?.matches?.('link[data-style-core]'))target.setAttribute('data-startup-load','error');
+    const script=document.querySelector('script[defer][src^="./startup.js?"]');
+    if(!ready&&script&&(target===script||event.filename===script.src)){failed=true;report();}
+  },true);
+  window.addEventListener('load',event=>{
+    if(event.target?.matches?.('link[data-style-core]'))event.target.setAttribute('data-startup-load','loaded');
+  },true);
+  document.addEventListener('DOMContentLoaded',report,{once:true});
+  window.SalaryMateStartupLoad=Object.freeze({complete(){ready=true;notice?.remove();notice=null;}});
+})();
+  </script>
+  <link rel="stylesheet" href="./styles-core.css?v=5.0.0-dev.2-R101" data-style-core media="print" fetchpriority="high">
+  <script defer src="./startup.js?v=5.0.0-dev.2-R101"></script>
 </head>
 <body data-startup="loading" data-interface-style="glass" data-ui-mode="minimal" data-color-theme="slate" data-surface-opacity="frosted">
   <div class="ambient-glass" aria-hidden="true"><span></span><span></span></div>
@@ -52,7 +84,7 @@ body[data-startup="loading"] .startup-state{display:inline-block;margin-top:16px
       <button class="tab-btn" type="button" data-tab="tax">年度</button>
       <button class="tab-btn" type="button" data-tab="settings">設定</button>
     </nav>
-    <div class="sidebar-bottom"><span>v5.0.0-dev.2-R99</span><span>資料預設存於此瀏覽器</span></div>
+    <div class="sidebar-bottom"><span>v5.0.0-dev.2-R101</span><span>資料預設存於此瀏覽器</span></div>
   </aside>
   <div class="workspace-shell">
     <header class="topbar" data-startup-inert inert><div class="topbar-inner">
@@ -60,8 +92,8 @@ body[data-startup="loading"] .startup-state{display:inline-block;margin-top:16px
       <div class="workspace-context"><div class="company-picker"><select id="companyFilter" hidden aria-hidden="true" tabindex="-1"></select><span id="companyPickerTitle" class="sr-only">目前公司</span><button id="companyPickerButton" class="top-select company-picker-trigger" type="button" aria-labelledby="companyPickerTitle companyPickerLabel" aria-expanded="false" aria-controls="companyPickerPanel"><span id="companyPickerLabel"></span><span class="company-picker-chevron" aria-hidden="true"></span></button><div id="companyPickerPanel" class="menu company-picker-panel" role="region" aria-label="公司清單" hidden><ul id="companyPickerList"></ul></div></div><label for="yearFilter" class="sr-only">年度</label><select id="yearFilter" class="top-select"></select></div>
       <div class="top-actions"><div class="language-switch" role="group" aria-label="語言"><button type="button" data-language="zh" lang="zh-Hant" aria-label="繁體中文">中</button><button type="button" data-language="en" lang="en" aria-label="English">EN</button></div><span id="saveStatus" class="save-status">本機資料</span><div class="menu-wrap"><button id="dataMenuButton" class="btn btn-small" type="button" aria-expanded="false" aria-controls="dataMenu">新增</button><div id="dataMenu" class="menu" hidden><button type="button" data-action="add-record">新增薪資</button><button type="button" data-action="add-overtime">登記加班</button><button type="button" data-action="add-leave">登記請假</button><button type="button" data-action="add-investment">投資收入</button><hr><button type="button" data-action="add-company-basic">新增公司</button></div></div></div>
     </div></header>
-    <main id="mainContent" tabindex="-1" aria-label="主要內容"><section class="startup-panel" aria-labelledby="startupTitle"><h1 id="startupTitle">薪資與投資</h1><p role="status">正在載入 SalaryMate，讀取本機資料…</p><span class="startup-state">載入中</span><div class="startup-sections" aria-hidden="true"><span>薪資</span><span>加班與請假</span><span>股票投資</span></div></section></main>
-    <footer class="app-footer" data-startup-inert inert><span>SalaryMate · R99 開發測試版</span><button type="button" data-action="open-legal">授權與隱私</button></footer>
+    <main id="mainContent" tabindex="-1" aria-label="主要內容"><section class="startup-panel" data-startup-panel aria-labelledby="startupTitle"><h1 id="startupTitle">薪資與投資</h1><p role="status">正在載入 SalaryMate，讀取本機資料…</p><span class="startup-state">載入中</span><div class="startup-sections" aria-hidden="true"><span>薪資</span><span>加班與請假</span><span>股票投資</span></div></section></main>
+    <footer class="app-footer" data-startup-inert inert><span>SalaryMate · R101 開發測試版</span><button type="button" data-action="open-legal">授權與隱私</button></footer>
   </div>
   <dialog id="appDialog" aria-labelledby="dialogTitle"><div id="dialogContent"></div></dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>

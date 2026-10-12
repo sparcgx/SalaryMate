@@ -49,8 +49,21 @@
   const stockKey = a => JSON.stringify([a.market, a.symbol.trim().toUpperCase(), a.account || '']);
   const collections = ['companies', 'records', 'overtimeLogs', 'leaveRecords', 'compTimeCredits', 'compTimeSettlements', 'salaryAdjustments', 'yearEndEstimates', 'investmentRecords'];
   const labels = ['公司', '薪資', '加班', '請假', '補休來源', '補休結算', '調薪', '年終設定', '投資收入'];
+  function validateReferences(data) {
+    const ids = Object.fromEntries(collections.map(name => [name, new Set((data[name] || []).map(row => row.id))]));
+    const check = (rows, field, target) => {
+      // Older backups may omit optional links; an explicit link must resolve
+      // within the incoming backup, including for complete replacement.
+      for (const row of rows || []) if (row[field] && !ids[target].has(row[field])) fail('備份缺少關聯資料，無法安全匯入。');
+    };
+    for (const name of collections.slice(1, -1)) check(data[name], 'companyId', 'companies');
+    check(data.compTimeCredits, 'sourceId', 'overtimeLogs');
+    check(data.compTimeSettlements, 'creditId', 'compTimeCredits');
+    // Income survives payroll deletion; sourceRecordId is historical provenance.
+  }
   function merge(current, incoming, mode = 'overwrite', token = root.crypto.randomUUID()) {
     if (!['overwrite', 'copy', 'restore'].includes(mode)) fail('請選擇匯入方式。');
+    validateReferences(incoming);
     const next = mode === 'restore' ? copy(incoming) : copy(current), data = copy(incoming), stats = [];
     if (mode === 'restore') return { next, stats: [], mode };
     const maps = {}, prefix = 'import-' + token + '-', allIds = new Set(); let serial = 0;

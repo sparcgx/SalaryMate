@@ -15,7 +15,8 @@ function harness({native=true,platform='android',language='zh',plugin={}}={}){
  const files={saveDocument:async options=>{calls.push(options);return {verified:true,size:Buffer.from(options.data,options.encoding==='base64'?'base64':'utf8').length,fileName:options.fileName};},...plugin};
  const context={URL:LocalURL,Blob,TextEncoder,Uint8Array,Promise,Date,JSON,Map,Object,Number,String,Error,
   btoa:value=>Buffer.from(value,'binary').toString('base64'),
-  Capacitor:{isNativePlatform:()=>native,getPlatform:()=>platform,registerPlugin:name=>{assert.equal(name,'BackupFile');return files;}},
+  Capacitor:{isNativePlatform:()=>native,getPlatform:()=>platform,Plugins:{BackupFile:files},registerPlugin:name=>{assert.equal(name,'BackupFile');return files;}},
+  addEventListener:(type,fn)=>{const rows=listeners.get(type)||[];rows.push(fn);listeners.set(type,rows);},
   SalaryMateI18n:{language:()=>language},
   MutationObserver:class{constructor(callback){observers.push(callback);}observe(){}},
   document:{getElementById:id=>id==='toast'?toast:id==='appDialog'?{open:true}:null,addEventListener:(type,fn)=>{const rows=listeners.get(type)||[];rows.push(fn);listeners.set(type,rows);}}
