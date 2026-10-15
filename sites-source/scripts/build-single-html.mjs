@@ -58,7 +58,7 @@ for(const rel of ['icon','apple-touch-icon']){
   const pattern=new RegExp(`<link rel="${rel}" href="\\./([^"?]+)(?:\\?[^\"]*)?">`),match=html.match(pattern);
   if(match){const bytes=await readFile(path.join(base,match[1]));html=html.replace(match[0],`<link rel="${rel}" href="data:image/png;base64,${bytes.toString('base64')}">`);}
 }
-html=html.replace(/SalaryMate · (R\d+) 開發測試版/g,'SalaryMate · $1 開發測試版 · 單一 HTML');
+html=html.replace(/SalaryMate · v5\.0\.0正式版/g,'SalaryMate · v5.0.0正式版 · 單一 HTML');
 const existingInline=[...html.matchAll(/<script\b(?![^>]*\bsrc=)[^>]*>[\s\S]*?<\/script>/gi)].map(match=>match[0]);
 const scriptHashes=[...existingInline,...scriptsInline].map(block=>{
   const content=block.match(/^<script\b[^>]*>([\s\S]*)<\/script>$/)?.[1];

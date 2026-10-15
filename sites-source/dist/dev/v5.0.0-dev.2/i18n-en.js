@@ -2717,5 +2717,9 @@ globalThis.SalaryMateEnglish={
   "收盤價不是盤中即時行情；資料日期為交易日，非抓取時間。": "Closing prices are not intraday live quotes. The data date is the trading date, not the retrieval time.",
   "正在重試…": "Retrying…",
   "備份缺少關聯資料，無法安全匯入。": "The backup is missing linked data and cannot be imported safely.",
-  "匯入後的補休來源或餘額不一致，請檢查加班、請假與補休結算。": "Imported compensatory time sources or balances are inconsistent. Check overtime, leave and settlements."
+  "匯入後的補休來源或餘額不一致，請檢查加班、請假與補休結算。": "Imported compensatory time sources or balances are inconsistent. Check overtime, leave and settlements.",
+  "正式版": "Release edition",
+  "v5.0.0正式版": "v5.0.0 Release",
+  "SalaryMate · v5.0.0正式版": "SalaryMate · v5.0.0 Release",
+  "SalaryMate · v5.0.0正式版 · 單一 HTML": "SalaryMate · v5.0.0 Release · Single HTML"
 };

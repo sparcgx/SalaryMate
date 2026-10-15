@@ -6,12 +6,25 @@ import path from 'node:path';
 
 const root=path.resolve(import.meta.dirname,'..');
 const base=path.join(root,'dist/dev/v5.0.0-dev.2');
-const version='5.0.0-dev.2-R101';
+const version='5.0.0';
 const origin='https://salarymate.sparcgx2420.chatgpt.site';
 const normalize=text=>text.replace(/\r\n?/g,'\n');
 const read=name=>readFile(path.join(base,name),'utf8');
 let built;
 const worker=async()=>built??=(await import(pathToFileURL(path.join(root,'dist/server/index.js')).href)).default;
+
+test('v5.0.0: install labels and data contracts preserve the existing entry',async()=>{
+  const [manifest,app,index]=await Promise.all(['manifest.webmanifest','app.js','index.html'].map(read));
+  const pwa=JSON.parse(manifest);
+  assert.equal(pwa.name,'SalaryMate v5.0.0');
+  assert.equal(pwa.short_name,'SalaryMate');
+  assert.equal(pwa.id,'./');
+  assert.equal(pwa.start_url,'./');
+  assert.ok(app.includes("const SCHEMA_VERSION = 15"));
+  assert.ok(app.includes("const STORAGE_KEY = 'salarymate_v5_full_state'"));
+  assert.ok(index.includes('SalaryMate v5.0.0'));
+  assert.ok(!index.includes('開發測試版'));
+});
 
 test('R101: shipped application, style loader, page URLs and service-worker cache agree',async()=>{
   const [app,index,startup,sw]=await Promise.all(['app.js','index.html','startup.js','sw.js'].map(read));
@@ -22,7 +35,7 @@ test('R101: shipped application, style loader, page URLs and service-worker cach
     assert.ok(text.includes(`startup.js?v=${version}`));
     assert.ok(!text.includes('R100'),'a previous-version URL could reuse an outdated asset');
   }
-  assert.ok(index.includes('R101 開發測試版'));
+  assert.ok(index.includes('v5.0.0正式版'));
   assert.ok(sw.includes(`const CACHE='salarymate-v5-full-${version}'`));
   for(const asset of ['styles.css','ornate-flight.js','legal-data.js'])assert.ok(sw.includes(`${asset}?v=${version}`));
   assert.ok(startup.includes(`const version='${version}'`),'lazy styles are stamped during startup generation');
