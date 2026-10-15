@@ -16,8 +16,8 @@ android {
         applicationId "com.salarymate.personal.dev"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 5000099
-        versionName "5.0.0-dev.2-R99"
+        versionCode 5000102
+        versionName "5.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

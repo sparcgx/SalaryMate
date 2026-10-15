@@ -1,6 +1,6 @@
 {
   "name": "salarymate-app",
-  "version": "5.0.0-dev.2-R99",
+  "version": "5.0.0",
   "private": true,
   "type": "module",
   "scripts": {

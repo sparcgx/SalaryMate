@@ -2723,7 +2723,10 @@ globalThis.SalaryMateEnglish={
   "正式版": "Release edition",
   "v5.0.0正式版": "v5.0.0 Release",
   "SalaryMate · v5.0.0正式版": "SalaryMate · v5.0.0 Release",
-  "SalaryMate · v5.0.0正式版 · 單一 HTML": "SalaryMate · v5.0.0 Release · Single HTML"
+  "SalaryMate · v5.0.0正式版 · 單一 HTML": "SalaryMate · v5.0.0 Release · Single HTML",
+  "v5.0.0 正式版": "v5.0.0 Release",
+  "SalaryMate · v5.0.0 正式版": "SalaryMate · v5.0.0 Release",
+  "SalaryMate · v5.0.0 正式版 · 單一 HTML": "SalaryMate · v5.0.0 Release · Single HTML"
 };
 
 

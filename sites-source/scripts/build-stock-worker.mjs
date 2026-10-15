@@ -28,6 +28,7 @@ const twseClose=(await readFile(path.join(root,'server/twse-close.mjs'),'utf8'))
 const dividends=(await readFile(path.join(root,'server/dividend-market.mjs'),'utf8')).replace('export function createDividendLookup','function createDividendLookup');
 const intraday=(await readFile(path.join(root,'server/intraday-nav.mjs'),'utf8')).replace('export function createIntradayNavLookup','function createIntradayNavLookup');
 const portable=(await readFile(path.join(root,'server/portable-market.mjs'),'utf8')).replace('export function createPortableMarket','function createPortableMarket');
+const android=(await readFile(path.join(root,'server/android-download.mjs'),'utf8')).replace(/^export /gm,'');
 const runtime=`
 function decodeStaticBody(encoded){
  const binary=atob(encoded),bytes=new Uint8Array(binary.length);
@@ -41,6 +42,12 @@ const IMMUTABLE_ART=new Set(${JSON.stringify(immutableArt)});
 const VERSIONED_ASSETS=new Set(${JSON.stringify(versionedUrls)});
 export default {async fetch(request){
  const url=new URL(request.url);
+ if(['/','/index.html','/v5.0.0','/v5.0.0/','/v5.0.0/index.html'].includes(url.pathname)&&['GET','HEAD'].includes(request.method)){
+  const target=new URL('/dev/v5.0.0-dev.2/',url);target.search=url.search;
+  return new Response(null,{status:302,headers:{location:target.href,'cache-control':'no-store'}});
+ }
+ if(['/apk','/apk/','/apk/index.html'].includes(url.pathname)&&['GET','HEAD'].includes(request.method))return new Response(null,{status:302,headers:{location:'https://sparcgx.github.io/SalaryMate/apk/','cache-control':'no-store'}});
+ if(url.pathname==='/downloads/SalaryMate_v5.0.0_Android.apk')return androidDownload(request);
  if(url.pathname==='/api/health'){
   if(!['GET','HEAD'].includes(request.method))return new Response('Method not allowed',{status:405});
   return new Response(request.method==='HEAD'?null:JSON.stringify({ok:true,service:'salarymate-market',version:${JSON.stringify(serviceVersion)}}),{headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'}});
@@ -58,5 +65,5 @@ export default {async fetch(request){
  return new Response(body,{headers});
 }};`;
 await mkdir(path.join(dist,'server'),{recursive:true});
-await writeFile(path.join(dist,'server/index.js'),`const STATIC_FILES=${JSON.stringify(files)};\n${dividends}\n${intraday}\n${twseClose}\n${market}\n${portable}\n${runtime}`);
+await writeFile(path.join(dist,'server/index.js'),`const STATIC_FILES=${JSON.stringify(files)};\n${dividends}\n${intraday}\n${twseClose}\n${market}\n${portable}\n${android}\n${runtime}`);
 console.log(`Stock API + ${Object.keys(files).length} existing static assets packaged.`);
