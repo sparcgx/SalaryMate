@@ -1,0 +1,38 @@
+{
+  "version": "4.3.2",
+  "releaseId": "4.3.2-web",
+  "baselineCommit": "c5e4e26e14cf04fcc5c1da6effd58363e2a4af83",
+  "scope": "Web/PWA Stable promotion from accepted RC3; native Android/iOS gates UNVERIFIED and native data-safety blocker OPEN",
+  "allowedChanges": [
+    "Formal release identity only"
+  ],
+  "assets": {
+    "dist/annual-analysis.css": "ca575844e53114e68d01b1f377a0cfb8def6683711ede3cbaeb4b87ddbc9f867",
+    "dist/annual-analysis.js": "d440898ec46919521e0e07bfb8b35f253be6d74164f5fda2ca17a6cef0ac92a9",
+    "dist/app.js": "0fbc60f8f7904c7aaa3f744f76d0a6fe6a83b367a037eecf66d8ce51b10c758d",
+    "dist/bootstrap.js": "bcf243f1edb4afd555cc538d7a10630d5e7ff463c446f866add211c3a8e22af6",
+    "dist/comp-time.js": "4bb8806a8b578c080e9f4049c4f03ed0e988eaf766658b37b81903b42770f555",
+    "dist/copy-month.js": "264418d1196009b72c3ba381520f83d27f6ca1b762b32a834de87c1694972a46",
+    "dist/dev/v4.3.1-dev.1/app.js": "264341c4b61d0971b61041e29b478c3b2544e438ed7089894958a8dd6dd0cc52",
+    "dist/dev/v4.3.1-dev.1/bootstrap.js": "ddee7583c395ce7660a03b4e21499fceb8fabcdb7e4b7106b9c6327c78796db3",
+    "dist/dev/v4.3.1-dev.1/icons/app-icon.svg": "81c230e5437fe041faa3d9bf673d0da55f9d23aaee7c40ad16d7f9ce4b8f0f06",
+    "dist/dev/v4.3.1-dev.1/icons/icon-192.png": "4688c9f2e1db290be5a7f377075e7cced909546a09ba3b95a729bee74c6b950d",
+    "dist/dev/v4.3.1-dev.1/icons/icon-512.png": "c7513317fff6a936f67b2fbed768da55d65d771349bbe250baa9066f0d0457b8",
+    "dist/dev/v4.3.1-dev.1/icons/icon-maskable-512.png": "7b0e00ae8ca8de1b5da96aa40e90b5d612467ad408daac2ae51e0dc3d47e4b86",
+    "dist/dev/v4.3.1-dev.1/index.html": "901f7fff6a4e0aaf828f9956d8df9c8e2fe2566ca3fb267441b9c952d67d9d7a",
+    "dist/dev/v4.3.1-dev.1/styles.css": "ab108c7095d6d6191cfd665c5249c545b1f0015b33aea854940d1bb3d047c8d7",
+    "dist/glass.css": "5e68400096a74593f69038306965ffbd1f2cdb060151a2af0d7e5c9e806dacbb",
+    "dist/glass.js": "0d6d02163930ad1463a48b7d348393ef6f9e54df156be0cfaae00239896cf7cc",
+    "dist/icons/app-icon.svg": "81c230e5437fe041faa3d9bf673d0da55f9d23aaee7c40ad16d7f9ce4b8f0f06",
+    "dist/icons/icon-192.png": "4688c9f2e1db290be5a7f377075e7cced909546a09ba3b95a729bee74c6b950d",
+    "dist/icons/icon-512.png": "c7513317fff6a936f67b2fbed768da55d65d771349bbe250baa9066f0d0457b8",
+    "dist/icons/icon-maskable-512.png": "7b0e00ae8ca8de1b5da96aa40e90b5d612467ad408daac2ae51e0dc3d47e4b86",
+    "dist/index.html": "f2b106fd0668614bc825c8990f3a535dff06362bc1263eedc8a3eb4bd4575038",
+    "dist/manifest.webmanifest": "715f74f21d83d9335696277aca8308e201f87fd0eabf93a58218c4b8718c8da0",
+    "dist/reconcile.css": "b268a10e2f4139fa0f55396bed0b537b50c2fa6f352a07f49b125b9baac7b2cc",
+    "dist/reconcile.js": "3f425c5b7630c9757bbefa8dafb3dad384213ef24485754ee6633a5f06faebc7",
+    "dist/release-polish.css": "424f3ab517c681706686a196dab3fe0027b1ae86b471c1e0ad98bb27bf93568b",
+    "dist/styles.css": "ab108c7095d6d6191cfd665c5249c545b1f0015b33aea854940d1bb3d047c8d7",
+    "dist/sw.js": "bb1c1122d02756c00a3895d119cceaad45751e724e03a8b8ef0c2111e4acb5b2"
+  }
+}

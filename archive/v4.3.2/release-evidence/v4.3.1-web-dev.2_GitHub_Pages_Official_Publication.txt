@@ -1,0 +1,39 @@
+SalaryMate v4.3.1-web-dev.2 | GitHub Pages Official Publication
+Date: 2026-09-29 (Asia/Taipei)
+Repository: sparcgx/SalaryMate
+Official URL: https://sparcgx.github.io/SalaryMate/
+
+AUTHORIZATION
+- User explicitly authorized synchronization to the GPT workstation, website, and GitHub.
+- User explicitly requested this build be uploaded to the GitHub official webpage.
+
+SOURCE
+- Exact public assets are copied from the deployed GPT Site v4.3.1-web-dev.2 source.
+- GPT Site deployment status: succeeded.
+- Existing SalaryMate payroll key remains salarymate_v310_state; Schema remains 13.
+- Appearance preference uses the separate salarymate.visualEffects.v1 key.
+
+WEB SCOPE
+- Apple-style glass appearance with General, Fine, and High Motion modes.
+- High Motion adds stronger ambient drift, moving edge highlights, active navigation sheen, and pointer/touch wave feedback.
+- Reduced motion, reduced transparency, forced colors, background pause, and unsupported backdrop-filter fallbacks remain enabled.
+- No external runtime dependency is added.
+- No payroll data is uploaded to GitHub; the browser continues to store data locally.
+
+VALIDATION BEFORE PUSH
+- JavaScript syntax: app.js, bootstrap.js, glass.js, sw.js PASS.
+- HTML and service-worker local asset references resolve PASS.
+- Website version, Schema 13, payroll storage key, and separate appearance key PASS.
+- Frozen base styles.css SHA-256 remains unchanged from the v4.3.0 baseline.
+- Source-level and simulated-runtime gate from the GPT Site source: 15 PASS / 0 FAIL.
+
+USER REAL-DEVICE ACCEPTANCE
+- Reported by the user on 2026-09-29 (Asia/Taipei).
+- High Motion mode real-device test: PASS.
+- The High Motion visual effect is sufficiently visible on the tested device.
+- Acceptance scope is limited to the web/PWA High Motion appearance.
+
+GOVERNANCE
+- stable/v4.3.0 and freeze/v4.3.0 are not modified.
+- This publishes the requested web build to the official GitHub Pages surface.
+- Android/iOS native gates and the native data-safety blocker are not reclassified by this web publication.

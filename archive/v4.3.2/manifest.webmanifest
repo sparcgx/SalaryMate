@@ -1,0 +1,52 @@
+{
+  "id": "./",
+  "name": "個人薪資管理",
+  "short_name": "薪資管理",
+  "description": "個人薪資、工時出勤、請假與年度收入管理工具 v4.3.2｜動態玻璃",
+  "lang": "zh-Hant-TW",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f3f7f7",
+  "theme_color": "#0f766e",
+  "categories": [
+    "finance",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "新增薪資紀錄",
+      "short_name": "記一筆",
+      "url": "./?action=add-record",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

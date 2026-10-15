@@ -1,0 +1,55 @@
+{
+  "version": "4.3.2-RC.2",
+  "checkedAt": "2026-09-30T08:35:53.083Z",
+  "baselineCommit": "b887d8bb62f71731e40adeec33f5163b867cf6b9",
+  "environment": "v24.19.0",
+  "scope": "Node VM with simulated DOM; not real phone, browser frame-rate or native timing",
+  "fixture": {
+    "companies": 1,
+    "salaryRecords": 72,
+    "overtimeLogs": 1373,
+    "leaveRecords": 120,
+    "year": 2026,
+    "throughMonth": 12
+  },
+  "method": "Five fresh app boots per revision; first annual render followed by one repeat; excludes boot timing. CSV contents compared after version normalization.",
+  "financialOutput": "IDENTICAL",
+  "results": {
+    "baseline": {
+      "coldMs": [
+        78.30452099999998,
+        77.78352700000005,
+        69.01740499999994,
+        68.02836200000002,
+        70.61953100000005
+      ],
+      "warmMs": [
+        68.42134300000001,
+        69.464495,
+        72.17725499999995,
+        67.10975800000006,
+        68.84718099999986
+      ],
+      "medianColdMs": 70.61953100000005,
+      "medianWarmMs": 68.84718099999986
+    },
+    "candidate": {
+      "coldMs": [
+        11.579214000000093,
+        9.54186199999981,
+        10.60696699999994,
+        10.757529000000204,
+        11.189115999999785
+      ],
+      "warmMs": [
+        1.4411400000001322,
+        1.6072959999999057,
+        1.6015070000000833,
+        1.4307340000000295,
+        1.520806999999877
+      ],
+      "medianColdMs": 10.757529000000204,
+      "medianWarmMs": 1.520806999999877
+    }
+  }
+}
