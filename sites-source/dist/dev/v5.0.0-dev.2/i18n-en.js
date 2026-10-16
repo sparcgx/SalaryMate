@@ -2724,5 +2724,15 @@ globalThis.SalaryMateEnglish={
   "SalaryMate · v5.0.0正式版 · 單一 HTML": "SalaryMate · v5.0.0 Release · Single HTML",
   "v5.0.0 正式版": "v5.0.0 Release",
   "SalaryMate · v5.0.0 正式版": "SalaryMate · v5.0.0 Release",
-  "SalaryMate · v5.0.0 正式版 · 單一 HTML": "SalaryMate · v5.0.0 Release · Single HTML"
+  "SalaryMate · v5.0.0 正式版 · 單一 HTML": "SalaryMate · v5.0.0 Release · Single HTML",
+  "公開資料工具": "Public reference tools",
+  "辦公日曆": "Office calendar",
+  "正在載入公開資料工具…": "Loading public reference tools…",
+  "資料工具載入失敗，請檢查連線或重新下載完整離線版。": "Could not load reference tools. Check your connection or download the complete offline edition.",
+  "勞保／健保級距核對": "Labor / health insurance bracket check",
+  "政府機關上班與放假日參考": "Government office work and holiday reference",
+  "按身分與適用日期核對投保金額": "Check insured amounts by category and effective date",
+  "歷史匯率": "Historical FX",
+  "依日期查閱參考值，保留實際交易匯率": "Look up dated reference rates; retain actual transaction rates",
+  "查閱": "View"
 };

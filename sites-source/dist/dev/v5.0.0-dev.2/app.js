@@ -3096,7 +3096,7 @@
       for(const record of state.leaveRecords.filter(v5Scope)){for(const day of leaveDateEntries(record)){if(!byDate.has(day.date))byDate.set(day.date,[]);byDate.get(day.date).push({kind:'leave',item:record,hours:day.hours});}}
       const rows=byDate.get(v5.date)||[];
       const cells=Array.from({length:count},(_,i)=>{const d=new Date(y,m-1,i-offset+1,12),date=isoDate(d.getFullYear(),d.getMonth()+1,d.getDate()),events=(byDate.get(date)||[]).filter(r=>r.item.status!=='cancelled');return `<button type="button" class="v5-day ${date===v5.date?'selected':''} ${date===todayIso()?'today':''} ${d.getMonth()!==m-1?'outside':''}" data-v5="day" data-date="${date}" aria-pressed="${date===v5.date}" tabindex="${date===v5.date?0:-1}" aria-label="${date}，${events.length} 筆紀錄"><span class="v5-date-number">${d.getDate()}</span>${events.slice(0,2).map(r=>`<span class="v5-calendar-tag ${r.kind} ${r.item.status==='planned'?'planned':''}">${r.kind==='leave'?escapeHtml(leaveTypeName(r.item.type)):'加班'} ${rateNumber(r.hours)}h</span>`).join('')}${events.length>2?`<small>另 ${events.length-2} 筆</small>`:''}</button>`;}).join('');
-      return `<section class="view">${v5Title('工作日曆',v5Button('記加班','add-overtime')+v5Button('記請假','add-leave','',true))}${v5Tabs([['calendar','月曆'],['overtime','加班紀錄'],['leave','請假紀錄'],['comp','補休帳本']],'calendar','work-tab')}
+      return `<section class="view">${v5Title('工作日曆',v5Button('辦公日曆','open-reference-calendar')+v5Button('記加班','add-overtime')+v5Button('記請假','add-leave','',true))}${v5Tabs([['calendar','月曆'],['overtime','加班紀錄'],['leave','請假紀錄'],['comp','補休帳本']],'calendar','work-tab')}
       <div class="v5-calendar-layout"><section><div class="v5-calendar-top"><div class="v5-month-controls"><h3>${y} 年 ${m} 月</h3><button type="button" class="btn btn-small" data-v5="month" data-step="-1" aria-label="上一月">上一月</button><button type="button" class="btn btn-small" data-v5="today">今天</button><button type="button" class="btn btn-small" data-v5="month" data-step="1" aria-label="下一月">下一月</button></div><div class="v5-legend"><span>加班</span><span>請假</span></div></div><div class="v5-weekdays" aria-hidden="true">${['一','二','三','四','五','六','日'].map(x=>`<span>${x}</span>`).join('')}</div><div class="v5-calendar-grid" role="group" aria-label="選擇日期">${cells}</div><p class="hint">點日期查看紀錄。虛線代表預計請假；薪資歸屬依公司計薪區間。</p></section><aside class="v5-agenda"><div class="section-title"><h3>${Number(v5.date.slice(5,7))} 月 ${Number(v5.date.slice(8))} 日</h3><span>${['週日','週一','週二','週三','週四','週五','週六'][new Date(v5.date+'T12:00:00').getDay()]}</span></div>${rows.length?rows.map(v5DayRow).join(''):'<div class="v5-quiet-empty">這天還沒有紀錄。</div>'}<div class="v5-day-actions">${v5Button('記加班','add-overtime')}${v5Button('記請假','add-leave')}</div></aside></div></section>`;
     };
 
@@ -3117,7 +3117,7 @@
     const renderV5Settings = () => {
       const c=currentCompany();
       const settingRow=(title,detail,action,label='開啟',extra='')=>`<div class="v5-setting-row"><div><h3>${title}</h3><p>${detail}</p></div>${v5Button(label,action,extra)}</div>`;
-      return `<section class="view">${v5Title('設定')}<div class="v5-settings-columns"><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">工作與公司</span></summary><div class="v5-settings-content">${settingRow('公司管理',c?`${userHtml(c.name)} · 共 ${state.companies.length} 家公司`:'建立任職公司與薪資基礎','manage-companies')}${settingRow('薪資規則','本薪、津貼、扣項與計薪區間','company-salary-rules','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}${settingRow('假別額度管理','特休、共用額度與各假別設定','v5-leave-settings','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">顯示與操作</span></summary><div class="v5-settings-content"><label class="v5-language-setting"><span>介面語言</span><select class="field-select" data-language-preference><option value="auto">跟隨系統</option><option value="zh">繁體中文</option><option value="en">English</option></select></label>${settingRow('版面設定',escapeHtml(INTERFACE_STYLES[normalizeInterfaceStyle(ui.interfaceStyle)].name)+' · 介面風格、文字與密度、重點色','open-interface-settings','調整')}</div></details></div><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">資料管理</span></summary><div class="v5-settings-content"><p class="hint">資料預設儲存在目前瀏覽器；啟用 Google Drive 備份後，備份會傳至你授權的 Google 帳戶。</p><p class="hint">各入口同步的是程式版本，個人資料不會自動互通。切換網址、瀏覽器，或移動／更名單一網頁檔前，請先匯出備份，再於新入口匯入並核對。</p>${settingRow('備份全部資料','一般 JSON 或密碼加密備份，包含薪資與全部投資資料','export-json','下載')}${settingRow('匯入備份','一般、加密或 SmartPortfolio 備份；可選覆蓋或新增','restore-backup-file','選擇檔案')}${settingRow('自己的 Google Drive','<span data-google-summary>'+escapeHtml(window.SalaryMateCloud?.summary()||'儲存至自己的 Google Drive，可選密碼加密')+'</span>','open-google-drive','開啟')}${settingRow('匯出報表','薪資、請假及出勤分析 CSV','v5-export-options','選擇報表')}${settingRow('資料檢查','檢查公司關聯、重複紀錄與補休餘額','data-health','檢查')}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">說明</span></summary><div class="v5-settings-content">${settingRow('授權、隱私與試算','資料保存方式、授權文字與試算範圍','open-legal','閱讀')}<p class="hint">v${APP_VERSION} · 正式版<br>v5 資料獨立保存。可手動匯入薪資備份，原版本的資料仍保留。</p><p class="hint">程式檢查與實機驗證分開記錄；手機與桌面的可讀性、動畫流暢度及 FPS 仍待實機驗證。</p><details class="v5-explanation"><summary>效能數字與驗證範圍</summary><p class="hint">R85 的 77 項程式檢查為該次列出的回歸範圍，不代表所有功能或手機實機驗收完成。</p><p class="hint">R85 測試使用虛構資料：1,000 筆收入收合時，動態產生的 HTML 由 320,942 bytes 減至 7,122 bytes。這是程式產生的內容大小，不是網站下載量、開啟秒數或 FPS。</p><p class="hint">200 檔／10,000 筆交易的測試仍完整走訪 10,000 筆交易一次；200 次是買入／期初交易的代號欄位讀取次數，不是只處理 200 筆交易。</p></details><details class="v5-cleanup"><summary>清除這個版本的資料</summary><p class="hint">請先匯出備份；只清除目前 v5 完整版的資料。</p>${v5Button('清除本機資料','clear-data')}</details></div></details></div></div></section>`;
+      return `<section class="view">${v5Title('設定')}<div class="v5-settings-columns"><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">工作與公司</span></summary><div class="v5-settings-content">${settingRow('公司管理',c?`${userHtml(c.name)} · 共 ${state.companies.length} 家公司`:'建立任職公司與薪資基礎','manage-companies')}${settingRow('薪資規則','本薪、津貼、扣項與計薪區間','company-salary-rules','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}${settingRow('辦公日曆','政府機關上班與放假日參考','open-reference-calendar','查閱')}${settingRow('勞保／健保級距核對','按身分與適用日期核對投保金額','open-reference-insurance','核對')}${settingRow('歷史匯率','依日期查閱參考值，保留實際交易匯率','open-reference-fx','查詢')}${settingRow('假別額度管理','特休、共用額度與各假別設定','v5-leave-settings','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">顯示與操作</span></summary><div class="v5-settings-content"><label class="v5-language-setting"><span>介面語言</span><select class="field-select" data-language-preference><option value="auto">跟隨系統</option><option value="zh">繁體中文</option><option value="en">English</option></select></label>${settingRow('版面設定',escapeHtml(INTERFACE_STYLES[normalizeInterfaceStyle(ui.interfaceStyle)].name)+' · 介面風格、文字與密度、重點色','open-interface-settings','調整')}</div></details></div><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">資料管理</span></summary><div class="v5-settings-content"><p class="hint">資料預設儲存在目前瀏覽器；啟用 Google Drive 備份後，備份會傳至你授權的 Google 帳戶。</p><p class="hint">各入口同步的是程式版本，個人資料不會自動互通。切換網址、瀏覽器，或移動／更名單一網頁檔前，請先匯出備份，再於新入口匯入並核對。</p>${settingRow('備份全部資料','一般 JSON 或密碼加密備份，包含薪資與全部投資資料','export-json','下載')}${settingRow('匯入備份','一般、加密或 SmartPortfolio 備份；可選覆蓋或新增','restore-backup-file','選擇檔案')}${settingRow('自己的 Google Drive','<span data-google-summary>'+escapeHtml(window.SalaryMateCloud?.summary()||'儲存至自己的 Google Drive，可選密碼加密')+'</span>','open-google-drive','開啟')}${settingRow('匯出報表','薪資、請假及出勤分析 CSV','v5-export-options','選擇報表')}${settingRow('資料檢查','檢查公司關聯、重複紀錄與補休餘額','data-health','檢查')}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">說明</span></summary><div class="v5-settings-content">${settingRow('授權、隱私與試算','資料保存方式、授權文字與試算範圍','open-legal','閱讀')}<p class="hint">v${APP_VERSION} · 正式版<br>v5 資料獨立保存。可手動匯入薪資備份，原版本的資料仍保留。</p><p class="hint">程式檢查與實機驗證分開記錄；手機與桌面的可讀性、動畫流暢度及 FPS 仍待實機驗證。</p><details class="v5-explanation"><summary>效能數字與驗證範圍</summary><p class="hint">R85 的 77 項程式檢查為該次列出的回歸範圍，不代表所有功能或手機實機驗收完成。</p><p class="hint">R85 測試使用虛構資料：1,000 筆收入收合時，動態產生的 HTML 由 320,942 bytes 減至 7,122 bytes。這是程式產生的內容大小，不是網站下載量、開啟秒數或 FPS。</p><p class="hint">200 檔／10,000 筆交易的測試仍完整走訪 10,000 筆交易一次；200 次是買入／期初交易的代號欄位讀取次數，不是只處理 200 筆交易。</p></details><details class="v5-cleanup"><summary>清除這個版本的資料</summary><p class="hint">請先匯出備份；只清除目前 v5 完整版的資料。</p>${v5Button('清除本機資料','clear-data')}</details></div></details></div></div></section>`;
     };
     const renderV5Companies = () => `<div class="v5-breadcrumb"><button type="button" data-tab="settings">設定</button><span>／ 公司管理</span></div>${renderCompanies()}`;
     const readLeavePoliciesFromForm = (data, policies, hours) => {
@@ -3307,6 +3307,7 @@
 
     const openDialog = (title, body, wide = false, footer = '') => {
       dialogRevision++;
+      window.SalaryMateReference?.stop();
       window.SalaryMateCompanion?.stop();
       const dialog = $('#appDialog');
       const opening = !dialog.open;
@@ -3330,6 +3331,32 @@
       enhanceVisualHierarchy(dialog);
       window.SalaryMateI18n.apply(dialog);
       focusTarget?.focus({ preventScroll: true });
+    };
+
+    let referencePending=null;
+    const openReferenceTools = async (kind='calendar') => {
+      const show=()=>window.SalaryMateReference.mount(kind,{openDialog,year:ui.selectedYear,month:v5.month});
+      if(window.SalaryMateReference){show();return;}
+      openDialog('公開資料工具','<p id="referenceLoading" role="status">正在載入公開資料工具…</p>',true);
+      const revision=dialogRevision,active=()=>revision===dialogRevision&&$('#appDialog')?.open&&$('#referenceLoading');
+      if(!referencePending){
+        referencePending=(async()=>{
+          for(const [file,key] of [['reference-data.js','SalaryMateReferenceData'],['reference-tools.js','SalaryMateReference']]){
+            if(window[key])continue;
+            if(window.SalaryMatePortable&&location.protocol==='file:')throw Error('Missing offline module');
+            await new Promise((resolve,reject)=>{
+              const script=document.createElement('script');let timer;
+              const finish=error=>{clearTimeout(timer);script.onload=script.onerror=null;script.remove();error?reject(error):resolve();};
+              script.src=new URL('./'+file+'?v=5.0.0-reference1',document.baseURI).href;script.async=true;
+              script.onload=()=>finish(window[key]?null:Error('Missing module'));script.onerror=()=>finish(Error('Load failed'));
+              timer=setTimeout(()=>finish(Error('Load timed out')),20000);document.head.append(script);
+            });
+          }
+        })();
+        referencePending.finally(()=>{referencePending=null;}).catch(()=>{});
+      }
+      try{await referencePending;if(active())show();}
+      catch{if(active())openDialog('公開資料工具','<p role="status">資料工具載入失敗，請檢查連線或重新下載完整離線版。</p><button type="button" class="btn" data-action="open-reference-'+kind+'">重試</button>',true);}
     };
 
     let legalPending=null,legalControllerWatch=false;
@@ -3396,6 +3423,7 @@
 
     const closeDialog = () => {
       dialogRevision++;
+      window.SalaryMateReference?.stop();
       stocksUI.cancelDialogRequests();
       const dialog = $('#appDialog');
       const active = document.activeElement;
@@ -5448,6 +5476,9 @@
       const action = actionButton.dataset.action;
       const id = actionButton.dataset.id;
       const actions = {
+        'open-reference-calendar': () => openReferenceTools('calendar'),
+        'open-reference-insurance': () => openReferenceTools('insurance'),
+        'open-reference-fx': () => openReferenceTools('fx'),
         'jingyu-fly': () => window.SalaryMateCompanion?.fly(actionButton),
         'pick-company': () => { closeCompanyPicker(true); setCurrentCompany(id); },
         'picker-edit-company': () => { closeCompanyPicker(true); openCompanyBasicForm(getCompany(id)); },

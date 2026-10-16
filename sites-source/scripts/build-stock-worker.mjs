@@ -3,6 +3,7 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {salaryMateCsp} from '../server/security-policy.mjs';
 import './build-locales.mjs';
+import './build-public-reference.mjs';
 import {buildStartupBundle} from './lib/startup-bundle.mjs';
 const root=path.resolve(import.meta.dirname,'..'),dist=path.join(root,'dist'),files={};
 const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.json':'application/json; charset=utf-8','.webmanifest':'application/manifest+json','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.jpg':'image/jpeg','.jpeg':'image/jpeg','.ico':'image/x-icon'};
@@ -29,12 +30,14 @@ const dividends=(await readFile(path.join(root,'server/dividend-market.mjs'),'ut
 const intraday=(await readFile(path.join(root,'server/intraday-nav.mjs'),'utf8')).replace('export function createIntradayNavLookup','function createIntradayNavLookup');
 const portable=(await readFile(path.join(root,'server/portable-market.mjs'),'utf8')).replace('export function createPortableMarket','function createPortableMarket');
 const android=(await readFile(path.join(root,'server/android-download.mjs'),'utf8')).replace(/^export /gm,'');
+const reference=(await readFile(path.join(root,'server/reference-api.mjs'),'utf8')).replace(/^export /gm,'');
 const runtime=`
 function decodeStaticBody(encoded){
  const binary=atob(encoded),bytes=new Uint8Array(binary.length);
  for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
  return bytes;
 }
+const handleReference=createReferenceApi();
 const handleMarket=createStockMarket();
 const handlePortable=createPortableMarket(handleMarket);
 const DEV_SECURITY_HEADERS=${JSON.stringify({'content-security-policy':salaryMateCsp({scriptHashes}),'permissions-policy':'camera=(), microphone=(), geolocation=()'})};
@@ -54,6 +57,7 @@ export default {async fetch(request){
  }
  if(['/api/stocks/quotes','/api/stocks/nav','/api/stocks/lookup','/api/stocks/dividends','/api/stocks/catalog'].includes(url.pathname))return handleMarket(request);
  if(['/api/stocks/portable/quotes','/api/stocks/portable/nav','/api/stocks/portable/lookup','/api/stocks/portable/dividends','/api/stocks/portable/catalog'].includes(url.pathname))return handlePortable(request);
+ if(url.pathname==='/api/reference/fx')return handleReference(request);
  if(url.pathname.startsWith('/api/'))return new Response('Not found',{status:404});
  if(!['GET','HEAD'].includes(request.method))return new Response('Method not allowed',{status:405});
  const route=url.pathname.endsWith('/')?url.pathname+'index.html':url.pathname;
@@ -65,5 +69,5 @@ export default {async fetch(request){
  return new Response(body,{headers});
 }};`;
 await mkdir(path.join(dist,'server'),{recursive:true});
-await writeFile(path.join(dist,'server/index.js'),`const STATIC_FILES=${JSON.stringify(files)};\n${dividends}\n${intraday}\n${twseClose}\n${market}\n${portable}\n${android}\n${runtime}`);
+await writeFile(path.join(dist,'server/index.js'),`const STATIC_FILES=${JSON.stringify(files)};\n${dividends}\n${intraday}\n${twseClose}\n${market}\n${portable}\n${android}\n${reference}\n${runtime}`);
 console.log(`Stock API + ${Object.keys(files).length} existing static assets packaged.`);
