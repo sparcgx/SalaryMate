@@ -1157,3 +1157,14 @@ body.jingyu-screen-hit :is(.sidebar,.workspace-shell>.topbar,.workspace-shell>ma
 }
 @media(max-width:460px){
 }
+
+/* Office calendar overlay: one reference marker independent of attendance tags. */
+.v5-office-controls{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;margin:0 0 18px;color:var(--muted);font-size:.8125rem}
+.v5-office-controls .btn[aria-pressed=true]{background:var(--blue-soft);color:var(--blue);border-color:var(--blue)}
+.v5-office-ref{display:flex;align-items:center;gap:4px;min-width:0;min-height:22px;font-size:.75rem;line-height:1.5;color:var(--muted);overflow:hidden}
+.v5-office-ref>span{flex:none;display:inline-block;border-radius:4px;padding:1px 5px;background:var(--surface-2);border:1px solid var(--line)}
+.v5-office-ref.off>span{color:var(--rose,#a94255);background:var(--rose-soft,#faedf1);border-color:currentColor}
+.v5-office-ref small{font-size:inherit;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.v5-office-detail{padding:12px 0 16px;margin-bottom:8px;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+.v5-office-detail p{margin:7px 0;font-size:.875rem}.v5-office-detail small,.v5-office-detail a{display:block;margin-top:7px;font-size:.75rem;line-height:1.7}
+@media(max-width:600px){.v5-office-ref{gap:2px}.v5-office-ref>span{padding:0 3px}.v5-office-ref small{display:none}.v5-office-controls{align-items:flex-start;gap:8px}.v5-office-controls>span{flex:1 1 160px}}

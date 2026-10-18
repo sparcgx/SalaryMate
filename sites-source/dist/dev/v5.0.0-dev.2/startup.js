@@ -2736,7 +2736,22 @@ globalThis.SalaryMateEnglish={
   "按身分與適用日期核對投保金額": "Check insured amounts by category and effective date",
   "歷史匯率": "Historical FX",
   "依日期查閱參考值，保留實際交易匯率": "Look up dated reference rates; retain actual transaction rates",
-  "查閱": "View"
+  "查閱": "View",
+  "✓ 顯示政府日曆": "✓ Government calendar",
+  "顯示政府日曆": "Government calendar",
+  "政府日曆參考": "Government calendar reference",
+  "政府日曆已隱藏": "Government calendar hidden",
+  "政府日曆載入失敗": "Could not load government calendar",
+  "正在載入政府日曆…": "Loading government calendar…",
+  "此年份尚未收錄官方日曆": "No official calendar for this year",
+  "政府日曆參考：休＝放假，班＝上班": "Government reference: Off / Work",
+  "政府機關放假": "Government office day off",
+  "政府機關上班": "Government office workday",
+  "此日期未收錄官方資料": "No official data for this date",
+  "公司出勤日別、請假工時與加班倍率，請依實際班表核對。": "Check company day types, leave hours and overtime rates against the actual roster.",
+  "人事行政總處 · 官方來源": "DGPA · Official source",
+  "休": "Off",
+  "班": "Work"
 };
 
 
@@ -8176,7 +8191,44 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
       return `<div class="details-grid">${[['應發項目',earnings],['扣除項目',deductionsList]].map(([title,items])=>`<div class="breakdown"><h4>${title}</h4>${items.filter(([,n])=>numberValue(n)).map(([name,n])=>`<div class="break-row"><span>${escapeHtml(name)}</span><b>$${money(n)}</b></div>`).join('')||'<p class="hint">無項目</p>'}</div>`).join('')}</div>${r.sideIncome ? `<div class="summary-row"><span>投資收入（舊欄位）</span><b>$${money(r.sideIncome)}</b></div>` : ''}${r.note ? `<p class="v5-record-note">${userHtml(r.note)}</p>` : ''}`;
     };
 
+    const officeCalendarState = { enabled: true, status: 'idle', index: null, data: null };
+    const officeCalendarDay = date => {
+      if (!officeCalendarState.enabled) return null;
+      const data=window.SalaryMateReferenceData;
+      if (!data?.calendar) return null;
+      if (officeCalendarState.data!==data) {
+        const index=new Map();
+        for (const rows of Object.values(data.calendar)) if (Array.isArray(rows)) {
+          for (const row of rows) if (Array.isArray(row)&&validIsoDate(row[0])&&typeof row[1]==='boolean') index.set(row[0],{off:row[1],note:String(row[2]||'')});
+        }
+        officeCalendarState.index=index;officeCalendarState.data=data;
+      }
+      return officeCalendarState.index.get(date)||null;
+    };
+    const ensureOfficeCalendar = () => {
+      if (!officeCalendarState.enabled||window.SalaryMateReferenceData||officeCalendarState.status==='loading'||officeCalendarState.status==='error') return;
+      officeCalendarState.status='loading';
+      loadPublicReferenceScript('reference-data.js','SalaryMateReferenceData').then(()=>{
+        officeCalendarState.status='ready';if(ui.tab==='calendar')renderView();
+      },()=>{officeCalendarState.status='error';if(ui.tab==='calendar')renderView();});
+    };
+    const officeCalendarBadge = date => {
+      const day=officeCalendarDay(date);
+      return day?`<span class="v5-office-ref ${day.off?'off':'work'}" aria-label="${day.off?'政府機關放假（參考）':'政府機關上班（參考）'}"><span>${day.off?'休':'班'}</span>${day.note?`<small>${escapeHtml(day.note)}</small>`:''}</span>`:'';
+    };
+    const officeCalendarInfo = date => {
+      if(!officeCalendarState.enabled)return '';
+      const day=officeCalendarDay(date),data=window.SalaryMateReferenceData;
+      return `<section class="v5-office-detail" aria-label="政府日曆參考"><strong>政府日曆參考</strong><p>${day?(day.off?'政府機關放假':'政府機關上班'):!data?(officeCalendarState.status==='error'?'政府日曆載入失敗':'正在載入政府日曆…'):'此日期未收錄官方資料'}${day?.note?` · ${escapeHtml(day.note)}`:''}</p><small>公司出勤日別、請假工時與加班倍率，請依實際班表核對。</small>${day?`<small>資料核對：${escapeHtml(data.checkedAt)}</small><a href="https://data.gov.tw/dataset/14718" target="_blank" rel="noopener noreferrer">人事行政總處 · 官方來源</a>`:''}</section>`;
+    };
+    const officeCalendarControls = year => {
+      const enabled=officeCalendarState.enabled,available=Array.isArray(window.SalaryMateReferenceData?.calendar?.[year]);
+      const status=!enabled?'政府日曆已隱藏':officeCalendarState.status==='error'?'政府日曆載入失敗':!window.SalaryMateReferenceData?'正在載入政府日曆…':!available?'此年份尚未收錄官方日曆':'政府日曆參考：休＝放假，班＝上班';
+      return `<div class="v5-office-controls"><button type="button" class="btn btn-small" data-v5="office-calendar" aria-pressed="${enabled}">${enabled?'✓ 顯示政府日曆':'顯示政府日曆'}</button><span role="status">${status}</span>${enabled&&officeCalendarState.status==='error'?'<button type="button" class="btn btn-small" data-v5="retry-office-calendar">重試</button>':''}</div>`;
+    };
+
     const renderV5Calendar = () => {
+      ensureOfficeCalendar();
       const y=Number(ui.selectedYear),m=v5.month,prefix=`${y}-${pad2(m)}`;
       if(!v5.date.startsWith(prefix))v5.date=prefix+'-01';
       const first=new Date(y,m-1,1,12),offset=(first.getDay()+6)%7,days=new Date(y,m,0).getDate(),count=Math.ceil((offset+days)/7)*7;
@@ -8184,9 +8236,9 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
       for(const log of state.overtimeLogs.filter(v5Scope)){if(!byDate.has(log.date))byDate.set(log.date,[]);byDate.get(log.date).push({kind:'overtime',item:log,hours:log.hours});}
       for(const record of state.leaveRecords.filter(v5Scope)){for(const day of leaveDateEntries(record)){if(!byDate.has(day.date))byDate.set(day.date,[]);byDate.get(day.date).push({kind:'leave',item:record,hours:day.hours});}}
       const rows=byDate.get(v5.date)||[];
-      const cells=Array.from({length:count},(_,i)=>{const d=new Date(y,m-1,i-offset+1,12),date=isoDate(d.getFullYear(),d.getMonth()+1,d.getDate()),events=(byDate.get(date)||[]).filter(r=>r.item.status!=='cancelled');return `<button type="button" class="v5-day ${date===v5.date?'selected':''} ${date===todayIso()?'today':''} ${d.getMonth()!==m-1?'outside':''}" data-v5="day" data-date="${date}" aria-pressed="${date===v5.date}" tabindex="${date===v5.date?0:-1}" aria-label="${date}，${events.length} 筆紀錄"><span class="v5-date-number">${d.getDate()}</span>${events.slice(0,2).map(r=>`<span class="v5-calendar-tag ${r.kind} ${r.item.status==='planned'?'planned':''}">${r.kind==='leave'?escapeHtml(leaveTypeName(r.item.type)):'加班'} ${rateNumber(r.hours)}h</span>`).join('')}${events.length>2?`<small>另 ${events.length-2} 筆</small>`:''}</button>`;}).join('');
+      const cells=Array.from({length:count},(_,i)=>{const d=new Date(y,m-1,i-offset+1,12),date=isoDate(d.getFullYear(),d.getMonth()+1,d.getDate()),events=(byDate.get(date)||[]).filter(r=>r.item.status!=='cancelled');return `<button type="button" class="v5-day ${date===v5.date?'selected':''} ${date===todayIso()?'today':''} ${d.getMonth()!==m-1?'outside':''}" data-v5="day" data-date="${date}" aria-pressed="${date===v5.date}" tabindex="${date===v5.date?0:-1}" aria-label="${date}，${events.length} 筆紀錄${officeCalendarDay(date)?(officeCalendarDay(date).off?'，政府機關放假參考':'，政府機關上班參考'):''}"><span class="v5-date-number">${d.getDate()}</span>${officeCalendarBadge(date)}${events.slice(0,2).map(r=>`<span class="v5-calendar-tag ${r.kind} ${r.item.status==='planned'?'planned':''}">${r.kind==='leave'?escapeHtml(leaveTypeName(r.item.type)):'加班'} ${rateNumber(r.hours)}h</span>`).join('')}${events.length>2?`<small>另 ${events.length-2} 筆</small>`:''}</button>`;}).join('');
       return `<section class="view">${v5Title('工作日曆',v5Button('辦公日曆','open-reference-calendar')+v5Button('記加班','add-overtime')+v5Button('記請假','add-leave','',true))}${v5Tabs([['calendar','月曆'],['overtime','加班紀錄'],['leave','請假紀錄'],['comp','補休帳本']],'calendar','work-tab')}
-      <div class="v5-calendar-layout"><section><div class="v5-calendar-top"><div class="v5-month-controls"><h3>${y} 年 ${m} 月</h3><button type="button" class="btn btn-small" data-v5="month" data-step="-1" aria-label="上一月">上一月</button><button type="button" class="btn btn-small" data-v5="today">今天</button><button type="button" class="btn btn-small" data-v5="month" data-step="1" aria-label="下一月">下一月</button></div><div class="v5-legend"><span>加班</span><span>請假</span></div></div><div class="v5-weekdays" aria-hidden="true">${['一','二','三','四','五','六','日'].map(x=>`<span>${x}</span>`).join('')}</div><div class="v5-calendar-grid" role="group" aria-label="選擇日期">${cells}</div><p class="hint">點日期查看紀錄。虛線代表預計請假；薪資歸屬依公司計薪區間。</p></section><aside class="v5-agenda"><div class="section-title"><h3>${Number(v5.date.slice(5,7))} 月 ${Number(v5.date.slice(8))} 日</h3><span>${['週日','週一','週二','週三','週四','週五','週六'][new Date(v5.date+'T12:00:00').getDay()]}</span></div>${rows.length?rows.map(v5DayRow).join(''):'<div class="v5-quiet-empty">這天還沒有紀錄。</div>'}<div class="v5-day-actions">${v5Button('記加班','add-overtime')}${v5Button('記請假','add-leave')}</div></aside></div></section>`;
+      ${officeCalendarControls(y)}<div class="v5-calendar-layout"><section><div class="v5-calendar-top"><div class="v5-month-controls"><h3>${y} 年 ${m} 月</h3><button type="button" class="btn btn-small" data-v5="month" data-step="-1" aria-label="上一月">上一月</button><button type="button" class="btn btn-small" data-v5="today">今天</button><button type="button" class="btn btn-small" data-v5="month" data-step="1" aria-label="下一月">下一月</button></div><div class="v5-legend"><span>加班</span><span>請假</span></div></div><div class="v5-weekdays" aria-hidden="true">${['一','二','三','四','五','六','日'].map(x=>`<span>${x}</span>`).join('')}</div><div class="v5-calendar-grid" role="group" aria-label="選擇日期">${cells}</div><p class="hint">點日期查看紀錄。虛線代表預計請假；薪資歸屬依公司計薪區間。</p></section><aside class="v5-agenda"><div class="section-title"><h3>${Number(v5.date.slice(5,7))} 月 ${Number(v5.date.slice(8))} 日</h3><span>${['週日','週一','週二','週三','週四','週五','週六'][new Date(v5.date+'T12:00:00').getDay()]}</span></div>${officeCalendarInfo(v5.date)}${rows.length?rows.map(v5DayRow).join(''):'<div class="v5-quiet-empty">這天還沒有紀錄。</div>'}<div class="v5-day-actions">${v5Button('記加班','add-overtime')}${v5Button('記請假','add-leave')}</div></aside></div></section>`;
     };
 
     const renderV5Attendance = () => {
@@ -8325,7 +8377,11 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
     document.addEventListener('click',event=>{
       const button=event.target.closest('[data-v5]');if(!button)return;
       const action=button.dataset.v5;
-      if(action==='day'){
+      if(action==='office-calendar'){
+        officeCalendarState.enabled=!officeCalendarState.enabled;renderView();$('[data-v5="office-calendar"]')?.focus({preventScroll:true});
+      }else if(action==='retry-office-calendar'){
+        officeCalendarState.status='idle';renderView();
+      }else if(action==='day'){
         v5.date=button.dataset.date;const p=parseDateParts(v5.date);v5.month=p.month;ui.selectedYear=p.year;renderFilters();renderView();$(`[data-v5="day"][data-date="${v5.date}"]`)?.focus({preventScroll:true});
       }else if(action==='month'){
         const d=new Date(Number(ui.selectedYear),v5.month-1+Number(button.dataset.step),1,12);if(d.getFullYear()<1900||d.getFullYear()>2199)return;ui.selectedYear=d.getFullYear();v5.month=d.getMonth()+1;v5.date=isoDate(ui.selectedYear,v5.month,1);renderAll();
@@ -8422,6 +8478,22 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
       focusTarget?.focus({ preventScroll: true });
     };
 
+    const publicReferenceRequests = new Map();
+    const loadPublicReferenceScript = (file,key) => {
+      if(window[key])return Promise.resolve();
+      if(publicReferenceRequests.has(file))return publicReferenceRequests.get(file);
+      if(window.SalaryMatePortable||location.protocol==='file:')return Promise.reject(Error('Missing offline module'));
+      const promise=new Promise((resolve,reject)=>{
+        const script=document.createElement('script');let timer,settled=false;
+        const finish=error=>{if(settled)return;settled=true;clearTimeout(timer);script.onload=script.onerror=null;script.remove();error?reject(error):resolve();};
+        script.src=new URL('./'+file+'?v=5.0.0-calendar1',document.baseURI).href;script.async=true;
+        script.onload=()=>finish(window[key]?null:Error('Missing module'));script.onerror=()=>finish(Error('Load failed'));
+        timer=setTimeout(()=>finish(Error('Load timed out')),20000);document.head.append(script);
+      });
+      publicReferenceRequests.set(file,promise);
+      promise.finally(()=>{if(publicReferenceRequests.get(file)===promise)publicReferenceRequests.delete(file);}).catch(()=>{});
+      return promise;
+    };
     let referencePending=null;
     const openReferenceTools = async (kind='calendar') => {
       const show=()=>window.SalaryMateReference.mount(kind,{openDialog,year:ui.selectedYear,month:v5.month});
@@ -8433,13 +8505,7 @@ globalThis.SalaryMateStockLogos=Object.freeze({});
           for(const [file,key] of [['reference-data.js','SalaryMateReferenceData'],['reference-tools.js','SalaryMateReference']]){
             if(window[key])continue;
             if(window.SalaryMatePortable&&location.protocol==='file:')throw Error('Missing offline module');
-            await new Promise((resolve,reject)=>{
-              const script=document.createElement('script');let timer;
-              const finish=error=>{clearTimeout(timer);script.onload=script.onerror=null;script.remove();error?reject(error):resolve();};
-              script.src=new URL('./'+file+'?v=5.0.0-reference1',document.baseURI).href;script.async=true;
-              script.onload=()=>finish(window[key]?null:Error('Missing module'));script.onerror=()=>finish(Error('Load failed'));
-              timer=setTimeout(()=>finish(Error('Load timed out')),20000);document.head.append(script);
-            });
+            await loadPublicReferenceScript(file,key);
           }
         })();
         referencePending.finally(()=>{referencePending=null;}).catch(()=>{});

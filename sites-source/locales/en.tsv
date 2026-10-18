@@ -2765,3 +2765,19 @@ SalaryMate · v5.0.0 正式版 · 單一 HTML | SalaryMate · v5.0.0 Release · 
 歷史匯率|Historical FX
 依日期查閱參考值，保留實際交易匯率|Look up dated reference rates; retain actual transaction rates
 查閱|View
+
+✓ 顯示政府日曆|✓ Government calendar
+顯示政府日曆|Government calendar
+政府日曆參考|Government calendar reference
+政府日曆已隱藏|Government calendar hidden
+政府日曆載入失敗|Could not load government calendar
+正在載入政府日曆…|Loading government calendar…
+此年份尚未收錄官方日曆|No official calendar for this year
+政府日曆參考：休＝放假，班＝上班|Government reference: Off / Work
+政府機關放假|Government office day off
+政府機關上班|Government office workday
+此日期未收錄官方資料|No official data for this date
+公司出勤日別、請假工時與加班倍率，請依實際班表核對。|Check company day types, leave hours and overtime rates against the actual roster.
+人事行政總處 · 官方來源|DGPA · Official source
+休|Off
+班|Work
