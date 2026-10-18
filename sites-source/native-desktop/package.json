@@ -1,0 +1,62 @@
+{
+  "name": "salarymate-desktop",
+  "version": "5.0.0",
+  "private": true,
+  "description": "SalaryMate v5.0.0 正式版 — 個人薪資與投資管理",
+  "author": "SalaryMate",
+  "license": "UNLICENSED",
+  "main": "src/main.cjs",
+  "scripts": {
+    "assets": "node ../scripts/build-desktop-assets.mjs",
+    "test": "node --test ../tests/v5-desktop.test.mjs",
+    "package": "electron-builder --publish never",
+    "verify": "node scripts/verify-package.cjs"
+  },
+  "devDependencies": {
+    "electron": "44.9.0",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "com.salarymate.personal.desktop",
+    "productName": "SalaryMate",
+    "buildVersion": "5000103",
+    "asar": true,
+    "npmRebuild": false,
+    "directories": {"output": "release", "buildResources": "www/icons"},
+    "files": ["src/**", "www/**", "api/**", "package.json", "README.md", "RELEASE-NOTES.md"],
+    "artifactName": "SalaryMate_v${version}_${os}_${arch}.${ext}",
+    "win": {
+      "target": [{"target": "nsis", "arch": ["x64"]}],
+      "icon": "www/icons/icon-512.png",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": false,
+      "createDesktopShortcut": true,
+      "shortcutName": "SalaryMate v5.0.0 正式版",
+      "installerLanguages": ["zh_TW", "en_US"],
+      "language": "1028"
+    },
+    "mac": {
+      "target": ["dmg"],
+      "icon": "www/icons/icon-512.png",
+      "category": "public.app-category.finance",
+      "minimumSystemVersion": "13.0",
+      "identity": "-",
+      "notarize": false,
+      "hardenedRuntime": true
+    },
+    "dmg": {
+      "title": "SalaryMate v5.0.0 正式版",
+      "contents": [
+        {"x": 140, "y": 170},
+        {"x": 400, "y": 170, "type": "link", "path": "/Applications"}
+      ]
+    }
+  }
+}

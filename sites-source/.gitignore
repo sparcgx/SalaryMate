@@ -16,3 +16,9 @@ native-android/android/**/build/
 *.keystore
 *.p12
 __pycache__/
+
+# Desktop packages are built on native CI runners, not served as website code.
+native-desktop/www/
+native-desktop/www.building/
+native-desktop/api/
+native-desktop/release/
