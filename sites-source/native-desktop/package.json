@@ -19,7 +19,7 @@
   "build": {
     "appId": "com.salarymate.personal.desktop",
     "productName": "SalaryMate",
-    "buildVersion": "5000103",
+    "buildVersion": "5000104",
     "asar": true,
     "npmRebuild": false,
     "directories": {"output": "release", "buildResources": "www/icons"},

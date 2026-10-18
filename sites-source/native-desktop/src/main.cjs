@@ -87,7 +87,7 @@ async function start() {
     {role:'editMenu'},
     {label:'檢視 / View',submenu:[{role:'resetZoom'},{role:'zoomIn'},{role:'zoomOut'},{type:'separator'},{role:'togglefullscreen'}]},
     {role:'windowMenu'},
-    {label:'說明 / Help',submenu:[{label:'關於 SalaryMate / About',click:() => dialog.showMessageBox(window,{message:'SalaryMate v5.0.0 正式版',detail:'桌面封裝 1 · 本機離線資料\nDesktop package 1 · Local offline data\n資料與網站分開儲存；以備份匯入搬移。\nTransfer browser records with a backup.\n未具發行者簽章／Apple 公證。\nNo publisher certificate or Apple notarization.'})}]}
+    {label:'說明 / Help',submenu:[{label:'關於 SalaryMate / About',click:() => dialog.showMessageBox(window,{message:'SalaryMate v5.0.0 正式版',detail:'桌面封裝 2 · 本機離線資料\nDesktop package 2 · Local offline data\n資料與網站分開儲存；以備份匯入搬移。\nTransfer browser records with a backup.\n未具發行者簽章／Apple 公證。\nNo publisher certificate or Apple notarization.'})}]}
   ]));
   createWindow();
   app.on('activate', () => {if (!window) createWindow();});

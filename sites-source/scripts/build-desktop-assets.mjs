@@ -22,6 +22,8 @@ runtime=once(runtime,'Manually back up to Drive or local storage. Drive must be 
 runtime=once(runtime,'此入口不使用內嵌 Google 登入，也沒有網站版的 API 清單或自動同步。','此入口使用 Drive 電腦版同步所選資料夾；同步完成狀態請在 Drive 電腦版確認。App 不會自動合併資料，也不使用網站版的 API 檔案清單。');
 runtime=once(runtime,'This entry does not use embedded Google sign-in and does not provide the website API file list or automatic synchronization.','Drive for desktop handles cloud synchronization; check its sync status separately. The app does not merge data or use the website API file list.');
 runtime=runtime.replaceAll('Desktop 檔案服務','桌面檔案服務');
+// Match File.text(): verify original UTF-8 bytes, then consume an optional BOM.
+runtime=once(runtime,'return root.SalaryMateData.importPayload(result.data);',String.raw`return root.SalaryMateData.importPayload(result.data.replace(/^\uFEFF/,''));`);
 // The adapter's public utility name must not replace the isolated native bridge.
 runtime=once(runtime,'root.SalaryMateDesktop=Object.freeze({saveBlob,createDriveUI,maxDocumentBytes:MAX_BYTES});','root.SalaryMateDesktopFiles=Object.freeze({saveBlob,createDriveUI,maxDocumentBytes:MAX_BYTES});');
 new vm.Script(runtime);await fs.writeFile(path.join(stage,'desktop-runtime.js'),runtime);

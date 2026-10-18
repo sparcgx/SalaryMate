@@ -1,6 +1,6 @@
 # SalaryMate v5.0.0 正式版 · Windows / macOS
 
-沿用已發布 v5.0.0 正式版（包含辦公日曆整合），桌面封裝 1，build 5000103。薪資與投資程式不重寫，資料 KEY `salarymate_v5_full_state`、Schema 15 維持一致。
+沿用已發布 v5.0.0 正式版（包含辦公日曆整合），桌面封裝 2，build 5000104。薪資與投資程式不重寫，資料 KEY `salarymate_v5_full_state`、Schema 15 維持一致。
 
 ## 安裝
 

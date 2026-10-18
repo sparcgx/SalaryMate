@@ -85,9 +85,11 @@ jobs:
         run: |
           current=$(gh api repos/"$GITHUB_REPOSITORY"/git/ref/heads/dev/v5.0.0-dev.2 --jq .object.sha)
           test "$current" = "$GITHUB_SHA" || { echo "Source advanced; do not publish stale installers." >&2; exit 1; }
-          tag=v5.0.0-desktop.1
+          tag=v5.0.0-desktop.2
           if gh release view "$tag" >/dev/null 2>&1; then
             echo 'This desktop release already exists. Use a new build/tag for changed installers.' >&2
             exit 1
           fi
           gh release create "$tag" desktop-release/* --target "$GITHUB_SHA" --title 'SalaryMate v5.0.0 正式版 · Windows / macOS' --notes-file sites-source/native-desktop/RELEASE-NOTES.md
+          printf '%s\n' '這是先前的桌面封裝。請下載最新的 [v5.0.0 正式版桌面封裝 2](https://github.com/sparcgx/SalaryMate/releases/tag/v5.0.0-desktop.2)，已補上 Drive 選取 UTF-8 BOM 備份的相容處理。' > previous-desktop-release.md
+          gh release edit v5.0.0-desktop.1 --notes-file previous-desktop-release.md

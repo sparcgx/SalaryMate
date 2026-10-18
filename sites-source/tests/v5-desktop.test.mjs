@@ -100,3 +100,14 @@ test('installer settings retain profile, provide two Mac architectures, and make
  assert.equal(pkg.build.mac.identity,'-');assert.equal(pkg.build.mac.notarize,false);
  const flow=await read('.github/workflows/salarymate-desktop.yml');assert.match(flow,/arch: arm64/);assert.match(flow,/arch: x64/);assert.doesNotMatch(flow,/playwright|puppeteer|xvfb/i);
 });
+
+test('Drive native import validates original bytes then consumes UTF-8 BOM like File.text()',async()=>{
+ const source=await read('native-desktop/www/desktop-runtime.js');
+ const fn=source.match(/function importSelectedBackup\(result,api\)\{[\s\S]*?\n \}/)?.[0];assert.ok(fn);
+ const payload={schemaVersion:15,companies:[],records:[]};
+ let closed=0,imported;
+ const context={checkedSize:size=>assert.ok(size>0&&size<=MAX_DOCUMENT_BYTES),checkedTextSize:value=>Buffer.byteLength(value),operationError:code=>Error(code),root:{SalaryMateData:{importPayload:text=>{imported=JSON.parse(text);return imported;}}}};
+ vm.runInNewContext(fn+';globalThis.run=importSelectedBackup;',context);
+ for(const bom of ['', '\uFEFF']){const data=bom+JSON.stringify(payload);context.run({data,size:Buffer.byteLength(data)},{closeDialog(){closed++;}});assert.deepEqual(imported,payload);}
+ assert.equal(closed,2);assert.throws(()=>context.run({data:'{}',size:9},{closeDialog(){throw Error('Must not close on failed verification');}}),/OPEN_FAILED/);
+});
