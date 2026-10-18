@@ -7,7 +7,7 @@ assert.ok(['x64','arm64'].includes(arch));
 const win=process.platform==='win32';
 const dir=win?path.join(root,'release','win-unpacked'):path.join(root,'release',arch==='arm64'?'mac-arm64':'mac','SalaryMate.app','Contents');
 const archive=path.join(dir,win?'resources':'Resources','app.asar');
-const get=name=>asar.extractFile(archive,name);
+const get=name=>asar.extractFile(archive,path.normalize(name));
 const manifest=JSON.parse(get('www/desktop-asset-manifest.json'));
 for(const f of manifest.files){const bytes=get('www/'+f.path);assert.equal(bytes.length,f.bytes);assert.equal(createHash('sha256').update(bytes).digest('hex'),f.sha256,f.path);}
 for(const f of manifest.api)assert.equal(createHash('sha256').update(get('api/'+f.path)).digest('hex'),f.sha256);
