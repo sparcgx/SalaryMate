@@ -1,0 +1,3 @@
+# Preserve exact snapshot bytes on every build OS, including official CSV files.
+# Windows auto-CRLF must not change hashed application assets or script adapters.
+* -text

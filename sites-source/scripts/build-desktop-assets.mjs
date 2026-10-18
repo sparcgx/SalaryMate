@@ -10,7 +10,7 @@ if(app.match(/const APP_VERSION = '([^']+)'/)?.[1]!==pkg.version)throw Error('De
 await fs.rm(stage,{recursive:true,force:true});await fs.cp(base,stage,{recursive:true});
 function once(source,old,value){if(!source.includes(old)||source.indexOf(old)!==source.lastIndexOf(old))throw Error('Unexpected desktop adapter boundary: '+old.slice(0,70));return source.replace(old,value);}
 // Retain the tested backup adapter; change only its native bridge and platform copy.
-let runtime=await fs.readFile(path.join(root,'scripts/lib/android-runtime.js'),'utf8');
+let runtime=(await fs.readFile(path.join(root,'scripts/lib/android-runtime.js'),'utf8')).replace(/\r\n?/g,'\n');
 runtime=once(runtime," const cap=root.Capacitor;\n if(!cap?.isNativePlatform?.()||cap.getPlatform?.()!=='android'||(root.top&&root.top!==root))return;", " const desktop=root.SalaryMateDesktop;\n if(!desktop||!['win32','darwin'].includes(desktop.platform)||(root.top&&root.top!==root))return;");
 runtime=once(runtime," root.SalaryMatePortable=Object.freeze({marketOrigin:'https://salarymate.sparcgx2420.chatgpt.site'});",'');
 runtime=once(runtime,'const files=cap.Plugins?.BackupFile;','const files=desktop;');
