@@ -1168,3 +1168,10 @@ body.jingyu-screen-hit :is(.sidebar,.workspace-shell>.topbar,.workspace-shell>ma
 .v5-office-detail{padding:12px 0 16px;margin-bottom:8px;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
 .v5-office-detail p{margin:7px 0;font-size:.875rem}.v5-office-detail small,.v5-office-detail a{display:block;margin-top:7px;font-size:.75rem;line-height:1.7}
 @media(max-width:600px){.v5-office-ref{gap:2px}.v5-office-ref>span{padding:0 3px}.v5-office-ref small{display:none}.v5-office-controls{align-items:flex-start;gap:8px}.v5-office-controls>span{flex:1 1 160px}}
+
+/* Public app downloads: compact labels, inherited theme colors, wrap on mobile. */
+.app-footer{flex-wrap:wrap;min-width:0}
+.app-downloads{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px 16px;max-width:100%;min-width:0;margin-inline-start:auto}
+.app-downloads a{display:inline-block;color:inherit;font:inherit;line-height:1.5;padding:8px 0;white-space:nowrap;text-decoration:underline;text-underline-offset:3px}
+.app-downloads a:focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:3px}
+@media(max-width:600px){.app-downloads{flex-basis:100%;justify-content:flex-start;margin-inline-start:0}}

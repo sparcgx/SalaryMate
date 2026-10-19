@@ -2749,5 +2749,19 @@ globalThis.SalaryMateEnglish={
   "公司出勤日別、請假工時與加班倍率，請依實際班表核對。": "Check company day types, leave hours and overtime rates against the actual roster.",
   "人事行政總處 · 官方來源": "DGPA · Official source",
   "休": "Off",
-  "班": "Work"
+  "班": "Work",
+  "下載應用程式": "Download apps",
+  "Windows 64 位元": "Windows 64-bit",
+  "Mac M 系列": "Mac (Apple Silicon)",
+  "Android 下載": "Android download",
+  "安裝說明": "Installation guide",
+  "Windows 10／11 · x64 安裝版": "Windows 10/11 · x64 installer",
+  "macOS 13 以上 · Apple Silicon 安裝版": "macOS 13 or later · Apple Silicon installer",
+  "Android 安裝檔與使用說明": "Android installer and instructions",
+  "下載 Windows 64 位元安裝版": "Download the Windows 64-bit installer",
+  "下載 Mac M 系列安裝版": "Download the Mac Apple Silicon installer",
+  "開啟 Android 下載頁": "Open the Android download page",
+  "桌面版資料獨立儲存；請先匯出備份，再於桌面版匯入並核對。": "Desktop data is stored separately. Export a backup, then import and check it in the desktop app.",
+  "安裝說明與 SHA-256 校驗碼": "Installation guide and SHA-256 checksums",
+  "Windows 尚無發行者憑證；Mac 尚無 Apple 公證。安裝前請閱讀說明。": "Windows has no publisher certificate; Mac is not Apple-notarized. Read the instructions before installing."
 };

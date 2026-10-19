@@ -27,8 +27,8 @@ export async function buildStylePacks(base){
 export async function websiteBootstrap(base){
  const full=await readFile(path.join(base,'bootstrap.js'),'utf8'),marker=full.indexOf('// R70:');
  if(marker<0)throw Error('Missing flight module boundary');
- const app=await readFile(path.join(base,'app.js'),'utf8'),version=app.match(/const APP_VERSION = '([^']+)'/)?.[1];
- if(!version)throw Error('Missing version');
+ const index=await readFile(path.join(base,'index.html'),'utf8'),version=index.match(/startup\.js\?v=([a-zA-Z0-9.-]+)/)?.[1];
+ if(!version)throw Error('Missing website asset version');
  const loader=(await readFile(new URL('./style-pack-runtime.js',import.meta.url),'utf8')).replace('__SALARYMATE_VERSION__',version);
  return full.slice(0,marker)+loader;
 }

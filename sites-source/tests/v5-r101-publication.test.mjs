@@ -7,7 +7,7 @@ import path from 'node:path';
 const root=path.resolve(import.meta.dirname,'..');
 const base=path.join(root,'dist/dev/v5.0.0-dev.2');
 const version='5.0.0';
-const assetVersion='5.0.0-calendar1';
+const assetVersion='5.0.0-downloads1';
 const origin='https://salarymate.sparcgx2420.chatgpt.site';
 const normalize=text=>text.replace(/\r\n?/g,'\n');
 const read=name=>readFile(path.join(base,name),'utf8');
@@ -39,7 +39,7 @@ test('R101: shipped application, style loader, page URLs and service-worker cach
   assert.ok(index.includes('v5.0.0 正式版'));
   assert.ok(sw.includes(`const CACHE='salarymate-v5-full-${assetVersion}'`));
   for(const asset of ['styles.css','ornate-flight.js','legal-data.js'])assert.ok(sw.includes(`${asset}?v=${assetVersion}`));
-  assert.ok(startup.includes(`const version='${version}'`),'lazy styles are stamped during startup generation');
+  assert.ok(startup.includes(`const version='${assetVersion}'`),'lazy styles use the same cache stamp as the page and service worker');
 });
 
 test('R101: generated startup and core styles include both approved fixes',async()=>{
