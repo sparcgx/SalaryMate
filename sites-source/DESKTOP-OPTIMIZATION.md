@@ -16,11 +16,11 @@
 
 ## 可重現合成效能測量
 
-`node native-desktop/scripts/benchmark.cjs <report.json>`：只用填充值測試資料，各尺寸／版本 3 個獨立 Node 程序，中位數。包含舊／新 Blob 編码、模擬 structured clone、主程序驗證與真實磁碟寫入讀回，不包含 Electron contextBridge、視窗或使用者檔案。基準算法保留於 benchmark 腳本，不進入 App 業務程式。
+`node native-desktop/scripts/benchmark.cjs <report.json>`：只用填充值測試資料，各尺寸／版本 3 個獨立 Node 程序，中位數。包含舊／新 Blob 編碼、模擬 structured clone、主程序驗證與真實磁碟寫入讀回，不包含 Electron contextBridge、視窗或使用者檔案。基準算法保留於 benchmark 腳本，不進入 App 業務程式。
 
 Linux x64／Node v24.19.0 容器結果：
 
-| 測試大小 | 舊通道總耗時中位数 | 新通道總耗時中位數 | 舊／新程序峰值 RSS |
+| 測試大小 | 舊通道總耗時中位數 | 新通道總耗時中位數 | 舊／新程序峰值 RSS |
 | --- | ---: | ---: | ---: |
 | 1 MiB | 59.42 ms | 7.39 ms | 54,964 / 41,216 KiB |
 | 10 MiB | 550.13 ms | 41.38 ms | 179,800 / 68,736 KiB |
@@ -30,6 +30,10 @@ Linux x64／Node v24.19.0 容器結果：
 
 ## 實機待驗證與限制
 
-需於 Windows／Mac 實機驗收安装、升級保存、冷／暖啟動、備份往返、Drive 同步資料夾、行情／匯率及動畫觀感；未執行瀏覽器／虛擬瀏覽器／模擬器。Windows 仍未有發行者簽章；Mac 仍僅 ad-hoc 簽章，沒有 Developer ID／Apple 公證。macOS 最低 13；Mac M 系列原生 arm64，Windows x64。
+需於 Windows／Mac 實機驗收安裝、升級保存、冷／暖啟動、備份往返、Drive 同步資料夾、行情／匯率及動畫觀感；未執行瀏覽器／虛擬瀏覽器／模擬器。Windows 仍未有發行者簽章；Mac 仍僅 ad-hoc 簽章，沒有 Developer ID／Apple 公證。macOS 最低 13；Mac M 系列原生 arm64，Windows x64。
 
 優化依循 Electron 官方的按需初始化與避免主程序阻塞建議：https://www.electronjs.org/docs/latest/tutorial/performance 。IPC 仍遵循隔離橋接與 structured clone：https://www.electronjs.org/docs/latest/api/context-bridge 、https://www.electronjs.org/docs/latest/tutorial/ipc 。
+
+## 已發布封裝 3
+
+Windows x64 與 Mac arm64 CI 建置、18/18 桌面測試、ASAR／架構核對均通過；Mac 映像與 ad-hoc 簽章驗證通過。成功 workflow 39262354361，二進位來源 7f00ab54250662ad3db2a1f140204addd2cecb1e。公開檔案及兩平台效能 JSON：https://github.com/sparcgx/SalaryMate/releases/tag/v5.0.0-desktop.3 。詳見 DESKTOP-RELEASE.md。
