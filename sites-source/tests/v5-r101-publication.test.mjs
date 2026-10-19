@@ -7,7 +7,7 @@ import path from 'node:path';
 const root=path.resolve(import.meta.dirname,'..');
 const base=path.join(root,'dist/dev/v5.0.0-dev.2');
 const version='5.0.0';
-const assetVersion='5.0.0-downloads1';
+const assetVersion='5.0.0-downloads2';
 const origin='https://salarymate.sparcgx2420.chatgpt.site';
 const normalize=text=>text.replace(/\r\n?/g,'\n');
 const read=name=>readFile(path.join(base,name),'utf8');
