@@ -11,7 +11,9 @@ const {createQuickEntry}=require('../native-desktop/src/quick-entry.cjs');
 const {createPdfService,renderPdf,checkedReport}=require('../native-desktop/src/pdf.cjs');
 const snapshot=(n=1,time='2026-10-19T00:00:00Z')=>JSON.stringify({schemaVersion:15,appVersion:'5.0.0',updatedAt:time,exportInfo:{exportedAt:time},companies:[{id:'c',name:'Test only'}],records:Array.from({length:n},(_,i)=>({id:'r'+i,baseSalary:30000+i})),overtimeLogs:[],leaveRecords:[],investmentRecords:[],compTimeCredits:[],compTimeSettlements:[],yearEndEstimates:[],salaryAdjustments:[],stockPortfolio:{assets:[],transactions:[]},uiPreferences:{}});
 const prefs=(extra={})=>({enabled:true,intervalMinutes:15,retention:10,shortcutEnabled:false,shortcut:'CommandOrControl+Shift+M',...extra});
-async function fixture(t,io){const dir=await fs.mkdtemp(path.join(os.tmpdir(),'salarymate-features-'));t.after(()=>fs.rm(dir,{recursive:true,force:true}));const userData=path.join(dir,'profile');const service=createBackupService({userData,chooseDirectory:async()=>dir,io});await service.choose();await service.setOptions(prefs());return {service,dir,userData};}
+// macOS /var aliases and Windows short temp paths resolve differently. The
+// injected lstat failure must target the same canonical path used by the app.
+async function fixture(t,io){const dir=await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(),'salarymate-features-')));t.after(()=>fs.rm(dir,{recursive:true,force:true}));const userData=path.join(dir,'profile');const service=createBackupService({userData,chooseDirectory:async()=>dir,io});await service.choose();await service.setOptions(prefs());return {service,dir,userData};}
 test('automatic backups preserve import-compatible JSON, deduplicate timestamps, and create import checkpoints',async t=>{
  const {service,userData,dir}=await fixture(t);
  const a=await service.save({data:snapshot(),reason:'auto'});assert.equal(a.verified,true);
