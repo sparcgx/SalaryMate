@@ -9,6 +9,7 @@
   "scripts": {
     "assets": "node ../scripts/build-desktop-assets.mjs",
     "test": "node --test ../tests/v5-desktop.test.mjs",
+    "benchmark": "node scripts/benchmark.cjs",
     "package": "electron-builder --publish never",
     "verify": "node scripts/verify-package.cjs"
   },
@@ -19,7 +20,7 @@
   "build": {
     "appId": "com.salarymate.personal.desktop",
     "productName": "SalaryMate",
-    "buildVersion": "5000104",
+    "buildVersion": "5000105",
     "asar": true,
     "npmRebuild": false,
     "directories": {"output": "release", "buildResources": "www/icons"},

@@ -1,12 +1,12 @@
 # SalaryMate v5.0.0 正式版 · Windows / macOS
 
-沿用已發布 v5.0.0 正式版（包含辦公日曆整合），桌面封裝 2，build 5000104。薪資與投資程式不重寫，資料 KEY `salarymate_v5_full_state`、Schema 15 維持一致。
+沿用已發布 v5.0.0 正式版（包含辦公日曆整合），桌面封裝 3，build 5000105。薪資與投資程式不重寫，資料 KEY `salarymate_v5_full_state`、Schema 15 維持一致。
 
 ## 安裝
 
 - Windows 10／11 64 位元：開啟 `SalaryMate_v5.0.0_win_x64.exe`，選擇個人安裝位置。此包不要求系統管理員權限。
 - macOS 13 以上 Apple Silicon（M 系列）：`SalaryMate_v5.0.0_mac_arm64.dmg`。
-- macOS 13 以上 Intel：`SalaryMate_v5.0.0_mac_x64.dmg`。
+- Intel Mac 保留[桌面封裝 2](https://github.com/sparcgx/SalaryMate/releases/tag/v5.0.0-desktop.2)；本次優化發行只包含 Windows x64 與 Mac arm64。
 - Mac 開啟 DMG，將 SalaryMate 拖到 Applications（應用程式），再從應用程式開啟。
 - 尚未提供發行者簽章憑證。Windows 未有 Authenticode 簽章；Mac 只有 ad-hoc 完整性簽章，沒有 Apple Developer ID 與公證。首次安裝可能被系統阻擋；請核對下載來源與 SHA-256，不要關閉系統的整體安全保護。受管理的電腦可能需要管理員核准。
 
@@ -26,7 +26,7 @@
 
 ## 可重現建置
 
-在既有 GitHub 開發分支執行 `.github/workflows/salarymate-desktop.yml`，Windows runner 產出 NSIS EXE，Mac runner 產出 arm64／x64 DMG。原始碼鏡像位於 `sites-source/`。本機建置時在此目錄依序執行：
+在既有 GitHub 開發分支執行 `.github/workflows/salarymate-desktop.yml`，Windows runner 產出 NSIS EXE，Mac runner 產出 arm64 DMG。原始碼鏡像位於 `sites-source/`。本機建置時在此目錄依序執行：
 
 ```
 npm ci --ignore-scripts
@@ -39,8 +39,19 @@ npm run verify -- x64
 
 套件鎖定 Electron 44.9.0、electron-builder 26.15.3。Electron 的 Chromium／第三方授權檔由打包器保留；應用程式既有授權說明也包含於離線包。
 
+## 本次效能調整
+
+- 開窗前不再載入行情與匯率模組；首次查詢才初始化，同時查詢共用初始化結果，失敗可重試。
+- 本機素材依 SHA-256 ETag 核對快取；內容未變的條件式請求回傳 304，HEAD 不讀取整份檔案。升級後內容雜湊改變就讀取新版。
+- Blob／CSV／HTML 匯出直接傳送位元組，移除 Base64 轉換；IPC 仍有必要的隔離複製。一般與加密 JSON 備份格式不變。
+- 寫入與 SHA-256 讀回驗證分段執行，驗證緩衝上限 256 KiB；驗證成功才取代原檔。取消、損壞、截短或變長時保留原檔。
+- 移除桌面包中 3 張無引用的歷史素材，減少 3,695,404 bytes。完整來源仍保留它們；所有目前背景、晶羽、飛行／魔法及相容素材均保留。
+- Mac M 系列包為原生 arm64，Windows 為原生 x64。
+
 ## 驗證範圍
 
 程式測試涵蓋路徑限制、公開 API 路由、備份位元組／大小／取消／驗證失敗回復、原版計算模組雜湊、CSP、平台識別、封裝架構。CI 額外核對 ASAR 內全部素材、二進位架構，Mac 磁碟映像及 ad-hoc 簽章。
 
 沒有使用瀏覽器、虛擬瀏覽器或模擬器。Windows／Mac 的實際安装、開啟、關閉重開、資料保留、備份往返、Google Drive 資料夾、即時行情網路及晶羽動畫觀感仍待實機驗證。程式通過不代表實機驗收或 FPS 通過。
+
+合成檔案效能測試：`npm run benchmark -- performance.json`。這是 Node 程式的 Blob 匯出通道比較，使用測試資料、模擬 IPC 複製及真實檔案寫入；不含 Electron 視窗、安裝／開啟時間、真實 Drive 同步或 FPS。各大小／版本取三個獨立程序的中位數。

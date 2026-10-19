@@ -3,21 +3,38 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const {createHash, randomUUID} = require('node:crypto');
 const {MAX_DOCUMENT_BYTES, checkedDocument} = require('./security.cjs');
-const digest = bytes => createHash('sha256').update(bytes).digest('hex');
+const VERIFY_CHUNK_BYTES = 256 * 1024;
 const fault = code => Object.assign(Error(code), {code});
 // Stage beside the chosen destination. Verification failure never replaces it.
 async function writeVerified(destination, bytes, io = fs) {
   const temp = path.join(path.dirname(destination), '.' + path.basename(destination) + '.' + randomUUID() + '.tmp');
-  let handle;
+  let handle, reader;
   try {
     handle = await io.open(temp, 'wx', 0o600);
-    await handle.writeFile(bytes); await handle.sync(); await handle.close(); handle = null;
-    const readback = await io.readFile(temp);
-    if (readback.length !== bytes.length || digest(readback) !== digest(bytes)) throw fault('SAVE_FAILED');
+    const expected = createHash('sha256');
+    for (let offset = 0; offset < bytes.length; offset += VERIFY_CHUNK_BYTES) {
+      const chunk = bytes.subarray(offset, offset + VERIFY_CHUNK_BYTES);
+      await handle.writeFile(chunk); expected.update(chunk);
+    }
+    await handle.sync(); await handle.close(); handle = null;
+    const checksum = expected.digest('hex');
+    reader = await io.open(temp, 'r');
+    const buffer = Buffer.allocUnsafe(VERIFY_CHUNK_BYTES), actual = createHash('sha256');
+    let size = 0;
+    for (;;) {
+      const {bytesRead} = await reader.read(buffer, 0, buffer.length, size);
+      if (!bytesRead) break;
+      size += bytesRead;
+      if (size > bytes.length) throw fault('SAVE_FAILED');
+      actual.update(buffer.subarray(0, bytesRead));
+    }
+    await reader.close(); reader = null;
+    if (size !== bytes.length || actual.digest('hex') !== checksum) throw fault('SAVE_FAILED');
     await io.rename(temp, destination);
-    return {verified: true, size: bytes.length, fileName: path.basename(destination), sha256: digest(bytes)};
+    return {verified: true, size: bytes.length, fileName: path.basename(destination), sha256: checksum};
   } finally {
     await handle?.close().catch(() => {});
+    await reader?.close().catch(() => {});
     await io.unlink(temp).catch(() => {});
   }
 }
@@ -61,4 +78,4 @@ function createFileService({dialog, parent, io = fs}) {
     }, 'OPEN_FAILED')
   };
 }
-module.exports = {writeVerified, createFileService};
+module.exports = {writeVerified, createFileService, VERIFY_CHUNK_BYTES};

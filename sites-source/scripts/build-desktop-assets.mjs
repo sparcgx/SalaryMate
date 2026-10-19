@@ -24,6 +24,12 @@ runtime=once(runtime,'This entry does not use embedded Google sign-in and does n
 runtime=runtime.replaceAll('Desktop 檔案服務','桌面檔案服務');
 // Match File.text(): verify original UTF-8 bytes, then consume an optional BOM.
 runtime=once(runtime,'return root.SalaryMateData.importPayload(result.data);',String.raw`return root.SalaryMateData.importPayload(result.data.replace(/^\uFEFF/,''));`);
+// Electron accepts typed arrays through its isolated bridge and IPC. Keep the
+// Android adapter unchanged; avoid base64 expansion for desktop Blob exports.
+const base64Helper=runtime.match(/ const base64=bytes=>\{[\s\S]*?\n \};/)?.[0];
+if(!base64Helper)throw Error('Missing base64 adapter boundary');
+runtime=once(runtime,base64Helper,'');
+runtime=once(runtime,"data:base64(bytes),fileName,mimeType,encoding:'base64'","data:bytes,fileName,mimeType,encoding:'bytes'");
 // The adapter's public utility name must not replace the isolated native bridge.
 runtime=once(runtime,'root.SalaryMateDesktop=Object.freeze({saveBlob,createDriveUI,maxDocumentBytes:MAX_BYTES});','root.SalaryMateDesktopFiles=Object.freeze({saveBlob,createDriveUI,maxDocumentBytes:MAX_BYTES});');
 new vm.Script(runtime);await fs.writeFile(path.join(stage,'desktop-runtime.js'),runtime);
@@ -53,10 +59,24 @@ reference=once(reference,'root.SalaryMatePortable?.marketOrigin||location.origin
 const apiFiles=['stock-market.mjs','dividend-market.mjs','intraday-nav.mjs','twse-close.mjs','reference-api.mjs'];
 await fs.mkdir(path.join(native,'api'),{recursive:true});
 for(const file of apiFiles)await fs.copyFile(path.join(root,'server',file),path.join(native,'api',file));
+// Retired images only. Current and compatibility flight assets remain intact.
+// Fail closed if any shipped text starts referring to a retired image again.
+const retired=['art/jingyu-hd2d-r61.png','art/jingyu-hd2d-r62.webp','art/jingyu-flight-r68.png'];
+const omitted=[];
+async function auditRetired(dir){for(const item of await fs.readdir(dir,{withFileTypes:true})){
+ const full=path.join(dir,item.name);
+ if(item.isDirectory())await auditRetired(full);
+ else if(/\.(?:js|html|css|json|webmanifest|csv)$/.test(item.name)){
+  const text=await fs.readFile(full,'utf8');
+  for(const file of retired)if(text.includes(path.basename(file)))throw Error('Retired asset is referenced: '+file);
+ }
+}}
+await auditRetired(stage);
+for(const file of retired){const bytes=await fs.readFile(path.join(stage,file));omitted.push({path:file,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex'),reason:'retired and unreferenced'});await fs.unlink(path.join(stage,file));}
 const files=[];
 async function collect(dir,prefix=''){for(const entry of (await fs.readdir(dir,{withFileTypes:true})).sort((a,b)=>a.name.localeCompare(b.name))){const key=prefix+entry.name,full=path.join(dir,entry.name);if(entry.isDirectory())await collect(full,key+'/');else if(entry.isFile()){const bytes=await fs.readFile(full);files.push({path:key,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')});}else throw Error('Non-regular asset');}}
 await collect(stage);
-const manifest={version:pkg.version,desktopBuild:pkg.build.buildVersion,source:'dist/dev/v5.0.0-dev.2',stateKey:'salarymate_v5_full_state',schema:15,csp,files,api:await Promise.all(apiFiles.map(async file=>({path:file,sha256:createHash('sha256').update(await fs.readFile(path.join(native,'api',file))).digest('hex')})))};
+const manifest={version:pkg.version,desktopBuild:pkg.build.buildVersion,source:'dist/dev/v5.0.0-dev.2',stateKey:'salarymate_v5_full_state',schema:15,csp,files,omitted,api:await Promise.all(apiFiles.map(async file=>({path:file,sha256:createHash('sha256').update(await fs.readFile(path.join(native,'api',file))).digest('hex')})))};
 await fs.writeFile(path.join(stage,'desktop-asset-manifest.json'),JSON.stringify(manifest,null,2)+'\n');
 await fs.rm(target,{recursive:true,force:true});await fs.rename(stage,target);
 console.log(JSON.stringify({version:pkg.version,files:files.length,bytes:files.reduce((s,f)=>s+f.bytes,0),firstScreen:'local; optional content stays lazy'}));

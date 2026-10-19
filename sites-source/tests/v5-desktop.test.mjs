@@ -8,7 +8,9 @@ import {createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url),root=path.resolve(import.meta.dirname,'..');
 const {safeAsset,documentURL,publicApiPath,checkedDocument,MAX_DOCUMENT_BYTES}=require('../native-desktop/src/security.cjs');
-const {createFileService,writeVerified}=require('../native-desktop/src/files.cjs');
+const {createFileService,writeVerified,VERIFY_CHUNK_BYTES}=require('../native-desktop/src/files.cjs');
+const {createPublicApis}=require('../native-desktop/src/public-api.cjs');
+const {createAssetResponder}=require('../native-desktop/src/assets.cjs');
 const read=name=>fs.readFile(path.join(root,name),'utf8');
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const temporary=async t=>{const dir=await fs.mkdtemp(path.join(os.tmpdir(),'salarymate-'));t.after(()=>fs.rm(dir,{recursive:true,force:true}));return dir;};
@@ -41,7 +43,12 @@ test('native export is verified before replacement and cancellation leaves prior
 });
 test('read-back and rename failures preserve existing destination and remove temporary files',async t=>{
  const dir=await temporary(t),file=path.join(dir,'backup.json');await fs.writeFile(file,'original');
- await assert.rejects(writeVerified(file,Buffer.from('replacement'),{...fs,readFile:async()=>Buffer.from('corrupt')}));
+ const corrupt={...fs,open:async(name,flags,...rest)=>{
+  const handle=await fs.open(name,flags,...rest);
+  if(flags!=='r')return handle;
+  return {close:()=>handle.close(),read:async(...args)=>{const result=await handle.read(...args);if(result.bytesRead)args[0][0]^=255;return result;}};
+ }};
+ await assert.rejects(writeVerified(file,Buffer.from('replacement'),corrupt));
  assert.equal(await fs.readFile(file,'utf8'),'original');assert.deepEqual(await fs.readdir(dir),['backup.json']);
  await assert.rejects(writeVerified(file,Buffer.from('replacement'),{...fs,rename:async()=>{throw Error('locked');}}));
  assert.equal(await fs.readFile(file,'utf8'),'original');assert.deepEqual(await fs.readdir(dir),['backup.json']);
@@ -67,6 +74,8 @@ test('snapshot contains current calendar, every offline scene and original payro
  for(const name of ['app.js','bootstrap.js','stocks.js','backup.js','reconcile.js','comp-time.js','annual-analysis.js','reference-data.js','styles.css','styles-core.css','ornate-flight.js'])assert.equal(await read('native-desktop/www/'+name),await read('dist/dev/v5.0.0-dev.2/'+name),name);
  for(const f of manifest.api)assert.equal(sha(await fs.readFile(path.join(root,'server',f.path))),f.sha256,f.path);
  assert.equal(manifest.files.filter(f=>/art\/background-/.test(f.path)).length,10);
+ assert.equal(manifest.omitted.length,3);
+ for(const file of ['jingyu-hd2d-r74.png','jingyu-flight-r70.png',...['a','b','c','d'].map(x=>'jingyu-flight-r73-'+x+'.png'),'jingyu-cast-r76.png',...['blade','tornado'].map(x=>'jingyu-wind-'+x+'-r75.png'),...['bullet','spear','vortex'].map(x=>'jingyu-wind-'+x+'-r78.png')])assert.ok(manifest.files.some(f=>f.path==='art/'+file),file);
  assert.match(await read('native-desktop/www/app.js'),/officeCalendarBadge/);
 });
 test('desktop scripts pass syntax and exact CSP without enabling Node in renderer',async()=>{
@@ -83,22 +92,87 @@ test('desktop scripts pass syntax and exact CSP without enabling Node in rendere
 function harness(source,platform='win32'){
  const listeners=new Map(),calls=[],toast={textContent:'',setAttribute(){}};
  class LocalURL extends URL{static createObjectURL(){return 'blob:salarymate://app/example';}static revokeObjectURL(){}}
- const bridge={platform,saveDocument:async input=>{calls.push(input);return {verified:true,size:Buffer.from(input.data,input.encoding==='base64'?'base64':'utf8').length,fileName:input.fileName};},openDocument:async()=>({data:'{}',size:2})};
+ const bridge={platform,saveDocument:async input=>{calls.push(input);return {verified:true,size:checkedDocument(structuredClone(input)).bytes.length,fileName:input.fileName};},openDocument:async()=>({data:'{}',size:2})};
  const context={URL:LocalURL,Blob,Uint8Array,TextEncoder,Map,Promise,Date,JSON,Object,Number,String,Error,SalaryMateDesktop:bridge,btoa:s=>Buffer.from(s,'binary').toString('base64'),SalaryMateI18n:{language:()=> 'zh'},addEventListener(){},document:{getElementById:()=>toast,addEventListener:(type,fn)=>{const rows=listeners.get(type)||[];rows.push(fn);listeners.set(type,rows);}}};
  vm.runInNewContext(source,context);return {context,bridge,calls,listeners};
 }
 test('desktop adapter keeps isolated bridge, waits for verified saves and remains inert on other platforms',async()=>{
  const source=await read('native-desktop/www/desktop-runtime.js');
- for(const platform of ['win32','darwin']){const h=harness(source,platform);assert.equal(h.context.SalaryMateDesktop,h.bridge);const result=await h.context.SalaryMateDesktopFiles.saveBlob(new Blob(['\uFEFF測試']), 'backup.json');assert.equal(result.verified,true);assert.deepEqual(Buffer.from(h.calls[0].data,'base64'),Buffer.from('\uFEFF測試'));h.bridge.saveDocument=async()=>({verified:false});await assert.rejects(h.context.SalaryMateDesktopFiles.saveBlob(new Blob(['{}']),'a.json'));}
+ for(const platform of ['win32','darwin']){const h=harness(source,platform);assert.equal(h.context.SalaryMateDesktop,h.bridge);const result=await h.context.SalaryMateDesktopFiles.saveBlob(new Blob(['\uFEFF測試']), 'backup.json');assert.equal(result.verified,true);assert.equal(h.calls[0].encoding,'bytes');assert.deepEqual(Buffer.from(h.calls[0].data),Buffer.from('\uFEFF測試'));h.bridge.saveDocument=async()=>({verified:false});await assert.rejects(h.context.SalaryMateDesktopFiles.saveBlob(new Blob(['{}']),'a.json'));}
  assert.equal(harness(source,'linux').context.SalaryMateDesktopFiles,undefined);
  assert.doesNotMatch(source,/localStorage\.(?:setItem|clear|removeItem)|accounts\.google\.com/);
  assert.match(source,/Drive 電腦版/);
 });
-test('installer settings retain profile, provide two Mac architectures, and make signature limits explicit',async()=>{
+test('installer settings retain profile, target Windows x64 / Mac arm64, and expose signature limits',async()=>{
  const pkg=JSON.parse(await read('native-desktop/package.json'));
  assert.equal(pkg.build.nsis.deleteAppDataOnUninstall,false);assert.equal(pkg.build.nsis.runAfterFinish,false);
  assert.equal(pkg.build.mac.identity,'-');assert.equal(pkg.build.mac.notarize,false);
  const flow=await read('.github/workflows/salarymate-desktop.yml');assert.match(flow,/arch: arm64/);assert.match(flow,/arch: x64/);assert.doesNotMatch(flow,/playwright|puppeteer|xvfb/i);
+ assert.equal((flow.match(/arch: x64/g)||[]).length,1);assert.match(flow,/tag=v5\.0\.0-desktop\.3/);
+});
+
+test('binary bridge rejects invalid/shared/oversized input and preserves typed-array slices after cloning',()=>{
+ const data=new Uint8Array([90,239,187,191,65,91]).subarray(1,5),input={fileName:'export.csv',encoding:'bytes',data};
+ const cloned=structuredClone(input),doc=checkedDocument(cloned);data.fill(0);
+ assert.deepEqual(doc.bytes,Buffer.from([239,187,191,65]));
+ assert.equal(doc.bytes.buffer,cloned.data.buffer); // Reuses the main-process IPC copy.
+ for(const data of ['abc',[1,2],new Uint16Array([1]),new Uint8Array(),new Uint8Array(new SharedArrayBuffer(8)),new Uint8Array(MAX_DOCUMENT_BYTES+1)])assert.throws(()=>checkedDocument({...input,data}));
+});
+
+test('stream verification has bounded reads and handles partial reads for large exports',async t=>{
+ const dir=await temporary(t),file=path.join(dir,'large.json'),bytes=Buffer.alloc(3*1024*1024+17,37);let reads=0,maxRead=0;
+ const io={...fs,readFile:async()=>{throw Error('No full readback');},open:async(name,flags,...rest)=>{
+  const handle=await fs.open(name,flags,...rest);if(flags!=='r')return handle;
+  return {close:()=>handle.close(),read:async(buffer,offset,length,position)=>{reads++;maxRead=Math.max(maxRead,length);return handle.read(buffer,offset,Math.min(length,31001),position);}};
+ }};
+ const result=await writeVerified(file,bytes,io);assert.equal(result.sha256,sha(bytes));assert.equal(result.size,bytes.length);
+ assert.ok(reads>100);assert.equal(maxRead,VERIFY_CHUNK_BYTES);assert.deepEqual(await fs.readFile(file),bytes);
+});
+
+test('truncated/growing/failed temporary read never replaces the destination',async t=>{
+ const dir=await temporary(t),file=path.join(dir,'b.json');await fs.writeFile(file,'original');
+ for(const mode of ['truncate','grow','fail']){
+  const io={...fs,open:async(name,flags,...rest)=>{
+   if(flags==='r'){
+    if(mode==='truncate')await fs.truncate(name,1);
+    if(mode==='grow')await fs.appendFile(name,'extra');
+    if(mode==='fail')throw Error('unreadable');
+   }return fs.open(name,flags,...rest);
+  }};
+  await assert.rejects(writeVerified(file,Buffer.from('replacement'),io));
+  assert.equal(await fs.readFile(file,'utf8'),'original');assert.deepEqual(await fs.readdir(dir),['b.json']);
+ }
+});
+
+test('public data initializes only the requested handler and coalesces concurrent first requests',async()=>{
+ const loads=[],counts={stock:0,reference:0};
+ const api=createPublicApis('/test-app',async url=>{loads.push(url);return {createStockMarket(){counts.stock++;return async r=>r+':stock';},createReferenceApi(){counts.reference++;return async r=>r+':reference';}};});
+ assert.deepEqual(loads,[]);assert.deepEqual(await Promise.all(Array.from({length:8},(_,i)=>api.stock(i))),Array.from({length:8},(_,i)=>i+':stock'));
+ assert.equal(loads.length,1);assert.deepEqual(counts,{stock:1,reference:0});
+ assert.equal(await api.reference('fx'),'fx:reference');assert.equal(loads.length,2);
+ assert.equal(await api.stock('again'),'again:stock');assert.equal(counts.stock,1);
+});
+
+test('failed public data initialization can retry without poisoning the other feature',async()=>{
+ let attempts=0;
+ const api=createPublicApis('/test-app',async url=>{
+  if(url.endsWith('stock-market.mjs')&&++attempts===1)throw Error('temporary');
+  return {createStockMarket:()=>async()=> 'stock',createReferenceApi:()=>async()=> 'reference'};
+ });
+ const failed=await Promise.allSettled([api.stock(),api.stock()]);assert.ok(failed.every(r=>r.status==='rejected'));assert.equal(attempts,1);
+ assert.equal(await api.reference(),'reference');assert.equal(await api.stock(),'stock');assert.equal(attempts,2);
+});
+
+test('asset conditional requests and HEAD avoid disk reads, and new hashes invalidate old cache',async()=>{
+ let reads=0;const directory=path.join(os.tmpdir(),'salarymate-assets');
+ const make=sha=>createAssetResponder({directory,manifest:{csp:"default-src 'self'",files:[{path:'index.html',bytes:2,sha256:sha}]},fetchFile:async()=>{reads++;return new Response('ok');}});
+ const serve=make('a'),url='salarymate://app/index.html';
+ let response=await serve(new Request(url));assert.equal(await response.text(),'ok');assert.equal(response.headers.get('content-type'),'text/html; charset=utf-8');assert.equal(response.headers.get('etag'),'"a"');assert.equal(reads,1);
+ response=await serve(new Request(url,{headers:{'if-none-match':'W/"a"'}}));assert.equal(response.status,304);assert.equal(await response.text(),'');assert.equal(reads,1);
+ response=await serve(new Request(url,{method:'HEAD'}));assert.equal(response.headers.get('content-length'),'2');assert.equal(await response.text(),'');assert.equal(reads,1);
+ response=await make('b')(new Request(url,{headers:{'if-none-match':'"a"'}}));assert.equal(response.status,200);assert.equal(reads,2);
+ assert.equal(response.headers.get('content-security-policy'),"default-src 'self'");assert.match(response.headers.get('cache-control'),/no-cache/);
+ assert.equal((await serve(new Request('salarymate://other/index.html'))).status,404);assert.equal((await serve(new Request(url,{method:'POST',body:'x'}))).status,404);assert.equal(reads,2);
 });
 
 test('Drive native import validates original bytes then consumes UTF-8 BOM like File.text()',async()=>{

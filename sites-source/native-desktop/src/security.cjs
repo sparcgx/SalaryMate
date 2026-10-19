@@ -1,5 +1,6 @@
 'use strict';
 const path = require('node:path');
+const {isUint8Array, isSharedArrayBuffer} = require('node:util').types;
 const MAX_DOCUMENT_BYTES = 45 * 1024 * 1024;
 const APP_URL = 'salarymate://app/index.html';
 const STOCK_PATHS = new Set(['quotes', 'nav', 'lookup', 'dividends', 'catalog'].map(x => '/api/stocks/' + x));
@@ -25,12 +26,18 @@ function checkedDocument(input) {
   if (!input || typeof input.fileName !== 'string' || input.fileName.length > 180 || input.fileName !== path.basename(input.fileName) || /[\\/:\x00-\x1f]/.test(input.fileName)) fail();
   const extension = path.extname(input.fileName).toLowerCase();
   if (!['.json', '.salarymate', '.csv', '.html'].includes(extension)) fail();
-  if (typeof input.data !== 'string' || !input.data.length) fail();
   let bytes;
-  if (input.encoding === 'utf8') {
+  if (input.encoding === 'bytes') {
+    if (!isUint8Array(input.data) || isSharedArrayBuffer(input.data.buffer) || !input.data.byteLength || input.data.byteLength > MAX_DOCUMENT_BYTES) fail();
+    // IPC structured-clones this buffer into the main process. Reuse that
+    // owned copy, honoring slices; never accept renderer filesystem access.
+    bytes = Buffer.from(input.data.buffer, input.data.byteOffset, input.data.byteLength);
+  } else if (input.encoding === 'utf8') {
+    if (typeof input.data !== 'string' || !input.data.length) fail();
     if (input.data.length > MAX_DOCUMENT_BYTES || Buffer.byteLength(input.data) > MAX_DOCUMENT_BYTES) fail();
     bytes = Buffer.from(input.data, 'utf8');
   } else if (input.encoding === 'base64') {
+    if (typeof input.data !== 'string' || !input.data.length) fail();
     if (input.data.length > 4 * Math.ceil(MAX_DOCUMENT_BYTES / 3) || input.data.length % 4 || !/^[A-Za-z0-9+/]*={0,2}$/.test(input.data)) fail();
     bytes = Buffer.from(input.data, 'base64');
     if (bytes.toString('base64') !== input.data) fail();

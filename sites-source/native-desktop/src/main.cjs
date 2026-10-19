@@ -1,10 +1,11 @@
 'use strict';
 const {app, BrowserWindow, Menu, dialog, ipcMain, net, protocol, session, shell} = require('electron');
-const fs = require('node:fs');
+const fs = require('node:fs/promises');
 const path = require('node:path');
-const {pathToFileURL} = require('node:url');
-const {APP_URL, documentURL, safeAsset, publicApiPath} = require('./security.cjs');
+const {APP_URL, documentURL, publicApiPath} = require('./security.cjs');
 const {createFileService} = require('./files.cjs');
+const {createPublicApis} = require('./public-api.cjs');
+const {createAssetResponder} = require('./assets.cjs');
 app.setName('SalaryMate');
 // Version-independent identity: upgrades reuse this profile. Never clear storage.
 app.setPath('userData', path.join(app.getPath('appData'), 'SalaryMate'));
@@ -19,15 +20,11 @@ else {
 }
 async function start() {
   const assets = path.join(app.getAppPath(), 'www');
-  const manifest = JSON.parse(fs.readFileSync(path.join(assets, 'desktop-asset-manifest.json'), 'utf8'));
-  const files = Object.fromEntries(manifest.files.map(file => [file.path, file]));
-  const [{createStockMarket}, {createReferenceApi}] = await Promise.all([
-    import(pathToFileURL(path.join(app.getAppPath(), 'api/stock-market.mjs')).href),
-    import(pathToFileURL(path.join(app.getAppPath(), 'api/reference-api.mjs')).href)
-  ]);
+  const manifest = JSON.parse(await fs.readFile(path.join(assets, 'desktop-asset-manifest.json'), 'utf8'));
   // Same validated public-data handlers as the website, executed on this device.
   // No listening port, private-state API, generic URL proxy or remote app code.
-  const market = createStockMarket(), reference = createReferenceApi();
+  const apiHandlers = createPublicApis(app.getAppPath());
+  const serveAsset = createAssetResponder({directory:assets, manifest, fetchFile:url => net.fetch(url)});
   session.defaultSession.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
   session.defaultSession.setPermissionCheckHandler(() => false);
   protocol.handle('salarymate', async request => {
@@ -41,16 +38,9 @@ async function start() {
         // Request has a bounded stream; the retained stock handler limits it to 16KB.
         if (!isFx) {options.body = request.body; options.duplex = 'half';}
         const localRequest = new Request('https://salarymate.desktop' + api, options);
-        return await (isFx ? reference(localRequest) : market(localRequest));
+        return await (isFx ? apiHandlers.reference(localRequest) : apiHandlers.stock(localRequest));
       }
-      const key = safeAsset(request.url, files);
-      if (!key || !['GET','HEAD'].includes(request.method)) return new Response('Not found', {status: 404});
-      const response = await net.fetch(pathToFileURL(path.join(assets, key)).href);
-      const headers = new Headers(response.headers);
-      headers.set('Content-Security-Policy', manifest.csp);
-      headers.set('X-Content-Type-Options', 'nosniff');
-      headers.set('Cache-Control', 'no-cache');
-      return new Response(request.method === 'HEAD' ? null : response.body, {status: response.status, headers});
+      return await serveAsset(request);
     } catch { return new Response('服務暫時無法使用 / Service unavailable', {status: 503}); }
   });
   const service = createFileService({dialog, parent: () => window});
@@ -87,7 +77,7 @@ async function start() {
     {role:'editMenu'},
     {label:'檢視 / View',submenu:[{role:'resetZoom'},{role:'zoomIn'},{role:'zoomOut'},{type:'separator'},{role:'togglefullscreen'}]},
     {role:'windowMenu'},
-    {label:'說明 / Help',submenu:[{label:'關於 SalaryMate / About',click:() => dialog.showMessageBox(window,{message:'SalaryMate v5.0.0 正式版',detail:'桌面封裝 2 · 本機離線資料\nDesktop package 2 · Local offline data\n資料與網站分開儲存；以備份匯入搬移。\nTransfer browser records with a backup.\n未具發行者簽章／Apple 公證。\nNo publisher certificate or Apple notarization.'})}]}
+    {label:'說明 / Help',submenu:[{label:'關於 SalaryMate / About',click:() => dialog.showMessageBox(window,{message:'SalaryMate v5.0.0 正式版',detail:'桌面封裝 3 · 本機離線資料\nDesktop package 3 · Local offline data\n資料與網站分開儲存；以備份匯入搬移。\nTransfer browser records with a backup.\n未具發行者簽章／Apple 公證。\nNo publisher certificate or Apple notarization.'})}]}
   ]));
   createWindow();
   app.on('activate', () => {if (!window) createWindow();});
