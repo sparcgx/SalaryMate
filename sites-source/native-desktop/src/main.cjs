@@ -9,6 +9,8 @@ const {createAssetResponder} = require('./assets.cjs');
 const {createBackupService,checkedOptions} = require('./backups.cjs');
 const {createQuickEntry} = require('./quick-entry.cjs');
 const {createPdfService,renderPdf} = require('./pdf.cjs');
+const {createUpdateService}=require('./updates.cjs');
+const desktopPackage=require('../package.json');
 app.setName('SalaryMate');
 // Version-independent identity: upgrades reuse this profile. Never clear storage.
 app.setPath('userData', path.join(app.getPath('appData'), 'SalaryMate'));
@@ -52,8 +54,11 @@ async function start() {
     return result.canceled?null:result.filePaths?.[0];
   }});
   const pdf=createPdfService({dialog,parent:()=>window,render:input=>renderPdf(input,{BrowserWindow,session})});
+  const updates=createUpdateService({userData:app.getPath('userData'),currentTag:`v${app.getVersion()}-desktop.${desktopPackage.desktopRelease}`,build:manifest.desktopBuild,platform:process.platform,arch:process.arch,dialog,parent:()=>window,
+    notify:state=>{if(window&&!window.isDestroyed())window.webContents.send('salarymate:update-state',state);},
+    saveBackup:input=>service.save(input),openPath:file=>shell.openPath(file),showItemInFolder:file=>shell.showItemInFolder(file),quit:()=>app.quit()});
   let featureBusy=false,pendingAction=null,shortcutProblem='';
-  const desktopActions=new Set(['quick','record','overtime','leave','transaction','backups','options','pdf']);
+  const desktopActions=new Set(['quick','record','overtime','leave','transaction','backups','options','pdf','updates']);
   function sendDesktopAction(action){
     if(!desktopActions.has(action))return;
     if(!window)createWindow();
@@ -70,6 +75,7 @@ async function start() {
       {label:'記請假 / Leave',click:()=>sendDesktopAction('leave')},
       {label:'股票交易 / Stock transaction',click:()=>sendDesktopAction('transaction')},
       {type:'separator'},{label:'備份歷史 / Backups',click:()=>sendDesktopAction('backups')},
+      {label:'更新中心 / Update center',click:()=>sendDesktopAction('updates')},
       {label:'顯示 SalaryMate / Show',click:()=>{window?.show();window?.focus();}},
       {label:'結束 / Quit',click:()=>app.quit()}
     ]));tray.on('click',()=>sendDesktopAction('quick'));return tray;
@@ -87,15 +93,24 @@ async function start() {
     'backup-snapshot':input=>backups.save(input),
     'backup-history':async()=>({entries:await backups.list()}),
     'backup-read':id=>backups.read(id),
-    'report-pdf':input=>pdf.save(input)
+    'report-pdf':input=>pdf.save(input),
+    'updates-check':()=>updates.check(),
+    'updates-download':()=>updates.download(),
+    'updates-reveal':()=>updates.reveal(),
+    'updates-install':data=>updates.install(data)
   };
   for(const [name,action] of Object.entries(featureHandlers))ipcMain.handle('salarymate:'+name,async(event,input)=>{
     if(!window||event.sender!==window.webContents||event.senderFrame!==window.webContents.mainFrame||!documentURL(event.senderFrame.url))return {ok:false,code:'BRIDGE_UNAVAILABLE'};
     if(featureBusy||service.isBusy())return {ok:false,code:'DESKTOP_BUSY'};
     featureBusy=true;
     try{return {ok:true,...await action(input)};}
-    catch(error){const allowed=new Set(['INVALID_OPTIONS','SHORTCUT_UNAVAILABLE','PREFERENCES_UNREADABLE','BACKUP_NOT_CONFIGURED','BACKUP_UNREADABLE','BACKUP_INTEGRITY','HISTORY_UNREADABLE','INVALID_BACKUP','INVALID_REPORT','DESKTOP_BUSY','OPEN_CANCELLED','SAVE_CANCELLED','SAVE_EXTENSION_CHANGED','PDF_TIMEOUT']);return {ok:false,code:allowed.has(error.code)?error.code:'DESKTOP_FAILED'};}
+    catch(error){const allowed=new Set(['INVALID_OPTIONS','SHORTCUT_UNAVAILABLE','PREFERENCES_UNREADABLE','BACKUP_NOT_CONFIGURED','BACKUP_UNREADABLE','BACKUP_INTEGRITY','HISTORY_UNREADABLE','INVALID_BACKUP','INVALID_REPORT','DESKTOP_BUSY','OPEN_CANCELLED','SAVE_CANCELLED','SAVE_EXTENSION_CHANGED','PDF_TIMEOUT','UPDATE_INVALID','UPDATE_TIMEOUT','UPDATE_CANCELLED','UPDATE_RATE_LIMIT','UPDATE_UNAVAILABLE','UPDATE_CHECK_REQUIRED','UPDATE_EXTENSION','UPDATE_DOWNLOAD_FAILED','UPDATE_INTEGRITY','UPDATE_NOT_DOWNLOADED','UPDATE_BACKUP_FAILED','UPDATE_OPEN_FAILED']);return {ok:false,code:allowed.has(error.code)?error.code:name.startsWith('updates-')?'UPDATE_NETWORK':'DESKTOP_FAILED'};}
     finally{featureBusy=false;}
+  });
+  // State and cancellation remain available while a download owns the file lock.
+  for(const [name,action] of [['updates-state',()=>updates.state()],['updates-cancel',()=>updates.cancel()]])ipcMain.handle('salarymate:'+name,async event=>{
+    if(!window||event.sender!==window.webContents||event.senderFrame!==window.webContents.mainFrame||!documentURL(event.senderFrame.url))return {ok:false,code:'BRIDGE_UNAVAILABLE'};
+    try{return {ok:true,...await action()};}catch{return {ok:false,code:'UPDATE_NETWORK'};}
   });
   for (const [channel, action] of [['salarymate:save', input => service.save(input)], ['salarymate:open', () => service.open()]]) {
     ipcMain.handle(channel, (event, input) => {
@@ -134,8 +149,8 @@ async function start() {
     {role:'editMenu'},
     {label:'檢視 / View',submenu:[{role:'resetZoom'},{role:'zoomIn'},{role:'zoomOut'},{type:'separator'},{role:'togglefullscreen'}]},
     {role:'windowMenu'},
-    {label:'桌面工具 / Desktop',submenu:[{label:'快捷登記 / Quick entry',click:()=>sendDesktopAction('quick')},{label:'自動備份 / Automatic backups',click:()=>sendDesktopAction('backups')},{label:'年度報表 PDF / Annual PDF',click:()=>sendDesktopAction('pdf')},{label:'快捷鍵設定 / Shortcut settings',click:()=>sendDesktopAction('options')}]},
-    {label:'說明 / Help',submenu:[{label:'關於 SalaryMate / About',click:() => dialog.showMessageBox(window,{message:'SalaryMate v5.0.0 正式版',detail:'桌面封裝 4 · 自動備份／快捷登記／PDF\nDesktop package 4 · Backups / Quick entry / PDF\n資料與網站分開儲存；以備份匯入搬移。\nTransfer browser records with a backup.\n未具發行者簽章／Apple 公證。\nNo publisher certificate or Apple notarization.'})}]}
+    {label:'桌面工具 / Desktop',submenu:[{label:'快捷登記 / Quick entry',click:()=>sendDesktopAction('quick')},{label:'自動備份 / Automatic backups',click:()=>sendDesktopAction('backups')},{label:'年度報表 PDF / Annual PDF',click:()=>sendDesktopAction('pdf')},{label:'快捷鍵設定 / Shortcut settings',click:()=>sendDesktopAction('options')},{label:'更新中心 / Update center',click:()=>sendDesktopAction('updates')}]},
+    {label:'說明 / Help',submenu:[{label:'更新中心 / Update center',click:()=>sendDesktopAction('updates')},{label:'關於 SalaryMate / About',click:() => dialog.showMessageBox(window,{message:'SalaryMate v5.0.0 正式版',detail:'桌面封裝 5 · 更新中心\nDesktop package 5 · Update center\n資料與網站分開儲存；以備份匯入搬移。\nTransfer browser records with a backup.\n未具發行者簽章／Apple 公證。\nNo publisher certificate or Apple notarization.'})}]}
   ]));
   createWindow();
   // Preferences and shortcut registration never block the first window.

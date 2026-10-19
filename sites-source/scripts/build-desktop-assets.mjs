@@ -34,6 +34,8 @@ runtime=once(runtime,"data:base64(bytes),fileName,mimeType,encoding:'base64'","d
 runtime=once(runtime,'root.SalaryMateDesktop=Object.freeze({saveBlob,createDriveUI,maxDocumentBytes:MAX_BYTES});','root.SalaryMateDesktopFiles=Object.freeze({saveBlob,createDriveUI,maxDocumentBytes:MAX_BYTES});');
 runtime=once(runtime,'changed(){}','changed(){root.SalaryMateDesktopFeatures?.changed();}');
 new vm.Script(runtime);await fs.writeFile(path.join(stage,'desktop-runtime.js'),runtime);
+const updates=await fs.readFile(path.join(native,'renderer/updates.js'),'utf8');
+new vm.Script(updates);await fs.writeFile(path.join(stage,'desktop-updates.js'),updates);
 const features=await fs.readFile(path.join(native,'renderer/features.js'),'utf8');
 new vm.Script(features);await fs.writeFile(path.join(stage,'desktop-features.js'),features);
 // Preserve validated migration for older Android encrypted backups too.
@@ -41,9 +43,9 @@ await fs.copyFile(path.join(root,'scripts/lib/android-legacy-backup.js'),path.jo
 let html=await fs.readFile(path.join(stage,'index.html'),'utf8');
 // The installer becomes public together with this release; retain current live
 // web links until the release workflow has published both verified packages.
-html=html.replaceAll('v5.0.0-desktop.3','v5.0.0-desktop.4');
+html=html.replaceAll('v5.0.0-desktop.4',`v${pkg.version}-desktop.${pkg.desktopRelease}`);
 const entry=html.match(/<script defer src="\.\/startup\.js\?v=[^"]+"><\/script>/)?.[0];if(!entry)throw Error('Missing startup entry');
-html=once(html,entry,'<script defer src="./desktop-runtime.js"></script>\n  <script defer src="./desktop-legacy-backup.js"></script>\n  <script defer src="./desktop-features.js"></script>\n  '+entry);
+html=once(html,entry,'<script defer src="./desktop-runtime.js"></script>\n  <script defer src="./desktop-legacy-backup.js"></script>\n  <script defer src="./desktop-updates.js"></script>\n  <script defer src="./desktop-features.js"></script>\n  '+entry);
 html=html.replace(/\s*<link rel="manifest"[^>]*>/,'');
 html=once(html,'accept="application/json,.json"','accept="application/json,application/octet-stream,.json,.salarymate"');
 html=html.replace('SalaryMate · v5.0.0 正式版</title>','SalaryMate · v5.0.0 正式版 · 桌面版</title>');
@@ -55,7 +57,7 @@ await fs.writeFile(path.join(stage,'index.html'),html);
 const zhOld='資料預設儲存在目前瀏覽器；啟用 Google Drive 備份後，備份會傳至你授權的 Google 帳戶。';
 const zhNew='桌面版資料儲存在此電腦，與網站及 Android 分開。一般／加密備份可手動搬移；Drive 備份請選自己的 Drive 電腦版同步資料夾。';
 let startup=await fs.readFile(path.join(stage,'startup.js'),'utf8');
-startup=startup.replaceAll('v5.0.0-desktop.3','v5.0.0-desktop.4');
+startup=startup.replaceAll('v5.0.0-desktop.4',`v${pkg.version}-desktop.${pkg.desktopRelease}`);
 // i18n keys and the app each contain this label, so replace both consistently.
 if(!startup.includes(zhOld))throw Error('Missing desktop data notice');
 startup=startup.replaceAll(zhOld,zhNew);
@@ -93,7 +95,7 @@ for(const file of retired){const bytes=await fs.readFile(path.join(stage,file));
 const files=[];
 async function collect(dir,prefix=''){for(const entry of (await fs.readdir(dir,{withFileTypes:true})).sort((a,b)=>a.name.localeCompare(b.name))){const key=prefix+entry.name,full=path.join(dir,entry.name);if(entry.isDirectory())await collect(full,key+'/');else if(entry.isFile()){const bytes=await fs.readFile(full);files.push({path:key,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')});}else throw Error('Non-regular asset');}}
 await collect(stage);
-const manifest={version:pkg.version,desktopBuild:pkg.build.buildVersion,source:'dist/dev/v5.0.0-dev.2',stateKey:'salarymate_v5_full_state',schema:15,csp,files,omitted,api:await Promise.all(apiFiles.map(async file=>({path:file,sha256:createHash('sha256').update(await fs.readFile(path.join(native,'api',file))).digest('hex')})))};
+const manifest={version:pkg.version,desktopBuild:pkg.build.buildVersion,desktopRelease:pkg.desktopRelease,source:'dist/dev/v5.0.0-dev.2',stateKey:'salarymate_v5_full_state',schema:15,csp,files,omitted,api:await Promise.all(apiFiles.map(async file=>({path:file,sha256:createHash('sha256').update(await fs.readFile(path.join(native,'api',file))).digest('hex')})))};
 await fs.writeFile(path.join(stage,'desktop-asset-manifest.json'),JSON.stringify(manifest,null,2)+'\n');
 await fs.rm(target,{recursive:true,force:true});await fs.rename(stage,target);
 console.log(JSON.stringify({version:pkg.version,files:files.length,bytes:files.reduce((s,f)=>s+f.bytes,0),firstScreen:'local; optional content stays lazy'}));

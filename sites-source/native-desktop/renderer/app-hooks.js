@@ -1,11 +1,11 @@
 // Inserted only into the desktop startup closure by build-desktop-assets.mjs.
 window.SalaryMateDesktopFeatures?.attach({
   open:(title,body,wide)=>{
-    if(hasDirtyDraft()||($('#appDialog')?.open&&!document.querySelector('#desktopQuickPanel, #desktopOptionsForm, #desktopBackupPanel')))throw Error('DIALOG_BUSY');
+    if(hasDirtyDraft()||($('#appDialog')?.open&&!document.querySelector('#desktopQuickPanel, #desktopOptionsForm, #desktopBackupPanel, #desktopUpdatePanel')))throw Error('DIALOG_BUSY');
     openDialog(title,body,wide);
   },
   close:()=>{
-    if(hasDirtyDraft()||($('#appDialog')?.open&&!document.querySelector('#desktopQuickPanel, #desktopOptionsForm, #desktopBackupPanel')))return false;
+    if(hasDirtyDraft()||($('#appDialog')?.open&&!document.querySelector('#desktopQuickPanel, #desktopOptionsForm, #desktopBackupPanel, #desktopUpdatePanel')))return false;
     closeDialog();return true;
   },toast,
   hasChanges:hasDirtyDraft,

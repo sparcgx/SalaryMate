@@ -36,7 +36,7 @@
   catch(e){const next=message(e);if(next!==lastError)notice(next,true);lastError=next;}
   finally{busy=false;schedule();}
  }
- function sectionHTML(){return `<details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">${text('桌面工具','Desktop tools')}</span></summary><div class="v5-settings-content">${[['backups','自動備份','Automatic backups','歷史版本、還原預覽與保存份數','History, restore preview and retention'],['options','快捷登記','Quick entry','快捷鍵、系統匣與背景執行','Shortcut, tray and background mode'],['pdf','年度報表 PDF','Annual report PDF','依目前公司範圍與年度輸出 A4 報表','A4 report for the selected company scope and year']].map(([action,zh,en,dzh,den])=>`<div class="v5-setting-row"><div><h3>${text(zh,en)}</h3><p>${text(dzh,den)}</p></div><button type="button" class="btn btn-small" data-desktop-action="${action}">${text('開啟','Open')}</button></div>`).join('')}</div></details>`;}
+ function sectionHTML(){return `<details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">${text('桌面工具','Desktop tools')}</span></summary><div class="v5-settings-content">${[['updates','桌面更新中心','Desktop update center','檢查新版、下載校驗與更新前備份','Check releases, verify downloads and back up before updating'],['backups','自動備份','Automatic backups','歷史版本、還原預覽與保存份數','History, restore preview and retention'],['options','快捷登記','Quick entry','快捷鍵、系統匣與背景執行','Shortcut, tray and background mode'],['pdf','年度報表 PDF','Annual report PDF','依目前公司範圍與年度輸出 A4 報表','A4 report for the selected company scope and year']].map(([action,zh,en,dzh,den])=>`<div class="v5-setting-row"><div><h3>${text(zh,en)}</h3><p>${text(dzh,den)}</p></div><button type="button" class="btn btn-small" data-desktop-action="${action}">${text('開啟','Open')}</button></div>`).join('')}</div></details>`;}
  const button=(action,zh,en,extra='')=>`<button type="button" class="btn btn-small" data-desktop-action="${action}" ${extra}>${text(zh,en)}</button>`;
  function available(){if(!api)return false;if(!api.canOpen()){notice(text('請先完成或關閉目前的編輯視窗。','Finish or close the current dialog first.'),true);return false;}return true;}
  function quick(){
@@ -64,7 +64,7 @@
  }
  async function action(name,buttonNode){
   if(!api){pendingAction=name;return;}
-  const own=root.document.querySelector('#desktopQuickPanel, #desktopOptionsForm, #desktopBackupPanel');
+  const own=root.document.querySelector('#desktopQuickPanel, #desktopOptionsForm, #desktopBackupPanel, #desktopUpdatePanel');
   if(own&&api.hasChanges?.()){notice(text('請先儲存設定，或取消目前的變更。','Save the settings or cancel the current changes first.'),true);return;}
   if(!own&&!available())return;
   if(busy){notice(message({code:'DESKTOP_BUSY'}),true);return;}
@@ -73,7 +73,8 @@
   if(name==='pdf'){if(own)api.close();api.previewReport();return;}
   busy=true;
   try{
-    if(name==='options')await openOptions();
+    if(name==='updates')await root.SalaryMateDesktopUpdates.open();
+    else if(name==='options')await openOptions();
     else if(name==='backups')await history();
     else if(name==='choose-folder'){const result=await bridge.chooseBackupDirectory();options=result.options;schedule();await openOptions();}
     else if(name==='backup-now'){const result=await capture('manual');await history();notice(text('備份已儲存並驗證：','Backup saved and verified: ')+date(result.entry.createdAt));}
@@ -103,7 +104,7 @@
    if(!options.enabled)return true;
    try{await capture('before-import');return true;}catch(e){notice(message(e),true);return false;}
   },attach(app){
-   api=app;
+   api=app;root.SalaryMateDesktopUpdates?.attach(app);
    void bridge.featuresState().then(state=>{options=state.options;schedule();if(pendingAction){const next=pendingAction;pendingAction=null;void action(next);}}).catch(e=>notice(message(e),true));
   }});
 })(globalThis);

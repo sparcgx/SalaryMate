@@ -18,9 +18,21 @@ contextBridge.exposeInMainWorld('SalaryMateDesktop', Object.freeze({
   backupHistory: () => invoke('salarymate:backup-history'),
   readBackup: id => invoke('salarymate:backup-read',id),
   exportPdf: input => invoke('salarymate:report-pdf',input),
+  updateState:()=>invoke('salarymate:updates-state'),
+  checkUpdates:()=>invoke('salarymate:updates-check'),
+  downloadUpdate:()=>invoke('salarymate:updates-download'),
+  cancelUpdate:()=>invoke('salarymate:updates-cancel'),
+  revealUpdate:()=>invoke('salarymate:updates-reveal'),
+  installUpdate:data=>invoke('salarymate:updates-install',data),
+  onUpdateState:listener=>{
+    if(typeof listener!=='function')return ()=>{};
+    const handler=(_event,state)=>listener(state);
+    ipcRenderer.on('salarymate:update-state',handler);
+    return ()=>ipcRenderer.removeListener('salarymate:update-state',handler);
+  },
   onDesktopAction: listener => {
     if(typeof listener!=='function')return ()=>{};
-    const allowed=new Set(['quick','record','overtime','leave','transaction','backups','options','pdf']);
+    const allowed=new Set(['quick','record','overtime','leave','transaction','backups','options','pdf','updates']);
     const handler=(_event,action)=>{if(allowed.has(action))listener(action);};
     ipcRenderer.on('salarymate:desktop-action',handler);
     return ()=>ipcRenderer.removeListener('salarymate:desktop-action',handler);
