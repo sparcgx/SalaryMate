@@ -32,12 +32,18 @@ runtime=once(runtime,base64Helper,'');
 runtime=once(runtime,"data:base64(bytes),fileName,mimeType,encoding:'base64'","data:bytes,fileName,mimeType,encoding:'bytes'");
 // The adapter's public utility name must not replace the isolated native bridge.
 runtime=once(runtime,'root.SalaryMateDesktop=Object.freeze({saveBlob,createDriveUI,maxDocumentBytes:MAX_BYTES});','root.SalaryMateDesktopFiles=Object.freeze({saveBlob,createDriveUI,maxDocumentBytes:MAX_BYTES});');
+runtime=once(runtime,'changed(){}','changed(){root.SalaryMateDesktopFeatures?.changed();}');
 new vm.Script(runtime);await fs.writeFile(path.join(stage,'desktop-runtime.js'),runtime);
+const features=await fs.readFile(path.join(native,'renderer/features.js'),'utf8');
+new vm.Script(features);await fs.writeFile(path.join(stage,'desktop-features.js'),features);
 // Preserve validated migration for older Android encrypted backups too.
 await fs.copyFile(path.join(root,'scripts/lib/android-legacy-backup.js'),path.join(stage,'desktop-legacy-backup.js'));
 let html=await fs.readFile(path.join(stage,'index.html'),'utf8');
+// The installer becomes public together with this release; retain current live
+// web links until the release workflow has published both verified packages.
+html=html.replaceAll('v5.0.0-desktop.3','v5.0.0-desktop.4');
 const entry=html.match(/<script defer src="\.\/startup\.js\?v=[^"]+"><\/script>/)?.[0];if(!entry)throw Error('Missing startup entry');
-html=once(html,entry,'<script defer src="./desktop-runtime.js"></script>\n  <script defer src="./desktop-legacy-backup.js"></script>\n  '+entry);
+html=once(html,entry,'<script defer src="./desktop-runtime.js"></script>\n  <script defer src="./desktop-legacy-backup.js"></script>\n  <script defer src="./desktop-features.js"></script>\n  '+entry);
 html=html.replace(/\s*<link rel="manifest"[^>]*>/,'');
 html=once(html,'accept="application/json,.json"','accept="application/json,application/octet-stream,.json,.salarymate"');
 html=html.replace('SalaryMate · v5.0.0 正式版</title>','SalaryMate · v5.0.0 正式版 · 桌面版</title>');
@@ -49,9 +55,20 @@ await fs.writeFile(path.join(stage,'index.html'),html);
 const zhOld='資料預設儲存在目前瀏覽器；啟用 Google Drive 備份後，備份會傳至你授權的 Google 帳戶。';
 const zhNew='桌面版資料儲存在此電腦，與網站及 Android 分開。一般／加密備份可手動搬移；Drive 備份請選自己的 Drive 電腦版同步資料夾。';
 let startup=await fs.readFile(path.join(stage,'startup.js'),'utf8');
+startup=startup.replaceAll('v5.0.0-desktop.3','v5.0.0-desktop.4');
 // i18n keys and the app each contain this label, so replace both consistently.
 if(!startup.includes(zhOld))throw Error('Missing desktop data notice');
 startup=startup.replaceAll(zhOld,zhNew);
+const downloads='<details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">下載應用程式</span>';
+startup=once(startup,downloads,'${window.SalaryMateDesktopFeatures.sectionHTML()}'+downloads);
+const reportStart=startup.indexOf('    const downloadAnnualPrint = () => {'),reportEnd=startup.indexOf('    const exportAnnualReport = () => {',reportStart);
+if(reportStart<0||reportEnd<=reportStart)throw Error('Missing native PDF adapter boundary');
+startup=startup.slice(0,reportStart)+'    const downloadAnnualPrint = () => {void window.SalaryMateDesktopFeatures.savePdf();};\n'+startup.slice(reportEnd);
+startup=startup.replaceAll('下載列印版／PDF 用','儲存 PDF');
+startup=once(startup,'Download printable / PDF version','Save PDF');
+startup=once(startup,"      const generation = contextGeneration();\n      setOperationStatus('loading', 'restore-read'","      if(!await window.SalaryMateDesktopFeatures.beforeImport())return;\n      const generation = contextGeneration();\n      setOperationStatus('loading', 'restore-read'");
+const hooks=await fs.readFile(path.join(native,'renderer/app-hooks.js'),'utf8');
+startup=once(startup,'    window.SalaryMateStartup?.complete();',hooks+'\n    window.SalaryMateStartup?.complete();');
 startup+='\nObject.assign(window.SalaryMateEnglish,'+JSON.stringify({[zhNew]:'Desktop data is stored on this computer, separately from the website and Android. Transfer records with a plain or encrypted backup. For Drive, choose your own Drive for desktop sync folder.'})+');\n';
 new vm.Script(startup);await fs.writeFile(path.join(stage,'startup.js'),startup);
 let reference=await fs.readFile(path.join(stage,'reference-tools.js'),'utf8');

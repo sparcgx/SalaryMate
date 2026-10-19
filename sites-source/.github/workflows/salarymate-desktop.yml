@@ -8,6 +8,7 @@ on:
       - 'sites-source/native-desktop/**'
       - 'sites-source/scripts/build-desktop-assets.mjs'
       - 'sites-source/tests/v5-desktop.test.mjs'
+      - 'sites-source/tests/v5-desktop-features.test.mjs'
 permissions:
   contents: read
 concurrency:
@@ -85,9 +86,9 @@ jobs:
         run: |
           current=$(gh api repos/"$GITHUB_REPOSITORY"/git/ref/heads/dev/v5.0.0-dev.2 --jq .object.sha)
           test "$current" = "$GITHUB_SHA" || { echo "Source advanced; do not publish stale installers." >&2; exit 1; }
-          tag=v5.0.0-desktop.3
+          tag=v5.0.0-desktop.4
           if gh release view "$tag" >/dev/null 2>&1; then
             echo 'This desktop release already exists. Use a new build/tag for changed installers.' >&2
             exit 1
           fi
-          gh release create "$tag" desktop-release/* --target "$GITHUB_SHA" --title 'SalaryMate v5.0.0 正式版 · Windows x64 / Mac M 系列優化' --notes-file sites-source/native-desktop/RELEASE-NOTES.md
+          gh release create "$tag" desktop-release/* --target "$GITHUB_SHA" --title 'SalaryMate v5.0.0 正式版 · 自動備份／快捷登記／PDF' --notes-file sites-source/native-desktop/RELEASE-NOTES.md

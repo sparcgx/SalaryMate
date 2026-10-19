@@ -10,5 +10,19 @@ function invoke(channel, input) {
 contextBridge.exposeInMainWorld('SalaryMateDesktop', Object.freeze({
   platform: process.platform,
   saveDocument: input => invoke('salarymate:save', input),
-  openDocument: () => invoke('salarymate:open')
+  openDocument: () => invoke('salarymate:open'),
+  featuresState: () => invoke('salarymate:features-state'),
+  chooseBackupDirectory: () => invoke('salarymate:backup-directory'),
+  configureFeatures: options => invoke('salarymate:features-configure',options),
+  backupSnapshot: input => invoke('salarymate:backup-snapshot',input),
+  backupHistory: () => invoke('salarymate:backup-history'),
+  readBackup: id => invoke('salarymate:backup-read',id),
+  exportPdf: input => invoke('salarymate:report-pdf',input),
+  onDesktopAction: listener => {
+    if(typeof listener!=='function')return ()=>{};
+    const allowed=new Set(['quick','record','overtime','leave','transaction','backups','options','pdf']);
+    const handler=(_event,action)=>{if(allowed.has(action))listener(action);};
+    ipcRenderer.on('salarymate:desktop-action',handler);
+    return ()=>ipcRenderer.removeListener('salarymate:desktop-action',handler);
+  }
 }));

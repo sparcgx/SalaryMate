@@ -1,28 +1,24 @@
-SalaryMate **v5.0.0 正式版**，Windows / macOS 桌面封裝 3。沿用現有薪資、投資、備份、全部風格與晶羽；包含最新政府辦公日曆整合。
+SalaryMate **v5.0.0 正式版**，桌面封裝 4（build 5000106）。本次加入自動備份、快捷登記及直接輸出 PDF；沿用現有薪資、投資、政府辦公日曆、全部風格與晶羽。
 
 | 電腦 | 安裝檔 |
 | --- | --- |
-| Windows 10/11，64 位元 | `SalaryMate_v5.0.0_win_x64.exe` |
+| Windows 10／11，64 位元 | `SalaryMate_v5.0.0_win_x64.exe` |
 | Mac，Apple Silicon（M 系列），macOS 13+ | `SalaryMate_v5.0.0_mac_arm64.dmg` |
 
-Mac 請將 App 拖到 Applications。Windows 依安裝精靈操作。
+到「設定 → 桌面工具」開始使用：
 
-**資料搬移**：桌面版與網站／Android 的資料各自儲存。先在原入口匯出備份，於桌面版設定匯入，預覽核對後確認。Google Drive 使用自己的 Drive 電腦版同步資料夾，雲端同步狀態由 Drive 顯示。
+- **自動備份**：選擇私人資料夾後開啟，每 5／15／60 分鐘檢查變更，保留 10／30／60 份。備份寫入、讀回校驗及歷史更新全部成功後，才清理超額舊版本。歷史版本先驗證，再進入原有還原預覽。啟用時，匯入前先保存目前資料；保存失敗停止匯入。
+- **快捷登記**：從桌面選單開啟薪資、加班、請假或股票交易的原表單；可啟用全域快捷鍵與系統匣／Mac 選單列。預設 Windows `Ctrl+Shift+M`、Mac `⌘+Shift+M`，可換另一組；占用時保留原設定。啟用後關閉視窗會常駐，請選「結束」完全退出。
+- **直接輸出 PDF**：年度報表預覽選「儲存 PDF」，依目前公司範圍、年度與截止月輸出 A4 橫式、頁碼報表；本機產生並驗證檔案，取消或失敗保留原檔。內容沿用既有薪資年度報表，投資收入仍由投資頁查看與匯出。
 
-**簽章狀態**：Windows 尚無發行者憑證；Mac 為 ad-hoc 簽章，尚無 Apple Developer ID／公證。首次開啟可能被系統阻擋。請核對來源與附檔 SHA-256，勿關閉整體系統防護。
+自動備份預設關閉，僅在程式執行時排程；本次沒有新增開機自啟。自動備份為一般 JSON，含私人薪資與投資內容，請選私人資料夾；原有手動加密備份保留。儲存到自己的 Drive 同步資料夾後，雲端進度仍由 Drive 顯示。
 
-**程式驗證**：備份、資料邊界、完整素材、CSP、安裝包架構及 Mac 映像完整性。`verification-*.json` 記錄各包的版本、來源與 SHA-256。
+**升級與資料**：沿用原 App ID、本機資料目錄、`salarymate_v5_full_state`、Schema 15 與備份格式，未新增依賴或修改計算公式。網站／Android 與桌面各自儲存；跨入口先匯出備份，再匯入並核對預覽。
 
-**實機待驗證**：Windows／Mac 安裝、重開保存、備份往返、Drive、網路行情與動畫流暢度。尚未宣稱實機或 FPS 驗收通過。
+**安裝與簽章**：Windows 依精靈操作；Mac 將 App 拖到 Applications。Windows 尚無發行者憑證；Mac 為 ad-hoc 簽章，尚無 Apple Developer ID／公證，首次開啟可能被系統阻擋。請核對來源與 SHA-256，不要關閉整體系統防護。
 
-本次優化（build 5000105）：
+**程式驗證**：新增功能失敗回復、資料邊界、完整素材、CSP、安裝包架構及 Mac 映像完整性；詳見 `verification-*.json` 與 CI。`performance-*.json` 僅是 Node 合成檔案比較，不代表開窗或動畫實測。
 
-- 行情與匯率使用時才載入，第一次開窗不等待這些模組。
-- 本機素材以內容雜湊重新驗證，未變更時免重讀；升級會檢查新版內容。
-- Blob／CSV／HTML 匯出改用二進位 IPC，取消 Base64 膨脹；備份讀回驗證改成 256 KiB 分段緩衝，保留驗證失敗回復。
-- 去除 3 張已無引用的舊素材，桌面網頁資源由 31,659,706 降至 27,964,302 bytes（約 11.7%）。全部現用背景、飛行及魔法素材保留。
-- 原生 Windows x64、Mac arm64；沿用相同資料目錄、Schema 15 與備份格式，保留 BOM 相容修正。
+**實機待驗證**：Windows／Mac 安裝、升級資料保留、快捷鍵／系統匣、備份還原往返、PDF 中文字型／分頁、Drive、行情及動畫。程式驗證不代表實機驗收或 FPS 通過。未使用瀏覽器或模擬器測試。
 
-Intel Mac 請使用[桌面封裝 2](https://github.com/sparcgx/SalaryMate/releases/tag/v5.0.0-desktop.2)，本次沒有重建 Intel 安裝檔。
-
-`performance-*.json` 是 CI 上 Node 合成檔案處理比較，並非實機開窗速度或動畫 FPS。
+Intel Mac 保留[桌面封裝 2](https://github.com/sparcgx/SalaryMate/releases/tag/v5.0.0-desktop.2)；此次新增功能安裝包只提供 Windows x64、Mac arm64。

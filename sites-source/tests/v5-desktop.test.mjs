@@ -108,7 +108,7 @@ test('installer settings retain profile, target Windows x64 / Mac arm64, and exp
  assert.equal(pkg.build.nsis.deleteAppDataOnUninstall,false);assert.equal(pkg.build.nsis.runAfterFinish,false);
  assert.equal(pkg.build.mac.identity,'-');assert.equal(pkg.build.mac.notarize,false);
  const flow=await read('.github/workflows/salarymate-desktop.yml');assert.match(flow,/arch: arm64/);assert.match(flow,/arch: x64/);assert.doesNotMatch(flow,/playwright|puppeteer|xvfb/i);
- assert.equal((flow.match(/arch: x64/g)||[]).length,1);assert.match(flow,/tag=v5\.0\.0-desktop\.3/);
+ assert.equal((flow.match(/arch: x64/g)||[]).length,1);assert.match(flow,/tag=v5\.0\.0-desktop\.4/);
 });
 
 test('binary bridge rejects invalid/shared/oversized input and preserves typed-array slices after cloning',()=>{
