@@ -71,7 +71,7 @@ test('R84 resume ignores superseded replies and keeps successful announcements p
 test('R84 an already-cancelled request never starts HTTP or a timeout',async()=>{
  const h=harness(),controller=new AbortController();controller.abort();let sent=0;h.context.fetch=async()=>{sent++;return {ok:true,json:async()=>({announcements:[],errors:[]})};};
  // Reload just the actual service implementation, retaining the native fixture.
- vm.runInContext(sources[1],h.context);
+ vm.runInContext(fs.readFileSync(new URL('stocks-integrations.js',base),'utf8'),h.context);
  await assert.rejects(h.context.SalaryMateStockServices.forecasts('TW','0050',2026,controller.signal));assert.equal(sent,0);assert.equal(h.timers.size,0);
 });
 
