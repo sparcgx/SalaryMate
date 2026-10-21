@@ -1,0 +1,97 @@
+name: SalaryMate desktop installers
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev/v5.0.0-dev.2]
+    paths:
+      - '.github/workflows/salarymate-desktop.yml'
+      - 'sites-source/native-desktop/**'
+      - 'sites-source/scripts/build-desktop-assets.mjs'
+      - 'sites-source/tests/v5-desktop.test.mjs'
+      - 'sites-source/tests/v5-desktop-features.test.mjs'
+      - 'sites-source/tests/v5-desktop-updates.test.mjs'
+      - 'sites-source/tests/v5-live-market.test.mjs'
+      - 'sites-source/.github/workflows/salarymate-desktop.yml'
+permissions:
+  contents: read
+concurrency:
+  group: salarymate-desktop-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  package:
+    name: Package ${{ matrix.platform }} ${{ matrix.arch }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-2022
+            platform: win
+            arch: x64
+          - os: macos-15
+            platform: mac
+            arch: arm64
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: sites-source/native-desktop
+        shell: bash
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: sites-source/native-desktop/package-lock.json
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run assets
+      - run: npm test
+      - run: npm run package -- --${{ matrix.platform }} --${{ matrix.arch }}
+      - run: npm run verify -- ${{ matrix.arch }}
+      - name: Measure synthetic file pipeline (no GUI)
+        run: npm run benchmark -- release/performance-${{ matrix.platform }}-${{ matrix.arch }}.json
+      - name: Verify Mac disk image and ad-hoc signature
+        if: matrix.platform == 'mac'
+        run: |
+          hdiutil verify release/*.dmg
+          if [ '${{ matrix.arch }}' = arm64 ]; then appdir=release/mac-arm64; else appdir=release/mac; fi
+          codesign --verify --deep --strict "$appdir/SalaryMate.app"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SalaryMate-v5.1.0-${{ matrix.platform }}-${{ matrix.arch }}
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 90
+          path: |
+            sites-source/native-desktop/release/*.exe
+            sites-source/native-desktop/release/*.dmg
+            sites-source/native-desktop/release/SHA256SUMS-*.txt
+            sites-source/native-desktop/release/verification-*.json
+            sites-source/native-desktop/release/performance-*.json
+  publish:
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: SalaryMate-v5.1.0-*
+          path: desktop-release
+          merge-multiple: true
+      - name: Publish verified desktop installers
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          current=$(gh api repos/"$GITHUB_REPOSITORY"/git/ref/heads/dev/v5.0.0-dev.2 --jq .object.sha)
+          test "$current" = "$GITHUB_SHA" || { echo "Source advanced; do not publish stale installers." >&2; exit 1; }
+          tag=v5.1.0-desktop.1
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo 'This desktop release already exists. Use a new build/tag for changed installers.' >&2
+            exit 1
+          fi
+          gh release create "$tag" desktop-release/* --target "$GITHUB_SHA" --title 'SalaryMate v5.1.0 正式版 · 台股與美股盤中行情' --notes-file sites-source/native-desktop/RELEASE-NOTES.md
