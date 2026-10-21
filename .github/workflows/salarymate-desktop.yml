@@ -10,6 +10,7 @@ on:
       - 'sites-source/tests/v5-desktop.test.mjs'
       - 'sites-source/tests/v5-desktop-features.test.mjs'
       - 'sites-source/tests/v5-desktop-updates.test.mjs'
+      - 'sites-source/tests/v5-live-market.test.mjs'
 permissions:
   contents: read
 concurrency:
