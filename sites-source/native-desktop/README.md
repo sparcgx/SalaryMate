@@ -1,11 +1,11 @@
-# SalaryMate v5.0.0 正式版 · Windows / macOS
+# SalaryMate v5.1.0 正式版 · Windows / macOS
 
-沿用已發布 v5.0.0 正式版（包含辦公日曆整合），桌面封裝 5，build 5000107。薪資與投資程式不重寫，資料 KEY `salarymate_v5_full_state`、Schema 15 維持一致。
+v5.1.0 新增台股與美股股票／ETF 開盤至收盤自動行情，桌面封裝 1，build 5010001。薪資與投資程式不重寫，資料 KEY `salarymate_v5_full_state`、Schema 15 維持一致。
 
 ## 安裝
 
-- Windows 10／11 64 位元：開啟 `SalaryMate_v5.0.0_win_x64.exe`，選擇個人安裝位置。此包不要求系統管理員權限。
-- macOS 13 以上 Apple Silicon（M 系列）：`SalaryMate_v5.0.0_mac_arm64.dmg`。
+- Windows 10／11 64 位元：開啟 `SalaryMate_v5.1.0_win_x64.exe`，選擇個人安裝位置。此包不要求系統管理員權限。
+- macOS 13 以上 Apple Silicon（M 系列）：`SalaryMate_v5.1.0_mac_arm64.dmg`。
 - Intel Mac 保留[桌面封裝 2](https://github.com/sparcgx/SalaryMate/releases/tag/v5.0.0-desktop.2)；本次優化發行只包含 Windows x64 與 Mac arm64。
 - Mac 開啟 DMG，將 SalaryMate 拖到 Applications（應用程式），再從應用程式開啟。
 - 尚未提供發行者簽章憑證。Windows 未有 Authenticode 簽章；Mac 只有 ad-hoc 完整性簽章，沒有 Apple Developer ID 與公證。首次安裝可能被系統阻擋；請核對下載來源與 SHA-256，不要關閉系統的整體安全保護。受管理的電腦可能需要管理員核准。

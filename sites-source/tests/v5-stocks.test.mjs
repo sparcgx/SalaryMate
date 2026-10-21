@@ -94,7 +94,7 @@ test('Stocks shell includes modules in correct order and service-worker cache, d
  const base=new URL('../dist/dev/v5.0.0-dev.2/',import.meta.url),html=fs.readFileSync(new URL('index.html',base),'utf8'),sw=fs.readFileSync(new URL('sw.js',base),'utf8'),css=fs.readFileSync(new URL('styles.css',base),'utf8'),bundle=fs.readFileSync(new URL('startup.js',base),'utf8');
  const startup=html.match(/<script\b[^>]*\bdefer\b[^>]*\bsrc="(\.\/startup\.js\?v=[^"]+)"/),styles=html.match(/href="(\.\/styles-core\.css\?v=[^"]+)"/);
  assert.ok(startup,'The shell loads the deferred startup bundle');assert.ok(styles,'The shell loads core styles');
- const modules=['stocks.js','stocks-integrations.js','stocks-ui.js','app.js'].map(name=>{const index=bundle.indexOf(`/* SalaryMate module: ${name} */`);assert.ok(index>=0,`${name} exists in startup.js`);return index;});
+ const modules=['stocks.js','market-hours.js','stocks-integrations.js','stocks-ui.js','app.js'].map(name=>{const index=bundle.indexOf(`/* SalaryMate module: ${name} */`);assert.ok(index>=0,`${name} exists in startup.js`);return index;});
  for(let i=1;i<modules.length;i++)assert.ok(modules[i-1]<modules[i],'Stock dependencies precede their consumers');
  const shell=JSON.parse(sw.match(/const SHELL=(\[[^\r\n]+\]);/)[1]),stylePacks=JSON.parse(sw.match(/const STYLE_PACKS=(\[[^\r\n]+\]);/)[1]);
  assert.ok(shell.includes('./index.html'));assert.ok(shell.includes(startup[1]));assert.ok(shell.includes(styles[1]));assert.ok(stylePacks.includes(styles[1].replace('styles-core.css','styles.css')));

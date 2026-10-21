@@ -56,6 +56,7 @@
       for(const k of ['requested','updated'])if(m[k]!=null&&(!Number.isInteger(m[k])||m[k]<0))error('市場同步筆數不正確。');
       for(const k of ['lastSyncAt','lastAttemptAt'])if(m[k]!=null&&(typeof m[k]!=='string'||!Number.isFinite(Date.parse(m[k]))))error('市場同步時間不正確。');
       if(m.status!=null&&!['success','partial','error'].includes(m.status))error('市場同步狀態不正確。');
+      if(m.lastCloseSync!=null&&(typeof m.lastCloseSync!=='object'||Array.isArray(m.lastCloseSync)||Object.entries(m.lastCloseSync).some(([k,v])=>!['TW','US'].includes(k)||!dateOK(v))))error('收盤同步日期不正確。');
     }
     const ids = new Set(), keys = new Set(), txids = new Set(), assetsById = new Map();
     for (const a of p.assets) {
@@ -65,6 +66,8 @@
       if (keys.has(key)) error('同一帳戶已有這個股票代號。');
       if(a.favorite!=null&&typeof a.favorite!=='boolean')error('股票收藏格式不正確。');
       if(a.priceUpdateMode!=null&&!['auto','manual'].includes(a.priceUpdateMode))error('行情更新模式不正確。');
+      if(a.quoteDataState!=null&&!['latest','realtime','delayed','unknown'].includes(a.quoteDataState))error('行情來源狀態不正確。');
+      if(a.quotePriceKind!=null&&!['latest','close'].includes(a.quotePriceKind))error('行情價格類型不正確。');
       if(a.quoteMarketAt!=null&&a.quoteMarketAt!==''&&(typeof a.quoteMarketAt!=='string'||!/^\d{4}-\d\d-\d\dT.*(?:Z|[+-]\d\d:\d\d)$/.test(a.quoteMarketAt)||!Number.isFinite(Date.parse(a.quoteMarketAt))))error('行情時間格式不正確。');
       for(const key of ['group','industryOverride','exchangeOverride'])if(a[key]!=null&&(typeof a[key]!=='string'||a[key].length>60))error('股票分類內容過長。');
       if(a.typeOverride!=null&&!['','stock','etf','fund','other'].includes(a.typeOverride))error('股票類別不正確。');

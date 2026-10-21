@@ -6,7 +6,7 @@ import postcss from 'postcss';
 
 // Native object fixtures and returned HTML only; no browser, DOM emulator or network.
 const base=new URL('../dist/dev/v5.0.0-dev.2/',import.meta.url);
-const sources=['stocks.js','stocks-integrations.js','stocks-ui.js'].map(n=>fs.readFileSync(new URL(n,base),'utf8'));
+const sources=['stocks.js','market-hours.js','stocks-integrations.js','stocks-ui.js'].map(n=>fs.readFileSync(new URL(n,base),'utf8'));
 const today='2026-10-09',turn=()=>new Promise(setImmediate);
 function harness(count=1){
  const assets=Array.from({length:count},(_,i)=>({id:'a'+i,symbol:'00'+(50+i),name:'Fixture ETF '+i,market:'TW',currency:'TWD',account:'Fixture',quotePrice:25,quoteDate:today,quoteFx:1,quoteMode:'auto'}));

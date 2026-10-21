@@ -1698,3 +1698,6 @@ body.jingyu-screen-hit :is(.sidebar,.workspace-shell>.topbar,.workspace-shell>ma
 .app-downloads a{display:inline-block;color:inherit;font:inherit;line-height:1.5;padding:8px 0;white-space:nowrap;text-decoration:underline;text-underline-offset:3px}
 .app-downloads a:focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:3px}
 @media(max-width:600px){.app-downloads{flex-basis:100%;justify-content:flex-start;margin-inline-start:0}}
+
+/* Regular-session market updates */
+.stock-session-bar{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center;padding:.6rem 0 .15rem}.stock-session{display:flex;gap:.45rem;flex-wrap:wrap;align-items:baseline;border:1px solid var(--border,#dce2e9);border-radius:.6rem;padding:.4rem .65rem}.stock-session small{opacity:.72}.stock-session[data-phase="open"]{border-color:#2d9b78}.stock-session[data-phase="open"]>span{color:#187451;font-weight:700}.stock-session-frequency{font-size:.8rem;opacity:.78}.stock-live-quality{display:block;font-size:.73rem;opacity:.8;margin-top:.2rem}.stock-live-quality[data-quality="stale"],.stock-live-quality[data-quality="delayed"]{color:#a4560b}.stock-market-policy{font-size:.8rem;line-height:1.6;opacity:.85}

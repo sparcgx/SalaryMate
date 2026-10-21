@@ -1,14 +1,14 @@
 {
   "name": "salarymate-desktop",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "private": true,
-  "description": "SalaryMate v5.0.0 正式版 — 個人薪資與投資管理",
+  "description": "SalaryMate v5.1.0 正式版 — 台股與美股盤中行情",
   "author": "SalaryMate",
   "license": "UNLICENSED",
   "main": "src/main.cjs",
   "scripts": {
     "assets": "node ../scripts/build-desktop-assets.mjs",
-    "test": "node --test ../tests/v5-desktop.test.mjs ../tests/v5-desktop-features.test.mjs ../tests/v5-desktop-updates.test.mjs",
+    "test": "node --test ../tests/v5-desktop.test.mjs ../tests/v5-desktop-features.test.mjs ../tests/v5-desktop-updates.test.mjs ../tests/v5-live-market.test.mjs ../tests/v5-r46-market-sync.test.mjs ../tests/v5-r41-intraday.test.mjs ../tests/v5-twse-close-integration.test.mjs",
     "benchmark": "node scripts/benchmark.cjs",
     "package": "electron-builder --publish never",
     "verify": "node scripts/verify-package.cjs"
@@ -20,7 +20,7 @@
   "build": {
     "appId": "com.salarymate.personal.desktop",
     "productName": "SalaryMate",
-    "buildVersion": "5000107",
+    "buildVersion": "5010001",
     "asar": true,
     "npmRebuild": false,
     "directories": {
@@ -56,7 +56,7 @@
       "deleteAppDataOnUninstall": false,
       "runAfterFinish": false,
       "createDesktopShortcut": true,
-      "shortcutName": "SalaryMate v5.0.0 正式版",
+      "shortcutName": "SalaryMate v5.1.0 正式版",
       "installerLanguages": [
         "zh_TW",
         "en_US"
@@ -75,7 +75,7 @@
       "hardenedRuntime": true
     },
     "dmg": {
-      "title": "SalaryMate v5.0.0 正式版",
+      "title": "SalaryMate v5.1.0 正式版",
       "contents": [
         {
           "x": 140,
@@ -90,5 +90,5 @@
       ]
     }
   },
-  "desktopRelease": 5
+  "desktopRelease": 1
 }

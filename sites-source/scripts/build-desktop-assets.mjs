@@ -43,12 +43,12 @@ await fs.copyFile(path.join(root,'scripts/lib/android-legacy-backup.js'),path.jo
 let html=await fs.readFile(path.join(stage,'index.html'),'utf8');
 // The installer becomes public together with this release; retain current live
 // web links until the release workflow has published both verified packages.
-html=html.replaceAll('v5.0.0-desktop.4',`v${pkg.version}-desktop.${pkg.desktopRelease}`);
+html=html.replace(/v5\.0\.0-desktop\.5/g,`v${pkg.version}-desktop.${pkg.desktopRelease}`).replace(/SalaryMate_v5\.0\.0_(win|mac)_/g,`SalaryMate_v${pkg.version}_$1_`);
 const entry=html.match(/<script defer src="\.\/startup\.js\?v=[^"]+"><\/script>/)?.[0];if(!entry)throw Error('Missing startup entry');
 html=once(html,entry,'<script defer src="./desktop-runtime.js"></script>\n  <script defer src="./desktop-legacy-backup.js"></script>\n  <script defer src="./desktop-updates.js"></script>\n  <script defer src="./desktop-features.js"></script>\n  '+entry);
 html=html.replace(/\s*<link rel="manifest"[^>]*>/,'');
 html=once(html,'accept="application/json,.json"','accept="application/json,application/octet-stream,.json,.salarymate"');
-html=html.replace('SalaryMate · v5.0.0 正式版</title>','SalaryMate · v5.0.0 正式版 · 桌面版</title>');
+html=html.replace(`SalaryMate · v${pkg.version} 正式版</title>`,`SalaryMate · v${pkg.version} 正式版 · 桌面版</title>`);
 const hashes=[...html.matchAll(/<script\b(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi)].map(m=>"'sha256-"+createHash('sha256').update(m[1].replace(/\r\n?/g,'\n')).digest('base64')+"'");
 const csp=["default-src 'self'","script-src 'self' "+hashes.join(' '),"script-src-attr 'none'","style-src 'self' 'unsafe-inline'","img-src 'self' data: blob:","font-src 'self' data:","connect-src 'self'","frame-src 'none'","object-src 'none'","base-uri 'none'","form-action 'none'","worker-src 'none'"].join('; ');
 html=once(html,'<meta charset="utf-8">','<meta charset="utf-8">\n  <meta http-equiv="Content-Security-Policy" content="'+csp+'">');
@@ -57,7 +57,7 @@ await fs.writeFile(path.join(stage,'index.html'),html);
 const zhOld='資料預設儲存在目前瀏覽器；啟用 Google Drive 備份後，備份會傳至你授權的 Google 帳戶。';
 const zhNew='桌面版資料儲存在此電腦，與網站及 Android 分開。一般／加密備份可手動搬移；Drive 備份請選自己的 Drive 電腦版同步資料夾。';
 let startup=await fs.readFile(path.join(stage,'startup.js'),'utf8');
-startup=startup.replaceAll('v5.0.0-desktop.4',`v${pkg.version}-desktop.${pkg.desktopRelease}`);
+startup=startup.replace(/v5\.0\.0-desktop\.5/g,`v${pkg.version}-desktop.${pkg.desktopRelease}`).replace(/SalaryMate_v5\.0\.0_(win|mac)_/g,`SalaryMate_v${pkg.version}_$1_`);
 // i18n keys and the app each contain this label, so replace both consistently.
 if(!startup.includes(zhOld))throw Error('Missing desktop data notice');
 startup=startup.replaceAll(zhOld,zhNew);
@@ -75,7 +75,7 @@ startup+='\nObject.assign(window.SalaryMateEnglish,'+JSON.stringify({[zhNew]:'De
 new vm.Script(startup);await fs.writeFile(path.join(stage,'startup.js'),startup);
 let reference=await fs.readFile(path.join(stage,'reference-tools.js'),'utf8');
 reference=once(reference,'root.SalaryMatePortable?.marketOrigin||location.origin',"'salarymate://app'");await fs.writeFile(path.join(stage,'reference-tools.js'),reference);
-const apiFiles=['stock-market.mjs','dividend-market.mjs','intraday-nav.mjs','twse-close.mjs','reference-api.mjs'];
+const apiFiles=['stock-market.mjs','market-hours.mjs','dividend-market.mjs','intraday-nav.mjs','twse-close.mjs','reference-api.mjs'];
 await fs.mkdir(path.join(native,'api'),{recursive:true});
 for(const file of apiFiles)await fs.copyFile(path.join(root,'server',file),path.join(native,'api',file));
 // Retired images only. Current and compatibility flight assets remain intact.

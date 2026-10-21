@@ -1,6 +1,7 @@
 // Read-only public market data for the downloaded file. No account or payroll APIs.
 export function createPortableMarket(handleMarket) {
   const routes=new Map([
+    ['/api/stocks/portable/sessions','/api/stocks/sessions'],
     ['/api/stocks/portable/catalog','/api/stocks/catalog'],
     ['/api/stocks/portable/quotes','/api/stocks/quotes'],
     ['/api/stocks/portable/nav','/api/stocks/nav'],

@@ -14,7 +14,7 @@ const read=name=>fs.readFileSync(new URL(name,base),'utf8');
 test('R97 single deferred startup bundle preserves module order and exact generated website payloads',async()=>{
  const before=execFileSync('git',['show','97b22193e627e83032215bd5e74a37ebdfb9accc:dist/dev/v5.0.0-dev.2/index.html'],{cwd:root,encoding:'utf8'});
  const oldOrder=[...before.matchAll(/<script defer src="\.\/([^?]+)\?/g)].map(match=>match[1]);
- assert.deepEqual([...startupModules],oldOrder);
+ assert.deepEqual(startupModules.filter(name=>name!=='market-hours.js'),oldOrder);assert.ok(startupModules.indexOf('market-hours.js')<startupModules.indexOf('stocks-integrations.js'));
  const parts=await Promise.all(startupModules.map(async name=>`\n;/* SalaryMate module: ${name} */\n${name==='bootstrap.js'?await websiteBootstrap(fileURLToPath(base)):read(name)}\n`));
  const expected=parts.join('');
  assert.equal(read('startup.js'),expected);new vm.Script(expected);
@@ -42,6 +42,6 @@ test('R97 portable remains complete and does not fetch the hosted bundle',()=>{
  const html=fs.readFileSync(file,'utf8');
  assert.doesNotMatch(html,/<script[^>]+src=/);
  const modules=[...html.matchAll(/<script data-module="([^"]+)"/g)].map(match=>match[1]);
- assert.deepEqual(modules,['legal-data.js',...startupModules]);
+ assert.deepEqual(modules,['reference-data.js','reference-tools.js','legal-data.js',...startupModules]);
  assert.ok(html.includes('data:image/webp;base64,'));
 });

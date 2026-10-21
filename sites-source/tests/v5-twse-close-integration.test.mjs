@@ -57,7 +57,7 @@ function harness(initial=portfolio()){
   class FixedDate extends Date{constructor(...args){super(...(args.length?args:[NOW]));}static now(){return NOW;}}
   const document={activeElement:null,documentElement:{},hidden:false,addEventListener(){},querySelectorAll:()=>[],createTreeWalker:()=>({nextNode:()=>null}),querySelector:s=>s==='.stock-view'?{}:s==='#appDialog'?{open:false,addEventListener(){}}:null};
   const context=vm.createContext({Date:FixedDate,Intl,console,AbortController,document,navigator:{onLine:true,language:'en',languages:['en']},fetch:async()=>{throw Error('Unexpected browser network call');},setTimeout:(fn,ms)=>{timers.set(++id,{fn,ms});return id;},clearTimeout:key=>timers.delete(key),addEventListener(){},FormData:class{constructor(form){this.values=form.values;}[Symbol.iterator](){return Object.entries(this.values)[Symbol.iterator]();}},SalaryMateI18n:{user:s=>s,text:s=>s,apply(){}}});
-  for(const file of ['stocks.js','stocks-integrations.js','stocks-ui.js'])vm.runInContext(source(file),context,{filename:file});
+  for(const file of ['stocks.js','market-hours.js','stocks-integrations.js','stocks-ui.js'])vm.runInContext(source(file),context,{filename:file});
   const api={state:()=>current,year:()=>2026,today:()=>TODAY,legacyTotal:()=>0,id:()=>String(++id),begin(){},assert:()=>true,validate:()=>true,close(){},open(){},error:(_form,message)=>errors.push(message),toast(){},commit:fn=>{fn();return true;},render:()=>{lastHTML=ui.render('');}};
   const ui=context.SalaryMateStocksUI.create(api);
   return {ui,errors,core:context.SalaryMateStocks,services:context.SalaryMateStockServices,state:()=>current.stockPortfolio,render:()=>lastHTML=ui.render('')};

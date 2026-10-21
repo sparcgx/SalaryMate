@@ -1,9 +1,11 @@
 import {createDividendLookup} from './dividend-market.mjs';
 import {createIntradayNavLookup} from './intraday-nav.mjs';
 import {createTwseCloseLookup} from './twse-close.mjs';
+import {MARKET_CALENDARS,mergeMarketCalendars,marketSession,parseNasdaqTime} from './market-hours.mjs';
 // Public instruments only. No holdings, account names or transaction data leave the device.
 export function createStockMarket(fetcher=fetch, clock=()=>Date.now()) {
   const cache=new Map(),clients=new Map();
+  let calendars=MARKET_CALENDARS,calendarAttempt=0;
   const MAX_REQUEST_BYTES=16000,RATE_WINDOW=60000;
   let globalRate={start:clock(),count:0};
   const json=(v,status=200)=>new Response(JSON.stringify(v),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'}});
@@ -68,7 +70,7 @@ export function createStockMarket(fetcher=fetch, clock=()=>Date.now()) {
     const entry=cache.get(cacheKey);if(entry&&clock()-entry.at<ttl)return entry.data;
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),format==='text'?20000:10000);
     try {
-      const response=await fetcher(url,{...init,signal:controller.signal,headers:{accept:format==='text'?'text/html':'application/json','user-agent':'SalaryMate/5.0 stock-records','referer':url.includes('nasdaq.com')?'https://www.nasdaq.com/':'https://www.twse.com.tw/',...init.headers}});
+      const response=await fetcher(url,{...init,signal:controller.signal,headers:{accept:format==='text'?'text/html':'application/json','user-agent':'SalaryMate/5.1 stock-records','referer':url.includes('nasdaq.com')?'https://www.nasdaq.com/':'https://www.twse.com.tw/',...init.headers}});
       if(!response.ok)throw new Error('資料來源暫時無法使用');
       const data=format==='text'?await response.text():await response.json();
       if(format==='text'&&data.length>2000000)throw new Error('資料來源回應過大');
@@ -96,20 +98,34 @@ export function createStockMarket(fetcher=fetch, clock=()=>Date.now()) {
   }
   const attachIntradayNav=createIntradayNavLookup(read,clock);
   const lookupTwseClose=createTwseCloseLookup(fetcher,clock);
+  async function marketMetadata(){
+    const now=clock(),year=marketSession('TW',now,calendars).date.slice(0,4);
+    if(!calendarAttempt||now-calendarAttempt>=6*3600000||now<calendarAttempt){
+      calendarAttempt=now;
+      try{
+        const d=await read(`https://www.twse.com.tw/rwd/zh/holidaySchedule/holidaySchedule?response=json&queryYear=${year}`,6*3600000);
+        if(d?.stat!=='ok'||!Array.isArray(d.data)||d.data.length<5||d.data.length>100||d.data.some(r=>!Array.isArray(r)||!validDate(r[0])||!r[0].startsWith(year+'-')))throw Error('Calendar year mismatch');
+        const open=d.data.filter(r=>/開始交易|最後交易/.test(r[1])).map(r=>r[0].slice(5));
+        const closed=d.data.filter(r=>!open.includes(r[0].slice(5))).map(r=>r[0].slice(5));
+        calendars=mergeMarketCalendars(calendars,{TW:{[year]:{closed,open,early:{}}}});
+      }catch{/* Keep the verified bundled year; unknown years remain disabled. */}
+    }
+    return {calendars,sessions:['TW','US'].map(m=>marketSession(m,now,calendars)),fetchedAt:new Date(now).toISOString()};
+  }
   async function taiwanLatest(symbols){
     if(!symbols)return [];
     const url=new URL('https://mis.twse.com.tw/stock/api/getStockInfo.jsp');
     url.searchParams.set('ex_ch',symbols.flatMap(s=>['tse_'+s+'.tw','otc_'+s+'.tw']).join('|'));
     url.searchParams.set('json','1');url.searchParams.set('delay','0');
     try{
-      const data=await read(url.href,30000,{headers:{referer:'https://mis.twse.com.tw/stock/index.jsp','user-agent':'Mozilla/5.0 SalaryMate/5.0'}});
+      const data=await read(url.href,30000,{headers:{referer:'https://mis.twse.com.tw/stock/index.jsp','user-agent':'Mozilla/5.0 SalaryMate/5.1'}});
       return (Array.isArray(data?.msgArray)?data.msgArray:[]).flatMap(r=>{
-        const symbol=String(r.c||'').toUpperCase(),price=numeric(r.z),day=String(r.d||'');
+        const symbol=String(r.c||'').toUpperCase(),trade=r.z==='-'&&r.trade?.z?r.trade:null,price=numeric(trade?.z??r.z),day=String(r.d||'');
         const date=/^\d{8}$/.test(day)?day.slice(0,4)+'-'+day.slice(4,6)+'-'+day.slice(6):'';
-        const time=String(r.t||''),quoteAt=date+'T'+time+'+08:00';
-        if(!symbols.includes(symbol)||!(price>0)||!validDate(date)||!/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(time)||Date.parse(quoteAt)>clock()+120000)return [];
+        const time=String(trade?.t||r.t||''),quoteAt=date+'T'+time+'+08:00';
+        if(!['tse','otc'].includes(r.ex)||!symbols.includes(symbol)||!(price>0)||!validDate(date)||!/^([01]\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(time)||Date.parse(quoteAt)>clock()+120000)return [];
         const previous=numeric(r.y),change=previous>0?price-previous:null;
-        return [{market:'TW',symbol,name:String(r.n||symbol),currency:'TWD',price,date,quoteAt,providerTime:date+' '+time,priceKind:'latest',source:'TWSE 最新成交',exchange:r.ex==='otc'?'TPEx':'TWSE',change,changePercent:previous>0?change/previous*100:null}];
+        return [{market:'TW',symbol,name:String(r.n||symbol),currency:'TWD',price,date,quoteAt,providerTime:date+' '+time,priceKind:'latest',dataState:'latest',source:'TWSE 最新成交',exchange:r.ex==='otc'?'TPEx':'TWSE',change,changePercent:previous>0?change/previous*100:null}];
       });
     }catch{return [];}
   }
@@ -145,33 +161,43 @@ export function createStockMarket(fetcher=fetch, clock=()=>Date.now()) {
     const errors=twse.status==='fresh'?[]:[{source:'TWSE 上市收盤',message:'TWSE 收盤資料更新失敗，過期快取不會改寫原價格。'}];
     return {rows:symbols?rows:rows.filter(r=>profile.items.has(r.symbol)),errors,incomplete:profile.incomplete||twse.status!=='fresh'||!tpex.ok};
   }
-  async function us(symbol) {
+  async function us(symbol,intraday=false) {
     for(const assetClass of ['stocks','etf']) {
       try {
-        const d=(await read(`https://api.nasdaq.com/api/quote/${encodeURIComponent(symbol)}/info?assetclass=${assetClass}`))?.data;
+        const d=(await read(`https://api.nasdaq.com/api/quote/${encodeURIComponent(symbol)}/info?assetclass=${assetClass}`,30000))?.data;
         if(!d||String(d.symbol).toUpperCase()!==symbol||!d.companyName)continue;
         const primary=d.primaryData,price=number(primary?.lastSalePrice),date=usDate(primary?.lastTradeTimestamp);
         if(!validDate(date))continue;
-        return {market:'US',symbol,name:String(d.companyName),currency:'USD',price:Number.isFinite(price)&&price>0?price:null,date,source:'Nasdaq 最新行情',providerTime:String(primary.lastTradeTimestamp||''),priceKind:'latest',exchange:String(d.exchange||''),instrumentType:assetClass==='etf'?'etf':'stock',change:numeric(primary.netChange),changePercent:numeric(primary.percentageChange)};
+        const quoteAt=parseNasdaqTime(primary.lastTradeTimestamp),session=marketSession('US',clock(),calendars);
+        if(quoteAt&&Date.parse(quoteAt)>clock()+120000)continue;
+        if(intraday&&(!quoteAt||date!==session.date||Date.parse(quoteAt)<session.opensAt||Date.parse(quoteAt)>session.closesAt))continue;
+        return {market:'US',symbol,name:String(d.companyName),currency:'USD',price:Number.isFinite(price)&&price>0?price:null,date,quoteAt,source:'Nasdaq 最新行情',providerTime:String(primary.lastTradeTimestamp||''),priceKind:'latest',dataState:primary.isRealTime===true?'realtime':primary.isRealTime===false?'delayed':'unknown',marketStatus:String(d.marketStatus||''),exchange:String(d.exchange||''),instrumentType:assetClass==='etf'?'etf':'stock',change:numeric(primary.netChange),changePercent:numeric(primary.percentageChange)};
       }catch{}
     }
     throw new Error('美股代號不存在或行情暫時無法取得');
   }
-  async function snapshot(instruments,navOnly=false,includeFx=false) {
+  async function snapshot(instruments,navOnly=false,includeFx=false,intraday=false) {
     const errors=[],quotes=[],fetchedAt=new Date(clock()).toISOString();
     if(navOnly){
       const rows=instruments.map(({market,symbol})=>({market,symbol,currency:'TWD',instrumentType:'etf'}));
       await attachIntradayNav(rows,{discover:true});return {fetchedAt,quotes:rows,fx:null,errors};
     }
     const tw=instruments.filter(x=>x.market==='TW').map(x=>x.symbol),usa=instruments.filter(x=>x.market==='US');
-    const twTask=tw.length?taiwan(tw).then(({rows,errors:issues})=>{quotes.push(...rows);errors.push(...issues);}):Promise.resolve();
+    const twTask=tw.length?(intraday?taiwanLatest(tw).then(async rows=>{
+      const session=marketSession('TW',clock(),calendars);
+      const current=rows.filter(q=>q.date===session.date&&Date.parse(q.quoteAt)>=session.opensAt&&Date.parse(q.quoteAt)<=session.closesAt);
+      // Keep supported issuer NAV updates separate from traded ETF prices.
+      for(const row of current)if(/^00\d{2,4}[A-Z]?$/.test(row.symbol))row.instrumentType='etf';
+      await attachIntradayNav(current);
+      quotes.push(...current);
+    }):taiwan(tw).then(({rows,errors:issues})=>{quotes.push(...rows);errors.push(...issues);})):Promise.resolve();
     const fxTask=usa.length||includeFx?read('https://api.frankfurter.dev/v2/rate/usd/twd',300000).then(d=>Number.isFinite(d.rate)&&d.rate>0&&validDate(d.date)?{rate:d.rate,date:d.date,source:'Frankfurter 參考匯率'}:null).catch(()=>null):Promise.resolve(null);
     // At most four US requests concurrently. Issuer feeds are shared across symbols.
-    for(let i=0;i<usa.length;i+=4){await Promise.all(usa.slice(i,i+4).map(async item=>{try{quotes.push(await us(item.symbol));}catch(e){errors.push({market:'US',symbol:item.symbol,message:e.message});}}));}
+    for(let i=0;i<usa.length;i+=4){await Promise.all(usa.slice(i,i+4).map(async item=>{try{quotes.push(await us(item.symbol,intraday));}catch(e){errors.push({market:'US',symbol:item.symbol,message:e.message});}}));}
     await twTask;
     const fx=await fxTask;
     for(const symbol of tw)if(!quotes.some(q=>q.market==='TW'&&q.symbol===symbol))errors.push({market:'TW',symbol,message:'找不到台股代號，或資料來源暫時無法使用'});
-    return {fetchedAt,quotes,fx,errors};
+    return {fetchedAt,quotes,fx,errors,sessions:['TW','US'].map(m=>marketSession(m,clock(),calendars))};
   }
   const lookupDividends=createDividendLookup(read,clock);
   return async function handle(request) {
@@ -186,6 +212,7 @@ export function createStockMarket(fetcher=fetch, clock=()=>Date.now()) {
       if(error.code==='BODY_TIMEOUT')return json({error:'請求讀取逾時'},408);
       return json({error:'格式不正確'},400);
     }
+    if(url.pathname.endsWith('/sessions'))return json({...await marketMetadata(),quotes:[],errors:[]});
     if(url.pathname.endsWith('/catalog')){
       if(!d||typeof d.query!=='string'||d.query.length>80)return json({error:'搜尋內容不正確'},400);
       try{
@@ -197,6 +224,7 @@ export function createStockMarket(fetcher=fetch, clock=()=>Date.now()) {
     const dividendRequest=url.pathname.endsWith('/dividends');
     const navRequest=url.pathname.endsWith('/nav');
     const fxRequest=url.pathname.endsWith('/quotes')&&d?.includeFx===true;
+    if(d?.intraday!=null&&typeof d.intraday!=='boolean')return json({error:'行情更新方式不正確'},400);
     const input=url.pathname.endsWith('/lookup')||dividendRequest?[d]:d?.instruments;
     if(!Array.isArray(input)||!input.length&&!fxRequest||input.length>20)return json({error:'一次請查詢 1～20 個代號'},400);
     const items=[];
@@ -207,6 +235,6 @@ export function createStockMarket(fetcher=fetch, clock=()=>Date.now()) {
       if(!Number.isInteger(d.year)||d.year<2006||d.year>new Date(clock()).getUTCFullYear()+1)return json({error:'公告年份不正確'},400);
       try{return json(await lookupDividends(items[0],d.year,{forecast:d.forecast===true}));}catch(e){return json({error:e.message},503);}
     }
-    try{return json(await snapshot(items,navRequest,fxRequest));}catch{return json({error:'行情服務暫時無法使用，請稍後重試'},503);}
+    try{return json(await snapshot(items,navRequest,fxRequest,d?.intraday===true));}catch{return json({error:'行情服務暫時無法使用，請稍後重試'},503);}
   };
 }

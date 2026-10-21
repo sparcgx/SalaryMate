@@ -1,0 +1,459 @@
+{
+  "checkedAt": "2026-10-21T13:52:05.699Z",
+  "results": [
+    {
+      "name": "twCalendar",
+      "url": "https://www.twse.com.tw/rwd/zh/holidaySchedule/holidaySchedule?response=json&queryYear=2026",
+      "status": 200,
+      "data": {
+        "stat": "ok",
+        "date": "20260101",
+        "title": "115 年市場開休市日期",
+        "fields": [
+          "日期",
+          "名稱",
+          "說明"
+        ],
+        "data": [
+          [
+            "2026-01-01",
+            "中華民國開國紀念日",
+            "依規定放假1日。"
+          ],
+          [
+            "2026-01-02",
+            "國曆新年開始交易日",
+            "國曆新年開始交易。"
+          ],
+          [
+            "2026-02-11",
+            "農曆春節前最後交易日",
+            "農曆春節前最後交易。\r\n"
+          ],
+          [
+            "2026-02-12",
+            "市場無交易，僅辦理結算交割作業",
+            ""
+          ],
+          [
+            "2026-02-13",
+            "市場無交易，僅辦理結算交割作業",
+            ""
+          ],
+          [
+            "2026-02-15",
+            "農曆除夕及春節",
+            "依規定於2月15日至2月19日放假5日。2月15日適逢星期日，於2月20日（星期五）補假。"
+          ],
+          [
+            "2026-02-16",
+            "農曆除夕及春節",
+            "依規定於2月15日至2月19日放假5日。2月15日適逢星期日，於2月20日（星期五）補假。"
+          ],
+          [
+            "2026-02-17",
+            "農曆除夕及春節",
+            "依規定於2月15日至2月19日放假5日。2月15日適逢星期日，於2月20日（星期五）補假。\r\n\r\n\r\n"
+          ],
+          [
+            "2026-02-18",
+            "農曆除夕及春節",
+            "依規定於2月15日至2月19日放假5日。2月15日適逢星期日，於2月20日（星期五）補假。"
+          ],
+          [
+            "2026-02-19",
+            "農曆除夕及春節",
+            "依規定於2月15日至2月19日放假5日。2月15日適逢星期日，於2月20日（星期五）補假。"
+          ],
+          [
+            "2026-02-20",
+            "農曆除夕及春節",
+            "依規定於2月15日至2月19日放假5日。2月15日適逢星期日，於2月20日（星期五）補假。"
+          ],
+          [
+            "2026-02-23",
+            "農曆春節後開始交易日",
+            "農曆春節後開始交易。"
+          ],
+          [
+            "2026-02-27",
+            "和平紀念日",
+            "和平紀念日為2月28日適逢星期六，於2月27日（星期五）補假。"
+          ],
+          [
+            "2026-02-28",
+            "和平紀念日",
+            "依規定放假1日。"
+          ],
+          [
+            "2026-04-03",
+            "兒童節及民族掃墓節",
+            "兒童節為4月4日適逢星期六，於4月3日（星期五）補假。"
+          ],
+          [
+            "2026-04-04",
+            "兒童節及民族掃墓節",
+            "依規定放假1日。"
+          ],
+          [
+            "2026-04-05",
+            "兒童節及民族掃墓節",
+            "依規定放假1日。"
+          ],
+          [
+            "2026-04-06",
+            "兒童節及民族掃墓節",
+            "民族掃墓節為4月5日適逢星期日，於4月6日（星期一）補假。"
+          ],
+          [
+            "2026-05-01",
+            "勞動節",
+            "依規定放假1日。"
+          ],
+          [
+            "2026-06-19",
+            "端午節",
+            "依規定放假1日。"
+          ],
+          [
+            "2026-09-25",
+            "中秋節",
+            "依規定放假1日。"
+          ],
+          [
+            "2026-09-28",
+            "孔子誕辰紀念日/ 教師節",
+            "依規定放假1日。"
+          ],
+          [
+            "2026-10-09",
+            "國慶日",
+            "國慶日為10月10日適逢星期六，於10月9日（星期五）補假。"
+          ],
+          [
+            "2026-10-10",
+            "國慶日",
+            "依規定放假1日。"
+          ],
+          [
+            "2026-10-25",
+            "臺灣光復暨金門古寧頭大捷紀念日",
+            "依規定放假1日。"
+          ],
+          [
+            "2026-10-26",
+            "臺灣光復暨金門古寧頭大捷紀念日",
+            "臺灣光復暨金門古寧頭大捷紀念日為10月25日適逢星期日，於10月26日（星期一）補假。"
+          ],
+          [
+            "2026-12-25",
+            "行憲紀念日",
+            "依規定放假1日。"
+          ]
+        ],
+        "queryYear": 2026,
+        "total": 27
+      }
+    },
+    {
+      "name": "twTrade",
+      "url": "https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_2330.tw%7Ctse_0050.tw%7Cotc_00679B.tw&json=1&delay=0",
+      "status": 200,
+      "data": {
+        "msgArray": [
+          {
+            "@": "2330.tw",
+            "tv": "5574",
+            "ps": "5566",
+            "pid": "9.tse.tw|19915",
+            "pz": "2420.0000",
+            "bp": "0",
+            "fv": "52",
+            "oa": "2435.0000",
+            "ob": "2430.0000",
+            "m%": "000000",
+            "^": "20261021",
+            "key": "tse_2330.tw_20261021",
+            "a": "2420.0000_2425.0000_2430.0000_2435.0000_2440.0000_",
+            "b": "2415.0000_2410.0000_2405.0000_2400.0000_2395.0000_",
+            "c": "2330",
+            "#": "13.tse.tw|3262",
+            "d": "20261021",
+            "%": "14:30:00",
+            "ch": "2330.tw",
+            "tlong": "1792564200000",
+            "ot": "14:30:00",
+            "f": "1064_1783_1348_396_359_",
+            "g": "24_326_582_593_708_",
+            "ip": "0",
+            "mt": "000000",
+            "ov": "45809",
+            "h": "2435.0000",
+            "i": "24",
+            "it": "12",
+            "oz": "2430.0000",
+            "l": "2400.0000",
+            "n": "台積電",
+            "o": "2425.0000",
+            "p": "0",
+            "ex": "tse",
+            "s": "5574",
+            "trade": {
+              "t": "13:30:00",
+              "v": 5574,
+              "z": "2420.0000",
+              "ft": 20
+            },
+            "t": "13:30:00",
+            "u": "2645.0000",
+            "v": "22224",
+            "w": "2165.0000",
+            "nf": "台灣積體電路製造股份有限公司",
+            "y": "2405.0000",
+            "z": "2420.0000",
+            "ts": "0"
+          },
+          {
+            "@": "0050.tw",
+            "tv": "1575",
+            "ps": "1575",
+            "nu": "http://www.yuantaetfs.com/#/RtNav/Index",
+            "pid": "9.tse.tw|14",
+            "pz": "108.1500",
+            "bp": "0",
+            "fv": "43",
+            "oa": "108.4000",
+            "ob": "108.3500",
+            "m%": "000000",
+            "key": "tse_0050.tw_20261021",
+            "^": "20261021",
+            "a": "108.2000_108.2500_108.3000_108.3500_108.4000_",
+            "b": "108.1500_108.1000_108.0500_108.0000_107.9500_",
+            "c": "0050",
+            "#": "13.tse.tw|2483",
+            "d": "20261021",
+            "%": "14:30:00",
+            "ch": "0050.tw",
+            "tlong": "1792564200000",
+            "ot": "14:30:00",
+            "f": "198_167_266_91_94_",
+            "g": "59_301_204_505_184_",
+            "ip": "0",
+            "mt": "000000",
+            "ov": "66858",
+            "h": "109.2000",
+            "it": "02",
+            "oz": "108.3500",
+            "l": "107.6000",
+            "n": "元大台灣50",
+            "o": "108.8000",
+            "p": "0",
+            "ex": "tse",
+            "s": "1575",
+            "trade": {
+              "t": "13:30:00",
+              "v": 1575,
+              "z": "108.1500",
+              "ft": 20
+            },
+            "t": "13:30:00",
+            "u": "117.9500",
+            "v": "76186",
+            "w": "96.5500",
+            "nf": "元大台灣卓越50證券投資信託基金",
+            "y": "107.2500",
+            "z": "108.1500",
+            "ts": "0"
+          },
+          {
+            "@": "00679B.tw",
+            "tv": "134",
+            "ps": "129",
+            "nu": "http://www.yuantaetfs.com/#/RtNav/Index#tab4",
+            "pid": "9.otc.tw|3",
+            "pz": "25.7700",
+            "bp": "0",
+            "fv": "2",
+            "oa": "25.7800",
+            "ob": "25.7700",
+            "m%": "000000",
+            "key": "otc_00679B.tw_20261021",
+            "^": "20261021",
+            "a": "25.7800_25.7900_25.8000_25.8100_25.8200_",
+            "b": "25.7700_25.7600_25.7500_25.7400_25.7300_",
+            "c": "00679B",
+            "#": "13.otc.tw|1721",
+            "d": "20261021",
+            "%": "14:30:00",
+            "ch": "00679B.tw",
+            "tlong": "1792564200000",
+            "ot": "14:30:00",
+            "f": "42_972_1786_1581_1546_",
+            "g": "1787_3034_3164_3059_1699_",
+            "ip": "0",
+            "mt": "000000",
+            "ov": "4413",
+            "h": "25.9200",
+            "it": "02",
+            "oz": "25.7700",
+            "l": "25.7600",
+            "n": "元大美債20年",
+            "o": "25.8700",
+            "p": "0",
+            "ex": "otc",
+            "s": "134",
+            "trade": {
+              "t": "13:30:00",
+              "v": 134,
+              "z": "25.7700",
+              "ft": 20
+            },
+            "t": "13:30:00",
+            "u": "9999.9500",
+            "v": "26994",
+            "nf": "元大美國政府20年期(以上)債券ETF傘型證券投資信託基金之元大美國政府20年期(以上)債券證券投資信託基金",
+            "y": "25.7900",
+            "z": "25.7700",
+            "ts": "0"
+          }
+        ],
+        "referer": "",
+        "userDelay": 5000,
+        "rtcode": "0000",
+        "queryTime": {
+          "sysDate": "20261021",
+          "stockInfoItem": 46288,
+          "stockInfo": 2265,
+          "sessionStr": "UserSession",
+          "sysTime": "18:59:51",
+          "showChart": false,
+          "sessionFromTime": -1,
+          "sessionLatestTime": -1
+        },
+        "rtmessage": "OK",
+        "exKey": "if_tse_2330.tw|tse_0050.tw|otc_00679B.tw_zh-tw.null",
+        "cachedAlive": 10334879
+      }
+    },
+    {
+      "name": "usStock",
+      "url": "https://api.nasdaq.com/api/quote/AAPL/info?assetclass=stocks",
+      "status": 200,
+      "data": {
+        "data": {
+          "symbol": "AAPL",
+          "companyName": "Apple Inc. Common Stock",
+          "stockType": "Common Stock",
+          "exchange": "NASDAQ-GS",
+          "isNasdaqListed": true,
+          "isNasdaq100": true,
+          "isHeld": false,
+          "primaryData": {
+            "lastSalePrice": "$340.425",
+            "netChange": "+0.925",
+            "percentageChange": "+0.27%",
+            "deltaIndicator": "up",
+            "lastTradeTimestamp": "Oct 21, 2026 9:52 AM ET",
+            "isRealTime": true,
+            "bidPrice": "N/A",
+            "askPrice": "N/A",
+            "bidSize": "N/A",
+            "askSize": "N/A",
+            "volume": "3,180,739.463668",
+            "currency": null
+          },
+          "secondaryData": null,
+          "marketStatus": "Open",
+          "assetClass": "STOCKS",
+          "keyStats": {
+            "fiftyTwoWeekHighLow": {
+              "label": "52 Week Range:",
+              "value": "243.42 - 348.15"
+            },
+            "dayrange": {
+              "label": "High/Low:",
+              "value": "338.83 - 341.19"
+            }
+          },
+          "notifications": [
+            {
+              "headline": "UPCOMING EVENTS",
+              "eventTypes": [
+                {
+                  "message": "Earnings Date : Nov 2, 2026",
+                  "eventName": "Earnings Date",
+                  "url": {
+                    "label": "AAPL Earnings Date : Nov 2, 2026",
+                    "value": "/market-activity/stocks/AAPL/earnings"
+                  },
+                  "id": "upcoming_events"
+                }
+              ]
+            },
+            {
+              "headline": "HIGH TECHNICAL ATTRIBUTE",
+              "eventTypes": [
+                {
+                  "message": "AAPL has a High Technical Rating by Nasdaq Dorsey Wright. Discover why technical analysis matters",
+                  "eventName": "High Technical Attribute",
+                  "url": {
+                    "label": "Discover why technical analysis matters",
+                    "value": "https://www.nasdaq.com/solutions/nasdaq-dorsey-wright/technical-analysis"
+                  },
+                  "id": "tech_attribute"
+                }
+              ]
+            }
+          ]
+        },
+        "message": null,
+        "status": {
+          "rCode": 200,
+          "bCodeMessage": null,
+          "developerMessage": null
+        }
+      }
+    },
+    {
+      "name": "usEtf",
+      "url": "https://api.nasdaq.com/api/quote/VOO/info?assetclass=etf",
+      "status": 200,
+      "data": {
+        "data": {
+          "symbol": "VOO",
+          "companyName": "Vanguard S&P 500 ETF",
+          "stockType": null,
+          "exchange": "PSE",
+          "isNasdaqListed": false,
+          "isNasdaq100": false,
+          "isHeld": false,
+          "primaryData": {
+            "lastSalePrice": "$708.73",
+            "netChange": "+1.93",
+            "percentageChange": "+0.27%",
+            "deltaIndicator": "up",
+            "lastTradeTimestamp": "Oct 21, 2026 9:51 AM ET",
+            "isRealTime": true,
+            "bidPrice": "$708.74",
+            "askPrice": "$708.77",
+            "bidSize": "8",
+            "askSize": "27",
+            "volume": "530,701.873017",
+            "currency": null
+          },
+          "secondaryData": null,
+          "marketStatus": "Open",
+          "assetClass": "ETF",
+          "keyStats": null,
+          "notifications": []
+        },
+        "message": null,
+        "status": {
+          "rCode": 200,
+          "bCodeMessage": null,
+          "developerMessage": null
+        }
+      }
+    }
+  ]
+}

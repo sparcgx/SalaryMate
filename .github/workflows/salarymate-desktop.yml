@@ -58,7 +58,7 @@ jobs:
           codesign --verify --deep --strict "$appdir/SalaryMate.app"
       - uses: actions/upload-artifact@v4
         with:
-          name: SalaryMate-v5.0.0-${{ matrix.platform }}-${{ matrix.arch }}
+          name: SalaryMate-v5.1.0-${{ matrix.platform }}-${{ matrix.arch }}
           if-no-files-found: error
           compression-level: 0
           retention-days: 90
@@ -77,7 +77,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          pattern: SalaryMate-v5.0.0-*
+          pattern: SalaryMate-v5.1.0-*
           path: desktop-release
           merge-multiple: true
       - name: Publish verified desktop installers
@@ -87,9 +87,9 @@ jobs:
         run: |
           current=$(gh api repos/"$GITHUB_REPOSITORY"/git/ref/heads/dev/v5.0.0-dev.2 --jq .object.sha)
           test "$current" = "$GITHUB_SHA" || { echo "Source advanced; do not publish stale installers." >&2; exit 1; }
-          tag=v5.0.0-desktop.5
+          tag=v5.1.0-desktop.1
           if gh release view "$tag" >/dev/null 2>&1; then
             echo 'This desktop release already exists. Use a new build/tag for changed installers.' >&2
             exit 1
           fi
-          gh release create "$tag" desktop-release/* --target "$GITHUB_SHA" --title 'SalaryMate v5.0.0 正式版 · 桌面更新中心' --notes-file sites-source/native-desktop/RELEASE-NOTES.md
+          gh release create "$tag" desktop-release/* --target "$GITHUB_SHA" --title 'SalaryMate v5.1.0 正式版 · 台股與美股盤中行情' --notes-file sites-source/native-desktop/RELEASE-NOTES.md

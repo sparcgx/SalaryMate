@@ -4,7 +4,7 @@ import vm from 'node:vm';
 import {buildStylePacks,websiteBootstrap} from './style-pack-build.mjs';
 
 // Preserve the original deferred module order and individual source files.
-export const startupModules=Object.freeze(['i18n-en.js','i18n.js','reconcile.js','copy-month.js','comp-time.js','annual-analysis.js','bootstrap.js','stocks.js','stocks-integrations.js','backup.js','google-drive.js','google-drive-ui.js','stocks-ui.js','app.js']);
+export const startupModules=Object.freeze(['i18n-en.js','i18n.js','reconcile.js','copy-month.js','comp-time.js','annual-analysis.js','bootstrap.js','stocks.js','market-hours.js','stocks-integrations.js','backup.js','google-drive.js','google-drive-ui.js','stocks-ui.js','app.js']);
 export async function buildStartupBundle(base){
  const parts=await Promise.all(startupModules.map(async name=>({name,source:name==='bootstrap.js'?await websiteBootstrap(base):await readFile(path.join(base,name),'utf8')})));
  await buildStylePacks(base);

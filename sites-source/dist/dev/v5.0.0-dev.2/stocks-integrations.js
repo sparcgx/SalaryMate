@@ -106,15 +106,23 @@
    const c=new AbortController(),timer=setTimeout(()=>c.abort(),45000);const abort=()=>c.abort();signal?.addEventListener('abort',abort,{once:true});
    try{const r=await fetch(path,{method:'POST',credentials:'omit',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:c.signal});if(!r.ok)fail(`行情服務暫時無法使用（${r.status}），請稍後重試。`);const d=await r.json();if(!Array.isArray(path.endsWith('/dividends')?d.announcements:d.quotes)||!Array.isArray(d.errors))fail('行情回傳格式不正確。');return d;}catch(e){if(e.name==='AbortError')fail('行情查詢逾時或已取消，原價格保持不變。');throw e;}finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);}
  }
- async function fetchQuotes(assets,path='/api/stocks/quotes',signal){
+ let marketCalendars=root.SalaryMateMarketHours?.MARKET_CALENDARS,calendarPending,calendarChecked=0;
+ async function refreshSessions(){
+   if(calendarPending)return calendarPending;
+   if(calendarChecked&&Date.now()-calendarChecked<6*3600000)return;
+   calendarChecked=Date.now();
+   calendarPending=request('/api/stocks/sessions',{}).then(d=>{marketCalendars=root.SalaryMateMarketHours.mergeMarketCalendars(marketCalendars,d.calendars);}).catch(()=>{}).finally(()=>{calendarPending=null;});
+   return calendarPending;
+ }
+ async function fetchQuotes(assets,path='/api/stocks/quotes',signal,options={}){
    const includeFx=path.endsWith('/quotes');
    const items=[...new Map(assets.filter(a=>includeFx?core.quoteEligible(a):['TW','US'].includes(a.market)).map(a=>[a.market+':'+a.symbol.toUpperCase(),{market:a.market,symbol:a.symbol.toUpperCase()}])).values()];
-   const result={quotes:[],errors:[],fx:null,fetchedAt:new Date().toISOString()};
+   const result={quotes:[],errors:[],fx:null,fetchedAt:new Date().toISOString(),requestedKeys:items.map(i=>i.market+':'+i.symbol)};
    if(!items.length&&!includeFx)return result;
    for(let i=0;i<Math.max(1,items.length);i+=8){
      if(signal?.aborted)fail('行情更新已取消，原資料保持不變。');
      const chunk=items.slice(i,i+8);
-     try{const d=await request(path,{instruments:chunk,...(includeFx?{includeFx:true}:{})},signal);result.quotes.push(...d.quotes);result.errors.push(...d.errors);if(d.fx)result.fx=d.fx;result.fetchedAt=d.fetchedAt||result.fetchedAt;}
+     try{const d=await request(path,{instruments:chunk,...(includeFx?{includeFx:true}:{}),...(options.intraday?{intraday:true}:{})},signal);result.quotes.push(...d.quotes);result.errors.push(...d.errors);if(d.fx)result.fx=d.fx;result.fetchedAt=d.fetchedAt||result.fetchedAt;}
      catch(e){result.errors.push(...(chunk.length?chunk:[{kind:'fx'}]).map(x=>({...x,message:e.message})));}
    }
    return result;
@@ -162,7 +170,7 @@
  }
  function applyQuotes(current,snapshot,today){
    const next=copy(current),errors=[],updated=[],priceUpdated=[];
-   const targets=core.marketPreferences(current).quoteEnabled?next.assets.filter(core.quoteEligible):[];
+   const targets=core.marketPreferences(current).quoteEnabled?next.assets.filter(a=>core.quoteEligible(a)&&(!Array.isArray(snapshot.requestedKeys)||snapshot.requestedKeys.includes(a.market+':'+a.symbol.toUpperCase()))):[];
    for(const a of targets){
      const q=snapshot.quotes.find(q=>q.market===a.market&&q.symbol===a.symbol.toUpperCase());
      const error=snapshot.errors.find(e=>e.market===a.market&&e.symbol===a.symbol.toUpperCase());
@@ -185,6 +193,8 @@
      if(!positive(fx)||a.currency!=='TWD'&&(!core.dateOK(snapshot.fx?.date)||snapshot.fx.date>today||a.quoteFxDate&&snapshot.fx.date<a.quoteFxDate||current.marketData?.fx&&snapshot.fx.date<current.marketData.fx.date)){errors.push(`${a.symbol}：匯率查詢失敗，股價與匯率皆保留。`);continue;}
      Object.assign(a,{quotePrice:q.price,quoteDate:q.date,quoteFx:fx,quoteSource:String(q.source||''),quoteProviderTime:String(q.priceKind==='close'?q.date:q.providerTime||q.date),quoteCheckedAt:String(snapshot.fetchedAt||''),quoteMode:'auto',quoteFxDate:a.currency==='TWD'?q.date:String(snapshot.fx?.date||''),quoteChange:typeof q.change==='number'&&Number.isFinite(q.change)?q.change:null,quoteChangePercent:typeof q.changePercent==='number'&&Number.isFinite(q.changePercent)?q.changePercent:null,marketInfo:{...a.marketInfo,...marketInfo(q)}});if(!updated.includes(a.id))updated.push(a.id);
      a.quoteMarketAt=at;priceUpdated.push(a.id);
+     a.quoteDataState=['latest','realtime','delayed','unknown'].includes(q.dataState)?q.dataState:'unknown';
+     a.quotePriceKind=q.priceKind==='close'?'close':'latest';
    }
    for(const error of snapshot.errors)if(!error.symbol&&error.source==='TWSE 上市收盤'&&typeof error.message==='string'&&!errors.includes(error.message))errors.push(error.message);
    const m=next.marketData||{},fx=snapshot.fx;
@@ -196,4 +206,5 @@
    core.validate(next);return {next,updated,priceUpdated,errors,useful};
  }
  root.SalaryMateStockServices={marketInfo,quoteIssue,quoteMarketAt,catalog:(query,signal)=>request('/api/stocks/catalog',{query},signal),forecasts:(market,symbol,year,signal)=>request('/api/stocks/dividends',{market,symbol,year,forecast:true},signal),forecastCache,dividendPeriod,dividends:(market,symbol,year,signal)=>request('/api/stocks/dividends',{market,symbol,year},signal),parseSmart,prepareSmart,fetchQuotes,fetchIntraday:assets=>fetchQuotes(assets.filter(a=>a.market==='TW'),'/api/stocks/nav'),applyIntraday,applyQuotes,lookup:(market,symbol,signal)=>request('/api/stocks/lookup',{market,symbol},signal)};
+ Object.assign(root.SalaryMateStockServices,{refreshSessions,calendars:()=>marketCalendars});
 })(globalThis);

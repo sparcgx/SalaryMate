@@ -89,7 +89,9 @@ function uiSetup(){
   const timers=new Map();let id=0;
   class FixedDate extends Date{constructor(...args){super(...(args.length?args:[now]));}static now(){return now;}}
   const context=vm.createContext({Date:FixedDate,Intl,console,AbortController,fetch:()=>{},setTimeout:(fn,ms)=>{timers.set(++id,{fn,ms});return id;},clearTimeout:id=>timers.delete(id),document:{addEventListener(){},get hidden(){return hidden;},querySelector:s=>s==='.stock-view'?onPage?{}:null:s==='#appDialog'?{open:editing,addEventListener(){}}:null,querySelectorAll:()=>[]},SalaryMateI18n:{user:s=>s},SalaryMateStockServices:{fetchQuotes:()=>{fetches++;return new Promise(r=>resolver=r);}}});
-  for(const name of ['stocks.js','stocks-ui.js'])vm.runInContext(fs.readFileSync(new URL('../dist/dev/v5.0.0-dev.2/'+name,import.meta.url),'utf8'),context);
+  for(const name of ['stocks.js','market-hours.js','stocks-ui.js'])vm.runInContext(fs.readFileSync(new URL('../dist/dev/v5.0.0-dev.2/'+name,import.meta.url),'utf8'),context);
+  context.SalaryMateStockServices.calendars=()=>context.SalaryMateMarketHours.MARKET_CALENDARS;
+  context.SalaryMateStockServices.refreshSessions=async()=>{};
   context.SalaryMateStockServices.applyQuotes=(...args)=>services.applyQuotes(...args);
   const api={state:()=>current,year:()=>2026,today:()=> '2026-10-05',legacyTotal:()=>0,id:()=> 'sync',commit:fn=>{commits++;fn();return true;},render:()=>{},toast:()=>{}};
   const ui=context.SalaryMateStocksUI.create(api);

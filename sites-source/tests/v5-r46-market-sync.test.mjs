@@ -19,7 +19,8 @@ function harness(initial=portfolio(),fetcher){
   class FixedDate extends Date{constructor(...args){super(...(args.length?args:[now]));}static now(){return now;}}
   const document={activeElement:null,documentElement:{},get hidden(){return hidden;},addEventListener:(type,fn)=>listeners.set(type,fn),querySelectorAll:()=>[],createTreeWalker:()=>({nextNode:()=>null}),querySelector:s=>s==='.stock-view'?onPage?{}:null:s==='#appDialog'?{open:editing,addEventListener(){}}:null};
   const c=vm.createContext({Date:FixedDate,Intl,console,AbortController,navigator:{get onLine(){return online;},language:'en',languages:['en']},fetch:fetcher||(()=>{}),setTimeout:(fn,ms)=>{timers.set(++timerId,{fn,ms});return timerId;},clearTimeout:id=>timers.delete(id),document,FormData:class{constructor(form){this.values=form.values;}[Symbol.iterator](){return Object.entries(this.values)[Symbol.iterator]();}},SalaryMateI18n:{user:s=>s,text:s=>s,apply(){}},addEventListener(){}});
-  for(const file of ['stocks.js','stocks-integrations.js','stocks-ui.js'])vm.runInContext(source(file),c);
+  for(const file of ['stocks.js','market-hours.js','stocks-integrations.js','stocks-ui.js'])vm.runInContext(source(file),c);
+  c.SalaryMateStockServices.refreshSessions=async()=>{};
   if(!fetcher)c.SalaryMateStockServices.fetchQuotes=(assets,path,signal)=>new Promise((resolve,reject)=>pending.push({assets:clone(assets),path,signal,resolve,reject}));
   const api={state:()=>current,year:()=>2026,today:()=>today,legacyTotal:()=>0,id:()=>String(++timerId),begin(){},assert:()=>true,validate:()=>true,close(){},error:(form,message)=>{throw Error(message);},open:(title,html)=>{opened=html;},toast(){},commit:fn=>{if(!save)return false;fn();commits++;return true;},render:()=>{lastHTML=ui.render('');}};
   const ui=c.SalaryMateStocksUI.create(api);
@@ -80,10 +81,10 @@ test('freshness uses source times and never substitutes a recent fetch for an ol
   assert.equal(c.priceFreshness({...a,quoteCheckedAt:''},NOW),'unknown');assert.equal(c.priceFreshness({...a,priceUpdateMode:'manual'},NOW),'manual');
 });
 
-test('automatic sync starts once, uses five minutes, and paused mode still permits Update now',async()=>{
+test('automatic sync starts once, uses one minute, and paused mode still permits Update now',async()=>{
   const h=harness();h.render();assert.equal(h.fire().ms,1500);assert.equal(h.pending.length,1);
   h.click('refresh');assert.equal(h.pending.length,1);h.pending[0].resolve(snapshot());await settle();
-  assert.equal(h.commits(),1);assert.equal([...h.timers.values()][0].ms,300000);
+  assert.equal(h.commits(),1);assert.equal([...h.timers.values()][0].ms,60000);
   h.click('toggle-market-auto');assert.equal(h.state().marketData.autoRefresh,false);assert.equal(h.timers.size,0);
   const restored=harness(h.state());restored.render();assert.equal(restored.timers.size,0);
   h.click('refresh');assert.equal(h.pending.length,2);h.pending[1].resolve(snapshot());await settle();assert.equal(h.timers.size,0);
@@ -108,8 +109,8 @@ test('in-flight replies cannot overwrite edits or be applied after hiding, navig
 
 test('failed storage and connection keep prices; disabling quotes requests only FX, including empty portfolios',async()=>{
   const h=harness();h.render();h.fire();h.setSave(false);h.pending[0].resolve(snapshot());await settle();assert.equal(h.state().assets[0].quotePrice,100);assert.match(h.render(),/更新失敗/);
-  const fx=harness(portfolio({marketData:{quoteEnabled:false}}));fx.render();fx.fire();assert.equal(fx.pending[0].assets.length,0);fx.pending[0].reject(Error('offline'));await settle();assert.equal(fx.state().assets[0].quotePrice,100);
-  const empty=harness({assets:[],transactions:[]});empty.render();empty.fire();assert.equal(empty.pending[0].assets.length,0);empty.pending[0].resolve(snapshot({quotes:[]}));await settle();assert.equal(empty.state().marketData.fx.rate,31.839);
+  const fx=harness(portfolio({marketData:{quoteEnabled:false}}));fx.render();fx.fire();assert.equal(fx.pending.length,0);fx.click('refresh');assert.equal(fx.pending[0].assets.length,0);fx.pending[0].reject(Error('offline'));await settle();assert.equal(fx.state().assets[0].quotePrice,100);
+  const empty=harness({assets:[],transactions:[]});empty.render();empty.fire();assert.equal(empty.pending.length,0);empty.click('refresh');assert.equal(empty.pending[0].assets.length,0);empty.pending[0].resolve(snapshot({quotes:[]}));await settle();assert.equal(empty.state().marketData.fx.rate,31.839);
 });
 
 const req=(instruments,extra={})=>new Request('https://site.test/api/stocks/quotes',{method:'POST',body:JSON.stringify({instruments,...extra})});
@@ -146,7 +147,7 @@ test('outbound payload contains only eligible, deduplicated symbols and the FX f
 });
 
 test('the compact market card and manual-mode editor have complete English labels; NAV stays compact',()=>{
-  const h=harness(),html=h.render();assert.match(html,/市場資料連動/);assert.match(html,/每 5 分鐘自動更新/);assert.doesNotMatch(html,/stock-nav-toolbar|每 60 秒/);
+  const h=harness(),html=h.render();assert.match(html,/市場資料連動/);assert.match(html,/盤中每 60 秒更新/);assert.doesNotMatch(html,/stock-nav-toolbar/);
   h.click('quotes');assert.match(h.opened(),/mode-a/);assert.match(h.opened(),/手動維護價格／淨值/);
   h.c.localStorage={getItem:()=> 'en'};h.c.MutationObserver=class{observe(){}disconnect(){}};h.c.NodeFilter={SHOW_TEXT:4};
   vm.runInContext(source('i18n-en.js'),h.c);vm.runInContext(source('i18n.js'),h.c);

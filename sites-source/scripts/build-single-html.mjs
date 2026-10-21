@@ -4,6 +4,7 @@ import {createHash} from 'node:crypto';
 import {salaryMateCsp} from '../server/security-policy.mjs';
 import './build-locales.mjs';
 import './build-public-reference.mjs';
+import './build-market-hours.mjs';
 import {embedPortableArtwork} from './lib/portable-artwork.mjs';
 import {startupModules} from './lib/startup-bundle.mjs';
 
@@ -15,7 +16,7 @@ const hostedScripts=[...html.matchAll(/<script defer src="\.\/([^"?]+)(?:\?[^"]*
 if(hostedScripts.length!==1||hostedScripts[0][1]!=='startup.js')throw new Error('Unexpected hosted startup manifest');
 html=html.replace(hostedScripts[0][0],'');
 const scripts=startupModules.map(name=>['',name]);
-if(scripts.length!==14||scripts.some(match=>match[1]==='legal-data.js'))throw new Error('Unexpected script manifest; inspect dependencies before bundling.');
+if(scripts.length!==15||scripts.some(match=>match[1]==='legal-data.js'))throw new Error('Unexpected script manifest; inspect dependencies before bundling.');
 // Full offline edition includes the on-demand legal module before application startup.
 scripts.unshift(['','reference-data.js'],['','reference-tools.js'],['','legal-data.js']);
 const notes="單一 HTML 版：資料預設儲存在目前瀏覽器，不會隨程式更新自動從其他入口同步。更換瀏覽器，或移動／更名檔案前，請先匯出備份，再於新入口匯入並核對。Google Drive 備份會傳至你授權的帳戶；股價、名稱、淨值與配息查詢需要連線。";
@@ -59,7 +60,7 @@ for(const rel of ['icon','apple-touch-icon']){
   const pattern=new RegExp(`<link rel="${rel}" href="\\./([^"?]+)(?:\\?[^\"]*)?">`),match=html.match(pattern);
   if(match){const bytes=await readFile(path.join(base,match[1]));html=html.replace(match[0],`<link rel="${rel}" href="data:image/png;base64,${bytes.toString('base64')}">`);}
 }
-html=html.replace(/SalaryMate · v5\.0\.0 正式版/g,'SalaryMate · v5.0.0 正式版 · 單一 HTML');
+html=html.replace(/SalaryMate · (v\d+\.\d+\.\d+) 正式版/g,'SalaryMate · $1 正式版 · 單一 HTML');
 const existingInline=[...html.matchAll(/<script\b(?![^>]*\bsrc=)[^>]*>[\s\S]*?<\/script>/gi)].map(match=>match[0]);
 const scriptHashes=[...existingInline,...scriptsInline].map(block=>{
   const content=block.match(/^<script\b[^>]*>([\s\S]*)<\/script>$/)?.[1];

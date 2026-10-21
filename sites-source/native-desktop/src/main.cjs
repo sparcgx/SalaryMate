@@ -68,7 +68,7 @@ async function start() {
   }
   const quick=createQuickEntry({globalShortcut,send:sendDesktopAction,makeTray:()=>{
     const icon=nativeImage.createFromPath(path.join(assets,'icons/icon-192.png')).resize({width:process.platform==='darwin'?18:20,height:process.platform==='darwin'?18:20});
-    const tray=new Tray(icon);tray.setToolTip('SalaryMate v5.0.0');
+    const tray=new Tray(icon);tray.setToolTip('SalaryMate v5.1.0');
     tray.setContextMenu(Menu.buildFromTemplate([
       {label:'快捷登記 / Quick entry',click:()=>sendDesktopAction('quick')},
       {label:'記加班 / Overtime',click:()=>sendDesktopAction('overtime')},
@@ -125,7 +125,7 @@ async function start() {
     if (answer.response === 1) await shell.openExternal(url.href).catch(() => {});
   }
   function createWindow() {
-    window = new BrowserWindow({width:1280,height:850,minWidth:480,minHeight:640,show:false,backgroundColor:'#f4f7fb',title:'SalaryMate v5.0.0 正式版',icon:path.join(assets,'icons/icon-512.png'),webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true,webviewTag:false,allowRunningInsecureContent:false}});
+    window = new BrowserWindow({width:1280,height:850,minWidth:480,minHeight:640,show:false,backgroundColor:'#f4f7fb',title:'SalaryMate v5.1.0 正式版',icon:path.join(assets,'icons/icon-512.png'),webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true,webviewTag:false,allowRunningInsecureContent:false}});
     window.webContents.setWindowOpenHandler(({url}) => {void external(url); return {action:'deny'};});
     window.webContents.on('will-navigate', (event,url) => {if (!documentURL(url)) {event.preventDefault(); void external(url);}});
     window.webContents.on('will-redirect', (event,url) => {if (!documentURL(url)) event.preventDefault();});
@@ -150,7 +150,7 @@ async function start() {
     {label:'檢視 / View',submenu:[{role:'resetZoom'},{role:'zoomIn'},{role:'zoomOut'},{type:'separator'},{role:'togglefullscreen'}]},
     {role:'windowMenu'},
     {label:'桌面工具 / Desktop',submenu:[{label:'快捷登記 / Quick entry',click:()=>sendDesktopAction('quick')},{label:'自動備份 / Automatic backups',click:()=>sendDesktopAction('backups')},{label:'年度報表 PDF / Annual PDF',click:()=>sendDesktopAction('pdf')},{label:'快捷鍵設定 / Shortcut settings',click:()=>sendDesktopAction('options')},{label:'更新中心 / Update center',click:()=>sendDesktopAction('updates')}]},
-    {label:'說明 / Help',submenu:[{label:'更新中心 / Update center',click:()=>sendDesktopAction('updates')},{label:'關於 SalaryMate / About',click:() => dialog.showMessageBox(window,{message:'SalaryMate v5.0.0 正式版',detail:'桌面封裝 5 · 更新中心\nDesktop package 5 · Update center\n資料與網站分開儲存；以備份匯入搬移。\nTransfer browser records with a backup.\n未具發行者簽章／Apple 公證。\nNo publisher certificate or Apple notarization.'})}]}
+    {label:'說明 / Help',submenu:[{label:'更新中心 / Update center',click:()=>sendDesktopAction('updates')},{label:'關於 SalaryMate / About',click:() => dialog.showMessageBox(window,{message:'SalaryMate v5.1.0 正式版',detail:'桌面封裝 1 · 台美股盤中行情\nDesktop package 1 · TW / US market sessions\n資料與網站分開儲存；以備份匯入搬移。\nTransfer browser records with a backup.\n未具發行者簽章／Apple 公證。\nNo publisher certificate or Apple notarization.'})}]}
   ]));
   createWindow();
   // Preferences and shortcut registration never block the first window.

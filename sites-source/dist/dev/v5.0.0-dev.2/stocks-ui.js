@@ -15,7 +15,10 @@
     const types={buy:'買入',sell:'賣出',dividend:'現金股息',split:'分割／合併',opening:'期初持股'};
     const markets={TW:'台股',US:'美股',OTHER:'其他市場'};
     const view={tab:'overview',legacyExpanded:false,search:'',filter:'all',sort:'value',exchange:'',category:'',favorites:false,refreshing:false,quoteResult:null,forecastBusy:false,forecastErrors:[],marketIssue:'',lastMarketAttempt:0,marketExpanded:false};
-    const MARKET_INTERVAL=300000;
+    const MARKET_INTERVAL=60000;
+    const hours=root.SalaryMateMarketHours;
+    let marketFailures=0;
+    const currentMarketPlan=()=>hours.marketPlan(core.marketPreferences(p()).quoteEnabled?p().assets.filter(core.quoteEligible):[],Date.now(),p().marketData?.lastCloseSync||{},services.calendars());
     let marketTimer,marketController;
     let catalogController,catalogSequence=0,catalogItems=[];
     let lookupTimer,lookupController,lookupSequence=0,importDraft=null,dividendController,dividendSequence=0;
@@ -86,7 +89,7 @@
       const percent=quoted&&typeof a.quoteChangePercent==='number'&&Number.isFinite(a.quoteChangePercent)?a.quoteChangePercent:null;
       const change=percent==null?'—':`${percent>0?'+':''}${listPercentFormat.format(Object.is(percent,-0)?0:percent)}%`;
        const closeMeta=closed&&dated?`<small class="stock-quote-meta stock-close-meta"><span>${esc(source)}</span><span>資料日期 <time datetime="${esc(a.quoteDate)}">${esc(a.quoteDate)}</time></span></small>`:'';
-       return `<div class="stock-list-price stock-list-price-summary"><dl class="stock-quote-summary" title="${esc(meta)}"><div><dt>${label}</dt><dd><strong class="stock-quote-value">${quoted?listPriceFormat.format(a.quotePrice):'待更新'}</strong>${stamp}</dd></div><div><dt>漲跌</dt><dd><strong class="stock-quote-value ${tone(percent)}"${percent==null?' aria-label="漲跌待更新"':''}>${change}</strong></dd></div></dl>${closeMeta}${navInfo(a)}</div>`;
+       return `<div class="stock-list-price stock-list-price-summary"><dl class="stock-quote-summary" title="${esc(meta)}"><div><dt>${label}</dt><dd><strong class="stock-quote-value">${quoted?listPriceFormat.format(a.quotePrice):'待更新'}</strong>${stamp}</dd></div><div><dt>漲跌</dt><dd><strong class="stock-quote-value ${tone(percent)}"${percent==null?' aria-label="漲跌待更新"':''}>${change}</strong></dd></div></dl>${closeMeta}${quoteLiveBadge(a)}${navInfo(a)}</div>`;
     }
     const empty=(label,action)=>`<div class="stock-empty"><h3>${label}</h3><p>輸入自己的實際資料，這裡不會預先放入示範持股。</p>${action||btn('新增股票','asset','',true)}</div>`;
     const stat=(label,value,hint='',cls='')=>`<div class="stock-stat"><span>${label}</span><strong class="${cls}">${value}</strong><small>${hint}</small></div>`;
@@ -271,7 +274,7 @@
       const used=p().transactions.some(t=>t.assetId===id);
       openForm('asset',id,id?'編輯股票':'新增股票',`<div class="form-grid">${select('市場','market',a.market,Object.entries(markets))}${select('交易幣別','currency',a.currency,['TWD','USD','HKD','JPY','EUR'].map(x=>[x,x]))}${field('股票代號 *','symbol',a.symbol,'required maxlength="24" placeholder="例如：2330、0050、AAPL"')}${field('股票／ETF 名稱 *','name',a.name,'required maxlength="80"')}<div class="span-2 stock-lookup-row">${btn('查詢名稱','lookup')}<span id="stockLookupStatus" role="status">輸入代號後自動查詢，也可手動填寫名稱。</span></div>${field('券商／帳戶（選填）','account',a.account,'maxlength="60" placeholder="例如：證券帳戶 A"')}${field('備註','note',a.note,'maxlength="200"')}</div><p class="stock-footnote">${used?'已有交易的股票不可更換幣別；不同帳戶可分開建立同一股票。':'建立後可先放入觀察清單，再登記買入；股數以「股」為單位，支援零股與小數股。'}</p>`);
       const form=document.querySelector('#stockForm');form._marketInfo=a.marketInfo||{};form._lookupQuote=preset?.lookupQuote||null;form._iconData=a.iconData||'';
-      form.querySelector('.form-grid').insertAdjacentHTML('beforeend',`${select('行情更新模式','priceUpdateMode',core.quoteEligible(a)?'auto':'manual',[['auto','每 5 分鐘自動取得最新行情'],['manual','手動維護價格／淨值']])}${select('類別','typeOverride',a.typeOverride||'',[['','自動'],['stock','股票'],['etf','ETF'],['fund','基金'],['other','其他']])}${select('交易所','exchangeOverride',a.exchangeOverride||'',[['','自動'],...['TWSE','TPEx','NASDAQ','NYSE','AMEX'].map(x=>[x,exchangeName(x)]),...(a.exchangeOverride&&!['TWSE','TPEx','NASDAQ','NYSE','AMEX'].includes(a.exchangeOverride)?[[a.exchangeOverride,a.exchangeOverride]]:[])])}${field('產業分類','industryOverride',a.industryOverride||'','maxlength="60" placeholder="留空使用官方分類"')}${field('自訂分類','group',a.group||'','maxlength="60" list="stockGroupNames" placeholder="例如：長期投資、高股息"')}<datalist id="stockGroupNames">${[...new Set(p().assets.map(x=>x.group).filter(Boolean))].map(x=>`<option value="${esc(x)}"></option>`).join('')}</datalist><div class="span-2 stock-classification-info" id="stockClassificationInfo"></div><label class="stock-favorites-filter"><input type="checkbox" name="favorite" ${a.favorite?'checked':''}>加入收藏</label>${select('股票圖示','iconMode',a.iconMode||'auto',[['auto','通用圖示'],['symbol','代號圖示'],['custom','自訂圖片']])}<p class="hint span-2">請使用你有權使用的圖片；自訂圖示隨個人備份保存。</p><div class="span-2 stock-icon-editor"><span id="stockIconPreview">${icon(a)}</span><label class="btn stock-upload-label">上傳圖示<input type="file" id="stockIconFile" accept="image/png,image/jpeg,image/webp"></label>${btn('移除圖片','clear-icon')}<small>PNG、JPG、WebP，最多 2 MB；儲存在個人備份。</small><span id="stockIconStatus" role="status"></span></div>`);
+      form.querySelector('.form-grid').insertAdjacentHTML('beforeend',`${select('行情更新模式','priceUpdateMode',core.quoteEligible(a)?'auto':'manual',[['auto','開盤至收盤，每 60 秒更新'],['manual','手動維護價格／淨值']])}${select('類別','typeOverride',a.typeOverride||'',[['','自動'],['stock','股票'],['etf','ETF'],['fund','基金'],['other','其他']])}${select('交易所','exchangeOverride',a.exchangeOverride||'',[['','自動'],...['TWSE','TPEx','NASDAQ','NYSE','AMEX'].map(x=>[x,exchangeName(x)]),...(a.exchangeOverride&&!['TWSE','TPEx','NASDAQ','NYSE','AMEX'].includes(a.exchangeOverride)?[[a.exchangeOverride,a.exchangeOverride]]:[])])}${field('產業分類','industryOverride',a.industryOverride||'','maxlength="60" placeholder="留空使用官方分類"')}${field('自訂分類','group',a.group||'','maxlength="60" list="stockGroupNames" placeholder="例如：長期投資、高股息"')}<datalist id="stockGroupNames">${[...new Set(p().assets.map(x=>x.group).filter(Boolean))].map(x=>`<option value="${esc(x)}"></option>`).join('')}</datalist><div class="span-2 stock-classification-info" id="stockClassificationInfo"></div><label class="stock-favorites-filter"><input type="checkbox" name="favorite" ${a.favorite?'checked':''}>加入收藏</label>${select('股票圖示','iconMode',a.iconMode||'auto',[['auto','通用圖示'],['symbol','代號圖示'],['custom','自訂圖片']])}<p class="hint span-2">請使用你有權使用的圖片；自訂圖示隨個人備份保存。</p><div class="span-2 stock-icon-editor"><span id="stockIconPreview">${icon(a)}</span><label class="btn stock-upload-label">上傳圖示<input type="file" id="stockIconFile" accept="image/png,image/jpeg,image/webp"></label>${btn('移除圖片','clear-icon')}<small>PNG、JPG、WebP，最多 2 MB；儲存在個人備份。</small><span id="stockIconStatus" role="status"></span></div>`);
       if(!id)form.insertAdjacentHTML('afterbegin',`<div class="stock-asset-find">${btn('搜尋台股／ETF','catalog')}</div>`);
       showClassification(form);
     }
@@ -344,6 +347,16 @@
     const onInvestment=()=>!!root.document?.querySelector('.stock-view');
     const marketBlocked=()=>!onInvestment()||root.document.hidden||root.document.querySelector('#appDialog')?.open||
       !!(root.document.activeElement?.matches?.('input, select, textarea')&&root.document.activeElement.closest?.('.stock-toolbar, #stockForm, #stockBatchForm'))||root.navigator?.onLine===false;
+    function quoteLiveBadge(a){
+      if(a.quotePrice==null||!['TW','US'].includes(a.market))return '';
+      const state=hours.quoteTiming(a,Date.now(),services.calendars());
+      const labels={manual:'手動價格',realtime:'來源即時',latest:'盤中報價',delayed:'延遲報價',stale:'報價較舊',unknown:'延遲未確認',close:'收盤資料',closed:'非交易時段報價'};
+      return '<small class="stock-live-quality" data-quality="'+state+'">'+labels[state]+'</small>';
+    }
+    function marketSessionsHTML(){
+      const plan=currentMarketPlan(),labels={open:'交易中',preopen:'尚未開盤',closing:'收盤確認',closed:'已收盤',holiday:'休市',unknown:'交易日待確認'};
+      return '<div class="stock-session-bar" aria-label="交易時段">'+plan.sessions.map(s=>'<span class="stock-session" data-phase="'+s.phase+'"><strong>'+markets[s.market]+'</strong><span>'+labels[s.phase]+'</span><small>'+s.openTime+'–'+s.closeTime+' <span>'+(s.market==='TW'?'台北':'紐約')+'</span>'+(s.earlyClose?' · <span>提早收盤</span>':'')+'</small></span>').join('')+'<span class="stock-session-frequency">盤中每 60 秒更新</span></div>';
+    }
     function marketCard(){
       const m=p().marketData||{},prefs=core.marketPreferences(p()),fx=m.fx;
       const status=view.refreshing?'syncing':view.marketIssue?'error':m.status||'idle';
@@ -355,11 +368,11 @@
       const last=m.lastSyncAt?new Date(m.lastSyncAt).toLocaleString('zh-TW',{timeZone:'Asia/Taipei',hour12:false}):'';
       const sync=view.quoteResult?`<div class="stock-sync-result"><strong>${esc(view.quoteResult.title)}</strong>${view.quoteResult.errors.length?`<details><summary>查看未更新項目（${view.quoteResult.errors.length}）</summary><ul>${view.quoteResult.errors.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></details>`:''}</div>`:'';
       return `<section class="stock-panel stock-market-card" data-market-card aria-label="市場資料連動">
-        <div class="stock-market-actions"><button type="button" class="btn btn-small" data-action="open-reference-fx">歷史匯率</button><button type="button" class="btn btn-small" data-stock="toggle-market-details" aria-expanded="${view.marketExpanded}" aria-controls="stockMarketDetails" aria-label="${view.marketExpanded?'收合市場資訊':'展開市場資訊'}" aria-describedby="stockMarketStatus" title="${label}"><span class="stock-market-dot" data-sync-state="${status}" aria-hidden="true"></span><span data-market-details-label>${view.marketExpanded?'收合':'展開'}</span></button><button type="button" class="btn btn-small" data-stock="toggle-market-quotes" aria-pressed="${prefs.quoteEnabled}" aria-label="個股連動" title="${prefs.quoteEnabled?'停用個股連動':'啟用個股連動'}">${prefs.quoteEnabled?'連動：開':'連動：關'}</button><button type="button" class="btn btn-small stock-market-auto" data-stock="toggle-market-auto" aria-pressed="${prefs.autoRefresh}" aria-label="每 5 分鐘自動更新" title="${prefs.autoRefresh?(prefs.quoteEnabled?'每 5 分鐘自動更新':'匯率每 5 分鐘更新'):'自動更新已暫停'}">${prefs.autoRefresh?'自動：開':'自動：關'}</button>${btn(view.refreshing?'更新中…':'更新','refresh','',true)}<button type="button" class="btn btn-small" data-stock="quotes" aria-label="手動價格／淨值" title="手動價格／淨值">手動</button><div class="stock-action-menu-wrap"><button type="button" class="btn stock-action-toggle" data-stock="toggle-actions" aria-expanded="false" aria-controls="stockHeadActions">選項</button><div id="stockHeadActions" class="stock-head-actions">${btn('新增','asset')}${btn('交易','buy')}${btn('批次','batch')}</div></div></div>
-        <span id="stockMarketStatus" class="sr-only" role="status">${label}</span>
+        <div class="stock-market-actions"><button type="button" class="btn btn-small" data-action="open-reference-fx">歷史匯率</button><button type="button" class="btn btn-small" data-stock="toggle-market-details" aria-expanded="${view.marketExpanded}" aria-controls="stockMarketDetails" aria-label="${view.marketExpanded?'收合市場資訊':'展開市場資訊'}" aria-describedby="stockMarketStatus" title="${label}"><span class="stock-market-dot" data-sync-state="${status}" aria-hidden="true"></span><span data-market-details-label>${view.marketExpanded?'收合':'展開'}</span></button><button type="button" class="btn btn-small" data-stock="toggle-market-quotes" aria-pressed="${prefs.quoteEnabled}" aria-label="個股連動" title="${prefs.quoteEnabled?'停用個股連動':'啟用個股連動'}">${prefs.quoteEnabled?'連動：開':'連動：關'}</button><button type="button" class="btn btn-small stock-market-auto" data-stock="toggle-market-auto" aria-pressed="${prefs.autoRefresh}" aria-label="盤中每 60 秒更新" title="${prefs.autoRefresh?(prefs.quoteEnabled?'盤中每 60 秒更新':'個股自動更新已停用'):'自動更新已暫停'}">${prefs.autoRefresh?'自動：開':'自動：關'}</button>${btn(view.refreshing?'更新中…':'更新','refresh','',true)}<button type="button" class="btn btn-small" data-stock="quotes" aria-label="手動價格／淨值" title="手動價格／淨值">手動</button><div class="stock-action-menu-wrap"><button type="button" class="btn stock-action-toggle" data-stock="toggle-actions" aria-expanded="false" aria-controls="stockHeadActions">選項</button><div id="stockHeadActions" class="stock-head-actions">${btn('新增','asset')}${btn('交易','buy')}${btn('批次','batch')}</div></div></div>
+        ${marketSessionsHTML()}<span id="stockMarketStatus" class="sr-only" role="status">${label}</span>
         ${!view.refreshing&&(view.marketIssue||status==='error'||status==='partial')?`<p class="stock-warning stock-market-update-warning" role="status">${esc(view.marketIssue||(status==='error'?'更新失敗，已保留上次匯率與價格。':'部分資料更新失敗，已保留未更新項目的原價格。'))}</p>`:''}
         <div id="stockMarketDetails" class="stock-market-copy" ${view.marketExpanded?'':'hidden'}><div class="stock-market-title"><h3>市場資料連動</h3><span class="stock-badge">${label}</span><strong class="stock-market-fx">USD/TWD ${fx?num(fx.rate,3):'—'}</strong><span class="stock-badge">${fxLabel}</span></div>
-        <p>台股：TWSE 最新成交／TWSE、TPEx 收盤 · 美股：Nasdaq 最新可用行情 · 基金：手動維護公布淨值</p>
+        <p>台股：TWSE 最新成交／TWSE、TPEx 收盤 · 美股：Nasdaq 最新可用行情 · 基金：手動維護公布淨值</p><p class="stock-market-policy">投資頁開啟且可見時，依兩地交易日每 60 秒更新；收盤後補抓最後一筆便停止。背景、離線或編輯時暫停，回到頁面會續接。</p><p class="stock-market-policy">更新頻率不代表報價零延遲；以來源成交時間及即時／延遲標記為準。臨時停市、來源故障或延遲時保留上次價格。ETF 報價與淨值分開顯示。</p>
         <p class="stock-close-attribution"><span>上市收盤資料來源：</span><a href="https://data.gov.tw/dataset/11549" target="_blank" rel="noopener noreferrer">金管會證期局／臺灣證券交易所－上市個股日成交資訊</a> · <a href="https://data.gov.tw/license" target="_blank" rel="noopener noreferrer">政府資料開放授權條款第 1 版</a>。<span>收盤價不是盤中即時行情；資料日期為交易日，非抓取時間。</span></p>
         <p class="stock-market-time">${last?`<span>上次同步</span> ${esc(last)} <span>台北時間</span>`:'尚未完成首次同步'}${fx?` · <span>匯率基準</span> ${esc(fx.date)}`:''}${m.requested?` · ${m.updated||0}/${m.requested} <span>檔已更新</span>`:''}</p>
         ${Object.values(fresh).some(Boolean)?`<p class="stock-market-freshness"><span>持股估值採用已保存價格：</span><span>${fresh.recent} <span>檔近期</span></span> · <span>${fresh.older} <span>檔逾 24 小時</span></span> · <span>${fresh.unknown} <span>檔時間待確認</span></span> · <span>${fresh.manual} <span>檔手動</span></span></p>`:''}
@@ -381,18 +394,24 @@
     }
     function queueMarket(delay){
       if(marketTimer||view.refreshing||!core.marketPreferences(p()).autoRefresh||typeof root.fetch!=='function'||!root.document||root.document.hidden)return;
+      void services.refreshSessions();
+      const plan=currentMarketPlan();
       const last=Math.max(view.lastMarketAttempt,Date.parse(p().marketData?.lastAttemptAt)||0);
+      const interval=Math.min(300000,MARKET_INTERVAL*2**marketFailures);
+      const wait=plan.assets.length?Math.max(1500,interval-(Date.now()-Math.min(last,Date.now()))):plan.wakeIn;
       marketTimer=setTimeout(()=>{
         marketTimer=null;if(!onInvestment())return;
+        marketDisplay();
+        if(!currentMarketPlan().assets.length){queueMarket();return;}
         if(marketBlocked()||view.forecastBusy){queueMarket(15000);return;}
         void refreshQuotes(false);
-      },delay??Math.max(1500,MARKET_INTERVAL-(Date.now()-Math.min(last,Date.now()))));
+      },delay??wait);
     }
     function toggleMarket(key){
       const enabled=!core.marketPreferences(p())[key];
       if(api.commit(()=>{p().marketData={...p().marketData,[key]:enabled};},'市場連動設定未儲存，請再試一次。',api.id('market-preference'),false)){
         marketController?.abort();clearTimeout(marketTimer);marketTimer=null;view.marketIssue='';view.quoteResult=null;
-        if(enabled)view.lastMarketAttempt=0;
+        if(enabled){view.lastMarketAttempt=0;marketFailures=0;}
         renderKeepingScroll();
       }
     }
@@ -670,7 +689,7 @@
     }
     function openQuotes() {
       if(!p().assets.length){openAsset();return;}
-      openForm('quotes','','手動價格／淨值',`<p class="hint">選擇手動維護後可編輯價格、日期與匯率，自動更新會保留這些值。基金採手動公布淨值；留空價格代表尚未定價。</p><div class="stock-quote-list">${p().assets.map(a=>`<fieldset data-quote-id="${esc(a.id)}"><legend>${user(a.symbol)} · ${user(a.name)} <small>${user(a.account||'')} / ${a.currency}</small></legend>${select('行情更新模式',`mode-${a.id}`,core.quoteEligible(a)?'auto':'manual',[...(['TW','US'].includes(a.market)&&(classification(a).type!=='fund')?[['auto','每 5 分鐘自動取得最新行情']]:[]),['manual','手動維護價格／淨值']])}<div class="form-grid cols-3">${field('每股價格',`price-${a.id}`,a.quotePrice??'','type="number" step="any" min="0"')}${field('價格日期',`date-${a.id}`,a.quoteDate||api.today(),`type="date" max="${api.today()}"`)}${field('1 '+a.currency+' = TWD',`fx-${a.id}`,a.currency==='TWD'?1:(a.quoteFx||''),`type="number" step="any" min="0.00000001" ${a.currency==='TWD'?'readonly':''}`)}</div></fieldset>`).join('')}</div>`,true);
+      openForm('quotes','','手動價格／淨值',`<p class="hint">選擇手動維護後可編輯價格、日期與匯率，自動更新會保留這些值。基金採手動公布淨值；留空價格代表尚未定價。</p><div class="stock-quote-list">${p().assets.map(a=>`<fieldset data-quote-id="${esc(a.id)}"><legend>${user(a.symbol)} · ${user(a.name)} <small>${user(a.account||'')} / ${a.currency}</small></legend>${select('行情更新模式',`mode-${a.id}`,core.quoteEligible(a)?'auto':'manual',[...(['TW','US'].includes(a.market)&&(classification(a).type!=='fund')?[['auto','開盤至收盤，每 60 秒更新']]:[]),['manual','手動維護價格／淨值']])}<div class="form-grid cols-3">${field('每股價格',`price-${a.id}`,a.quotePrice??'','type="number" step="any" min="0"')}${field('價格日期',`date-${a.id}`,a.quoteDate||api.today(),`type="date" max="${api.today()}"`)}${field('1 '+a.currency+' = TWD',`fx-${a.id}`,a.currency==='TWD'?1:(a.quoteFx||''),`type="number" step="any" min="0.00000001" ${a.currency==='TWD'?'readonly':''}`)}</div></fieldset>`).join('')}</div>`,true);
       syncManualPriceFields();
     }
     function syncManualPriceFields(){
@@ -743,22 +762,32 @@
       if(manual&&root.navigator?.onLine===false){view.marketIssue='目前離線，保留上次匯率與價格。';marketDisplay();return;}
       if(marketBlocked())return;
       clearTimeout(marketTimer);marketTimer=null;
-      const baseline=JSON.stringify(p()),assets=core.marketPreferences(p()).quoteEnabled?p().assets.filter(core.quoteEligible):[];
+      const plan=currentMarketPlan();
+      const baseline=JSON.stringify(p()),assets=manual?(core.marketPreferences(p()).quoteEnabled?p().assets.filter(core.quoteEligible):[]):plan.assets;
+      if(!manual&&!assets.length){queueMarket();return;}
       view.refreshing=true;view.lastMarketAttempt=Date.now();view.quoteResult=null;view.marketIssue='';
       const controller=new AbortController();marketController=controller;marketDisplay();
       try {
-        const snapshot=await services.fetchQuotes(assets,'/api/stocks/quotes',controller.signal);
+        const snapshot=await services.fetchQuotes(assets,'/api/stocks/quotes',controller.signal,{intraday:!manual});
+        snapshot.requestedKeys=assets.map(a=>a.market+':'+a.symbol.toUpperCase());
         if(controller.signal.aborted)return;
         if(JSON.stringify(p())!==baseline||marketBlocked()){
           if(manual)view.marketIssue='查詢期間資料或編輯狀態已變更，請重新更新。';
           return;
         }
         const result=services.applyQuotes(p(),snapshot,api.today());
+        marketFailures=result.priceUpdated.length?0:Math.min(3,marketFailures+1);
+        if(!manual)for(const s of plan.closing){
+          const closingAssets=assets.filter(a=>a.market===s.market);
+          if(closingAssets.length&&closingAssets.every(a=>result.priceUpdated.includes(a.id))){
+            result.next.marketData.lastCloseSync={...result.next.marketData.lastCloseSync,[s.market]:s.date};
+          }
+        }
         const saved=api.commit(()=>{api.state().stockPortfolio=result.next;},'更新價格未儲存，原資料保持不變。',api.id('market-sync'),false);
         if(!saved)throw Error('儲存失敗，請重新整理後再試。');
         if(manual&&result.errors.length)view.quoteResult={title:result.useful?'部分資料已更新':'更新未完成，原價格保留',errors:result.errors};
         renderKeepingScroll();
-      }catch(e){if(!controller.signal.aborted)view.marketIssue='更新失敗，已保留上次匯率與價格。';}
+      }catch(e){if(!controller.signal.aborted){marketFailures=Math.min(3,marketFailures+1);view.marketIssue='更新失敗，已保留上次匯率與價格。';}}
       finally{view.refreshing=false;marketController=null;marketDisplay();queueMarket();}
     }
     async function lookupName() {
@@ -907,9 +936,9 @@
       queueMarket();resumeForecasts();
     });
     function resumeForecasts(){if(!forecastInactive()){renderKeepingScroll();queueForecasts();}}
-    root.addEventListener?.('offline',()=>{pauseForecasts();if(onInvestment()&&view.tab==='income')renderKeepingScroll();});
-    root.addEventListener?.('online',resumeForecasts);
-    root.addEventListener?.('pagehide',()=>{cancelDialogRequests();pauseForecasts();});
+    root.addEventListener?.('offline',()=>{clearTimeout(marketTimer);marketTimer=null;marketController?.abort();pauseForecasts();if(onInvestment()){view.marketIssue='目前離線，保留上次匯率與價格。';marketDisplay();}});
+    root.addEventListener?.('online',()=>{view.lastMarketAttempt=0;marketFailures=0;view.marketIssue='';queueMarket(1500);resumeForecasts();});
+    root.addEventListener?.('pagehide',()=>{clearTimeout(marketTimer);marketTimer=null;marketController?.abort();cancelDialogRequests();pauseForecasts();});
     root.addEventListener?.('pageshow',resumeForecasts);
     root.document.addEventListener('keydown',event=>{if(event.key==='Escape'&&root.document.querySelector('.stock-action-menu-wrap.is-open')){event.preventDefault();closeStockActions(true);}});
     function click(el) {

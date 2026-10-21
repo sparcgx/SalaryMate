@@ -2,7 +2,7 @@
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.0.0';
+    const APP_VERSION = '5.1.0';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -3382,7 +3382,7 @@
       const promise=new Promise((resolve,reject)=>{
         const script=document.createElement('script');let timer,settled=false;
         const finish=error=>{if(settled)return;settled=true;clearTimeout(timer);script.onload=script.onerror=null;script.remove();error?reject(error):resolve();};
-        script.src=new URL('./'+file+'?v=5.0.0-downloads3',document.baseURI).href;script.async=true;
+        script.src=new URL('./'+file+'?v=5.1.0',document.baseURI).href;script.async=true;
         script.onload=()=>finish(window[key]?null:Error('Missing module'));script.onerror=()=>finish(Error('Load failed'));
         timer=setTimeout(()=>finish(Error('Load timed out')),20000);document.head.append(script);
       });

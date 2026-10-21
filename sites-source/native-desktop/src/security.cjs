@@ -3,7 +3,7 @@ const path = require('node:path');
 const {isUint8Array, isSharedArrayBuffer} = require('node:util').types;
 const MAX_DOCUMENT_BYTES = 45 * 1024 * 1024;
 const APP_URL = 'salarymate://app/index.html';
-const STOCK_PATHS = new Set(['quotes', 'nav', 'lookup', 'dividends', 'catalog'].map(x => '/api/stocks/' + x));
+const STOCK_PATHS = new Set(['sessions', 'quotes', 'nav', 'lookup', 'dividends', 'catalog'].map(x => '/api/stocks/' + x));
 function localURL(value) {
   try { const u = new URL(value); return u.protocol === 'salarymate:' && u.host === 'app' && !u.username && !u.password; }
   catch { return false; }
