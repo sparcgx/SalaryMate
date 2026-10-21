@@ -19,7 +19,9 @@ test('R97 single deferred startup bundle preserves module order and exact genera
  const expected=parts.join('');
  assert.equal(read('startup.js'),expected);new vm.Script(expected);
  const scripts=[...read('index.html').matchAll(/<script defer src="([^"]+)"/g)];
- assert.equal(scripts.length,1);assert.equal(scripts[0][1],'./startup.js?v='+read('app.js').match(/const APP_VERSION = '([^']+)'/)[1]);
+ const appVersion=read('app.js').match(/const APP_VERSION = '([^']+)'/)[1],cacheVersion=read('sw.js').match(/CACHE='salarymate-v5-full-([^']+)'/)[1];
+ assert.ok(cacheVersion===appVersion||cacheVersion.startsWith(appVersion+'-'));
+ assert.equal(scripts.length,1);assert.equal(scripts[0][1],'./startup.js?v='+cacheVersion);
  assert.match(read('index.html'),/role="status">正在載入 SalaryMate/);
 });
 
