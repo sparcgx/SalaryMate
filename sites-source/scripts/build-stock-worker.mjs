@@ -26,6 +26,7 @@ if(!styleMatch)throw Error('Missing style packages');
 for(const asset of [...JSON.parse(optionalMatch[1]),...JSON.parse(styleMatch[1])]){if(!/^\.\/[a-z-]+\.(?:js|css)\?v=[a-zA-Z0-9.-]+$/.test(asset))throw Error('Unexpected optional asset');versionedUrls.push(devBase+asset.slice(2));}
 const immutableArt=Object.keys(files).filter(name=>name.startsWith(devBase+'art/')&&/-(?:r\d+|r\d+-[a-d])\.(?:png|webp)$/.test(name));
 const market=(await readFile(path.join(root,'server/stock-market.mjs'),'utf8')).replace(/^import .*;\r?\n/gm,'').replace('export function createStockMarket','function createStockMarket');
+const history=(await readFile(path.join(root,'server/price-history.mjs'),'utf8')).replace(/^import .*;\r?\n/gm,'').replace(/^export /gm,'');
 const hours=(await readFile(path.join(root,'server/market-hours.mjs'),'utf8')).replace(/^export /gm,'');
 const twseClose=(await readFile(path.join(root,'server/twse-close.mjs'),'utf8')).replace(/^export /gm,'');
 const dividends=(await readFile(path.join(root,'server/dividend-market.mjs'),'utf8')).replace('export function createDividendLookup','function createDividendLookup');
@@ -57,8 +58,8 @@ export default {async fetch(request){
   if(!['GET','HEAD'].includes(request.method))return new Response('Method not allowed',{status:405});
   return new Response(request.method==='HEAD'?null:JSON.stringify({ok:true,service:'salarymate-market',version:${JSON.stringify(serviceVersion)}}),{headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'}});
  }
- if(['/api/stocks/sessions','/api/stocks/quotes','/api/stocks/nav','/api/stocks/lookup','/api/stocks/dividends','/api/stocks/catalog'].includes(url.pathname))return handleMarket(request);
- if(['/api/stocks/portable/sessions','/api/stocks/portable/quotes','/api/stocks/portable/nav','/api/stocks/portable/lookup','/api/stocks/portable/dividends','/api/stocks/portable/catalog'].includes(url.pathname))return handlePortable(request);
+ if(['/api/stocks/history','/api/stocks/sessions','/api/stocks/quotes','/api/stocks/nav','/api/stocks/lookup','/api/stocks/dividends','/api/stocks/catalog'].includes(url.pathname))return handleMarket(request);
+ if(['/api/stocks/portable/history','/api/stocks/portable/sessions','/api/stocks/portable/quotes','/api/stocks/portable/nav','/api/stocks/portable/lookup','/api/stocks/portable/dividends','/api/stocks/portable/catalog'].includes(url.pathname))return handlePortable(request);
  if(url.pathname==='/api/reference/fx')return handleReference(request);
  if(url.pathname.startsWith('/api/'))return new Response('Not found',{status:404});
  if(!['GET','HEAD'].includes(request.method))return new Response('Method not allowed',{status:405});
@@ -71,5 +72,5 @@ export default {async fetch(request){
  return new Response(body,{headers});
 }};`;
 await mkdir(path.join(dist,'server'),{recursive:true});
-await writeFile(path.join(dist,'server/index.js'),`const STATIC_FILES=${JSON.stringify(files)};\n${hours}\n${dividends}\n${intraday}\n${twseClose}\n${market}\n${portable}\n${android}\n${reference}\n${runtime}`);
+await writeFile(path.join(dist,'server/index.js'),`const STATIC_FILES=${JSON.stringify(files)};\n${hours}\n${dividends}\n${intraday}\n${twseClose}\n${history}\n${market}\n${portable}\n${android}\n${reference}\n${runtime}`);
 console.log(`Stock API + ${Object.keys(files).length} existing static assets packaged.`);

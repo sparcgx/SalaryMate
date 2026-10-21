@@ -75,7 +75,7 @@ startup+='\nObject.assign(window.SalaryMateEnglish,'+JSON.stringify({[zhNew]:'De
 new vm.Script(startup);await fs.writeFile(path.join(stage,'startup.js'),startup);
 let reference=await fs.readFile(path.join(stage,'reference-tools.js'),'utf8');
 reference=once(reference,'root.SalaryMatePortable?.marketOrigin||location.origin',"'salarymate://app'");await fs.writeFile(path.join(stage,'reference-tools.js'),reference);
-const apiFiles=['stock-market.mjs','market-hours.mjs','dividend-market.mjs','intraday-nav.mjs','twse-close.mjs','reference-api.mjs'];
+const apiFiles=['price-history.mjs','stock-market.mjs','market-hours.mjs','dividend-market.mjs','intraday-nav.mjs','twse-close.mjs','reference-api.mjs'];
 await fs.mkdir(path.join(native,'api'),{recursive:true});
 for(const file of apiFiles)await fs.copyFile(path.join(root,'server',file),path.join(native,'api',file));
 // Retired images only. Current and compatibility flight assets remain intact.

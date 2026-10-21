@@ -1,14 +1,14 @@
 {
   "name": "salarymate-desktop",
-  "version": "5.1.0",
+  "version": "5.2.0",
   "private": true,
-  "description": "SalaryMate v5.1.0 正式版 — 台股與美股盤中行情",
+  "description": "SalaryMate v5.2.0 正式版 — 原創投資圖示與智慧分析",
   "author": "SalaryMate",
   "license": "UNLICENSED",
   "main": "src/main.cjs",
   "scripts": {
     "assets": "node ../scripts/build-desktop-assets.mjs",
-    "test": "node --test ../tests/v5-desktop.test.mjs ../tests/v5-desktop-features.test.mjs ../tests/v5-desktop-updates.test.mjs ../tests/v5-live-market.test.mjs ../tests/v5-r46-market-sync.test.mjs ../tests/v5-r41-intraday.test.mjs ../tests/v5-twse-close-integration.test.mjs",
+    "test": "node --test ../tests/v5-desktop.test.mjs ../tests/v5-desktop-features.test.mjs ../tests/v5-desktop-updates.test.mjs ../tests/v5-live-market.test.mjs ../tests/v5-r46-market-sync.test.mjs ../tests/v5-r41-intraday.test.mjs ../tests/v5-twse-close-integration.test.mjs ../tests/v5-investment-insights.test.mjs",
     "benchmark": "node scripts/benchmark.cjs",
     "package": "electron-builder --publish never",
     "verify": "node scripts/verify-package.cjs"
@@ -20,7 +20,7 @@
   "build": {
     "appId": "com.salarymate.personal.desktop",
     "productName": "SalaryMate",
-    "buildVersion": "5010001",
+    "buildVersion": "5020001",
     "asar": true,
     "npmRebuild": false,
     "directories": {

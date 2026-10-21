@@ -1,6 +1,7 @@
 import {createDividendLookup} from './dividend-market.mjs';
 import {createIntradayNavLookup} from './intraday-nav.mjs';
 import {createTwseCloseLookup} from './twse-close.mjs';
+import {createPriceHistory} from './price-history.mjs';
 import {MARKET_CALENDARS,mergeMarketCalendars,marketSession,parseNasdaqTime} from './market-hours.mjs';
 // Public instruments only. No holdings, account names or transaction data leave the device.
 export function createStockMarket(fetcher=fetch, clock=()=>Date.now()) {
@@ -70,7 +71,7 @@ export function createStockMarket(fetcher=fetch, clock=()=>Date.now()) {
     const entry=cache.get(cacheKey);if(entry&&clock()-entry.at<ttl)return entry.data;
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),format==='text'?20000:10000);
     try {
-      const response=await fetcher(url,{...init,signal:controller.signal,headers:{accept:format==='text'?'text/html':'application/json','user-agent':'SalaryMate/5.1 stock-records','referer':url.includes('nasdaq.com')?'https://www.nasdaq.com/':'https://www.twse.com.tw/',...init.headers}});
+      const response=await fetcher(url,{...init,signal:controller.signal,headers:{accept:format==='text'?'text/html':'application/json','user-agent':'SalaryMate/5.2 stock-records','referer':url.includes('nasdaq.com')?'https://www.nasdaq.com/':'https://www.twse.com.tw/',...init.headers}});
       if(!response.ok)throw new Error('資料來源暫時無法使用');
       const data=format==='text'?await response.text():await response.json();
       if(format==='text'&&data.length>2000000)throw new Error('資料來源回應過大');
@@ -200,6 +201,7 @@ export function createStockMarket(fetcher=fetch, clock=()=>Date.now()) {
     return {fetchedAt,quotes,fx,errors,sessions:['TW','US'].map(m=>marketSession(m,clock(),calendars))};
   }
   const lookupDividends=createDividendLookup(read,clock);
+  const lookupHistory=createPriceHistory(read,clock,()=>calendars);
   return async function handle(request) {
     const url=new URL(request.url),origin=request.headers.get('origin');
     if(origin&&origin!==url.origin)return json({error:'不允許的來源'},403);
@@ -222,14 +224,19 @@ export function createStockMarket(fetcher=fetch, clock=()=>Date.now()) {
       }catch{return json({error:'股票清單暫時無法取得'},503);}
     }
     const dividendRequest=url.pathname.endsWith('/dividends');
+    const historyRequest=url.pathname.endsWith('/history');
     const navRequest=url.pathname.endsWith('/nav');
     const fxRequest=url.pathname.endsWith('/quotes')&&d?.includeFx===true;
     if(d?.intraday!=null&&typeof d.intraday!=='boolean')return json({error:'行情更新方式不正確'},400);
-    const input=url.pathname.endsWith('/lookup')||dividendRequest?[d]:d?.instruments;
+    const input=url.pathname.endsWith('/lookup')||dividendRequest||historyRequest?[d]:d?.instruments;
     if(!Array.isArray(input)||!input.length&&!fxRequest||input.length>20)return json({error:'一次請查詢 1～20 個代號'},400);
     const items=[];
     for(const x of input){if(!x||!['TW','US'].includes(x.market)||typeof x.symbol!=='string')return json({error:'市場或代號不正確'},400);const symbol=x.symbol.trim().toUpperCase();if(!(x.market==='TW'?/^[0-9A-Z]{2,12}$/:/^[A-Z][A-Z0-9.-]{0,14}$/).test(symbol))return json({error:'股票代號格式不正確'},400);if(!items.some(i=>i.market===x.market&&i.symbol===symbol))items.push({market:x.market,symbol});}
     if(navRequest&&items.some(x=>x.market!=='TW'))return json({error:'盤中淨值查詢僅支援台股 ETF'},400);
+    if(historyRequest){
+      if(Object.keys(d).some(k=>!['market','symbol'].includes(k)))return json({error:'歷史行情只接受市場與代號'},400);
+      try{return json({history:await lookupHistory(items[0]),errors:[]});}catch(e){return json({error:e.message},503);}
+    }
     if(dividendRequest){
       if(d.forecast!=null&&typeof d.forecast!=='boolean')return json({error:'公告查詢方式不正確'},400);
       if(!Number.isInteger(d.year)||d.year<2006||d.year>new Date(clock()).getUTCFullYear()+1)return json({error:'公告年份不正確'},400);

@@ -2823,3 +2823,60 @@ Windows 尚無發行者憑證；Mac 尚無 Apple 公證。安裝前請閱讀說�
 v5.1.0 正式版 | v5.1.0 Release
 SalaryMate · v5.1.0 正式版 | SalaryMate · v5.1.0 Release
 SalaryMate · v5.1.0 正式版 · 單一 HTML | SalaryMate · v5.1.0 Release · Single HTML
+智慧分析|Investment insights
+原創圖示|Original icons
+原創彩色圖示|Original color icons
+自動辨識|Automatic
+成長股票|Growth stocks
+ETF 組合|ETF basket
+基金配置|Funds
+債券防守|Bonds
+股息收益|Dividends
+科技晶片|Technology
+全球市場|Global markets
+SalaryMate 原創向量圖示 · 自動依股票類別選擇，也可自由更換。|Original SalaryMate vector icons. Choose automatically by asset type or select your own style.
+近期 1–4 週觀察|Watch the next 1–4 weeks
+規則型技術分析|Rules-based technical analysis
+把近期價格，轉成看得懂的買賣觀察。|Understand recent prices and potential buy or sell conditions.
+分析標的|Instrument
+更新分析|Refresh analysis
+檢視股票|View instrument
+近期買賣參考|Recent trading observations
+中性觀望|Neutral — watch
+分批買入觀察|Watch for staged entry
+減碼風險評估|Review downside exposure
+偏熱，留意追價|Overheated — avoid chasing
+偏弱，等待止穩|Weak — wait for stabilization
+續抱觀察|Hold and monitor
+下一個觀察點|Next condition to watch
+收盤價走勢|Closing-price history
+走勢期間|Chart range
+20 日|20 sessions
+60 日|60 sessions
+20 日漲跌|20-session change
+20 日均線|20-session SMA
+60 日均線|60-session SMA
+60 日最大回落|60-session maximum drawdown
+20 日波動 · 年化估算|20-session volatility · annualized
+風險與部位提醒|Risk and exposure
+資料來源：|Source: 
+建議怎麼產生？|How are observations generated?
+等待歷史行情|Awaiting price history
+正在讀取近期行情|Loading recent prices
+讀取官方歷史收盤價，完成後會顯示分析。|Loading official daily closes. Analysis will appear when ready.
+從一檔股票或 ETF 開始|Start with a stock or ETF
+新增股票／ETF|Add stock / ETF
+準備分析|Preparing analysis
+暫時無法更新|Update unavailable
+等待最新收盤資料|Waiting for the latest daily close
+交易日曆尚未確認|Trading calendar is not verified
+來源有缺漏，請重試|The source is incomplete. Please retry.
+本次暫停買賣建議，可按「更新分析」重試。|Trading observations are paused. Select Refresh analysis to retry.
+使用未還原每日收盤價；除息、分割與公司事件可能影響指標。|Unadjusted daily closes are used; dividends, splits, and corporate actions can affect indicators.
+只分析價格趨勢，未納入即時新聞、財報、估值、費稅與個人風險承受度。|Price trends only. Live news, financial statements, valuation, costs, taxes, and your risk tolerance are not included.
+近期含不比價註記，可能涉及除權息；請先核對公告，均線可能受到影響。|Recent non-comparable-price flags may reflect corporate actions. Check announcements; moving averages may be affected.
+均線與動能方向尚未一致，先觀察價格是否站穩 20 日均線，再考慮新部位。|Trend and momentum signals are mixed. Watch whether prices hold above the 20-session average before considering a new position.
+價格低於 20／60 日均線，短期動能偏弱。已有部位可檢視是否分批減碼；尚未持有可等待趨勢回穩。|Prices are below the 20- and 60-session averages with weak momentum. Existing holders can review staged reductions; new entries can wait for stabilization.
+價格與均線方向一致向上，動能尚未過熱。可列入分批買入觀察名單，先核對基本面、近期公告與可承受損失。|Price and moving-average trends point upward without overheated momentum. Consider monitoring staged entry conditions after reviewing fundamentals, announcements, and tolerable losses.
+v5.2.0 正式版|v5.2.0 Stable
+SalaryMate · v5.2.0 正式版|SalaryMate · v5.2.0 Stable

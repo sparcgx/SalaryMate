@@ -16,7 +16,7 @@ const hostedScripts=[...html.matchAll(/<script defer src="\.\/([^"?]+)(?:\?[^"]*
 if(hostedScripts.length!==1||hostedScripts[0][1]!=='startup.js')throw new Error('Unexpected hosted startup manifest');
 html=html.replace(hostedScripts[0][0],'');
 const scripts=startupModules.map(name=>['',name]);
-if(scripts.length!==15||scripts.some(match=>match[1]==='legal-data.js'))throw new Error('Unexpected script manifest; inspect dependencies before bundling.');
+if(scripts.length!==17||scripts.some(match=>match[1]==='legal-data.js'))throw new Error('Unexpected script manifest; inspect dependencies before bundling.');
 // Full offline edition includes the on-demand legal module before application startup.
 scripts.unshift(['','reference-data.js'],['','reference-tools.js'],['','legal-data.js']);
 const notes="單一 HTML 版：資料預設儲存在目前瀏覽器，不會隨程式更新自動從其他入口同步。更換瀏覽器，或移動／更名檔案前，請先匯出備份，再於新入口匯入並核對。Google Drive 備份會傳至你授權的帳戶；股價、名稱、淨值與配息查詢需要連線。";

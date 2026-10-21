@@ -37,7 +37,9 @@ export function stockView(before=false,book=portfolio()){
  c.navigator={onLine:true};c.setTimeout=()=>1;c.clearTimeout=()=>{};c.addEventListener=()=>{};
  c.SalaryMateI18n={user:s=>s,text:s=>s,apply(){}};
  if(!before)vm.runInContext(source('market-hours.js'),c);
- vm.runInContext(source('stocks-integrations.js',before),c);vm.runInContext(source('stocks-ui.js',before),c);
+ vm.runInContext(source('stocks-integrations.js',before),c);
+ if(!before)for(const name of ['stocks-icons.js','stocks-insights.js'])vm.runInContext(source(name),c);
+ vm.runInContext(source('stocks-ui.js',before),c);
  const state={stockPortfolio:book},api={state:()=>state,year:()=>2026,today:()=> '2026-10-06',legacyTotal:()=>0,model:()=>snapshot??=c.SalaryMateStocks.calculate(book,2026,'2026-10-06'),render:()=>{html=ui.render('');}};
  const ui=c.SalaryMateStocksUI.create(api);
  return {render:()=>{snapshot=null;calls=0;html=ui.render('');return html;},calls:()=>calls,tab:id=>ui.click({dataset:{stock:'tab',id},closest:()=>null}),html:()=>html};

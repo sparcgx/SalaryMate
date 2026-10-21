@@ -72,6 +72,7 @@
       for(const key of ['group','industryOverride','exchangeOverride'])if(a[key]!=null&&(typeof a[key]!=='string'||a[key].length>60))error('股票分類內容過長。');
       if(a.typeOverride!=null&&!['','stock','etf','fund','other'].includes(a.typeOverride))error('股票類別不正確。');
       if(a.iconMode!=null&&!['auto','symbol','custom'].includes(a.iconMode))error('股票圖示格式不正確。');
+      if(a.iconPreset!=null&&!['','auto','stock','etf','fund','bond','dividend','tech','global'].includes(a.iconPreset))error('原創圖示樣式不正確。');
       if(a.iconData!=null&&(typeof a.iconData!=='string'||a.iconData.length>140000||a.iconData!==''&&!/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/]+={0,2}$/.test(a.iconData)))error('股票圖示必須是有效圖片。');
       if(a.marketInfo!=null&&(typeof a.marketInfo!=='object'||Array.isArray(a.marketInfo)||Object.entries(a.marketInfo).some(([k,v])=>!['exchange','industry','instrumentType','classificationSource'].includes(k)||typeof v!=='string'||v.length>100)))error('股票基本資料格式不正確。');
       if(a.netAssetValue!=null){

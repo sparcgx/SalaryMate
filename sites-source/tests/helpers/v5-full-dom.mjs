@@ -25,7 +25,7 @@ export function boot(seed,options={}) {
   w.localStorage.setItem('salarymate_v310_state','v4-original');w.localStorage.setItem('salarymate_v5_worklog','v5-dev1-original');
   if(seed!==undefined)w.localStorage.setItem(KEY,typeof seed==='string'?seed:JSON.stringify(seed));
   if(singleFile){for(const script of w.document.querySelectorAll('script:not([src])'))w.eval(script.textContent);}
-  else for(const name of ['i18n-en.js','i18n.js','reconcile.js','copy-month.js','comp-time.js','annual-analysis.js','legal-data.js','bootstrap.js','stocks.js','market-hours.js','stocks-integrations.js','backup.js','google-drive.js','google-drive-ui.js','stocks-ui.js','app.js'])w.eval(fs.readFileSync(new URL(name,base),'utf8'));
+  else for(const name of ['i18n-en.js','i18n.js','reconcile.js','copy-month.js','comp-time.js','annual-analysis.js','legal-data.js','bootstrap.js','stocks.js','market-hours.js','stocks-integrations.js','backup.js','google-drive.js','google-drive-ui.js','stocks-icons.js','stocks-insights.js','stocks-ui.js','app.js'])w.eval(fs.readFileSync(new URL(name,base),'utf8'));
   const q=(s)=>w.document.querySelector(s);
   const click=s=>{assert.ok(q(s),`Missing control: ${s}`);q(s).click();};
   const change=(s,value)=>{assert.ok(q(s),`Missing field: ${s}`);q(s).value=value;q(s).dispatchEvent(new w.Event('input',{bubbles:true}));q(s).dispatchEvent(new w.Event('change',{bubbles:true}));};

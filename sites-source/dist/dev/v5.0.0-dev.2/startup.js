@@ -2790,7 +2790,64 @@ globalThis.SalaryMateEnglish={
   "更新頻率不代表報價零延遲；以來源成交時間及即時／延遲標記為準。臨時停市、來源故障或延遲時保留上次價格。ETF 報價與淨值分開顯示。": "Polling frequency does not guarantee zero-delay quotes. Check the trade time and source delay label. Previous prices are retained during outages, unscheduled closures or delays. ETF prices and NAV are displayed separately.",
   "v5.1.0 正式版": "v5.1.0 Release",
   "SalaryMate · v5.1.0 正式版": "SalaryMate · v5.1.0 Release",
-  "SalaryMate · v5.1.0 正式版 · 單一 HTML": "SalaryMate · v5.1.0 Release · Single HTML"
+  "SalaryMate · v5.1.0 正式版 · 單一 HTML": "SalaryMate · v5.1.0 Release · Single HTML",
+  "智慧分析": "Investment insights",
+  "原創圖示": "Original icons",
+  "原創彩色圖示": "Original color icons",
+  "自動辨識": "Automatic",
+  "成長股票": "Growth stocks",
+  "ETF 組合": "ETF basket",
+  "基金配置": "Funds",
+  "債券防守": "Bonds",
+  "股息收益": "Dividends",
+  "科技晶片": "Technology",
+  "全球市場": "Global markets",
+  "SalaryMate 原創向量圖示 · 自動依股票類別選擇，也可自由更換。": "Original SalaryMate vector icons. Choose automatically by asset type or select your own style.",
+  "近期 1–4 週觀察": "Watch the next 1–4 weeks",
+  "規則型技術分析": "Rules-based technical analysis",
+  "把近期價格，轉成看得懂的買賣觀察。": "Understand recent prices and potential buy or sell conditions.",
+  "分析標的": "Instrument",
+  "更新分析": "Refresh analysis",
+  "檢視股票": "View instrument",
+  "近期買賣參考": "Recent trading observations",
+  "中性觀望": "Neutral — watch",
+  "分批買入觀察": "Watch for staged entry",
+  "減碼風險評估": "Review downside exposure",
+  "偏熱，留意追價": "Overheated — avoid chasing",
+  "偏弱，等待止穩": "Weak — wait for stabilization",
+  "續抱觀察": "Hold and monitor",
+  "下一個觀察點": "Next condition to watch",
+  "收盤價走勢": "Closing-price history",
+  "走勢期間": "Chart range",
+  "20 日": "20 sessions",
+  "60 日": "60 sessions",
+  "20 日漲跌": "20-session change",
+  "20 日均線": "20-session SMA",
+  "60 日均線": "60-session SMA",
+  "60 日最大回落": "60-session maximum drawdown",
+  "20 日波動 · 年化估算": "20-session volatility · annualized",
+  "風險與部位提醒": "Risk and exposure",
+  "資料來源：": "Source:",
+  "建議怎麼產生？": "How are observations generated?",
+  "等待歷史行情": "Awaiting price history",
+  "正在讀取近期行情": "Loading recent prices",
+  "讀取官方歷史收盤價，完成後會顯示分析。": "Loading official daily closes. Analysis will appear when ready.",
+  "從一檔股票或 ETF 開始": "Start with a stock or ETF",
+  "新增股票／ETF": "Add stock / ETF",
+  "準備分析": "Preparing analysis",
+  "暫時無法更新": "Update unavailable",
+  "等待最新收盤資料": "Waiting for the latest daily close",
+  "交易日曆尚未確認": "Trading calendar is not verified",
+  "來源有缺漏，請重試": "The source is incomplete. Please retry.",
+  "本次暫停買賣建議，可按「更新分析」重試。": "Trading observations are paused. Select Refresh analysis to retry.",
+  "使用未還原每日收盤價；除息、分割與公司事件可能影響指標。": "Unadjusted daily closes are used; dividends, splits, and corporate actions can affect indicators.",
+  "只分析價格趨勢，未納入即時新聞、財報、估值、費稅與個人風險承受度。": "Price trends only. Live news, financial statements, valuation, costs, taxes, and your risk tolerance are not included.",
+  "近期含不比價註記，可能涉及除權息；請先核對公告，均線可能受到影響。": "Recent non-comparable-price flags may reflect corporate actions. Check announcements; moving averages may be affected.",
+  "均線與動能方向尚未一致，先觀察價格是否站穩 20 日均線，再考慮新部位。": "Trend and momentum signals are mixed. Watch whether prices hold above the 20-session average before considering a new position.",
+  "價格低於 20／60 日均線，短期動能偏弱。已有部位可檢視是否分批減碼；尚未持有可等待趨勢回穩。": "Prices are below the 20- and 60-session averages with weak momentum. Existing holders can review staged reductions; new entries can wait for stabilization.",
+  "價格與均線方向一致向上，動能尚未過熱。可列入分批買入觀察名單，先核對基本面、近期公告與可承受損失。": "Price and moving-average trends point upward without overheated momentum. Consider monitoring staged entry conditions after reviewing fundamentals, announcements, and tolerable losses.",
+  "v5.2.0 正式版": "v5.2.0 Stable",
+  "SalaryMate · v5.2.0 正式版": "SalaryMate · v5.2.0 Stable"
 };
 
 
@@ -3183,7 +3240,7 @@ globalThis.SalaryMateEnglish={
 
 // Website-only style packages. The portable edition already contains all code and CSS.
 (() => {
- const version='5.1.0-desktop1';
+ const version='5.2.0-insights1';
  const base=new URL('./',document.baseURI);
  const core=document.querySelector('link[data-style-core]');
  let css=null,cssReady=false,cssPending=null,flightPending=null;
@@ -3308,6 +3365,7 @@ globalThis.SalaryMateEnglish={
       for(const key of ['group','industryOverride','exchangeOverride'])if(a[key]!=null&&(typeof a[key]!=='string'||a[key].length>60))error('股票分類內容過長。');
       if(a.typeOverride!=null&&!['','stock','etf','fund','other'].includes(a.typeOverride))error('股票類別不正確。');
       if(a.iconMode!=null&&!['auto','symbol','custom'].includes(a.iconMode))error('股票圖示格式不正確。');
+      if(a.iconPreset!=null&&!['','auto','stock','etf','fund','bond','dividend','tech','global'].includes(a.iconPreset))error('原創圖示樣式不正確。');
       if(a.iconData!=null&&(typeof a.iconData!=='string'||a.iconData.length>140000||a.iconData!==''&&!/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/]+={0,2}$/.test(a.iconData)))error('股票圖示必須是有效圖片。');
       if(a.marketInfo!=null&&(typeof a.marketInfo!=='object'||Array.isArray(a.marketInfo)||Object.entries(a.marketInfo).some(([k,v])=>!['exchange','industry','instrumentType','classificationSource'].includes(k)||typeof v!=='string'||v.length>100)))error('股票基本資料格式不正確。');
       if(a.netAssetValue!=null){
@@ -3659,7 +3717,7 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
    if(typeof navigator!=='undefined'&&navigator.onLine===false)fail('目前離線，原有價格保持不變。');
    if(root.SalaryMatePortable)path=root.SalaryMatePortable.marketOrigin+path.replace('/api/stocks/','/api/stocks/portable/');
    const c=new AbortController(),timer=setTimeout(()=>c.abort(),45000);const abort=()=>c.abort();signal?.addEventListener('abort',abort,{once:true});
-   try{const r=await fetch(path,{method:'POST',credentials:'omit',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:c.signal});if(!r.ok)fail(`行情服務暫時無法使用（${r.status}），請稍後重試。`);const d=await r.json();if(!Array.isArray(path.endsWith('/dividends')?d.announcements:d.quotes)||!Array.isArray(d.errors))fail('行情回傳格式不正確。');return d;}catch(e){if(e.name==='AbortError')fail('行情查詢逾時或已取消，原價格保持不變。');throw e;}finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);}
+   try{const r=await fetch(path,{method:'POST',credentials:'omit',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:c.signal});if(!r.ok)fail(`行情服務暫時無法使用（${r.status}），請稍後重試。`);const d=await r.json();if((path.endsWith('/history')?!d.history||!Array.isArray(d.history.bars):!Array.isArray(path.endsWith('/dividends')?d.announcements:d.quotes))||!Array.isArray(d.errors))fail('行情回傳格式不正確。');return d;}catch(e){if(e.name==='AbortError')fail('行情查詢逾時或已取消，原價格保持不變。');throw e;}finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);}
  }
  let marketCalendars=root.SalaryMateMarketHours?.MARKET_CALENDARS,calendarPending,calendarChecked=0;
  async function refreshSessions(){
@@ -3761,7 +3819,7 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
    core.validate(next);return {next,updated,priceUpdated,errors,useful};
  }
  root.SalaryMateStockServices={marketInfo,quoteIssue,quoteMarketAt,catalog:(query,signal)=>request('/api/stocks/catalog',{query},signal),forecasts:(market,symbol,year,signal)=>request('/api/stocks/dividends',{market,symbol,year,forecast:true},signal),forecastCache,dividendPeriod,dividends:(market,symbol,year,signal)=>request('/api/stocks/dividends',{market,symbol,year},signal),parseSmart,prepareSmart,fetchQuotes,fetchIntraday:assets=>fetchQuotes(assets.filter(a=>a.market==='TW'),'/api/stocks/nav'),applyIntraday,applyQuotes,lookup:(market,symbol,signal)=>request('/api/stocks/lookup',{market,symbol},signal)};
- Object.assign(root.SalaryMateStockServices,{refreshSessions,calendars:()=>marketCalendars});
+ Object.assign(root.SalaryMateStockServices,{history:async(a,signal)=>(await request('/api/stocks/history',{market:a.market,symbol:a.symbol.toUpperCase()},signal)).history,refreshSessions,calendars:()=>marketCalendars});
 })(globalThis);
 
 
@@ -4261,6 +4319,154 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
 })(globalThis);
 
 
+;/* SalaryMate module: stocks-icons.js */
+(function(root){
+  'use strict';
+  // Original vector artwork: no remote logos, fonts, or image requests.
+  const items={
+    stock:{label:'成長股票',colors:['#2767cb','#173d87','#d8eeff'],art:'<path d="M16 45V32h7v13zm12 0V25h7v20zm12 0V17h7v28z" fill="currentColor" opacity=".9"/><path d="m15 25 11-9 9 3 13-10m-9 0h9v9" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>'},
+    etf:{label:'ETF 組合',colors:['#8c64e4','#50308e','#eee3ff'],art:'<rect x="14" y="13" width="16" height="16" rx="5" fill="#fff"/><rect x="34" y="13" width="16" height="16" rx="5" fill="currentColor" opacity=".7"/><rect x="14" y="33" width="16" height="16" rx="5" fill="currentColor" opacity=".7"/><rect x="34" y="33" width="16" height="16" rx="5" fill="#fff"/><path d="m39 41 3 3 5-6" fill="none" stroke="#7652bb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'},
+    fund:{label:'基金配置',colors:['#d65a8e','#8e2857','#ffdeed'],art:'<path d="m12 38 20 12 20-12-20-12z" fill="currentColor" opacity=".45"/><path d="m12 29 20 12 20-12-20-12z" fill="currentColor" opacity=".75"/><path d="m12 20 20 12 20-12-20-12z" fill="#fff"/>'},
+    bond:{label:'債券防守',colors:['#20a595','#12645d','#cdfff1'],art:'<path d="m32 11 17 7v13c0 11-10 18-17 21-7-3-17-10-17-21V18z" fill="currentColor" opacity=".88"/><path d="m23 31 6 6 13-14" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'},
+    dividend:{label:'股息收益',colors:['#e5a63b','#96601c','#fff1bd'],art:'<ellipse cx="29" cy="43" rx="16" ry="6" fill="currentColor"/><path d="M13 35v7c0 8 32 8 32 0v-7" fill="currentColor" opacity=".6"/><ellipse cx="29" cy="34" rx="16" ry="6" fill="#fff"/><path d="M29 26V13m-6 6 6 6 6-6" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="46" cy="18" r="7" fill="currentColor" opacity=".9"/>'},
+    tech:{label:'科技晶片',colors:['#418dd7','#265090','#d6f4ff'],art:'<path d="M23 10v7m9-7v7m9-7v7M23 47v7m9-7v7m9-7v7M10 23h7m-7 9h7m-7 9h7m30-18h7m-7 9h7m-7 9h7" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><rect x="17" y="17" width="30" height="30" rx="7" fill="#fff"/><rect x="24" y="24" width="16" height="16" rx="4" fill="currentColor"/><path d="m28 32 3 3 6-7" stroke="#3978b7" stroke-width="2" fill="none"/>'},
+    global:{label:'全球市場',colors:['#677bd6','#354379','#e3e9ff'],art:'<circle cx="32" cy="32" r="20" fill="currentColor" opacity=".22"/><circle cx="32" cy="32" r="19" fill="none" stroke="#fff" stroke-width="2.5"/><ellipse cx="32" cy="32" rx="9" ry="19" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M14 24h36M13 39h38M32 13v38" stroke="currentColor" stroke-width="2.5"/>'},
+    insight:{label:'智慧分析',colors:['#378b83','#184f53','#d1fff0'],art:'<path d="M14 46V33m10 13V27m10 19V20" stroke="currentColor" stroke-width="7" stroke-linecap="round"/><path d="m44 10 3.2 8.8L56 22l-8.8 3.2L44 34l-3.2-8.8L32 22l8.8-3.2z" fill="#fff"/><circle cx="47" cy="44" r="5" fill="currentColor" opacity=".65"/>'}
+  };
+  const presets=Object.entries(items).filter(([id])=>id!=='insight').map(([id,v])=>[id,v.label]);
+  function infer(a={}){
+    if(items[a.iconPreset]&&a.iconPreset!=='insight')return a.iconPreset;
+    const type=a.typeOverride||a.marketInfo?.instrumentType||'',words=[a.name,a.group,a.industryOverride,a.marketInfo?.industry].join(' ');
+    if(/債|bond|treasury/i.test(words))return 'bond';
+    if(/股息|高息|dividend/i.test(words))return 'dividend';
+    if(type==='etf'||a.market==='TW'&&/^00\d/.test(a.symbol||''))return 'etf';
+    if(type==='fund')return 'fund';
+    if(/半導體|科技|晶|semiconductor|technology/i.test(words))return 'tech';
+    return 'stock';
+  }
+  function svg(key){
+    const v=items[key]||items.stock,[light,dark,ink]=v.colors;
+    // Layered solid fills stay sharp at 24 px and avoid repeated SVG IDs.
+    return `<svg class="stock-designed-svg" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect x="1" y="1" width="62" height="62" rx="17" fill="${dark}"/><path d="M18 1h28a17 17 0 0 1 17 17v24C39 53 15 36 1 34V18A17 17 0 0 1 18 1Z" fill="${light}"/><path d="M18 2h28a16 16 0 0 1 16 16" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="2"/><g color="${ink}">${v.art}</g></svg>`;
+  }
+  root.SalaryMateStockIcons=Object.freeze({presets,infer,svg});
+})(globalThis);
+
+
+;/* SalaryMate module: stocks-insights.js */
+(function(root){
+  'use strict';
+  const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmt=(n,d=2)=>Number.isFinite(n)?new Intl.NumberFormat('zh-TW',{maximumFractionDigits:d}).format(n):'—';
+  const mean=values=>values.reduce((s,x)=>s+x,0)/values.length;
+  const validDate=s=>typeof s==='string'&&/^\d{4}-\d\d-\d\d$/.test(s)&&Number.isFinite(Date.parse(s))&&new Date(s).toISOString().slice(0,10)===s;
+  const supported=a=>['TW','US'].includes(a.market)&&!['fund','other'].includes(a.typeOverride||a.marketInfo?.instrumentType)&&a.currency===(a.market==='TW'?'TWD':'USD');
+  function rsi(closes,period=14){
+    if(closes.length<period+1)return null;
+    let gain=0,loss=0;
+    for(let i=1;i<=period;i++){const d=closes[i]-closes[i-1];gain+=Math.max(0,d)/period;loss+=Math.max(0,-d)/period;}
+    for(let i=period+1;i<closes.length;i++){const d=closes[i]-closes[i-1];gain=(gain*(period-1)+Math.max(0,d))/period;loss=(loss*(period-1)+Math.max(0,-d))/period;}
+    return gain===0&&loss===0?50:loss===0?100:100-100/(1+gain/loss);
+  }
+  function expectedClose(market,now,calendars){
+    for(let i=0;i<22;i++){const s=root.SalaryMateMarketHours.marketSession(market,now-i*86400000,calendars);if(!s.calendarKnown)return '';if(s.phase!=='holiday'&&now>=s.closesAt)return s.date;}
+    return '';
+  }
+  function analyze(history,{now=Date.now(),calendars=root.SalaryMateMarketHours.MARKET_CALENDARS}={}){
+    const issues=[],bars=[],seen=new Set();
+    if(!history||!['TW','US'].includes(history.market)||!Array.isArray(history.bars))return {status:'unavailable',title:'資料格式不完整',issues:['未取得有效歷史行情'],bars:[]};
+    for(const b of history.bars){
+      if(!validDate(b.date)||typeof b.close!=='number'||!Number.isFinite(b.close)||b.close<=0||seen.has(b.date)){issues.push('歷史價格或日期不完整');continue;}
+      seen.add(b.date);bars.push(b);
+    }
+    bars.sort((a,b)=>a.date.localeCompare(b.date));
+    const expected=expectedClose(history.market,now,calendars),last=bars.at(-1);
+    if(!expected)issues.push('交易日曆尚未確認');
+    else if(last?.date!==expected)issues.push(last?.date>expected?'尚未收盤的價格不納入分析':'等待最新收盤資料');
+    if(history.partial)issues.push('來源有缺漏，請重試');
+    if(history.adjustment!=='unadjusted')issues.push('價格計算基準未確認');
+    if(bars.length<60)issues.push(`需至少 60 筆收盤資料，目前 ${bars.length} 筆`);
+    const recent=bars.slice(-60);
+    if(expected&&recent.length>1){
+      const first=Date.parse(recent[0].date+'T12:00:00Z'),end=Date.parse(last.date+'T12:00:00Z');
+      for(let t=first;t<=end;t+=86400000){const s=root.SalaryMateMarketHours.marketSession(history.market,t,calendars);if(s.calendarKnown&&s.phase!=='holiday'&&!seen.has(s.date)){issues.push('近期交易日有缺價，暫停建議');break;}}
+    }
+    if(recent.some((b,i)=>b.corporateAction||i>0&&Math.abs(b.close/recent[i-1].close-1)>=.2))issues.push('價格跳動或分割／除權事件待核對');
+    const result={bars,expectedDate:expected,asOf:last?.date||'',issues:[...new Set(issues)],status:'unavailable',title:issues[0]||'等待資料',metrics:null};
+    if(issues.length)return result;
+    const closes=bars.map(b=>b.close),price=last.close,sma20=mean(closes.slice(-20)),sma60=mean(closes.slice(-60)),prior20=mean(closes.slice(-25,-5)),strength=rsi(closes);
+    const returns=closes.slice(-21).slice(1).map((v,i)=>Math.log(v/closes.slice(-21)[i])),avg=mean(returns),volatility=Math.sqrt(returns.reduce((s,v)=>s+(v-avg)**2,0)/(returns.length-1))*Math.sqrt(252)*100;
+    let peak=recent[0].close,maxDrawdown=0;for(const b of recent){peak=Math.max(peak,b.close);maxDrawdown=Math.min(maxDrawdown,(b.close/peak-1)*100);}
+    const change20=(price/closes.at(-21)-1)*100,distance20=(price/sma20-1)*100,up=price>sma20&&sma20>sma60&&sma20>prior20,down=price<sma20&&sma20<sma60;
+    let signal='neutral',title='中性觀望',summary='均線與動能方向尚未一致，先觀察價格是否站穩 20 日均線，再考慮新部位。';
+    if(down&&strength<45){signal='reduce';title='減碼風險評估';summary='價格低於 20／60 日均線，短期動能偏弱。已有部位可檢視是否分批減碼；尚未持有可等待趨勢回穩。';}
+    else if(strength>=70){signal='wait';title='偏熱，留意追價';summary='RSI 已進入偏熱區，強勢可能延續，但追高風險上升。新增部位可等待回檔；已有部位檢視集中度與獲利保護。';}
+    else if(strength<=30){signal='wait';title='偏弱，等待止穩';summary='RSI 偏低不代表即將反彈。先等價格與均線回穩，避免只因跌深就加碼。';}
+    else if(up&&strength>=45&&strength<=65&&distance20<5&&volatility<60){signal='buy';title='分批買入觀察';summary='價格與均線方向一致向上，動能尚未過熱。可列入分批買入觀察名單，先核對基本面、近期公告與可承受損失。';}
+    else if(up){signal='hold';title='續抱觀察';summary='趨勢仍偏上行。已有部位可持續觀察；新部位等待更合適的回檔與風險條件，避免一次投入。';}
+    return {...result,status:'ready',signal,title,summary,metrics:{price,sma20,sma60,rsi:strength,volatility,maxDrawdown,change20,distance20},reasons:[`收盤 ${fmt(price)}，${price>=sma20?'高於':'低於'} 20 日均線 ${fmt(sma20)}。`,`20 日均線${sma20>=sma60?'高於':'低於'} 60 日均線 ${fmt(sma60)}。`,`RSI(14) ${fmt(strength,1)}，${strength>=70?'偏熱':strength<=30?'偏弱':'介於 30–70 區間'}。`],risks:[...(recent.some(b=>b.nonComparable)?['近期含不比價註記，可能涉及除權息；請先核對公告，均線可能受到影響。']:[]),...(volatility>=40?['近期價格波動較大，宜降低單筆投入並預留緩衝。']:[]),'使用未還原每日收盤價；除息、分割與公司事件可能影響指標。','只分析價格趨勢，未納入即時新聞、財報、估值、費稅與個人風險承受度。']};
+  }
+  function chart(bars,range){
+    const rows=bars.slice(-range);if(rows.length<2)return '';
+    const values=rows.map(b=>b.close),lo=Math.min(...values),hi=Math.max(...values),span=hi-lo||lo*.02||1;
+    const x=i=>24+i/(rows.length-1)*712,y=p=>150-(p-lo)/span*120;
+    const points=rows.map((b,i)=>`${fmt(x(i),2).replaceAll(',','')},${fmt(y(b.close),2).replaceAll(',','')}`).join(' ');
+    return `<div class="insight-chart"><svg viewBox="0 0 760 185" role="img" aria-label="${rows.length} 筆收盤價走勢，${esc(rows[0].date)} 至 ${esc(rows.at(-1).date)}，最低 ${fmt(lo)}，最高 ${fmt(hi)}"><path d="M24 30H736M24 90H736M24 150H736" class="insight-gridline"/><polygon points="24,150 ${points} 736,150" class="insight-chart-area"/><polyline points="${points}" class="insight-chart-line"/><circle cx="736" cy="${y(values.at(-1))}" r="4.5" class="insight-chart-end"/><text x="24" y="177">${esc(rows[0].date)}</text><text x="736" y="177" text-anchor="end">${esc(rows.at(-1).date)}</text></svg><div class="insight-chart-bounds"><span>區間最低 ${fmt(lo)}</span><span>區間最高 ${fmt(hi)}</span></div></div>`;
+  }
+  function create({portfolio,model,render,active,detail,renderIcon}){
+    let selected='',range=60,busy=false,controller,timer,sequence=0,error='',pendingKey='';const cache=new Map();
+    const key=a=>a.market+':'+a.symbol.toUpperCase();
+    const candidates=()=>portfolio().assets.filter(supported);
+    const asset=()=>candidates().find(a=>a.id===selected)||candidates()[0];
+    function pause(){clearTimeout(timer);timer=null;sequence++;controller?.abort();controller=null;busy=false;pendingKey='';}
+    function schedule(){
+      const a=asset();if(!a||busy||timer||error||!active()||root.document.hidden)return;
+      const entry=cache.get(key(a)),wait=entry?Math.max(100,600000-(Date.now()-entry.loaded)):100;
+      timer=setTimeout(()=>{timer=null;void refresh();},wait);
+    }
+    async function refresh(){
+      const a=asset();if(!a||!active()||root.document.hidden)return;
+      pause();const own=++sequence,k=key(a);controller=new AbortController();busy=true;pendingKey=k;error='';render();
+      try{
+        const h=await root.SalaryMateStockServices.history(a,controller.signal);
+        if(sequence!==own||!active()||asset()?.id!==a.id)return;
+        if(h.market!==a.market||h.symbol!==a.symbol.toUpperCase()||h.currency!==a.currency)throw Error('歷史行情與目前標的不符');
+        analyze(h); // Validate shape before retaining a response.
+        if(cache.size>=24)cache.delete(cache.keys().next().value);
+        cache.set(k,{data:h,loaded:Date.now()});
+      }catch(e){if(sequence===own&&e.name!=='AbortError')error=e.message||'歷史行情暫時無法取得';}
+      finally{if(sequence===own){busy=false;pendingKey='';controller=null;if(active())render();}}
+    }
+    const action=(label,name,attrs='')=>`<button type="button" class="btn" data-stock="insight-${name}" ${attrs}>${label}</button>`;
+    function view(){
+      const assets=candidates(),a=asset();if(a)selected=a.id;
+      const icons=root.SalaryMateStockIcons;
+      const hero=`<header class="insight-hero"><span class="insight-hero-icon">${icons.svg('insight')}</span><div><p class="stock-eyebrow">INVESTMENT INSIGHTS <span>近期 1–4 週觀察</span></p><h3>智慧分析</h3><p>把近期價格，轉成看得懂的買賣觀察。</p></div><span class="insight-method-pill">規則型技術分析</span></header>`;
+      if(!a)return `<section class="stock-insights">${hero}<div class="stock-panel stock-empty"><h3>從一檔股票或 ETF 開始</h3><p>先加入台股或美股股票／ETF，就能查看近期趨勢、買賣觀察與風險提醒。基金與其他市場尚不支援。</p><button class="btn btn-primary" type="button" data-stock="asset">新增股票／ETF</button></div></section>`;
+      const entry=cache.get(key(a)),h=entry?.data,r=h?analyze(h,{calendars:root.SalaryMateStockServices.calendars()}):null;
+      const fresh=entry&&Date.now()-entry.loaded<600000,ready=r?.status==='ready'&&fresh&&!error&&!busy;
+      const controls=`<div class="insight-controls"><label><span class="field-label">分析標的</span><select class="field-select" name="insightAsset">${assets.map(x=>`<option value="${esc(x.id)}" ${x.id===selected?'selected':''}>${esc(x.symbol)} · ${esc(x.name)}${x.account?' · '+esc(x.account):''}</option>`).join('')}</select></label><div>${action(busy?'正在更新…':'更新分析','refresh',busy?'disabled aria-busy="true"':'')}${action('檢視股票','detail')}</div></div>`;
+      const head=`<div class="insight-instrument"><span class="insight-asset-icon">${renderIcon?renderIcon(a):icons.svg(icons.infer(a))}</span><div><h3>${esc(a.symbol)} <span>${esc(a.name)}</span></h3><p>${a.market==='TW'?'台股':'美股'} · ${esc(a.currency)} · ${h?`已收盤資料至 ${esc(r.asOf)}`:'等待歷史行情'}</p></div></div>`;
+      let body='';
+      if(!ready){
+        const title=busy?'正在讀取近期行情':error?'暫時無法更新':!fresh&&h?'正在確認資料時效':r?.title||'準備分析';
+        const notes=error?[error]:r?.issues?.length?r.issues:['讀取官方歷史收盤價，完成後會顯示分析。'];
+        body=`<div class="insight-notice" role="status"><strong>${esc(title)}</strong><p>${notes.map(esc).join('；')}</p>${error?'<p>本次暫停買賣建議，可按「更新分析」重試。</p>':''}</div>${h&&r.bars.length?chart(r.bars,range):''}`;
+      }else{
+        const t=r.metrics,m=model(),same=m.holdings.filter(s=>key(s.asset)===key(a)),holding={quantity:same.reduce((n,s)=>n+s.quantity,0),value:same.reduce((n,s)=>n+(s.value||0),0)},weight=!m.missing&&m.pricedValue>0&&holding.value>0?holding.value/m.pricedValue*100:null;
+        body=`<div class="insight-result-grid"><section class="insight-decision" data-signal="${r.signal}"><span class="insight-section-label">近期買賣參考</span><h4>${esc(r.title)}</h4><p>${esc(r.summary)}</p><ul>${r.reasons.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="insight-next"><strong>下一個觀察點</strong><p>觀察後續收盤是否站穩 20 日均線 ${fmt(t.sma20)} ${esc(a.currency)}；跌破或重新站回時，再重新評估。此為觀察線，並非保證有效的買賣價。</p></div></section><section class="insight-evidence"><div class="insight-chart-head"><h4>收盤價走勢</h4><div role="group" aria-label="走勢期間">${[20,60,120].map(n=>action(n===120?'全部':n+' 日','range',`data-id="${n}" aria-pressed="${range===n}"`)).join('')}</div></div>${chart(r.bars,range)}<dl class="insight-metrics"><div><dt>20 日漲跌</dt><dd>${t.change20>0?'+':''}${fmt(t.change20)}%</dd></div><div><dt>RSI · 14 日</dt><dd>${fmt(t.rsi,1)}</dd></div><div><dt>20 日均線</dt><dd>${fmt(t.sma20)}</dd></div><div><dt>60 日均線</dt><dd>${fmt(t.sma60)}</dd></div><div><dt>60 日最大回落</dt><dd>${fmt(t.maxDrawdown)}%</dd></div><div><dt>20 日波動 · 年化估算</dt><dd>${fmt(t.volatility,1)}%</dd></div></dl></section></div><aside class="insight-risk"><strong>風險與部位提醒</strong><p>${holding?.quantity>0?'你已持有此標的，建議先檢視現有部位，再決定是否調整。':'目前為觀察標的；買入前請先設定可承受的損失與投入上限。'}${weight!=null?` 此標的占已記錄持股市值 ${fmt(weight,1)}%。${weight>=30?'占比較高，需留意單一標的集中風險。':''}`:''}</p><ul>${r.risks.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></aside>`;
+      }
+      const sourceUrl=h&&/^https:\/\/(?:www\.twse\.com\.tw|www\.tpex\.org\.tw|www\.nasdaq\.com)\//.test(h.sourceUrl)?h.sourceUrl:'';
+      const source=h?`<p class="insight-source">資料來源：${sourceUrl?`<a href="${esc(sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(h.source)}</a>`:esc(h.source)} · ${r.bars.length} 筆日資料 · 取得時間 ${esc(h.fetchedAt.replace('T',' ').replace('Z',' UTC'))}。盤中報價與此收盤分析分開更新。</p>`:'';
+      schedule();
+      return `<section class="stock-insights">${hero}${controls}<section class="stock-panel insight-main" aria-busy="${busy}">${head}${body}${source}</section><details class="stock-method insight-method"><summary>建議怎麼產生？</summary><p>本功能在本機依固定規則計算，不是生成式 AI，也不預測勝率。至少使用 60 個交易日：20／60 日簡單移動平均、Wilder RSI(14)、20 日對數報酬波動（乘以 √252 年化）與 60 日最大回落。</p><p>分批買入觀察：收盤高於 20 日均線、20 日均線高於 60 日且比 5 日前上升；RSI 45–65、距 20 日線小於 5%、年化波動小於 60%。減碼評估：收盤低於 20 日線、20 日線低於 60 日且 RSI 小於 45。其他情況依過熱、偏弱或中性顯示觀察。這些是本版觀察規則，未經獲利回測驗證。</p><p>過期、缺價、少於 60 筆或近期單日跳動達 20% 等情況暫停建議。未還原價格可能受除權息、分割影響；尚未涵蓋所有公司事件。分析不會替你下單或更動記帳資料。查詢只送出市場與代號，部位占比留在本機計算。</p><p>指標說明：<a href="https://www.fidelity.com/learning-center/trading-investing/technical-analysis/technical-indicator-guide/RSI" target="_blank" rel="noopener noreferrer">Fidelity RSI 指南</a>。以上為研究參考，不是依個人財務狀況制定的投資建議。</p></details></section>`;
+    }
+    return {view,pause,refresh,resume(){if(active())render();},change(event){if(event.target.name!=='insightAsset')return false;pause();selected=event.target.value;error='';render();return true;},click(el){const action=el.dataset.stock;if(!action?.startsWith('insight-'))return false;if(action==='insight-refresh')void refresh();else if(action==='insight-range'){range=[20,60,120].includes(+el.dataset.id)?+el.dataset.id:60;render();}else if(action==='insight-detail')detail(selected);return true;}};
+  }
+  root.SalaryMateInvestmentInsights=Object.freeze({analyze,rsi,expectedClose,supported,create});
+})(globalThis);
+
+
 ;/* SalaryMate module: stocks-ui.js */
 (function(root) {
   'use strict';
@@ -4288,6 +4494,7 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
     let lookupTimer,lookupController,lookupSequence=0,importDraft=null,dividendController,dividendSequence=0;
     const p=()=>api.state().stockPortfolio;
     const model=()=>api.model?api.model():core.calculate(p(),api.year(),api.today());
+    const insights=root.SalaryMateInvestmentInsights?.create({portfolio:p,model,render:renderKeepingScroll,active:()=>view.tab==='insights'&&onInvestment(),detail,renderIcon:a=>icon(a)});
     // DOM replacement must not move the reader back to the first table column.
     function renderKeepingScroll() {
       const before=root.document?.querySelector('.stock-view');
@@ -4312,9 +4519,13 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
       const logo=a.iconMode==='symbol'?'':a.iconMode==='custom'?a.iconData:root.SalaryMateStockLogos?.[a.market+':'+symbol];
       const hue=[...String(a.market+':'+symbol)].reduce((n,c)=>(n*31+c.charCodeAt(0))%360,0);
       const glyph=type==='etf'?'<rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/>':type==='fund'?'<path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"/>':'<path d="M4 4v16h16M7 14l4-4 4 3 5-7M16 6h4v4"/>';
-      const fallback=a.iconMode==='symbol'?`<span>${esc(symbol.slice(0,4))}</span>`:`<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${glyph}</svg>`;
+      const fallback=a.iconMode==='symbol'?`<span>${esc(symbol.slice(0,4))}</span>`:root.SalaryMateStockIcons?root.SalaryMateStockIcons.svg(root.SalaryMateStockIcons.infer(a)):`<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${glyph}</svg>`;
       return `<span class="stock-avatar stock-mini-avatar ${type==='etf'?'is-etf':''}" style="--stock-icon-hue:${hue}" aria-hidden="true">${fallback}${logo?`<img src="${esc(logo)}" alt="" width="32" height="32" data-stock-logo>`:''}</span>`;
     };
+    function iconLibrary(a){
+      const icons=root.SalaryMateStockIcons;if(!icons)return '';
+      return `<fieldset class="span-2 stock-icon-library"><legend>原創圖示</legend><input type="hidden" name="iconPreset" value="${esc(a.iconPreset||'auto')}"><div>${[['auto','自動辨識'],...icons.presets].map(([key,label])=>`<button type="button" class="stock-icon-choice" data-stock="choose-icon" data-id="${key}" aria-pressed="${(a.iconPreset||'auto')===key}"><span>${icons.svg(key==='auto'?icons.infer({...a,iconPreset:''}):key)}</span><small>${label}</small></button>`).join('')}</div><p class="hint">SalaryMate 原創向量圖示 · 自動依股票類別選擇，也可自由更換。</p></fieldset>`;
+    }
     const tags=a=>{const c=classification(a);return `<span class="stock-tags">${c.exchange?badge(exchangeName(c.exchange),'stock-exchange'):badge(markets[a.market])}${c.industry?badge(c.industry):c.type?badge(typeName(c.type)):''}${a.group?`<span class="stock-badge stock-group">${user(a.group)}</span>`:''}</span>`;};
     const favorite=a=>`<button type="button" class="stock-favorite ${a.favorite?'is-favorite':''}" data-stock="favorite" data-id="${esc(a.id)}" aria-pressed="${!!a.favorite}" aria-label="${a.favorite?'取消收藏':'加入收藏'} ${user(a.name)}" title="${a.favorite?'取消收藏':'加入收藏'}"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="m12 3 2.8 5.7 6.3.9-4.6 4.5 1.1 6.3-5.6-3-5.6 3 1.1-6.3L3 9.6l6.2-.9Z"/></svg></button>`;
     const assetName=a=>`<button type="button" class="stock-name stock-identity" data-stock="detail" data-id="${esc(a.id)}"><span class="stock-symbol-line">${icon(a)}<strong class="stock-symbol">${user(a.symbol)}</strong></span><span class="stock-name-copy"><span>${user(a.name)}</span></span></button>`;
@@ -4505,9 +4716,9 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
       if(view.tab!=='income'&&(forecastTimer||forecastController||forecastReady.length))pauseForecasts();
       queueForecasts();
       const m=model(),held=m.holdings.filter(s=>s.quantity>0),legacyTotal=api.legacyTotal(),income=m.yearDividends+legacyTotal;
-      const tabs=[['overview','持股總覽'],['stocks','股票清單'],['transactions','交易紀錄'],['income','股息與收入'],['analysis','損益分析'],['watchlist','觀察清單']];
+      const tabs=[['overview','持股總覽'],['stocks','股票清單'],['transactions','交易紀錄'],['income','股息與收入'],['insights','智慧分析'],['analysis','損益分析'],['watchlist','觀察清單']];
       const top=`<div class="stock-heading page-head"><div><p class="stock-eyebrow">投資工作區 <span>本機記帳 · 跨公司共用</span></p><h2>股票投資</h2><p class="stock-heading-summary"><span>台股・美股・ETF</span><span>${api.year()} 年損益 · 持股累計至今</span></p></div></div><nav class="stock-tabs" aria-label="投資功能">${tabs.map(([id,label])=>`<button type="button" data-stock="tab" data-id="${id}" aria-current="${view.tab===id?'page':'false'}" class="${view.tab===id?'active':''}">${label}</button>`).join('')}</nav>`;
-      const help='<details class="stock-method"><summary>資料與計算方式</summary><p>市場資料每 5 分鐘自動查詢，也可立即更新。上市股票同日優先採有效 TWSE 收盤價，較新交易日可使用最新成交；上櫃股票沿用 TWSE 最新成交／TPEx 收盤資料；美股採 Nasdaq 最新可用行情，匯率採 Frankfurter 參考值，不保證即時。手動模式與基金保留自行填寫的價格。停用個股連動後僅更新參考匯率；關閉自動更新仍可立即更新。投資頁隱藏、離線或正在編輯時暫停自動查詢。查詢只傳送市場與股票代號，不傳送持股、交易、薪資或帳戶資料。來源失敗、日期較舊或編輯期間收到回應時，保留原資料。</p><p>交易匯率與成本不會被行情更新改寫。新臺幣損益採先進先出（FIFO）；買入費稅加入成本，賣出費稅從收入扣除。資料預設儲存在目前瀏覽器；啟用 Google Drive 備份後，備份會傳至你授權的 Google 帳戶。可於設定匯出一般或加密備份。盤中預估淨值支援群益、富邦投信公布的台幣 ETF，與股價一起查詢，顯示來源時間；預估值獨立保存，不會改寫每日公告或持股市值。</p></details>';
+      const help='<details class="stock-method"><summary>資料與計算方式</summary><p>開盤期間市場資料每 60 秒自動查詢，也可立即更新。上市股票同日優先採有效 TWSE 收盤價，較新交易日可使用最新成交；上櫃股票沿用 TWSE 最新成交／TPEx 收盤資料；美股採 Nasdaq 最新可用行情，匯率採 Frankfurter 參考值，不保證即時。手動模式與基金保留自行填寫的價格。停用個股連動後僅更新參考匯率；關閉自動更新仍可立即更新。投資頁隱藏、離線或正在編輯時暫停自動查詢。查詢只傳送市場與股票代號，不傳送持股、交易、薪資或帳戶資料。來源失敗、日期較舊或編輯期間收到回應時，保留原資料。</p><p>交易匯率與成本不會被行情更新改寫。新臺幣損益採先進先出（FIFO）；買入費稅加入成本，賣出費稅從收入扣除。資料預設儲存在目前瀏覽器；啟用 Google Drive 備份後，備份會傳至你授權的 Google 帳戶。可於設定匯出一般或加密備份。盤中預估淨值支援群益、富邦投信公布的台幣 ETF，與股價一起查詢，顯示來源時間；預估值獨立保存，不會改寫每日公告或持股市值。</p></details>';
       let body='';
       if(view.tab==='overview'||view.tab==='watchlist') {
         body=`<div class="stock-stats">${stat(m.missing?'已定價持股市值':'持股總市值',money(m.pricedValue),m.missing?`${m.missing} 檔缺少股價；此為部分市值`:`${held.length} 檔持股 · 依各檔價格日期`)}${stat('持有成本',money(m.cost),'含買入費稅 · TWD')}${stat('未實現損益',m.missing?'待補齊股價':signed(m.unrealized),'目前持股估值 − 剩餘成本',tone(m.unrealized))}${stat('本年投資所得',signed(m.yearRealized+m.yearDividends),'已實現損益＋股票實收股息',tone(m.yearRealized+m.yearDividends))}</div><div class="stock-workspace"><section class="stock-panel"><div class="stock-panel-head"><h3>${view.tab==='watchlist'?'觀察／已出清股票':'我的持股'}</h3>${btn('匯出持股','export-holdings')}</div><form id="stockSearchForm" class="stock-toolbar"><label><span class="sr-only">搜尋股票或帳戶</span><input class="field" name="search" type="search" placeholder="代號、名稱或帳戶" value="${esc(view.search)}"></label><label><span class="sr-only">排序</span><select name="sort" class="field-select">${[['value','市值由高到低'],['profit','損益由高到低'],['symbol','股票代號']].map(([v,l])=>`<option value="${v}" ${view.sort===v?'selected':''}>${l}</option>`).join('')}</select></label>${classificationFilters()}<button class="btn" type="submit">篩選</button></form>${holdingsTable(m.holdings,view.tab==='watchlist')}</section>${allocation(m)}</div>`;
@@ -4517,7 +4728,8 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
         body=`<section class="stock-panel"><div class="stock-panel-head"><h3>${api.year()} 年交易</h3>${btn('匯出交易','export-transactions')}</div><form id="stockSearchForm" class="stock-toolbar"><label><span class="sr-only">搜尋股票或帳戶</span><input name="search" class="field" type="search" placeholder="代號、名稱或帳戶" value="${esc(view.search)}"></label><label><span class="sr-only">交易類型</span><select class="field-select" name="filter">${Object.entries({all:'全部交易',...types}).map(([v,l])=>`<option value="${v}" ${view.filter===v?'selected':''}>${l}</option>`).join('')}</select></label><button class="btn" type="submit">篩選</button>${btn('分割／合併','split')}</form>${eventTable(m.events.filter(t=>t.inYear&&matches(t.asset)&&(view.filter==='all'||view.filter===t.type)))}</section>`;
       } else if(view.tab==='income') {
         body=`<div class="stock-stats">${stat('本年實收股息',money(m.yearDividends),'股票交易簿中的股息')}${stat('本年其他收入',money(legacyTotal),'保留原投資收入紀錄')}${stat('年度收入合計',money(income),'股息＋原投資收入，不含買賣損益')}</div>${forecastSection()}<section class="stock-panel"><div class="stock-panel-head"><h3>${api.year()} 年股票股息</h3>${btn('登記股息','dividend','',true)}</div>${eventTable(m.events.filter(t=>t.inYear&&t.type==='dividend'),true,{scope:'income'})}</section><section class="stock-legacy"><p class="stock-footnote">原有收入仍保留在下方，不會自動轉成持股。已在股票交易簿登記的股息／損益，請勿再次手動新增。</p>${renderLegacy()}</section>`;
-      } else body=analysis(m);
+      } else if(view.tab==='insights') body=insights.view();
+      else body=analysis(m);
       // The compact income shortcut preserves the original ledger's one-click entry point.
       const legacyAccess=view.tab==='income'?'':`<details class="stock-legacy-shortcut"${view.legacyExpanded?' open':''}><summary>其他投資收入 · ${api.year()} 年 $${num(legacyTotal)}</summary><div data-stock-legacy data-loaded="${view.legacyExpanded}">${view.legacyExpanded?renderLegacy():''}</div></details>`;
       const imports=p().smartImports?.length?`<div class="stock-import-access">${btn('查看 SmartPortfolio 匯入紀錄','archives')}<span class="hint">${p().smartImports.length} 份備份 · 原始資料保留</span></div>`:'';
@@ -4538,7 +4750,7 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
       const used=p().transactions.some(t=>t.assetId===id);
       openForm('asset',id,id?'編輯股票':'新增股票',`<div class="form-grid">${select('市場','market',a.market,Object.entries(markets))}${select('交易幣別','currency',a.currency,['TWD','USD','HKD','JPY','EUR'].map(x=>[x,x]))}${field('股票代號 *','symbol',a.symbol,'required maxlength="24" placeholder="例如：2330、0050、AAPL"')}${field('股票／ETF 名稱 *','name',a.name,'required maxlength="80"')}<div class="span-2 stock-lookup-row">${btn('查詢名稱','lookup')}<span id="stockLookupStatus" role="status">輸入代號後自動查詢，也可手動填寫名稱。</span></div>${field('券商／帳戶（選填）','account',a.account,'maxlength="60" placeholder="例如：證券帳戶 A"')}${field('備註','note',a.note,'maxlength="200"')}</div><p class="stock-footnote">${used?'已有交易的股票不可更換幣別；不同帳戶可分開建立同一股票。':'建立後可先放入觀察清單，再登記買入；股數以「股」為單位，支援零股與小數股。'}</p>`);
       const form=document.querySelector('#stockForm');form._marketInfo=a.marketInfo||{};form._lookupQuote=preset?.lookupQuote||null;form._iconData=a.iconData||'';
-      form.querySelector('.form-grid').insertAdjacentHTML('beforeend',`${select('行情更新模式','priceUpdateMode',core.quoteEligible(a)?'auto':'manual',[['auto','開盤至收盤，每 60 秒更新'],['manual','手動維護價格／淨值']])}${select('類別','typeOverride',a.typeOverride||'',[['','自動'],['stock','股票'],['etf','ETF'],['fund','基金'],['other','其他']])}${select('交易所','exchangeOverride',a.exchangeOverride||'',[['','自動'],...['TWSE','TPEx','NASDAQ','NYSE','AMEX'].map(x=>[x,exchangeName(x)]),...(a.exchangeOverride&&!['TWSE','TPEx','NASDAQ','NYSE','AMEX'].includes(a.exchangeOverride)?[[a.exchangeOverride,a.exchangeOverride]]:[])])}${field('產業分類','industryOverride',a.industryOverride||'','maxlength="60" placeholder="留空使用官方分類"')}${field('自訂分類','group',a.group||'','maxlength="60" list="stockGroupNames" placeholder="例如：長期投資、高股息"')}<datalist id="stockGroupNames">${[...new Set(p().assets.map(x=>x.group).filter(Boolean))].map(x=>`<option value="${esc(x)}"></option>`).join('')}</datalist><div class="span-2 stock-classification-info" id="stockClassificationInfo"></div><label class="stock-favorites-filter"><input type="checkbox" name="favorite" ${a.favorite?'checked':''}>加入收藏</label>${select('股票圖示','iconMode',a.iconMode||'auto',[['auto','通用圖示'],['symbol','代號圖示'],['custom','自訂圖片']])}<p class="hint span-2">請使用你有權使用的圖片；自訂圖示隨個人備份保存。</p><div class="span-2 stock-icon-editor"><span id="stockIconPreview">${icon(a)}</span><label class="btn stock-upload-label">上傳圖示<input type="file" id="stockIconFile" accept="image/png,image/jpeg,image/webp"></label>${btn('移除圖片','clear-icon')}<small>PNG、JPG、WebP，最多 2 MB；儲存在個人備份。</small><span id="stockIconStatus" role="status"></span></div>`);
+      form.querySelector('.form-grid').insertAdjacentHTML('beforeend',`${select('行情更新模式','priceUpdateMode',core.quoteEligible(a)?'auto':'manual',[['auto','開盤至收盤，每 60 秒更新'],['manual','手動維護價格／淨值']])}${select('類別','typeOverride',a.typeOverride||'',[['','自動'],['stock','股票'],['etf','ETF'],['fund','基金'],['other','其他']])}${select('交易所','exchangeOverride',a.exchangeOverride||'',[['','自動'],...['TWSE','TPEx','NASDAQ','NYSE','AMEX'].map(x=>[x,exchangeName(x)]),...(a.exchangeOverride&&!['TWSE','TPEx','NASDAQ','NYSE','AMEX'].includes(a.exchangeOverride)?[[a.exchangeOverride,a.exchangeOverride]]:[])])}${field('產業分類','industryOverride',a.industryOverride||'','maxlength="60" placeholder="留空使用官方分類"')}${field('自訂分類','group',a.group||'','maxlength="60" list="stockGroupNames" placeholder="例如：長期投資、高股息"')}<datalist id="stockGroupNames">${[...new Set(p().assets.map(x=>x.group).filter(Boolean))].map(x=>`<option value="${esc(x)}"></option>`).join('')}</datalist><div class="span-2 stock-classification-info" id="stockClassificationInfo"></div><label class="stock-favorites-filter"><input type="checkbox" name="favorite" ${a.favorite?'checked':''}>加入收藏</label>${select('股票圖示','iconMode',a.iconMode||'auto',[['auto','原創彩色圖示'],['symbol','代號圖示'],['custom','自訂圖片']])}${iconLibrary(a)}<p class="hint span-2">請使用你有權使用的圖片；自訂圖示隨個人備份保存。</p><div class="span-2 stock-icon-editor"><span id="stockIconPreview">${icon(a)}</span><label class="btn stock-upload-label">上傳圖示<input type="file" id="stockIconFile" accept="image/png,image/jpeg,image/webp"></label>${btn('移除圖片','clear-icon')}<small>PNG、JPG、WebP，最多 2 MB；儲存在個人備份。</small><span id="stockIconStatus" role="status"></span></div>`);
       if(!id)form.insertAdjacentHTML('afterbegin',`<div class="stock-asset-find">${btn('搜尋台股／ETF','catalog')}</div>`);
       showClassification(form);
     }
@@ -4547,7 +4759,7 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
       if(box)box.textContent=[exchangeName(info.exchange),info.industry||typeName(info.instrumentType),info.classificationSource].filter(Boolean).join(' · ')||'輸入代號查詢官方分類，也可自行設定。';
       root.SalaryMateI18n.apply(form);
     }
-    function iconPreview(form){form.querySelector('#stockIconPreview').innerHTML=icon({market:form.elements.market.value,symbol:form.elements.symbol.value.trim().toUpperCase(),iconMode:form.elements.iconMode.value,iconData:form._iconData,typeOverride:form.elements.typeOverride.value,marketInfo:form._marketInfo});}
+    function iconPreview(form){form.querySelector('#stockIconPreview').innerHTML=icon({market:form.elements.market.value,symbol:form.elements.symbol.value.trim().toUpperCase(),iconMode:form.elements.iconMode.value,iconData:form._iconData,iconPreset:form.elements.iconPreset?.value||'auto',typeOverride:form.elements.typeOverride.value,marketInfo:form._marketInfo});}
     async function readIcon(file,form){
       if(!file||!form)return;const status=form.querySelector('#stockIconStatus'),seq=(form._iconSequence||0)+1;form._iconSequence=seq;
       try{
@@ -4976,7 +5188,7 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
         if(kind==='asset') {
           const old=next.assets.find(a=>a.id===id);
           if(old&&old.currency!==d.currency&&next.transactions.some(t=>t.assetId===id))throw new Error('已有交易紀錄，無法更換幣別；請另建股票。');
-          const row={...old,id:id||api.id('stock'),symbol:d.symbol.trim().toUpperCase(),name:d.name.trim(),market:d.market,currency:d.currency,account:d.account.trim(),note:d.note.trim(),favorite:d.favorite==='on',group:d.group.trim(),typeOverride:d.typeOverride,exchangeOverride:d.exchangeOverride,industryOverride:d.industryOverride.trim(),iconMode:d.iconMode,iconData:form._iconData||'',marketInfo:form._marketInfo||{},priceUpdateMode:d.priceUpdateMode};
+          const row={...old,id:id||api.id('stock'),symbol:d.symbol.trim().toUpperCase(),name:d.name.trim(),market:d.market,currency:d.currency,account:d.account.trim(),note:d.note.trim(),favorite:d.favorite==='on',group:d.group.trim(),typeOverride:d.typeOverride,exchangeOverride:d.exchangeOverride,industryOverride:d.industryOverride.trim(),iconMode:d.iconMode,iconPreset:d.iconPreset||'auto',iconData:form._iconData||'',marketInfo:form._marketInfo||{},priceUpdateMode:d.priceUpdateMode};
           if(old&&(old.symbol!==row.symbol||old.market!==row.market||old.currency!==row.currency)){delete row.dividendForecast;delete row.dividendPlanOverrides;delete row.netAssetValue;delete row.navStatus;delete row.navCheckedAt;delete row.intradayNav;delete row.intradayNavStatus;delete row.intradayCheckedAt;}
           if(!old||old.symbol!==row.symbol||old.market!==row.market||old.currency!==row.currency){row.quotePrice=null;row.quoteDate='';row.quoteFx=null;row.quoteChange=null;row.quoteChangePercent=null;row.quoteSource='';row.quoteProviderTime='';row.quoteMarketAt='';row.quoteCheckedAt='';row.quoteFxDate='';row.quoteMode='manual';}
           const q=form._lookupQuote;
@@ -5140,6 +5352,7 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
       }
     }
     function onChange(event) {
+      if(insights?.change(event))return;
       if(event.target.closest?.('#stockForm[data-kind="quotes"]')&&event.target.name.startsWith('mode-')){syncManualPriceFields();return;}
 
       const assetForm=event.target.closest('#stockForm[data-kind="asset"]');
@@ -5195,25 +5408,27 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
       root.SalaryMateScrollbars?.refresh();
     },true);
     root.document.addEventListener('visibilitychange',()=>{
-      if(root.document.hidden){cancelDialogRequests();clearTimeout(marketTimer);marketTimer=null;marketController?.abort();pauseForecasts();return;}
+      if(root.document.hidden){insights?.pause();cancelDialogRequests();clearTimeout(marketTimer);marketTimer=null;marketController?.abort();pauseForecasts();return;}
       if(!onInvestment()||root.document.querySelector('#appDialog')?.open)return;
       queueMarket();resumeForecasts();
     });
-    function resumeForecasts(){if(!forecastInactive()){renderKeepingScroll();queueForecasts();}}
-    root.addEventListener?.('offline',()=>{clearTimeout(marketTimer);marketTimer=null;marketController?.abort();pauseForecasts();if(onInvestment()){view.marketIssue='目前離線，保留上次匯率與價格。';marketDisplay();}});
+    function resumeForecasts(){insights?.resume();if(!forecastInactive()){renderKeepingScroll();queueForecasts();}}
+    root.addEventListener?.('offline',()=>{insights?.pause();clearTimeout(marketTimer);marketTimer=null;marketController?.abort();pauseForecasts();if(onInvestment()){view.marketIssue='目前離線，保留上次匯率與價格。';marketDisplay();}});
     root.addEventListener?.('online',()=>{view.lastMarketAttempt=0;marketFailures=0;view.marketIssue='';queueMarket(1500);resumeForecasts();});
-    root.addEventListener?.('pagehide',()=>{clearTimeout(marketTimer);marketTimer=null;marketController?.abort();cancelDialogRequests();pauseForecasts();});
+    root.addEventListener?.('pagehide',()=>{insights?.pause();clearTimeout(marketTimer);marketTimer=null;marketController?.abort();cancelDialogRequests();pauseForecasts();});
     root.addEventListener?.('pageshow',resumeForecasts);
     root.document.addEventListener('keydown',event=>{if(event.key==='Escape'&&root.document.querySelector('.stock-action-menu-wrap.is-open')){event.preventDefault();closeStockActions(true);}});
     function click(el) {
       const action=el.dataset.stock,id=el.dataset.id||'';
+      if(insights?.click(el))return true;
+      if(action==='choose-icon'){const form=document.querySelector('#stockForm');if(form){form.elements.iconPreset.value=id;form.elements.iconMode.value='auto';for(const b of form.querySelectorAll('[data-stock=choose-icon]'))b.setAttribute('aria-pressed',String(b.dataset.id===id));iconPreview(form);}return true;}
       if(action==='event-page'){changeEventPage(el);return true;}
       if(action==='toggle-market-details'){toggleMarketDetails(el);return true;}
       if(action==='toggle-market-auto'){toggleMarket('autoRefresh');return true;}
       if(action==='toggle-market-quotes'){toggleMarket('quoteEnabled');return true;}
       if(action==='toggle-actions'){const wrap=el.closest('.stock-action-menu-wrap');const open=wrap.classList.toggle('is-open');el.setAttribute('aria-expanded',String(open));return;}
       if(el.closest('.stock-head-actions')&&root.document.querySelector('.stock-action-menu-wrap.is-open'))closeStockActions(true);
-      if(action==='tab'){eventPages.clear();if(id!==view.tab)pauseForecasts();view.tab=id;view.search='';view.filter='all';view.exchange='';view.category='';view.favorites=false;renderKeepingScroll();}
+      if(action==='tab'){if(id!==view.tab)insights?.pause();eventPages.clear();if(id!==view.tab)pauseForecasts();view.tab=id;view.search='';view.filter='all';view.exchange='';view.category='';view.favorites=false;renderKeepingScroll();}
       else if(action==='forecasts'){view.tab='income';renderKeepingScroll();}
       else if(action==='refresh-forecasts')void refreshForecasts(true);
       else if(action==='edit-forecast')editForecast(id);
@@ -5262,7 +5477,7 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
       if(['stockSearchForm','stockListForm'].includes(form.id)){const d=new FormData(form);view.search=String(d.get('search')||'').trim();view.filter=String(d.get('filter')||'all');view.sort=String(d.get('sort')||view.sort);view.exchange=String(d.get('exchange')||'');view.category=String(d.get('category')||'');view.favorites=d.has('favorites');eventPages.clear();renderKeepingScroll();return true;}
       return false;
     }
-    return {render,click,submit,updateTradeForm,onInput,onChange,cancelDialogRequests,suspend:()=>{cancelDialogRequests();pauseForecasts();},importFile:file=>{openImport();return readImport(file);}};
+    return {render,click,submit,updateTradeForm,onInput,onChange,cancelDialogRequests,suspend:()=>{insights?.pause();cancelDialogRequests();pauseForecasts();},importFile:file=>{openImport();return readImport(file);}};
   }};
 })(globalThis);
 
@@ -5272,7 +5487,7 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.1.0';
+    const APP_VERSION = '5.2.0';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -8652,7 +8867,7 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
       const promise=new Promise((resolve,reject)=>{
         const script=document.createElement('script');let timer,settled=false;
         const finish=error=>{if(settled)return;settled=true;clearTimeout(timer);script.onload=script.onerror=null;script.remove();error?reject(error):resolve();};
-        script.src=new URL('./'+file+'?v=5.1.0-desktop1',document.baseURI).href;script.async=true;
+        script.src=new URL('./'+file+'?v=5.2.0-insights1',document.baseURI).href;script.async=true;
         script.onload=()=>finish(window[key]?null:Error('Missing module'));script.onerror=()=>finish(Error('Load failed'));
         timer=setTimeout(()=>finish(Error('Load timed out')),20000);document.head.append(script);
       });

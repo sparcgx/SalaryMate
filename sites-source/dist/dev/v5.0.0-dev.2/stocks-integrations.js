@@ -104,7 +104,7 @@
    if(typeof navigator!=='undefined'&&navigator.onLine===false)fail('目前離線，原有價格保持不變。');
    if(root.SalaryMatePortable)path=root.SalaryMatePortable.marketOrigin+path.replace('/api/stocks/','/api/stocks/portable/');
    const c=new AbortController(),timer=setTimeout(()=>c.abort(),45000);const abort=()=>c.abort();signal?.addEventListener('abort',abort,{once:true});
-   try{const r=await fetch(path,{method:'POST',credentials:'omit',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:c.signal});if(!r.ok)fail(`行情服務暫時無法使用（${r.status}），請稍後重試。`);const d=await r.json();if(!Array.isArray(path.endsWith('/dividends')?d.announcements:d.quotes)||!Array.isArray(d.errors))fail('行情回傳格式不正確。');return d;}catch(e){if(e.name==='AbortError')fail('行情查詢逾時或已取消，原價格保持不變。');throw e;}finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);}
+   try{const r=await fetch(path,{method:'POST',credentials:'omit',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:c.signal});if(!r.ok)fail(`行情服務暫時無法使用（${r.status}），請稍後重試。`);const d=await r.json();if((path.endsWith('/history')?!d.history||!Array.isArray(d.history.bars):!Array.isArray(path.endsWith('/dividends')?d.announcements:d.quotes))||!Array.isArray(d.errors))fail('行情回傳格式不正確。');return d;}catch(e){if(e.name==='AbortError')fail('行情查詢逾時或已取消，原價格保持不變。');throw e;}finally{clearTimeout(timer);signal?.removeEventListener('abort',abort);}
  }
  let marketCalendars=root.SalaryMateMarketHours?.MARKET_CALENDARS,calendarPending,calendarChecked=0;
  async function refreshSessions(){
@@ -206,5 +206,5 @@
    core.validate(next);return {next,updated,priceUpdated,errors,useful};
  }
  root.SalaryMateStockServices={marketInfo,quoteIssue,quoteMarketAt,catalog:(query,signal)=>request('/api/stocks/catalog',{query},signal),forecasts:(market,symbol,year,signal)=>request('/api/stocks/dividends',{market,symbol,year,forecast:true},signal),forecastCache,dividendPeriod,dividends:(market,symbol,year,signal)=>request('/api/stocks/dividends',{market,symbol,year},signal),parseSmart,prepareSmart,fetchQuotes,fetchIntraday:assets=>fetchQuotes(assets.filter(a=>a.market==='TW'),'/api/stocks/nav'),applyIntraday,applyQuotes,lookup:(market,symbol,signal)=>request('/api/stocks/lookup',{market,symbol},signal)};
- Object.assign(root.SalaryMateStockServices,{refreshSessions,calendars:()=>marketCalendars});
+ Object.assign(root.SalaryMateStockServices,{history:async(a,signal)=>(await request('/api/stocks/history',{market:a.market,symbol:a.symbol.toUpperCase()},signal)).history,refreshSessions,calendars:()=>marketCalendars});
 })(globalThis);
