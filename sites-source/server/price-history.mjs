@@ -20,7 +20,7 @@ export function createPriceHistory(read,clock=()=>Date.now(),getCalendars=()=>MA
       const outcomes=[];
       for(let i=0;i<months.length;i+=2)outcomes.push(...await Promise.allSettled(months.slice(i,i+2).map(async month=>{
         const url=exchange==='TWSE'?`https://www.twse.com.tw/exchangeReport/STOCK_DAY?response=json&date=${month.replaceAll('-','')}01&stockNo=${encodeURIComponent(symbol)}`:`https://www.tpex.org.tw/www/zh-tw/afterTrading/tradingStock?code=${encodeURIComponent(symbol)}&date=${month.replaceAll('-','/')}/01&response=json`;
-        const d=await read(url,600000);
+        const d=await read(url,600000,{headers:{referer:exchange==='TWSE'?'https://www.twse.com.tw/zh/trading/historical/stock-day.html':'https://www.tpex.org.tw/zh-tw/mainboard/trading/info/stock-pricing.html'}});
         if(exchange==='TWSE'){
           if(d?.stat!=='OK'){if(typeof d?.stat==='string'&&/沒有符合|查無|無資料/.test(d.stat))return [];throw Error('上市歷史資料暫時無法取得');}
           if(!String(d.title||'').split(/\s+/).includes(symbol)||!Array.isArray(d.data)||d.date!==month.replaceAll('-','')+'01')throw Error('上市歷史資料識別不符');
@@ -29,6 +29,7 @@ export function createPriceHistory(read,clock=()=>Date.now(),getCalendars=()=>MA
         if(String(d?.code||'').toUpperCase()!==symbol||String(d?.stat).toLowerCase()!=='ok'||!Array.isArray(d.tables?.[0]?.data))throw Error('上櫃歷史資料暫時無法取得');
         return d.tables[0].data;
       })));
+      if(outcomes.every(r=>r.status==='rejected'))console.warn('SalaryMate history provider unavailable',exchange,outcomes.map(r=>r.reason?.providerStatus||r.reason?.name||'unavailable'));
       return {rows:outcomes.flatMap(r=>r.status==='fulfilled'?r.value:[]),partial:outcomes.some(r=>r.status==='rejected'),exchange};
     }
     let result=await load('TWSE');

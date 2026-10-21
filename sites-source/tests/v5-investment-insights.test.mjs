@@ -54,7 +54,7 @@ test('Official TWSE monthly history is normalized, deduplicated, and excludes in
  const result=await lookup({market:'TW',symbol:'2330'});assert.equal(result.partial,false);assert.equal(result.bars.at(-1).date,'2026-10-21');assert.ok(result.bars.length>=60);assert.equal(calls.length,4);assert.equal(result.source,'TWSE 每日收盤');
 });
 test('TPEx fallback verifies symbol and leaves monthly failures visible',async()=>{
- const lookup=createPriceHistory(async url=>{const u=new URL(url);if(u.hostname==='www.twse.com.tw')return {stat:'很抱歉，沒有符合條件的資料!'};if(u.searchParams.get('date').includes('/09/'))throw Error('offline');return {stat:'ok',code:'6488',tables:[{data:[['115/10/21','','','','','','880','']]}]};},()=>now);
+ const lookup=createPriceHistory(async(url,ttl,init)=>{const u=new URL(url);assert.equal(new URL(init.headers.referer).hostname,u.hostname);if(u.hostname==='www.twse.com.tw')return {stat:'很抱歉，沒有符合條件的資料!'};if(u.searchParams.get('date').includes('/09/'))throw Error('offline');return {stat:'ok',code:'6488',tables:[{data:[['115/10/21','','','','','','880','']]}]};},()=>now);
  const h=await lookup({market:'TW',symbol:'6488'});assert.equal(h.source,'TPEx 每日收盤');assert.equal(h.partial,true);assert.equal(h.bars[0].close,880);
 });
 test('Nasdaq ETF fallback validates identity, sorts closes and removes current-session bar',async()=>{

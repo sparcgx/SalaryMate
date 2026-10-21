@@ -72,7 +72,7 @@ export function createStockMarket(fetcher=fetch, clock=()=>Date.now()) {
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),format==='text'?20000:10000);
     try {
       const response=await fetcher(url,{...init,signal:controller.signal,headers:{accept:format==='text'?'text/html':'application/json','user-agent':'SalaryMate/5.2 stock-records','referer':url.includes('nasdaq.com')?'https://www.nasdaq.com/':'https://www.twse.com.tw/',...init.headers}});
-      if(!response.ok)throw new Error('資料來源暫時無法使用');
+      if(!response.ok)throw Object.assign(new Error('資料來源暫時無法使用'),{providerStatus:response.status});
       const data=format==='text'?await response.text():await response.json();
       if(format==='text'&&data.length>2000000)throw new Error('資料來源回應過大');
       if(cache.size>=100)cache.delete(cache.keys().next().value);
