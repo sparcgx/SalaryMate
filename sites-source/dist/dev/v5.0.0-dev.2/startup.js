@@ -3240,7 +3240,7 @@ globalThis.SalaryMateEnglish={
 
 // Website-only style packages. The portable edition already contains all code and CSS.
 (() => {
- const version='5.2.0-desktop1';
+ const version='5.2.1-theme2';
  const base=new URL('./',document.baseURI);
  const core=document.querySelector('link[data-style-core]');
  let css=null,cssReady=false,cssPending=null,flightPending=null;
@@ -5487,7 +5487,7 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.2.0';
+    const APP_VERSION = '5.2.1';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -8867,7 +8867,7 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
       const promise=new Promise((resolve,reject)=>{
         const script=document.createElement('script');let timer,settled=false;
         const finish=error=>{if(settled)return;settled=true;clearTimeout(timer);script.onload=script.onerror=null;script.remove();error?reject(error):resolve();};
-        script.src=new URL('./'+file+'?v=5.2.0-desktop1',document.baseURI).href;script.async=true;
+        script.src=new URL('./'+file+'?v=5.2.1-theme2',document.baseURI).href;script.async=true;
         script.onload=()=>finish(window[key]?null:Error('Missing module'));script.onerror=()=>finish(Error('Load failed'));
         timer=setTimeout(()=>finish(Error('Load timed out')),20000);document.head.append(script);
       });

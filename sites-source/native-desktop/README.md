@@ -1,11 +1,11 @@
-# SalaryMate v5.2.0 正式版 · Windows / macOS
+# SalaryMate v5.2.1 正式版 · Windows / macOS
 
-v5.2.0 新增台股與美股股票／ETF 開盤至收盤自動行情，桌面封裝 1，build 5010001。薪資與投資程式不重寫，資料 KEY `salarymate_v5_full_state`、Schema 15 維持一致。
+v5.2.1 新增台股與美股股票／ETF 開盤至收盤自動行情，桌面封裝 1，build 5010001。薪資與投資程式不重寫，資料 KEY `salarymate_v5_full_state`、Schema 15 維持一致。
 
 ## 安裝
 
-- Windows 10／11 64 位元：開啟 `SalaryMate_v5.2.0_win_x64.exe`，選擇個人安裝位置。此包不要求系統管理員權限。
-- macOS 13 以上 Apple Silicon（M 系列）：`SalaryMate_v5.2.0_mac_arm64.dmg`。
+- Windows 10／11 64 位元：開啟 `SalaryMate_v5.2.1_win_x64.exe`，選擇個人安裝位置。此包不要求系統管理員權限。
+- macOS 13 以上 Apple Silicon（M 系列）：`SalaryMate_v5.2.1_mac_arm64.dmg`。
 - Intel Mac 保留[桌面封裝 2](https://github.com/sparcgx/SalaryMate/releases/tag/v5.0.0-desktop.2)；本次優化發行只包含 Windows x64 與 Mac arm64。
 - Mac 開啟 DMG，將 SalaryMate 拖到 Applications（應用程式），再從應用程式開啟。
 - 尚未提供發行者簽章憑證。Windows 未有 Authenticode 簽章；Mac 只有 ad-hoc 完整性簽章，沒有 Apple Developer ID 與公證。首次安裝可能被系統阻擋；請核對下載來源與 SHA-256，不要關閉系統的整體安全保護。受管理的電腦可能需要管理員核准。
@@ -49,7 +49,7 @@ npm run verify -- x64
 
 更新只連到此專案的公開 GitHub 發行資訊及 GitHub 素材下載主機，不上傳薪資、投資或備份內容。SHA-256 核對下載完整性，不能代替發行者簽章。現有簽章限制仍適用；不提供背景自動安裝、系統防護繞過或自動降版。
 
-v5.0.0 桌面封裝 4 或更早版本尚無更新中心，請手動安裝 v5.2.0；v5.0.0 桌面封裝 5 可直接從更新中心檢查本次升級。下載狀態只在本次程式執行中保留，重開後可重新下載或自行開啟已保存的安裝檔。升級沿用既有資料位置，網站版下載入口同步指向最新安裝包。
+v5.0.0 桌面封裝 4 或更早版本尚無更新中心，請手動安裝 v5.2.1；v5.0.0 桌面封裝 5 可直接從更新中心檢查本次升級。下載狀態只在本次程式執行中保留，重開後可重新下載或自行開啟已保存的安裝檔。升級沿用既有資料位置，網站版下載入口同步指向最新安裝包。
 
 ## 台股與美股行情
 
