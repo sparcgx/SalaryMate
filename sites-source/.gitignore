@@ -22,3 +22,5 @@ native-desktop/www/
 native-desktop/www.building/
 native-desktop/api/
 native-desktop/release/
+native-desktop/content-manifest.json
+native-desktop/.content-base.smupdate

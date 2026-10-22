@@ -43,7 +43,7 @@ await fs.copyFile(path.join(root,'scripts/lib/android-legacy-backup.js'),path.jo
 let html=await fs.readFile(path.join(stage,'index.html'),'utf8');
 // The installer becomes public together with this release; retain current live
 // web links until the release workflow has published both verified packages.
-html=html.replace(/v5\.0\.0-desktop\.5/g,`v${pkg.version}-desktop.${pkg.desktopRelease}`).replace(/SalaryMate_v5\.0\.0_(win|mac)_/g,`SalaryMate_v${pkg.version}_$1_`);
+html=html.replace(/v5\.\d+\.\d+-desktop\.\d+/g,`v${pkg.version}-desktop.${pkg.desktopRelease}`).replace(/SalaryMate_v5\.\d+\.\d+_(win|mac)_/g,`SalaryMate_v${pkg.version}_$1_`);
 const entry=html.match(/<script defer src="\.\/startup\.js\?v=[^"]+"><\/script>/)?.[0];if(!entry)throw Error('Missing startup entry');
 html=once(html,entry,'<script defer src="./desktop-runtime.js"></script>\n  <script defer src="./desktop-legacy-backup.js"></script>\n  <script defer src="./desktop-updates.js"></script>\n  <script defer src="./desktop-features.js"></script>\n  '+entry);
 html=html.replace(/\s*<link rel="manifest"[^>]*>/,'');
@@ -57,7 +57,7 @@ await fs.writeFile(path.join(stage,'index.html'),html);
 const zhOld='資料預設儲存在目前瀏覽器；啟用 Google Drive 備份後，備份會傳至你授權的 Google 帳戶。';
 const zhNew='桌面版資料儲存在此電腦，與網站及 Android 分開。一般／加密備份可手動搬移；Drive 備份請選自己的 Drive 電腦版同步資料夾。';
 let startup=await fs.readFile(path.join(stage,'startup.js'),'utf8');
-startup=startup.replace(/v5\.0\.0-desktop\.5/g,`v${pkg.version}-desktop.${pkg.desktopRelease}`).replace(/SalaryMate_v5\.0\.0_(win|mac)_/g,`SalaryMate_v${pkg.version}_$1_`);
+startup=startup.replace(/v5\.\d+\.\d+-desktop\.\d+/g,`v${pkg.version}-desktop.${pkg.desktopRelease}`).replace(/SalaryMate_v5\.\d+\.\d+_(win|mac)_/g,`SalaryMate_v${pkg.version}_$1_`);
 // i18n keys and the app each contain this label, so replace both consistently.
 if(!startup.includes(zhOld))throw Error('Missing desktop data notice');
 startup=startup.replaceAll(zhOld,zhNew);
@@ -70,7 +70,7 @@ startup=startup.replaceAll('下載列印版／PDF 用','儲存 PDF');
 startup=once(startup,'Download printable / PDF version','Save PDF');
 startup=once(startup,"      const generation = contextGeneration();\n      setOperationStatus('loading', 'restore-read'","      if(!await window.SalaryMateDesktopFeatures.beforeImport())return;\n      const generation = contextGeneration();\n      setOperationStatus('loading', 'restore-read'");
 const hooks=await fs.readFile(path.join(native,'renderer/app-hooks.js'),'utf8');
-startup=once(startup,'    window.SalaryMateStartup?.complete();',hooks+'\n    window.SalaryMateStartup?.complete();');
+startup=once(startup,'    window.SalaryMateStartup?.complete();',hooks+'\n    window.SalaryMateStartup?.complete();\n    window.SalaryMateDesktop.contentReady().catch(()=>{});');
 startup+='\nObject.assign(window.SalaryMateEnglish,'+JSON.stringify({[zhNew]:'Desktop data is stored on this computer, separately from the website and Android. Transfer records with a plain or encrypted backup. For Drive, choose your own Drive for desktop sync folder.'})+');\n';
 new vm.Script(startup);await fs.writeFile(path.join(stage,'startup.js'),startup);
 let reference=await fs.readFile(path.join(stage,'reference-tools.js'),'utf8');
@@ -99,3 +99,5 @@ const manifest={version:pkg.version,desktopBuild:pkg.build.buildVersion,desktopR
 await fs.writeFile(path.join(stage,'desktop-asset-manifest.json'),JSON.stringify(manifest,null,2)+'\n');
 await fs.rm(target,{recursive:true,force:true});await fs.rename(stage,target);
 console.log(JSON.stringify({version:pkg.version,files:files.length,bytes:files.reduce((s,f)=>s+f.bytes,0),firstScreen:'local; optional content stays lazy'}));
+const {buildContent}=await import('../native-desktop/scripts/build-content-update.cjs');
+await buildContent(native);

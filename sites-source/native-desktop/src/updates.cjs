@@ -7,6 +7,12 @@ const REPO='https://github.com/sparcgx/SalaryMate';
 const RELEASES='https://api.github.com/repos/sparcgx/SalaryMate/releases?per_page=100';
 const MAX_INSTALLER=512*1024*1024,MAX_METADATA=2*1024*1024;
 const fault=code=>Object.assign(Error(code),{code});
+function releaseAsset(raw,tag,name,max=MAX_INSTALLER){
+ const candidates=Array.isArray(raw.assets)?raw.assets.filter(a=>a.name===name):[];
+ if(candidates.length!==1)return null;
+ const a=candidates[0],url=REPO+'/releases/download/'+tag+'/'+name;
+ return a.state==='uploaded'&&a.browser_download_url===url&&Number.isSafeInteger(a.size)&&a.size>0&&a.size<=max&&/^sha256:[a-f0-9]{64}$/.test(a.digest||'')?{name,url,size:a.size,sha256:a.digest.slice(7)}:null;
+}
 function version(tag){
  const match=/^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)-desktop\.([1-9]\d*)$/.exec(tag||'');
  if(!match)return null;const parts=match.slice(1).map(Number);
@@ -23,7 +29,17 @@ function releaseInfo(raw,platform,arch){
  if(candidates.length===1){const a=candidates[0],url=REPO+'/releases/download/'+raw.tag_name+'/'+name;
   if(a.state==='uploaded'&&a.browser_download_url===url&&Number.isSafeInteger(a.size)&&a.size>0&&a.size<=MAX_INSTALLER&&/^sha256:[a-f0-9]{64}$/.test(a.digest||''))asset={name,url,size:a.size,sha256:a.digest.slice(7)};
  }
- return {tag:raw.tag_name,version:parts.slice(0,3).join('.'),sequence:parts[3],url:raw.html_url,publishedAt:raw.published_at,notes:String(raw.body||'').slice(0,16000),asset};
+ const prefix=`SalaryMate_v${parts.slice(0,3).join('.')}_content`;
+ const contentManifest=releaseAsset(raw,raw.tag_name,prefix+'.json',MAX_METADATA);
+ const contentAssets=(raw.assets||[]).filter(a=>typeof a.name==='string'&&a.name.startsWith(prefix)&&/^SalaryMate_v\d+\.\d+\.\d+_content(?:_from_v\d+\.\d+\.\d+-desktop\.\d+)?\.smupdate$/.test(a.name)).map(a=>releaseAsset(raw,raw.tag_name,a.name,64*1024*1024)).filter(Boolean);
+ return {tag:raw.tag_name,version:parts.slice(0,3).join('.'),sequence:parts[3],url:raw.html_url,publishedAt:raw.published_at,notes:String(raw.body||'').slice(0,16000),asset,contentManifest,contentAssets};
+}
+async function verifiedJson(asset,fetcher,signal){
+ const response=await installerResponse(asset,fetcher,signal),chunks=[];let size=0;
+ for await(const chunk of response.body){size+=chunk.length;if(size>asset.size||size>MAX_METADATA)throw fault('UPDATE_INVALID');chunks.push(Buffer.from(chunk));}
+ const bytes=Buffer.concat(chunks);
+ if(size!==asset.size||createHash('sha256').update(bytes).digest('hex')!==asset.sha256)throw fault('UPDATE_INTEGRITY');
+ try{return JSON.parse(bytes.toString('utf8'));}catch{throw fault('UPDATE_INVALID');}
 }
 async function jsonResponse(response){
  const parts=[];let size=0;
@@ -80,12 +96,13 @@ async function downloadVerified(asset,destination,{fetcher=fetch,io=fs,controlle
  }catch(e){if(controller.signal.aborted)throw controller.signal.reason;throw e;}
  finally{clearTimeout(timer);await reader?.cancel().catch(()=>{});await handle?.close().catch(()=>{});await io.unlink(temp).catch(()=>{});}
 }
-function createUpdateService({userData,currentTag,build,platform,arch,dialog,parent,fetcher=fetch,io=fs,notify=()=>{},saveBackup,openPath,showItemInFolder,quit,now=()=>new Date()}){
+function createUpdateService({userData,currentTag,build,platform,arch,dialog,parent,fetcher=fetch,io=fs,notify=()=>{},saveBackup,openPath,showItemInFolder,quit,relaunch,contentService,now=()=>new Date()}){
  if(!version(currentTag))throw fault('UPDATE_INVALID');
  const cacheFile=path.join(userData,'desktop-update-cache.json');
  let cache=null,loaded=false,fresh=false,phase='idle',error='',checkedAt='',latest=null,downloaded=null,controller=null,busy=false,bytes=0,lastNotice=0;
- const state=()=>({current:{tag:currentTag,version:version(currentTag).slice(0,3).join('.'),sequence:version(currentTag)[3],build,platform,arch},phase,error,checkedAt,fresh,latest,
-  available:Boolean(latest&&compare(latest.tag,currentTag)>0),canDownload:Boolean(fresh&&latest?.asset&&compare(latest.tag,currentTag)>0),downloaded:downloaded?{fileName:path.basename(downloaded.file),tag:downloaded.tag,sha256:downloaded.asset.sha256}:null,bytes,total:latest?.asset?.size||0});
+ const selected=()=>latest?.delivery?.asset||latest?.asset;
+ const state=()=>({current:{tag:currentTag,version:version(currentTag).slice(0,3).join('.'),sequence:version(currentTag)[3],build,platform,arch},phase,error,checkedAt,fresh,latest,content:contentService?.status(),
+  available:Boolean(latest&&compare(latest.tag,currentTag)>0),canDownload:Boolean(fresh&&selected()&&compare(latest.tag,currentTag)>0),downloaded:downloaded?{fileName:path.basename(downloaded.file),tag:downloaded.tag,sha256:downloaded.asset.sha256,kind:downloaded.kind}:null,bytes,total:downloaded?.asset.size||selected()?.size||0});
  function send(force=false){if(force||Date.now()-lastNotice>150){lastNotice=Date.now();try{notify(state());}catch{}}}
  async function load(){if(loaded)return;loaded=true;try{
   const raw=JSON.parse((await readBounded(cacheFile,MAX_METADATA,io)).toString('utf8'));
@@ -108,9 +125,11 @@ function createUpdateService({userData,currentTag,build,platform,arch,dialog,par
     if(!candidates.length)throw fault('UPDATE_UNAVAILABLE');raw=candidates[0].raw;
    }
    const info=releaseInfo(raw,platform,arch);if(!info)throw fault('UPDATE_INVALID');
+   if(contentService&&info.contentManifest){const metadata=await verifiedJson(info.contentManifest,fetcher,controller.signal);info.delivery=contentService.choose(metadata,info);}
    checkedAt=now().toISOString();latest=info;fresh=true;error='';phase='idle';
-   if(downloaded&&(downloaded.tag!==info.tag||downloaded.asset.sha256!==info.asset?.sha256))downloaded=null;
-   cache={version:1,release:{tag_name:raw.tag_name,draft:false,prerelease:false,html_url:raw.html_url,published_at:raw.published_at,body:info.notes,assets:raw.assets?.filter(a=>a.name===info.asset?.name)||[]},etag:etag.slice(0,299),checkedAt};
+   if(downloaded&&(downloaded.tag!==info.tag||downloaded.asset.sha256!==selected()?.sha256))downloaded=null;
+   const names=new Set([info.asset?.name,info.contentManifest?.name,...info.contentAssets.map(a=>a.name)]);
+   cache={version:1,release:{tag_name:raw.tag_name,draft:false,prerelease:false,html_url:raw.html_url,published_at:raw.published_at,body:info.notes,assets:raw.assets?.filter(a=>names.has(a.name))||[]},etag:etag.slice(0,299),checkedAt};
    await io.mkdir(userData,{recursive:true});await writeVerified(cacheFile,Buffer.from(JSON.stringify(cache)),io).catch(()=>{});
    send(true);return state();
   }catch(e){fresh=false;if(controller.signal.aborted)throw controller.signal.reason;throw e;}
@@ -120,19 +139,50 @@ function createUpdateService({userData,currentTag,build,platform,arch,dialog,par
   isBusy:()=>busy,state:async()=>{await load();return state();},check,
   cancel(){if(controller){controller.abort(fault('UPDATE_CANCELLED'));return {cancelRequested:true};}return {cancelRequested:false};},
   download:()=>exclusive(async()=>{
-   if(!fresh||!latest?.asset||compare(latest.tag,currentTag)<=0)throw fault('UPDATE_CHECK_REQUIRED');
-   phase='choosing';send(true);const asset=latest.asset,tag=latest.tag;
-   const choice=await dialog.showSaveDialog(parent(),{title:'下載 SalaryMate 更新 / Download update',defaultPath:asset.name,filters:[{name:'SalaryMate installer',extensions:[path.extname(asset.name).slice(1)]}]});
+   if(!fresh||!selected()||compare(latest.tag,currentTag)<=0)throw fault('UPDATE_CHECK_REQUIRED');
+   phase='choosing';send(true);const asset=selected(),tag=latest.tag;
+   const choice=await dialog.showSaveDialog(parent(),{title:'下載 SalaryMate 更新 / Download update',defaultPath:asset.name,filters:[{name:'SalaryMate update',extensions:[path.extname(asset.name).slice(1)]}]});
    if(choice.canceled||!choice.filePath)throw fault('UPDATE_CANCELLED');
    if(path.extname(choice.filePath).toLowerCase()!==path.extname(asset.name))throw fault('UPDATE_EXTENSION');
    controller=new AbortController();bytes=0;
    try{await downloadVerified(asset,choice.filePath,{fetcher,io,controller,progress:(next,n)=>{phase=next;bytes=n;send();}});
-    downloaded={file:choice.filePath,asset,tag};phase='ready';send(true);return state();
+    downloaded={file:choice.filePath,asset,tag,kind:asset.kind==='content'?'content':'installer'};phase='ready';send(true);return state();
    }finally{controller=null;}
+  }),
+  importPackage:()=>exclusive(async()=>{
+   if(!fresh||!selected()||selected().kind!=='content'||compare(latest.tag,currentTag)<=0)throw fault('UPDATE_CHECK_REQUIRED');
+   const choice=await dialog.showOpenDialog(parent(),{title:'匯入更新套件 / Import update package',properties:['openFile'],filters:[{name:'SalaryMate update',extensions:['smupdate']}]});
+   if(choice.canceled||choice.filePaths?.length!==1)throw fault('UPDATE_CANCELLED');
+   const file=choice.filePaths[0];if(path.extname(file).toLowerCase()!=='.smupdate')throw fault('UPDATE_EXTENSION');
+   controller=new AbortController();phase='verifying';bytes=0;send(true);
+   try{
+    const payload=await readBounded(file,64*1024*1024,io);controller.signal.throwIfAborted();
+    const checksum=createHash('sha256').update(payload).digest('hex');
+    const asset=(latest.delivery.alternatives||[selected()]).find(a=>a.size===payload.length&&a.sha256===checksum);
+    if(!asset)throw fault('UPDATE_INTEGRITY');bytes=payload.length;downloaded={file,asset,tag:latest.tag,kind:'content'};phase='ready';send(true);return state();
+   }
+   finally{controller=null;}
+  }),
+  rollback:data=>exclusive(async()=>{
+   if(!contentService?.status().canRollback)throw fault('UPDATE_NO_ROLLBACK');checkedPayload(data);
+   const answer=await dialog.showMessageBox(parent(),{type:'question',buttons:['取消 / Cancel','備份並還原 / Back up and restore'],defaultId:0,cancelId:0,message:'還原上一個程式版本？ / Restore the previous application version?',detail:'先保存備份，再重新啟動。只還原程式內容，薪資與投資紀錄保持不變。 / Save a backup, then restart. Only application content is restored; your records are retained.'});
+   if(answer.response!==1)throw fault('UPDATE_CANCELLED');
+   phase='backing-up';send(true);
+   const saved=await saveBackup({data,fileName:'SalaryMate_before_rollback_'+now().toISOString().replace(/[:.]/g,'-')+'.json',encoding:'utf8'});
+   if(!saved?.ok||!saved.verified)throw fault(saved?.code==='SAVE_CANCELLED'?'UPDATE_CANCELLED':'UPDATE_BACKUP_FAILED');
+   await contentService.rollback();phase='restarting';send(true);setImmediate(relaunch);return state();
   }),
   reveal:()=>exclusive(async()=>{if(!downloaded)throw fault('UPDATE_NOT_DOWNLOADED');await showItemInFolder(downloaded.file);return state();}),
   install:data=>exclusive(async()=>{
    if(!downloaded)throw fault('UPDATE_NOT_DOWNLOADED');checkedPayload(data);
+   if(downloaded.kind==='content'){
+    const answer=await dialog.showMessageBox(parent(),{type:'question',buttons:['取消 / Cancel','備份並套用 / Back up and apply'],defaultId:0,cancelId:0,message:'套用更新套件並重新啟動？ / Apply the update package and restart?',detail:'先選擇私人位置保存備份。套件校驗完成後重新啟動，不重新下載主系統；新版無法啟動時會還原上一版。 / Choose a private backup location. After verification, restart using the new content without downloading the runtime. A failed startup restores the previous version.'});
+    if(answer.response!==1)throw fault('UPDATE_CANCELLED');phase='backing-up';send(true);
+    const saved=await saveBackup({data,fileName:'SalaryMate_before_update_'+now().toISOString().replace(/[:.]/g,'-')+'.json',encoding:'utf8'});
+    if(!saved?.ok||!saved.verified)throw fault(saved?.code==='SAVE_CANCELLED'?'UPDATE_CANCELLED':'UPDATE_BACKUP_FAILED');
+    phase='applying';send(true);await contentService.stage(downloaded.file,downloaded.asset);
+    phase='restarting';send(true);setImmediate(relaunch);return {...state(),backup:saved.fileName};
+   }
    const answer=await dialog.showMessageBox(parent(),{type:'question',buttons:['取消 / Cancel','備份並開啟 / Back up and open'],defaultId:0,cancelId:0,message:'備份後開啟更新安裝檔？ / Back up and open the update installer?',detail:'接著選擇私人備份位置。備份及安裝檔校驗成功後，開啟安裝檔並結束 SalaryMate。\nWindows 依安裝精靈操作；Mac 將 App 拖到 Applications 取代原程式。\n沒有發行者簽章／Apple 公證，請依系統提示核對來源。\nChoose a private backup location. After verification, the installer opens and SalaryMate quits. Follow the installer; on Mac replace the app in Applications. No publisher certificate or Apple notarization.'});
    if(answer.response!==1)throw fault('UPDATE_CANCELLED');
    phase='backing-up';send(true);

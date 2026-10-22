@@ -2,6 +2,7 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),{createHash}=require('node:crypto');
 const asar=require('@electron/asar');
 const assert=require('node:assert/strict');
+const {checkedManifest,decodePackage,hash}=require('../src/content-updates.cjs');
 const root=path.resolve(__dirname,'..'),arch=process.argv[2];
 assert.ok(['x64','arm64'].includes(arch));
 const win=process.platform==='win32';
@@ -9,9 +10,14 @@ const dir=win?path.join(root,'release','win-unpacked'):path.join(root,'release',
 const archive=path.join(dir,win?'resources':'Resources','app.asar');
 const get=name=>asar.extractFile(archive,path.normalize(name));
 const manifest=JSON.parse(get('www/desktop-asset-manifest.json'));
+const content=checkedManifest(JSON.parse(get('content-manifest.json')));
+assert.equal(content.runtimeId,JSON.parse(fs.readFileSync(path.join(root,'content-manifest.json'))).runtimeId);
+for(const f of content.files){const b=get(f.path);assert.equal(b.length,f.bytes);assert.equal(hash(b),f.sha256);}
+const contentPackage=decodePackage(fs.readFileSync(path.join(root,'release','SalaryMate_v'+manifest.version+'_content.smupdate')));
+assert.deepEqual(contentPackage.manifest,content);
 for(const f of manifest.files){const bytes=get('www/'+f.path);assert.equal(bytes.length,f.bytes);assert.equal(createHash('sha256').update(bytes).digest('hex'),f.sha256,f.path);}
 for(const f of manifest.api)assert.equal(createHash('sha256').update(get('api/'+f.path)).digest('hex'),f.sha256);
-for(const name of ['main.cjs','preload.cjs','security.cjs','files.cjs','assets.cjs','public-api.cjs','backups.cjs','quick-entry.cjs','pdf.cjs','updates.cjs'])new vm.Script(get('src/'+name).toString(),{filename:name});
+for(const name of ['main.cjs','preload.cjs','security.cjs','files.cjs','assets.cjs','public-api.cjs','backups.cjs','quick-entry.cjs','pdf.cjs','updates.cjs','content-updates.cjs'])new vm.Script(get('src/'+name).toString(),{filename:name});
 const pkg=JSON.parse(get('package.json'));assert.equal(pkg.version,manifest.version);assert.equal(pkg.version,JSON.parse(fs.readFileSync(path.join(root,'package.json'))).version);assert.equal(pkg.build?.buildVersion,undefined); // builder removes build-only configuration.
 assert.equal(pkg.desktopRelease,manifest.desktopRelease);assert.ok(Number.isSafeInteger(pkg.desktopRelease)&&pkg.desktopRelease>0);
 const binary=fs.readFileSync(path.join(dir,win?'SalaryMate.exe':'MacOS/SalaryMate'));

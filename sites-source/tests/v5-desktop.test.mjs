@@ -69,7 +69,7 @@ test('native import enforces UTF-8 and size without changing any application sta
 });
 test('snapshot contains current calendar, every offline scene and original payroll/stock modules',async()=>{
  const manifest=JSON.parse(await read('native-desktop/www/desktop-asset-manifest.json'));
- assert.equal(manifest.version,'5.2.1');assert.equal(manifest.schema,15);assert.equal(manifest.stateKey,'salarymate_v5_full_state');
+ assert.equal(manifest.version,'5.3.0');assert.equal(manifest.schema,15);assert.equal(manifest.stateKey,'salarymate_v5_full_state');
  for(const f of manifest.files){const bytes=await fs.readFile(path.join(root,'native-desktop/www',f.path));assert.equal(bytes.length,f.bytes,f.path);assert.equal(sha(bytes),f.sha256,f.path);}
  for(const name of ['app.js','bootstrap.js','stocks.js','backup.js','reconcile.js','comp-time.js','annual-analysis.js','reference-data.js','styles.css','styles-core.css','ornate-flight.js'])assert.equal(await read('native-desktop/www/'+name),await read('dist/dev/v5.0.0-dev.2/'+name),name);
  for(const f of manifest.api)assert.equal(sha(await fs.readFile(path.join(root,'server',f.path))),f.sha256,f.path);

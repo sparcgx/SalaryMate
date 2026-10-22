@@ -10,7 +10,7 @@ const {createBackupService,checkedOptions} = require('./backups.cjs');
 const {createQuickEntry} = require('./quick-entry.cjs');
 const {createPdfService,renderPdf} = require('./pdf.cjs');
 const {createUpdateService}=require('./updates.cjs');
-const desktopPackage=require('../package.json');
+const {createContentService}=require('./content-updates.cjs');
 app.setName('SalaryMate');
 // Version-independent identity: upgrades reuse this profile. Never clear storage.
 app.setPath('userData', path.join(app.getPath('appData'), 'SalaryMate'));
@@ -24,11 +24,18 @@ else {
   app.whenReady().then(start).catch(() => {dialog.showErrorBox('SalaryMate', '無法啟動程式，請重新安裝完整套件。本機資料保持不變。\nUnable to start. Reinstall the complete package; local data is retained.'); app.quit();});
 }
 async function start() {
-  const assets = path.join(app.getAppPath(), 'www');
+  const baseDirectory=app.getAppPath();
+  const runtime=JSON.parse(await fs.readFile(path.join(baseDirectory,'content-manifest.json'),'utf8'));
+  const contentService=createContentService({userData:app.getPath('userData'),baseDirectory,runtimeId:runtime.runtimeId});
+  const content=await contentService.start();
+  const assets = path.join(content.directory, 'www');
   const manifest = JSON.parse(await fs.readFile(path.join(assets, 'desktop-asset-manifest.json'), 'utf8'));
+  const contentVersion=manifest.version;
+  const relaunch=()=>{quitting=true;session.defaultSession.flushStorageData();app.relaunch();app.quit();};
+  let startupTimer;
   // Same validated public-data handlers as the website, executed on this device.
   // No listening port, private-state API, generic URL proxy or remote app code.
-  const apiHandlers = createPublicApis(app.getAppPath());
+  const apiHandlers = createPublicApis(content.directory);
   const serveAsset = createAssetResponder({directory:assets, manifest, fetchFile:url => net.fetch(url)});
   session.defaultSession.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
   session.defaultSession.setPermissionCheckHandler(() => false);
@@ -54,7 +61,7 @@ async function start() {
     return result.canceled?null:result.filePaths?.[0];
   }});
   const pdf=createPdfService({dialog,parent:()=>window,render:input=>renderPdf(input,{BrowserWindow,session})});
-  const updates=createUpdateService({userData:app.getPath('userData'),currentTag:`v${app.getVersion()}-desktop.${desktopPackage.desktopRelease}`,build:manifest.desktopBuild,platform:process.platform,arch:process.arch,dialog,parent:()=>window,
+  const updates=createUpdateService({userData:app.getPath('userData'),currentTag:content.manifest.tag,build:manifest.desktopBuild,platform:process.platform,arch:process.arch,dialog,parent:()=>window,contentService,relaunch,
     notify:state=>{if(window&&!window.isDestroyed())window.webContents.send('salarymate:update-state',state);},
     saveBackup:input=>service.save(input),openPath:file=>shell.openPath(file),showItemInFolder:file=>shell.showItemInFolder(file),quit:()=>app.quit()});
   let featureBusy=false,pendingAction=null,shortcutProblem='';
@@ -68,7 +75,7 @@ async function start() {
   }
   const quick=createQuickEntry({globalShortcut,send:sendDesktopAction,makeTray:()=>{
     const icon=nativeImage.createFromPath(path.join(assets,'icons/icon-192.png')).resize({width:process.platform==='darwin'?18:20,height:process.platform==='darwin'?18:20});
-    const tray=new Tray(icon);tray.setToolTip('SalaryMate v5.1.0');
+    const tray=new Tray(icon);tray.setToolTip('SalaryMate v'+contentVersion);
     tray.setContextMenu(Menu.buildFromTemplate([
       {label:'快捷登記 / Quick entry',click:()=>sendDesktopAction('quick')},
       {label:'記加班 / Overtime',click:()=>sendDesktopAction('overtime')},
@@ -96,6 +103,8 @@ async function start() {
     'report-pdf':input=>pdf.save(input),
     'updates-check':()=>updates.check(),
     'updates-download':()=>updates.download(),
+    'updates-import':()=>updates.importPackage(),
+    'updates-rollback':data=>updates.rollback(data),
     'updates-reveal':()=>updates.reveal(),
     'updates-install':data=>updates.install(data)
   };
@@ -104,11 +113,11 @@ async function start() {
     if(featureBusy||service.isBusy())return {ok:false,code:'DESKTOP_BUSY'};
     featureBusy=true;
     try{return {ok:true,...await action(input)};}
-    catch(error){const allowed=new Set(['INVALID_OPTIONS','SHORTCUT_UNAVAILABLE','PREFERENCES_UNREADABLE','BACKUP_NOT_CONFIGURED','BACKUP_UNREADABLE','BACKUP_INTEGRITY','HISTORY_UNREADABLE','INVALID_BACKUP','INVALID_REPORT','DESKTOP_BUSY','OPEN_CANCELLED','SAVE_CANCELLED','SAVE_EXTENSION_CHANGED','PDF_TIMEOUT','UPDATE_INVALID','UPDATE_TIMEOUT','UPDATE_CANCELLED','UPDATE_RATE_LIMIT','UPDATE_UNAVAILABLE','UPDATE_CHECK_REQUIRED','UPDATE_EXTENSION','UPDATE_DOWNLOAD_FAILED','UPDATE_INTEGRITY','UPDATE_NOT_DOWNLOADED','UPDATE_BACKUP_FAILED','UPDATE_OPEN_FAILED']);return {ok:false,code:allowed.has(error.code)?error.code:name.startsWith('updates-')?'UPDATE_NETWORK':'DESKTOP_FAILED'};}
+    catch(error){const allowed=new Set(['INVALID_OPTIONS','SHORTCUT_UNAVAILABLE','PREFERENCES_UNREADABLE','BACKUP_NOT_CONFIGURED','BACKUP_UNREADABLE','BACKUP_INTEGRITY','HISTORY_UNREADABLE','INVALID_BACKUP','INVALID_REPORT','DESKTOP_BUSY','OPEN_CANCELLED','SAVE_CANCELLED','SAVE_EXTENSION_CHANGED','PDF_TIMEOUT','UPDATE_INVALID','UPDATE_TIMEOUT','UPDATE_CANCELLED','UPDATE_RATE_LIMIT','UPDATE_UNAVAILABLE','UPDATE_CHECK_REQUIRED','UPDATE_EXTENSION','UPDATE_DOWNLOAD_FAILED','UPDATE_INTEGRITY','UPDATE_NOT_DOWNLOADED','UPDATE_BACKUP_FAILED','UPDATE_OPEN_FAILED','UPDATE_PACKAGE_INVALID','UPDATE_PACKAGE_INCOMPATIBLE','UPDATE_NO_ROLLBACK']);return {ok:false,code:allowed.has(error.code)?error.code:name.startsWith('updates-')?'UPDATE_NETWORK':'DESKTOP_FAILED'};}
     finally{featureBusy=false;}
   });
   // State and cancellation remain available while a download owns the file lock.
-  for(const [name,action] of [['updates-state',()=>updates.state()],['updates-cancel',()=>updates.cancel()]])ipcMain.handle('salarymate:'+name,async event=>{
+  for(const [name,action] of [['updates-state',()=>updates.state()],['updates-cancel',()=>updates.cancel()],['content-ready',async()=>{await contentService.ready();clearTimeout(startupTimer);return {ready:true};}]])ipcMain.handle('salarymate:'+name,async event=>{
     if(!window||event.sender!==window.webContents||event.senderFrame!==window.webContents.mainFrame||!documentURL(event.senderFrame.url))return {ok:false,code:'BRIDGE_UNAVAILABLE'};
     try{return {ok:true,...await action()};}catch{return {ok:false,code:'UPDATE_NETWORK'};}
   });
@@ -125,7 +134,7 @@ async function start() {
     if (answer.response === 1) await shell.openExternal(url.href).catch(() => {});
   }
   function createWindow() {
-    window = new BrowserWindow({width:1280,height:850,minWidth:480,minHeight:640,show:false,backgroundColor:'#f4f7fb',title:'SalaryMate v5.1.0 正式版',icon:path.join(assets,'icons/icon-512.png'),webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true,webviewTag:false,allowRunningInsecureContent:false}});
+    window = new BrowserWindow({width:1280,height:850,minWidth:480,minHeight:640,show:false,backgroundColor:'#f4f7fb',title:'SalaryMate v'+contentVersion+' 正式版',icon:path.join(assets,'icons/icon-512.png'),webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true,webviewTag:false,allowRunningInsecureContent:false}});
     window.webContents.setWindowOpenHandler(({url}) => {void external(url); return {action:'deny'};});
     window.webContents.on('will-navigate', (event,url) => {if (!documentURL(url)) {event.preventDefault(); void external(url);}});
     window.webContents.on('will-redirect', (event,url) => {if (!documentURL(url)) event.preventDefault();});
@@ -143,6 +152,7 @@ async function start() {
     window.webContents.on('did-finish-load',()=>{if(pendingAction){window?.webContents.send('salarymate:desktop-action',pendingAction);pendingAction=null;}});
     window.webContents.once('did-fail-load', () => {window?.show();dialog.showErrorBox('SalaryMate','畫面載入失敗，請重新開啟程式。本機資料保持不變。 / Unable to load; reopen the app. Local data is retained.');});
     void window.loadURL(APP_URL);
+    if(contentService.status().pending){clearTimeout(startupTimer);startupTimer=setTimeout(()=>{if(contentService.status().pending)relaunch();},45000);}
   }
   Menu.setApplicationMenu(Menu.buildFromTemplate([
     ...(process.platform === 'darwin' ? [{role:'appMenu'}] : [{label:'SalaryMate',submenu:[{role:'quit'}]}]),
@@ -150,7 +160,7 @@ async function start() {
     {label:'檢視 / View',submenu:[{role:'resetZoom'},{role:'zoomIn'},{role:'zoomOut'},{type:'separator'},{role:'togglefullscreen'}]},
     {role:'windowMenu'},
     {label:'桌面工具 / Desktop',submenu:[{label:'快捷登記 / Quick entry',click:()=>sendDesktopAction('quick')},{label:'自動備份 / Automatic backups',click:()=>sendDesktopAction('backups')},{label:'年度報表 PDF / Annual PDF',click:()=>sendDesktopAction('pdf')},{label:'快捷鍵設定 / Shortcut settings',click:()=>sendDesktopAction('options')},{label:'更新中心 / Update center',click:()=>sendDesktopAction('updates')}]},
-    {label:'說明 / Help',submenu:[{label:'更新中心 / Update center',click:()=>sendDesktopAction('updates')},{label:'關於 SalaryMate / About',click:() => dialog.showMessageBox(window,{message:'SalaryMate v5.1.0 正式版',detail:'桌面封裝 1 · 台美股盤中行情\nDesktop package 1 · TW / US market sessions\n資料與網站分開儲存；以備份匯入搬移。\nTransfer browser records with a backup.\n未具發行者簽章／Apple 公證。\nNo publisher certificate or Apple notarization.'})}]}
+    {label:'說明 / Help',submenu:[{label:'更新中心 / Update center',click:()=>sendDesktopAction('updates')},{label:'關於 SalaryMate / About',click:() => dialog.showMessageBox(window,{message:'SalaryMate v'+contentVersion+' 正式版',detail:'主系統 / Runtime v'+app.getVersion()+'\n更新套件支援 / Content packages supported\n資料與網站分開儲存；以備份匯入搬移。\nTransfer browser records with a backup.\n未具發行者簽章／Apple 公證。\nNo publisher certificate or Apple notarization.'})}]}
   ]));
   createWindow();
   // Preferences and shortcut registration never block the first window.
@@ -160,6 +170,6 @@ async function start() {
     if(service.isBusy()||featureBusy){event.preventDefault();quitting=false;window?.show();void dialog.showMessageBox(window,{message:'檔案正在處理，完成後請再結束。 / A file operation is running. Quit after it finishes.'});return;}
     quitting=true;session.defaultSession.flushStorageData();
   });
-  app.on('will-quit',()=>quick.dispose());
+  app.on('will-quit',()=>{clearTimeout(startupTimer);quick.dispose();});
 }
 app.on('window-all-closed', () => {if (process.platform !== 'darwin') app.quit();});

@@ -1,14 +1,14 @@
 {
   "name": "salarymate-desktop",
-  "version": "5.2.1",
+  "version": "5.3.0",
   "private": true,
-  "description": "SalaryMate v5.2.1 正式版 — 深色主題可讀性修正",
+  "description": "SalaryMate v5.3.0 正式版 — 更新套件與失敗還原",
   "author": "SalaryMate",
   "license": "UNLICENSED",
   "main": "src/main.cjs",
   "scripts": {
     "assets": "node ../scripts/build-desktop-assets.mjs",
-    "test": "node --test ../tests/v5-desktop.test.mjs ../tests/v5-desktop-features.test.mjs ../tests/v5-desktop-updates.test.mjs ../tests/v5-live-market.test.mjs ../tests/v5-r46-market-sync.test.mjs ../tests/v5-r41-intraday.test.mjs ../tests/v5-twse-close-integration.test.mjs ../tests/v5-investment-insights.test.mjs",
+    "test": "node --test ../tests/v5-desktop.test.mjs ../tests/v5-desktop-features.test.mjs ../tests/v5-desktop-updates.test.mjs ../tests/v5-live-market.test.mjs ../tests/v5-r46-market-sync.test.mjs ../tests/v5-r41-intraday.test.mjs ../tests/v5-twse-close-integration.test.mjs ../tests/v5-investment-insights.test.mjs ../tests/v5-content-updates.test.mjs",
     "benchmark": "node scripts/benchmark.cjs",
     "package": "electron-builder --publish never",
     "verify": "node scripts/verify-package.cjs"
@@ -20,7 +20,7 @@
   "build": {
     "appId": "com.salarymate.personal.desktop",
     "productName": "SalaryMate",
-    "buildVersion": "5020101",
+    "buildVersion": "5030001",
     "asar": true,
     "npmRebuild": false,
     "directories": {
@@ -33,7 +33,8 @@
       "api/**",
       "package.json",
       "README.md",
-      "RELEASE-NOTES.md"
+      "RELEASE-NOTES.md",
+      "content-manifest.json"
     ],
     "artifactName": "SalaryMate_v${version}_${os}_${arch}.${ext}",
     "win": {
@@ -56,7 +57,7 @@
       "deleteAppDataOnUninstall": false,
       "runAfterFinish": false,
       "createDesktopShortcut": true,
-      "shortcutName": "SalaryMate v5.2.1 正式版",
+      "shortcutName": "SalaryMate",
       "installerLanguages": [
         "zh_TW",
         "en_US"
@@ -75,7 +76,7 @@
       "hardenedRuntime": true
     },
     "dmg": {
-      "title": "SalaryMate v5.2.1 正式版",
+      "title": "SalaryMate v5.3.0 正式版",
       "contents": [
         {
           "x": 140,
