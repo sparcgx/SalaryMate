@@ -113,13 +113,13 @@ async function start() {
     if(featureBusy||service.isBusy())return {ok:false,code:'DESKTOP_BUSY'};
     featureBusy=true;
     try{return {ok:true,...await action(input)};}
-    catch(error){const allowed=new Set(['INVALID_OPTIONS','SHORTCUT_UNAVAILABLE','PREFERENCES_UNREADABLE','BACKUP_NOT_CONFIGURED','BACKUP_UNREADABLE','BACKUP_INTEGRITY','HISTORY_UNREADABLE','INVALID_BACKUP','INVALID_REPORT','DESKTOP_BUSY','OPEN_CANCELLED','SAVE_CANCELLED','SAVE_EXTENSION_CHANGED','PDF_TIMEOUT','UPDATE_INVALID','UPDATE_TIMEOUT','UPDATE_CANCELLED','UPDATE_RATE_LIMIT','UPDATE_UNAVAILABLE','UPDATE_CHECK_REQUIRED','UPDATE_EXTENSION','UPDATE_DOWNLOAD_FAILED','UPDATE_INTEGRITY','UPDATE_NOT_DOWNLOADED','UPDATE_BACKUP_FAILED','UPDATE_OPEN_FAILED','UPDATE_PACKAGE_INVALID','UPDATE_PACKAGE_INCOMPATIBLE','UPDATE_NO_ROLLBACK']);return {ok:false,code:allowed.has(error.code)?error.code:name.startsWith('updates-')?'UPDATE_NETWORK':'DESKTOP_FAILED'};}
+    catch(error){const allowed=new Set(['INVALID_OPTIONS','SHORTCUT_UNAVAILABLE','PREFERENCES_UNREADABLE','BACKUP_NOT_CONFIGURED','BACKUP_UNREADABLE','BACKUP_INTEGRITY','HISTORY_UNREADABLE','INVALID_BACKUP','INVALID_REPORT','DESKTOP_BUSY','OPEN_CANCELLED','SAVE_CANCELLED','SAVE_EXTENSION_CHANGED','PDF_TIMEOUT','UPDATE_INVALID','UPDATE_TIMEOUT','UPDATE_CANCELLED','UPDATE_RATE_LIMIT','UPDATE_UNAVAILABLE','UPDATE_CHECK_REQUIRED','UPDATE_EXTENSION','UPDATE_DOWNLOAD_FAILED','UPDATE_INTEGRITY','UPDATE_NOT_DOWNLOADED','UPDATE_BACKUP_FAILED','UPDATE_OPEN_FAILED','UPDATE_PACKAGE_INVALID','UPDATE_PACKAGE_INCOMPATIBLE','UPDATE_NO_ROLLBACK','UPDATE_STATE_WRITE']);return {ok:false,code:allowed.has(error.code)?error.code:name.startsWith('updates-')?'UPDATE_NETWORK':'DESKTOP_FAILED'};}
     finally{featureBusy=false;}
   });
   // State and cancellation remain available while a download owns the file lock.
   for(const [name,action] of [['updates-state',()=>updates.state()],['updates-cancel',()=>updates.cancel()],['content-ready',async()=>{await contentService.ready();clearTimeout(startupTimer);return {ready:true};}]])ipcMain.handle('salarymate:'+name,async event=>{
     if(!window||event.sender!==window.webContents||event.senderFrame!==window.webContents.mainFrame||!documentURL(event.senderFrame.url))return {ok:false,code:'BRIDGE_UNAVAILABLE'};
-    try{return {ok:true,...await action()};}catch{return {ok:false,code:'UPDATE_NETWORK'};}
+    try{return {ok:true,...await action()};}catch(error){return {ok:false,code:error.code==='UPDATE_STATE_WRITE'?'UPDATE_STATE_WRITE':'UPDATE_NETWORK'};}
   });
   for (const [channel, action] of [['salarymate:save', input => service.save(input)], ['salarymate:open', () => service.open()]]) {
     ipcMain.handle(channel, (event, input) => {
@@ -151,7 +151,7 @@ async function start() {
     window.once('ready-to-show', () => window?.show());
     window.webContents.on('did-finish-load',()=>{if(pendingAction){window?.webContents.send('salarymate:desktop-action',pendingAction);pendingAction=null;}});
     window.webContents.once('did-fail-load', () => {window?.show();dialog.showErrorBox('SalaryMate','畫面載入失敗，請重新開啟程式。本機資料保持不變。 / Unable to load; reopen the app. Local data is retained.');});
-    void window.loadURL(APP_URL);
+    void window.loadURL(APP_URL).catch(()=>{}); // did-fail-load and the trial watchdog handle recovery.
     if(contentService.status().pending){clearTimeout(startupTimer);startupTimer=setTimeout(()=>{if(contentService.status().pending)relaunch();},45000);}
   }
   Menu.setApplicationMenu(Menu.buildFromTemplate([

@@ -127,7 +127,9 @@ function createUpdateService({userData,currentTag,build,platform,arch,dialog,par
    const info=releaseInfo(raw,platform,arch);if(!info)throw fault('UPDATE_INVALID');
    if(contentService&&info.contentManifest){const metadata=await verifiedJson(info.contentManifest,fetcher,controller.signal);info.delivery=contentService.choose(metadata,info);}
    checkedAt=now().toISOString();latest=info;fresh=true;error='';phase='idle';
-   if(downloaded&&(downloaded.tag!==info.tag||downloaded.asset.sha256!==selected()?.sha256))downloaded=null;
+   const allowed=info.delivery?.kind==='content'?info.delivery.alternatives:[info.asset];
+   if(downloaded&&(downloaded.tag!==info.tag||!allowed?.some(a=>a&&a.name===downloaded.asset.name&&a.sha256===downloaded.asset.sha256&&a.size===downloaded.asset.size)))downloaded=null;
+   if(downloaded)phase='ready';
    const names=new Set([info.asset?.name,info.contentManifest?.name,...info.contentAssets.map(a=>a.name)]);
    cache={version:1,release:{tag_name:raw.tag_name,draft:false,prerelease:false,html_url:raw.html_url,published_at:raw.published_at,body:info.notes,assets:raw.assets?.filter(a=>names.has(a.name))||[]},etag:etag.slice(0,299),checkedAt};
    await io.mkdir(userData,{recursive:true});await writeVerified(cacheFile,Buffer.from(JSON.stringify(cache)),io).catch(()=>{});

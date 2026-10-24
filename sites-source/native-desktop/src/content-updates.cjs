@@ -68,14 +68,21 @@ async function verifyDirectory(directory,manifest,io=fs){
 function createContentService({userData,baseDirectory,runtimeId,io=fs}){
  if(!hex(runtimeId))throw fault('UPDATE_PACKAGE_INVALID');
  const root=path.join(userData,'content-updates'),stateFile=path.join(root,'state.json');
- let record={format:1,current:null,previous:null,pending:null},current,base,rolledBack=false;
+ let record={format:1,current:null,previous:null,pending:null},current,base,rolledBack=false,storageError=false,queue=Promise.resolve();
+ // Acknowledgement IPC can overlap other operations. Serialize state transitions.
+ const serial=work=>(...args)=>{const result=queue.then(()=>work(...args));queue=result.catch(()=>{});return result;};
  const ref=m=>({slot:version(m.tag).join('-')+'-'+m.contentHash,tag:m.tag,contentHash:m.contentHash});
  const validRef=r=>r&&typeof r.slot==='string'&&version(r.tag)&&hex(r.contentHash)&&r.slot===ref({tag:r.tag,contentHash:r.contentHash}).slot;
  async function ensureRoot(){
   await io.mkdir(root,{recursive:true});
   const s=await io.lstat(root);if(!s.isDirectory()||s.isSymbolicLink())throw fault('UPDATE_INTEGRITY');
  }
- const save=()=>writeVerified(stateFile,Buffer.from(JSON.stringify(record)),io);
+ async function save(next){
+  // Never announce a state transition until the atomic replacement succeeds.
+  try{await writeVerified(stateFile,Buffer.from(JSON.stringify(next)),io);}
+  catch{throw fault('UPDATE_STATE_WRITE');}
+  record=next;
+ }
  async function readRef(r){
   if(r===null)return base;
   if(!validRef(r))throw fault('UPDATE_PACKAGE_INVALID');
@@ -86,38 +93,50 @@ function createContentService({userData,baseDirectory,runtimeId,io=fs}){
   await verifyDirectory(directory,manifest,io);return {directory,manifest};
  }
  async function start(){
+  record={format:1,current:null,previous:null,pending:null};rolledBack=false;storageError=false;
   base={directory:baseDirectory,manifest:checkedManifest(JSON.parse((await io.readFile(path.join(baseDirectory,'content-manifest.json'))).toString('utf8')))};
   if(base.manifest.runtimeId!==runtimeId)throw fault('UPDATE_PACKAGE_INCOMPATIBLE');
   await ensureRoot();
+  let persisted=null;
   try{
    const raw=JSON.parse((await readBounded(stateFile,16384,io)).toString('utf8'));
    if(raw.format!==1||![raw.current,raw.previous].every(r=>r===null||validRef(r))||(raw.pending!==null&&(!validRef(raw.pending?.target)||typeof raw.pending?.attempted!=='boolean')))throw Error('state');
-   record=raw;
+   record=raw;persisted=JSON.stringify(raw);
   }catch(e){if(e.code!=='ENOENT')rolledBack=true;}
   if(record.pending){
    const pending=record.pending;
    if(!pending.attempted){
-    try{current=await readRef(pending.target);record.pending.attempted=true;await save();return current;}catch{rolledBack=true;}
+    try{
+     const candidate=await readRef(pending.target);
+     await save({...record,pending:{...pending,attempted:true}});
+     current=candidate;return current;
+    }catch{rolledBack=true;}
    }else rolledBack=true;
-   record.pending=null;
   }
+  const next={...record,pending:null};
   try{current=await readRef(record.current);}
   catch{
    rolledBack=true;
-   try{current=await readRef(record.previous);record.current=record.previous;}catch{current=base;record.current=null;}
-   record.previous=null;
+   try{current=await readRef(record.previous);next.current=record.previous;}catch{current=base;next.current=null;}
+   next.previous=null;
   }
-  await save();return current;
+  // Stable launches do not rewrite state. Recovery may run verified content even
+  // if the recovery record cannot be saved; disable package changes for this run.
+  if(JSON.stringify(next)!==persisted){
+   try{await save(next);}catch{record=next;storageError=true;}
+  }
+  return current;
  }
  async function ready(){
-  if(record.pending&&current?.manifest.contentHash===record.pending.target.contentHash){
-   record.previous=record.current;record.current=record.pending.target;record.pending=null;await save();
+  if(record.pending?.attempted&&current?.manifest.contentHash===record.pending.target.contentHash){
+   await save({...record,previous:record.current,current:record.pending.target,pending:null});
   }
   return status();
  }
- function status(){return {enabled:true,runtimeId,tag:current?.manifest.tag,contentHash:current?.manifest.contentHash,baseTag:base?.manifest.tag,pending:Boolean(record.pending),canRollback:Boolean(record.current),rolledBack};}
+ function status(){return {enabled:!storageError,storageError,runtimeId,tag:current?.manifest.tag,contentHash:current?.manifest.contentHash,baseTag:base?.manifest.tag,pending:Boolean(record.pending),canRollback:!storageError&&!record.pending&&Boolean(record.current),rolledBack};}
  function choose(metadata,release){
   if(metadata?.format!==FORMAT||metadata.tag!==release.tag||!hex(metadata.runtimeId)||!Array.isArray(metadata.packages)||metadata.packages.length>20)throw fault('UPDATE_PACKAGE_INVALID');
+  if(storageError)return {kind:'installer',reason:'storage'};
   if(metadata.runtimeId!==runtimeId)return {kind:'installer',reason:'runtime'};
   if(!hex(metadata.contentHash)||metadata.schema!==15)throw fault('UPDATE_PACKAGE_INVALID');
   const choices=metadata.packages.map(p=>{
@@ -130,6 +149,7 @@ function createContentService({userData,baseDirectory,runtimeId,io=fs}){
   return {kind:'content',asset:delta[0]&&delta[0].size<full[0].size?delta[0]:full[0],alternatives:[...full,...delta]};
  }
  async function stage(file,asset){
+  if(storageError)throw fault('UPDATE_STATE_WRITE');
   if(!current||record.pending)throw fault('DESKTOP_BUSY');
   const packed=await readBounded(file,MAX_PACKAGE,io);
   if(packed.length!==asset.size||hash(packed)!==asset.sha256)throw fault('UPDATE_INTEGRITY');
@@ -154,8 +174,7 @@ function createContentService({userData,baseDirectory,runtimeId,io=fs}){
    // Existing immutable slots are reused only after a complete verification.
    try{await io.rename(staging,destination);}
    catch(e){if(!['EEXIST','ENOTEMPTY','EPERM'].includes(e.code))throw e;await readRef(target);}
-   record.pending={target,attempted:false};
-   try{await save();}catch(e){record.pending=null;throw e;}
+   await save({...record,pending:{target,attempted:false}});
    return status();
   }finally{
    // Only the freshly generated staging directory can be removed.
@@ -164,13 +183,14 @@ function createContentService({userData,baseDirectory,runtimeId,io=fs}){
   }
  }
  async function rollback(){
+  if(storageError)throw fault('UPDATE_STATE_WRITE');
   if(!record.current||record.pending)throw fault('UPDATE_NO_ROLLBACK');
-  await readRef(record.previous);record.pending={target:record.previous,attempted:false};
+  await readRef(record.previous);
   // Built-in content is represented by null; restore it without a trial slot.
-  if(record.previous===null){record.current=null;record.previous=null;record.pending=null;}
-  await save();return status();
+  const next=record.previous===null?{format:1,current:null,previous:null,pending:null}:{...record,pending:{target:record.previous,attempted:false}};
+  await save(next);return status();
  }
- return {start,ready,status,choose,stage,rollback};
+ return {start:serial(start),ready:serial(ready),status,choose,stage:serial(stage),rollback:serial(rollback)};
 }
 module.exports={FORMAT,MAX_PACKAGE,MAX_CONTENT,MAX_JSON,hash,safePath,contentHash,checkedManifest,decodePackage,encodePackage,regularRead,verifyDirectory,createContentService};
 

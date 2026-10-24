@@ -110,6 +110,65 @@ test('symlink entries in retained content are refused before delta reuse',async 
  const delta=await packageFile(f,content(1),f.base);await assert.rejects(f.service.stage(delta.file,delta.asset),e=>e.code==='UPDATE_INTEGRITY');
 });
 const backup=JSON.stringify({schemaVersion:15,companies:[],records:[],overtimeLogs:[],leaveRecords:[],investmentRecords:[],compTimeCredits:[],compTimeSettlements:[],yearEndEstimates:[],salaryAdjustments:[],stockPortfolio:{assets:[],transactions:[]}});
+
+function stateWrites(f){
+ const file=path.join(f.config.userData,'content-updates','state.json');let fail=false,writes=0;
+ return {file,block:value=>{fail=value;},count:()=>writes,read:()=>fs.readFile(file,'utf8'),io:{...fs,rename:async(a,b)=>{
+  if(b===file){writes++;if(fail)throw Object.assign(Error('fixture storage unavailable'),{code:'ENOSPC'});}
+  return fs.rename(a,b);
+ }}};
+}
+test('failed startup acknowledgement remains pending and can be retried without losing rollback history',async t=>{
+ const f=await fixture(t),p=await packageFile(f,content(1)),disk=stateWrites(f);await f.service.stage(p.file,p.asset);
+ const active=createContentService({...f.config,io:disk.io});await active.start();const before=await disk.read();
+ disk.block(true);await assert.rejects(active.ready(),e=>e.code==='UPDATE_STATE_WRITE');
+ assert.equal(active.status().pending,true);assert.equal(await disk.read(),before);
+ disk.block(false);await active.ready();assert.equal(active.status().pending,false);assert.equal(active.status().canRollback,true);
+ const reopened=createContentService(f.config);assert.equal((await reopened.start()).manifest.tag,p.asset.tag);
+ await reopened.rollback();assert.equal((await createContentService(f.config).start()).manifest.tag,f.base.manifest.tag);
+});
+test('failed acknowledgement followed by a crash restores the prior version',async t=>{
+ const f=await fixture(t),p=await packageFile(f,content(1)),disk=stateWrites(f);await f.service.stage(p.file,p.asset);
+ const active=createContentService({...f.config,io:disk.io});await active.start();disk.block(true);
+ await assert.rejects(active.ready(),e=>e.code==='UPDATE_STATE_WRITE');
+ const reopened=createContentService(f.config);assert.equal((await reopened.start()).manifest.tag,f.base.manifest.tag);assert.equal(reopened.status().rolledBack,true);
+});
+test('failed manual rollback leaves both built-in and previous-slot recovery available for retry',async t=>{
+ for(const count of [1,2]){
+  const f=await fixture(t),disk=stateWrites(f);let active=f.service;
+  for(let n=1;n<=count;n++){const p=await packageFile(f,content(n));await active.stage(p.file,p.asset);active=createContentService({...f.config,io:disk.io});await active.start();await active.ready();}
+  const before=await disk.read();disk.block(true);await assert.rejects(active.rollback(),e=>e.code==='UPDATE_STATE_WRITE');
+  assert.equal(active.status().canRollback,true);assert.equal(active.status().pending,false);assert.equal(await disk.read(),before);
+  disk.block(false);await active.rollback();assert.equal((await createContentService(f.config).start()).manifest.tag,content(count-1).manifest.tag);
+ }
+});
+test('a failed staging commit can reuse the fully verified slot on retry',async t=>{
+ const f=await fixture(t),disk=stateWrites(f),active=createContentService({...f.config,io:disk.io});await active.start();
+ const p=await packageFile(f,content(1)),before=await disk.read();disk.block(true);
+ await assert.rejects(active.stage(p.file,p.asset),e=>e.code==='UPDATE_STATE_WRITE');assert.equal(active.status().pending,false);assert.equal(await disk.read(),before);
+ disk.block(false);await active.stage(p.file,p.asset);assert.equal((await createContentService(f.config).start()).manifest.tag,p.asset.tag);
+});
+test('stable startup does not require rewriting the version state',async t=>{
+ const f=await fixture(t),disk=stateWrites(f);disk.block(true);
+ const active=createContentService({...f.config,io:disk.io});assert.equal((await active.start()).manifest.tag,f.base.manifest.tag);
+ assert.equal(disk.count(),0);assert.equal(active.status().rolledBack,false);
+});
+test('unwritable recovery state opens verified content with package changes disabled instead of a restart loop',async t=>{
+ const f=await fixture(t),disk=stateWrites(f),p=await packageFile(f,content(1));await f.service.stage(p.file,p.asset);
+ const before=await disk.read();disk.block(true);const recovered=createContentService({...f.config,io:disk.io});
+ assert.equal((await recovered.start()).manifest.tag,f.base.manifest.tag);
+ assert.equal(recovered.status().pending,false);assert.equal(recovered.status().storageError,true);assert.equal(recovered.status().enabled,false);
+ assert.equal(await disk.read(),before);await assert.rejects(recovered.stage(p.file,p.asset),e=>e.code==='UPDATE_STATE_WRITE');
+ assert.equal(await fs.readFile(path.join(f.config.userData,'financial-data-test.txt'),'utf8'),'private record');
+});
+test('duplicate acknowledgements cannot replace the previous version while a state write is pending',async t=>{
+ const f=await fixture(t),p=await packageFile(f,content(1));await f.service.stage(p.file,p.asset);
+ let release,entered;const gate=new Promise(r=>{release=r;}),started=new Promise(r=>{entered=r;});let pause=false,writes=0;
+ const io={...fs,rename:async(a,b)=>{if(pause&&b.endsWith('state.json')){writes++;entered();await gate;}return fs.rename(a,b);}};
+ const active=createContentService({...f.config,io});await active.start();pause=true;
+ const first=active.ready();await started;const second=active.ready();assert.equal(active.status().pending,true);release();await Promise.all([first,second]);
+ assert.equal(writes,1);await active.rollback();assert.equal((await createContentService(f.config).start()).manifest.tag,f.base.manifest.tag);
+});
 test('updater chooses a compatible verified package, imports it, backs up, stages and requests relaunch without installer',async t=>{
  const f=await fixture(t),next=content(1),p=await packageFile(f,next,f.base),full=await packageFile(f,next);
  const tag=next.manifest.tag,prefix='SalaryMate_v5.3.1_content',name=prefix+'_from_v5.3.0-desktop.1.smupdate';
@@ -122,9 +181,11 @@ test('updater chooses a compatible verified package, imports it, backs up, stage
  // Different gzip compression can make a tiny fixture delta larger than full.
  const service=createUpdateService({userData:f.config.userData,currentTag:f.base.manifest.tag,build:5030001,platform:'win32',arch:'x64',parent:()=>null,contentService:f.service,dialog:{showOpenDialog:async()=>({filePaths:[imported.file]}),showMessageBox:async()=>({response:1})},fetcher:async url=>{urls.push(url);return url===RELEASES?Response.json([raw]):new Response(metaBytes);},saveBackup:async()=>{saves++;return allowBackup?{ok:true,verified:true,fileName:'backup.json'}:{ok:false};},openPath:async()=>{opens++;},relaunch:()=>relaunches++});
  const checked=await service.check();assert.equal(checked.latest.delivery.kind,'content');assert.equal(checked.total,chosen.asset.size);
- assert.equal((await service.importPackage()).total,full.asset.size);await assert.rejects(service.install(backup),e=>e.code==='UPDATE_BACKUP_FAILED');assert.equal(f.service.status().pending,false);
+ assert.equal((await service.importPackage()).total,full.asset.size);
+ const rechecked=await service.check();assert.equal(rechecked.downloaded.sha256,full.asset.sha256);assert.equal(rechecked.phase,'ready');
+ await assert.rejects(service.install(backup),e=>e.code==='UPDATE_BACKUP_FAILED');assert.equal(f.service.status().pending,false);
  allowBackup=true;assert.equal((await service.install(backup)).phase,'restarting');await new Promise(r=>setImmediate(r));
- assert.equal(relaunches,1);assert.equal(opens,0);assert.equal(saves,2);assert.equal(urls.length,2);assert.ok(urls.every(u=>u.startsWith('https://')));
+ assert.equal(relaunches,1);assert.equal(opens,0);assert.equal(saves,2);assert.equal(urls.length,4);assert.ok(urls.every(u=>u.startsWith('https://')));
  const restarted=createContentService(f.config);assert.equal((await restarted.start()).manifest.tag,tag);await restarted.ready();
 });
 test('package discovery rejects untrusted descriptors and explicitly falls back for native changes',async t=>{

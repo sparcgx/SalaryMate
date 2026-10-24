@@ -1,8 +1,8 @@
 {
   "name": "salarymate-desktop",
-  "version": "5.3.0",
+  "version": "5.3.1",
   "private": true,
-  "description": "SalaryMate v5.3.0 正式版 — 更新套件與失敗還原",
+  "description": "SalaryMate v5.3.1 正式版 — 更新與啟動穩定度修正",
   "author": "SalaryMate",
   "license": "UNLICENSED",
   "main": "src/main.cjs",
@@ -20,7 +20,7 @@
   "build": {
     "appId": "com.salarymate.personal.desktop",
     "productName": "SalaryMate",
-    "buildVersion": "5030001",
+    "buildVersion": "5030101",
     "asar": true,
     "npmRebuild": false,
     "directories": {
@@ -76,7 +76,7 @@
       "hardenedRuntime": true
     },
     "dmg": {
-      "title": "SalaryMate v5.3.0 正式版",
+      "title": "SalaryMate v5.3.1 正式版",
       "contents": [
         {
           "x": 140,

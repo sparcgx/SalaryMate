@@ -98,3 +98,12 @@ test('update UI is local at startup, escapes release notes, and cancels even whi
  context.SalaryMateDesktopUpdates.attach({open:(_title,html)=>{body=html;},toast(){}});await context.SalaryMateDesktopUpdates.open();assert.ok(body.includes('&lt;script&gt;'));assert.ok(!body.includes('<script>'));assert.equal(checks,0);
  const press=kind=>click({target:{closest:()=>({dataset:{updateAction:kind}})},preventDefault(){},stopImmediatePropagation(){}});press('check');await new Promise(r=>setImmediate(r));press('cancel');await new Promise(r=>setImmediate(r));assert.equal(cancelled,1);done(s);
 });
+
+test('update UI distinguishes version-state write failure and disables packages during recovery',async()=>{
+ const source=await fs.readFile(new URL('../native-desktop/renderer/updates.js',import.meta.url),'utf8');let body;
+ const s={current:{version:'5.3.1',sequence:1,build:'5030101',platform:'win32',arch:'x64'},phase:'error',error:'UPDATE_STATE_WRITE',content:{enabled:false,storageError:true,rolledBack:true,canRollback:false}};
+ const context={SalaryMateDesktop:{onUpdateState:()=>()=>{},updateState:async()=>s},document:{addEventListener(){},querySelector:()=>null},addEventListener(){}};
+ vm.runInNewContext(source,context);context.SalaryMateDesktopUpdates.attach({open:(_title,html)=>{body=html;},toast(){}});
+ await context.SalaryMateDesktopUpdates.open();assert.match(body,/無法保存版本還原紀錄/);assert.match(body,/磁碟空間與資料夾寫入權限/);
+ assert.doesNotMatch(body,/data-update-action="(?:import|rollback)"/);assert.doesNotMatch(body,/無法連線/);
+});
