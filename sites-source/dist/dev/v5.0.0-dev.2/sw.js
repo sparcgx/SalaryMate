@@ -1,4 +1,4 @@
-const CACHE='salarymate-v5-full-5.3.1-desktop2';
+const CACHE='salarymate-v5-full-5.3.1-desktop3';
 const BASE=new URL('./',self.location.href);
 const SCENE_CACHE='salarymate-v5-backgrounds-r79';
 const SCENES=new Map(['canyon','forest','harbor','aurora','sky','macaron'].map(id=>[id,new URL(`./art/background-${id}-r79.webp`,BASE).href]));
@@ -38,9 +38,9 @@ self.addEventListener('message',event=>{
 });
 const LOCALES=[];
 const STOCKS=[];
-const SHELL=["./","./index.html","./styles-core.css?v=5.3.1-desktop2","./startup.js?v=5.3.1-desktop2","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
-const OPTIONAL=["./legal-data.js?v=5.3.1-desktop2","./reference-data.js?v=5.3.1-desktop2","./reference-tools.js?v=5.3.1-desktop2"];
-const STYLE_PACKS=["./styles.css?v=5.3.1-desktop2","./ornate-flight.js?v=5.3.1-desktop2"];
+const SHELL=["./","./index.html","./styles-core.css?v=5.3.1-desktop3","./startup.js?v=5.3.1-desktop3","./manifest.webmanifest","./icons/icon-192.png","./icons/icon-512.png"];
+const OPTIONAL=["./legal-data.js?v=5.3.1-desktop3","./reference-data.js?v=5.3.1-desktop3","./reference-tools.js?v=5.3.1-desktop3"];
+const STYLE_PACKS=["./styles.css?v=5.3.1-desktop3","./ornate-flight.js?v=5.3.1-desktop3"];
 const VERSIONED_URLS=new Set([...SHELL,...STOCKS,...LOCALES,...OPTIONAL,...STYLE_PACKS].filter(path=>path.includes('?v=')).map(path=>new URL(path,BASE).href));
 function navigationResponse(event){
   const index=new URL('index.html',BASE).href;
