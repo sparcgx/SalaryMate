@@ -6,10 +6,22 @@ import os from 'node:os';
 import {gzipSync,gunzipSync} from 'node:zlib';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
-const {FORMAT,MAX_JSON,hash,contentHash,safePath,encodePackage,decodePackage,createContentService}=require('../native-desktop/src/content-updates.cjs');
+const {FORMAT,MAX_JSON,hash,contentHash,safePath,encodePackage,decodePackage,createContentService,regularRead}=require('../native-desktop/src/content-updates.cjs');
 const {createUpdateService,releaseInfo,REPO,RELEASES}=require('../native-desktop/src/updates.cjs');
 const runtimeId=hash(Buffer.from('stable-runtime'));
 const required=['www/index.html','www/startup.js','www/desktop-runtime.js','www/desktop-features.js','www/desktop-updates.js','api/stock-market.mjs','api/reference-api.mjs'];
+test('archive reads permit virtual inode differences while ordinary content retains identity checks',async()=>{
+ const body=Buffer.from('verified test content');let closes=0,reads=0,extra=false;
+ const io={lstat:async()=>({size:body.length,ino:1,isFile:()=>true,isSymbolicLink:()=>false}),open:async()=>({
+  stat:async()=>({size:body.length,ino:2,isFile:()=>true}),close:async()=>{closes++;},
+  read:async(buffer,offset,length,position)=>{reads++;const value=extra?Buffer.concat([body,Buffer.from('x')]):body;const bytesRead=Math.min(length,Math.max(0,value.length-position));value.copy(buffer,offset,position,position+bytesRead);return {bytesRead};}
+ })};
+ await assert.rejects(regularRead('/profile','file',body.length,io),e=>e.code==='BACKUP_UNREADABLE');assert.equal(reads,0);assert.equal(closes,1);
+ assert.deepEqual(await regularRead('/app.asar','file',body.length,io,true),body);assert.equal(closes,2);
+ await assert.rejects(regularRead('/app.asar','file',body.length-1,io,true),e=>e.code==='UPDATE_INTEGRITY');assert.equal(closes,2);
+ extra=true;await assert.rejects(regularRead('/app.asar','file',body.length,io,true),e=>e.code==='UPDATE_INTEGRITY');assert.equal(closes,3);
+ const symbolic={...io,lstat:async()=>({isSymbolicLink:()=>true})};await assert.rejects(regularRead('/app.asar','file',body.length,symbolic,true),e=>e.code==='UPDATE_INTEGRITY');
+});
 function content(patch=0,overrides={}){
  const tag='v5.3.'+patch+'-desktop.1',entries=new Map(required.map(f=>[f,Buffer.from(f==='www/startup.js'?'version='+patch:'unchanged '+f)]));
  entries.set('www/desktop-asset-manifest.json',Buffer.from(JSON.stringify({version:'5.3.'+patch,desktopRelease:1,desktopBuild:5030001+patch,schema:15,stateKey:'salarymate_v5_full_state'})));

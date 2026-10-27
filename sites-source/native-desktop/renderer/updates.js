@@ -7,6 +7,10 @@
  const date=value=>value?new Date(value).toLocaleString(root.SalaryMateI18n?.language?.()==='en'?'en-US':'zh-TW'):text('尚未檢查','Not checked');
  const phases={applying:['正在校驗並套用套件…','Verifying and applying package…'],restarting:['套件已就緒，正在重新啟動…','Package ready; restarting…'],checking:['檢查更新中…','Checking for updates…'],choosing:['請選擇更新檔位置','Choose an update location'],downloading:['正在下載','Downloading'],verifying:['正在讀回校驗','Verifying saved bytes'],ready:['更新檔已通過校驗','Update verified'],cancelled:['已取消，原檔保持不變','Cancelled; the original file is unchanged'], 'backing-up':['正在保存更新前備份','Saving the pre-update backup'],opened:['安裝檔已開啟，正在結束程式','Installer opened; closing SalaryMate']};
  const errors={
+  BACKUP_UNREADABLE:['無法讀取更新所需的檔案，更新未套用。請重新下載；若差異套件仍失敗，可下載完整內容套件後使用「匯入更新套件」。','A required update file could not be read. Nothing was applied. Download again; if the delta still fails, download the full content package and choose Import package.'],
+  INVALID_BACKUP:['更新前備份的資料格式不完整，未套用更新。請先確認資料可正常匯出，再重試。','The pre-update backup format is incomplete. Nothing was applied. Confirm your data can be exported, then retry.'],
+  DATA_NOT_READY:['資料尚未讀取完成，請等資料載入後再更新。','Your data is not ready. Wait for it to load before updating.'],
+  BRIDGE_UNAVAILABLE:['桌面更新服務未就緒，請關閉並重新開啟 SalaryMate 後重試。','The desktop update service is unavailable. Close and reopen SalaryMate, then retry.'],
   UPDATE_STATE_WRITE:['無法保存更新狀態，版本尚未切換。請確認磁碟空間與資料夾寫入權限，再重試。','Unable to save update state. The version was not switched. Check free disk space and folder write permissions, then retry.'],
   UPDATE_PACKAGE_INVALID:['更新套件格式或發行資訊不符，未套用更新。','Package format or release information mismatch. The update was not applied.'],
   UPDATE_PACKAGE_INCOMPATIBLE:['此套件與目前主系統不相容，請重新檢查新版；主系統變更時需安裝完整版本。','This package is incompatible with the runtime. Check again; runtime changes require a full installer.'],
@@ -29,7 +33,7 @@
  let api,state=null,busy=false,localError='';
  const running=s=>['checking','choosing','downloading','verifying','backing-up','applying','restarting'].includes(s?.phase);
  const caption=s=>s.phase==='error'?text('更新尚未完成','Update not completed'):phases[s.phase]?text(...phases[s.phase]):!s.checkedAt?text('按「檢查新版」查詢','Choose Check for updates'):!s.fresh?text('上次檢查結果，請重新檢查','Previous result; check again'):s.available?text('有新版本可下載','A newer version is available'):text('目前沒有較新的桌面版本','No newer desktop version is available');
- const errorMessage=code=>errors[code]?text(...errors[code]):text('操作未完成，請重試。','The operation did not complete. Try again.');
+ const errorMessage=code=>errors[code]?text(...errors[code]):text('操作未完成，請重試。','The operation did not complete. Try again.')+(/^[A-Z][A-Z0-9_]{0,63}$/.test(code||'')?' ('+code+')':'');
  const versionLabel=v=>v?`v${v.version} · ${text('桌面封裝','Desktop package')} ${v.sequence}`:'—';
  function content(s){
   const active=running(s),download=s.downloaded,latest=s.latest;
@@ -64,7 +68,7 @@
     const data=await api.snapshot();paint(await bridge.installUpdate(data));
    }
   }catch(e){
-   if(e.code!=='UPDATE_CANCELLED')localError=errorMessage(e.code);
+   if(e.code!=='UPDATE_CANCELLED')localError=errorMessage(e.code||(Object.hasOwn(errors,e.message)?e.message:undefined));
    try{paint(await bridge.updateState());}catch{if(state)paint({...state,phase:'error'});}
   }finally{busy=false;}
  }

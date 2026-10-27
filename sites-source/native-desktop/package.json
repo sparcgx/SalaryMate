@@ -2,7 +2,7 @@
   "name": "salarymate-desktop",
   "version": "5.3.1",
   "private": true,
-  "description": "SalaryMate v5.3.1 正式版 — 小圖示與星期六加班預設修正",
+  "description": "SalaryMate v5.3.1 正式版 — 修正安裝版差異更新讀取失敗",
   "author": "SalaryMate",
   "license": "UNLICENSED",
   "main": "src/main.cjs",
@@ -11,7 +11,8 @@
     "test": "node --test ../tests/v5-desktop.test.mjs ../tests/v5-desktop-features.test.mjs ../tests/v5-desktop-updates.test.mjs ../tests/v5-live-market.test.mjs ../tests/v5-r46-market-sync.test.mjs ../tests/v5-r41-intraday.test.mjs ../tests/v5-twse-close-integration.test.mjs ../tests/v5-investment-insights.test.mjs ../tests/v5-content-updates.test.mjs",
     "benchmark": "node scripts/benchmark.cjs",
     "package": "electron-builder --publish never",
-    "verify": "node scripts/verify-package.cjs"
+    "verify": "node scripts/verify-package.cjs",
+    "test:packaged": "node scripts/test-packaged-updates.cjs"
   },
   "devDependencies": {
     "electron": "44.9.0",
@@ -20,7 +21,7 @@
   "build": {
     "appId": "com.salarymate.personal.desktop",
     "productName": "SalaryMate",
-    "buildVersion": "5030102",
+    "buildVersion": "5030103",
     "asar": true,
     "npmRebuild": false,
     "directories": {
@@ -91,5 +92,5 @@
       ]
     }
   },
-  "desktopRelease": 2
+  "desktopRelease": 3
 }

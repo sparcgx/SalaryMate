@@ -52,13 +52,28 @@ function encodePackage(manifest,entries,base=null){
  if(bytes.length>MAX_PACKAGE)throw fault('UPDATE_PACKAGE_INVALID');
  decodePackage(bytes);return bytes;
 }
-async function regularRead(directory,key,max,io=fs){
- const parts=key.split('/');let full=directory;
+async function regularRead(directory,key,max,io=fs,archive=false){
+ const parts=key.split('/');let full=directory,before;
  for(let i=0;i<parts.length;i++){
   full=path.join(full,parts[i]);const s=await io.lstat(full);
   if(s.isSymbolicLink()||(i<parts.length-1?!s.isDirectory():!s.isFile()))throw fault('UPDATE_INTEGRITY');
+  before=s;
  }
- return readBounded(full,max,io);
+ if(!archive)return readBounded(full,max,io);
+ // Electron gives ASAR entries virtual inode numbers, but open() extracts a
+ // real temporary file. Those inode numbers cannot be compared. This path is
+ // restricted to the installed archive; stage() still verifies every byte
+ // against the release manifest. Profile files keep strict identity checks.
+ if(before.size<1||before.size>max)throw fault('UPDATE_INTEGRITY');
+ const handle=await io.open(full,'r');
+ try{
+  const stat=await handle.stat();
+  if(!stat.isFile()||stat.size!==before.size)throw fault('UPDATE_INTEGRITY');
+  const buffer=Buffer.alloc(stat.size+1);let size=0;
+  while(size<buffer.length){const r=await handle.read(buffer,size,buffer.length-size,size);if(!r.bytesRead)break;size+=r.bytesRead;}
+  if(size!==stat.size)throw fault('UPDATE_INTEGRITY');
+  return buffer.subarray(0,size);
+ }finally{await handle.close();}
 }
 async function verifyDirectory(directory,manifest,io=fs){
  for(const f of manifest.files){const b=await regularRead(directory,f.path,Math.max(1,f.bytes),io);if(b.length!==f.bytes||hash(b)!==f.sha256)throw fault('UPDATE_INTEGRITY');}
@@ -164,7 +179,7 @@ function createContentService({userData,baseDirectory,runtimeId,io=fs}){
     if(!bytes){
      const old=current.manifest.files.find(x=>x.path===f.path&&x.bytes===f.bytes&&x.sha256===f.sha256);
      if(!data.base||!old)throw fault('UPDATE_INTEGRITY');
-     bytes=await regularRead(current.directory,f.path,Math.max(1,f.bytes),io);
+     bytes=await regularRead(current.directory,f.path,Math.max(1,f.bytes),io,current.directory===baseDirectory&&path.extname(baseDirectory).toLowerCase()==='.asar');
     }
     if(bytes.length!==f.bytes||hash(bytes)!==f.sha256)throw fault('UPDATE_INTEGRITY');
     const dest=path.join(staging,f.path);await io.mkdir(path.dirname(dest),{recursive:true});await writeVerified(dest,bytes,io);

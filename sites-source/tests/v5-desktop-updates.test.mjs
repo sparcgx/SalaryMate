@@ -107,3 +107,13 @@ test('update UI distinguishes version-state write failure and disables packages 
  await context.SalaryMateDesktopUpdates.open();assert.match(body,/無法保存版本還原紀錄/);assert.match(body,/磁碟空間與資料夾寫入權限/);
  assert.doesNotMatch(body,/data-update-action="(?:import|rollback)"/);assert.doesNotMatch(body,/無法連線/);
 });
+
+test('update UI identifies packaged-file read failures and reports only safe unknown error codes',async()=>{
+ const source=await fs.readFile(new URL('../native-desktop/renderer/updates.js',import.meta.url),'utf8');let body;
+ const s={current:{version:'5.3.1',sequence:3,platform:'win32',arch:'x64'},phase:'error',error:'BACKUP_UNREADABLE'};
+ const context={SalaryMateDesktop:{onUpdateState:()=>()=>{},updateState:async()=>s},document:{addEventListener(){},querySelector:()=>null},addEventListener(){}};
+ vm.runInNewContext(source,context);context.SalaryMateDesktopUpdates.attach({open:(_title,html)=>{body=html;},toast(){}});
+ await context.SalaryMateDesktopUpdates.open();assert.match(body,/無法讀取更新所需的檔案/);assert.match(body,/完整內容套件/);assert.doesNotMatch(body,/操作未完成，請重試/);
+ s.error='EACCES';await context.SalaryMateDesktopUpdates.open();assert.match(body,/\(EACCES\)/);
+ s.error='private/path/<script>';await context.SalaryMateDesktopUpdates.open();assert.doesNotMatch(body,/private\/path/);
+});
