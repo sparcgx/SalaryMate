@@ -3020,9 +3020,181 @@
       settings:'<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="18" r="2"/>',
       overtime:'<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>',
       leave:'<path d="M12 21V10m-7 2c-4-9 10-13 15-8 0 10-5 14-12 10m4-4 6-4"/>',
-      check:'<circle cx="12" cy="12" r="9"/><path d="m7 12 3 3 7-7"/>'
+      check:'<circle cx="12" cy="12" r="9"/><path d="m7 12 3 3 7-7"/>',
+      plus:'<path d="M12 5v14M5 12h14"/>',
+      edit:'<path d="m15 4 5 5M4 20l5-1L20 8a2 2 0 0 0-5-5L4 14z"/>',
+      trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v5m4-5v5"/>',
+      copy:'<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M15 8V3H3v12h5"/>',
+      save:'<path d="M4 3h13l4 4v14H3V4a1 1 0 0 1 1-1Z"/><path d="M7 3v6h10V3M7 21v-8h10v8"/>',
+      download:'<path d="M12 3v12m-5-5 5 5 5-5M4 15v6h16v-6"/>',
+      upload:'<path d="M12 16V4m-5 5 5-5 5 5M4 15v6h16v-6"/>',
+      refresh:'<path d="M20 10a8 8 0 0 0-14-5L3 8m0-5v5h5M4 14a8 8 0 0 0 14 5l3-3m0 5v-5h-5"/>',
+      search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',
+      filter:'<path d="M3 4h18l-7 8v7l-4 2v-9Z"/>',
+      sort:'<path d="M7 4v16m-4-4 4 4 4-4M13 5h8m-8 5h6m-6 5h4"/>',
+      back:'<path d="m10 5-7 7 7 7M3 12h18"/>',
+      next:'<path d="m14 5 7 7-7 7M3 12h18"/>',
+      close:'<path d="m6 6 12 12M6 18 18 6"/>',
+      expand:'<path d="m8 3-5 5m0-5v5h5m8 13 5-5m0 5v-5h-5"/>',
+      company:'<path d="M4 21V3h12v18M16 9h4v12M2 21h20M8 7h4m-4 4h4m-4 4h4m-3 6v-3h2v3"/>',
+      document:'<path d="M14 3H5v18h14V8Zm0 0v5h5M8 12h8m-8 4h6"/>',
+      list:'<path d="M9 6h12M9 12h12M9 18h12M3 6h1m-1 6h1m-1 6h1"/>',
+      layers:'<path d="m3 8 9-5 9 5-9 5Zm0 5 9 5 9-5M3 18l9 5 9-5"/>',
+      exchange:'<path d="M3 7h17m-4-4 4 4-4 4M21 17H4m4-4-4 4 4 4"/>',
+      coins:'<circle cx="9" cy="9" r="6"/><path d="M8 6h3M9 6v6m-1 0h3m5-5a7 7 0 1 1-9 9"/>',
+      star:'<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/>',
+      insight:'<path d="M4 20v-6m5 6V9m5 11v-4m4-14 1.5 4.5L24 8l-4.5 1.5L18 14l-1.5-4.5L12 8l4.5-1.5Z"/>',
+      globe:'<circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M5 7h14M5 17h14"/>',
+      palette:'<path d="M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 1-3.7 2 2 0 0 1 1-3.8h2A4 4 0 0 0 21 9c0-3.3-4-6-9-6Z"/><path d="M7 9h.01M10 6h.01M15 7h.01M6 13h.01" stroke-width="3"/>',
+      sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/>',
+      moon:'<path d="M20 15A9 9 0 0 1 9 4a9 9 0 1 0 11 11Z"/>',
+      coffee:'<path d="M4 8h12v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4Zm12 1h2a3 3 0 0 1 0 6h-2M7 3v2m5-2v2M2 22h18"/>',
+      gift:'<path d="M3 8h18v4H3Zm2 4v9h14v-9M12 8v13m0-13C3 8 5 1 9 3l3 5Zm0 0c9 0 7-7 3-5l-3 5Z"/>',
+      heart:'<path d="M12 21 3.5 12.5A5.3 5.3 0 0 1 12 6a5.3 5.3 0 0 1 8.5 6.5Z"/>',
+      shield:'<path d="m12 3 8 3v6c0 4-4 7-8 9-4-2-8-5-8-9V6Z"/><path d="m8 12 3 3 5-6"/>',
+      cloud:'<path d="M6 19a5 5 0 0 1-1-10 7 7 0 0 1 13-2 6 6 0 0 1 0 12Z"/>',
+      database:'<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 4 18 4 18 0V5M3 12c0 4 18 4 18 0"/>',
+      link:'<path d="m10 14 4-4m-5 7-2 2a4 4 0 0 1-6-6l5-5a4 4 0 0 1 6 0m0 8a4 4 0 0 0 6 0l5-5a4 4 0 0 0-6-6l-2 2"/>',
+      lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/>',
+      info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v.01"/>',
+      print:'<path d="M6 8V3h12v5M6 17H3V8h18v9h-3M6 14h12v7H6Zm11-3h1"/>',
+      play:'<path d="m8 4 12 8-12 8Z"/>',
+      eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+      text:'<path d="M4 6V3h16v3M12 3v18m-5 0h10"/>',
+      monitor:'<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M12 17v4m-5 0h10"/>',
+      phone:'<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10 5h4m-3 14h2"/>',
+      options:'<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>'
     });
-    const visualIcon = key => `<svg class="v5-ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${VISUAL_ICONS[key] || VISUAL_ICONS.wallet}</svg>`;
+    const visualIcon = key => { const name = Object.hasOwn(VISUAL_ICONS,key) ? key : 'options'; return `<svg class="v5-ui-icon" data-ui-icon="${name}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${VISUAL_ICONS[name]}</svg>`; };
+    const optionIconKey = node => {
+      const d=node.dataset||{}, action=d.action||d.stock||d.drive||d.insight||d.reference||'', value=d.value||d.id||'';
+      const tab=d.tab||(d.stock==='tab'?value:d.salaryTab)||(/^(work-tab|annual-tab)$/.test(d.v5||'')?value:'');
+      if(tab)return ({records:'wallet',companies:'company',overview:'tax',stocks:'layers',transactions:'exchange',income:'coins',insights:'insight',analysis:'tax',watchlist:'star',comp:'overtime',tools:'settings',yearend:'gift',raises:'investment'})[tab]||tab;
+      if(d.v5==='month')return Number(d.step)<0?'back':'next';
+      if(d.v5==='quick-hours')return 'overtime';
+      if(d.v5==='salary-month'||/calendar|today/.test(d.v5||''))return 'calendar';
+      if(d.language||node.hasAttribute('data-language-preference'))return 'globe';
+      if(node.id==='companyPickerButton'||action==='pick-company')return 'company';
+      if(node.id==='dataMenuButton')return 'plus';
+      if(action==='add-overtime')return 'overtime';
+      if(action==='add-leave'||action==='v5-leave-settings')return 'leave';
+      if(action==='add-record'||action==='v5-open-pay')return 'wallet';
+      if(action==='add-investment')return 'investment';
+      if(action==='add-company-basic'||action==='manage-companies')return 'company';
+      if(action==='buy')return 'exchange';
+      if(action==='batch')return 'layers';
+      if(action==='toggle-market-quotes')return 'link';
+      if(action==='toggle-market-auto')return 'refresh';
+      if(action==='toggle-market-details')return 'expand';
+      if(action==='quotes')return 'edit';
+      if(/manual|prices/.test(action))return 'edit';
+      if(/delete|remove|clear-data/.test(action))return 'trash';
+      if(/edit/.test(action))return 'edit';
+      if(/copy|duplicate/.test(action))return 'copy';
+      if(/export|download/.test(action))return 'download';
+      if(/import|restore/.test(action))return 'upload';
+      if(/refresh|retry|sync|quotes|lookup|lookup-dividends/.test(action))return 'refresh';
+      if(/back|close|dismiss/.test(action))return /close|dismiss/.test(action)?'close':'back';
+      if(/next/.test(action))return 'next';
+      if(/add|new|buy/.test(action))return 'plus';
+      if(/sell|split/.test(action))return 'exchange';
+      if(/dividend|forecast|receive/.test(action))return 'coins';
+      if(/company/.test(action))return 'company';
+      if(/salary|payroll|deduction/.test(action))return 'wallet';
+      if(/overtime|comp-time|settle/.test(action))return 'overtime';
+      if(/leave/.test(action))return 'leave';
+      if(/interface|color|theme/.test(action))return 'palette';
+      if(/calendar/.test(action))return 'calendar';
+      if(/insurance|health|reconcile|check/.test(action))return 'shield';
+      if(/fx/.test(action))return 'exchange';
+      if(/google|drive/.test(action))return 'cloud';
+      if(/legal/.test(action))return 'info';
+      if(/print/.test(action))return 'print';
+      if(/preview|detail|view|archives/.test(action))return 'eye';
+      if(/link|market-auto/.test(action))return 'link';
+      if(/toggle|advanced/.test(action))return 'expand';
+      if(/save|confirm|apply/.test(action))return 'check';
+      const label=(node.getAttribute('aria-label')||node.textContent||'').trim();
+      if(/取消|關閉|Cancel|Close/i.test(label))return 'close';
+      if(/返回|上一步|上一|Back|Previous/i.test(label))return 'back';
+      if(/下一|繼續|Next|Continue/i.test(label))return 'next';
+      if(/刪除|移除|清除|Delete|Remove|Clear/i.test(label))return 'trash';
+      if(/儲存|保存|確認|Save|Confirm/i.test(label))return 'save';
+      if(/搜尋|查詢|Search|Look up/i.test(label))return 'search';
+      if(/篩選|Filter/i.test(label))return 'filter';
+      if(/排序|Sort/i.test(label))return 'sort';
+      if(/下載|匯出|Download|Export/i.test(label))return 'download';
+      if(/備份|匯入|Backup|Import/i.test(label))return 'database';
+      if(/更新|重試|重設|Refresh|Retry|Reset|Update/i.test(label))return 'refresh';
+      if(/新增|建立|Add|Create/i.test(label))return 'plus';
+      if(/工作與公司|公司|Company|Companies/i.test(label))return 'company';
+      if(/顯示|版面|風格|色彩|Display|Appearance|Theme|Layout/i.test(label))return 'palette';
+      if(/資料管理|Data management/i.test(label))return 'database';
+      if(/說明|方式|範圍|授權|About|Help|Method|Privacy|License/i.test(label))return 'info';
+      if(/Google|Drive/i.test(label))return 'cloud';
+      if(/日曆|日期|月份|年度|Calendar|Date|Month|Year|\d+\s*(日|days)/i.test(label))return 'calendar';
+      if(/月薪|薪資|Salary|Payroll/i.test(label))return 'wallet';
+      if(/時薪|工時|小時|Hourly|Hours/i.test(label))return 'overtime';
+      if(/加密|密碼|Encrypt|Password/i.test(label))return 'lock';
+      if(/完成|套用|Done|Finish|Apply/i.test(label))return 'check';
+      if(/展開|收合|Expand|Collapse/i.test(label))return 'expand';
+      if(/標準|緊湊|大字|Standard|Compact|Large text/i.test(label))return 'text';
+      if(/Windows|Mac|桌面|Desktop/i.test(label))return 'monitor';
+      if(/Android|手機|Mobile/i.test(label))return 'phone';
+      if(/閱讀|安裝|Read|Install/i.test(label))return 'document';
+      return node.type==='submit'?'save':'options';
+    };
+    const selectIconKey = select => {
+      const name=(select.name||select.id||'').toLowerCase(),value=select.value;
+      if(select.closest('#overtimeForm')&&name==='type')return ({weekday:'sun',restday:'coffee',holiday:'calendar',spring:'gift',custom:'settings'})[value]||'overtime';
+      if(/company/.test(name))return 'company';
+      if(/language/.test(name)||select.hasAttribute('data-language-preference'))return 'globe';
+      if(/year|month|date|period|cycle/.test(name))return 'calendar';
+      if(/sort/.test(name))return 'sort';
+      if(/market|country|exchange/.test(name))return 'globe';
+      if(/currency|fx/.test(name))return 'exchange';
+      if(/asset|stock|symbol|instrument|industry|group/.test(name))return 'layers';
+      if(/kind|type|filter/.test(name))return ({annual:'leave',personal:'calendar',sick:'heart',menstrual:'heart',buy:'plus',sell:'exchange',dividend:'coins',split:'layers',stock:'investment',etf:'layers',fund:'layers',bond:'shield'})[value]||'filter';
+      if(/status|mode|method/.test(name))return 'settings';
+      return 'options';
+    };
+    const enhanceOptionIcons = (scope=document) => {
+      if(!scope?.querySelectorAll)return;
+      const matching=selector=>[...(scope.matches?.(selector)?[scope]:[]),...scope.querySelectorAll(selector)];
+      const put=(host,key,className='v5-control-icon')=>{
+        key=Object.hasOwn(VISUAL_ICONS,key)?key:'options';
+        let icon=Array.from(host.children).find(child=>child.matches('.v5-ui-icon'));
+        if(!icon){host.insertAdjacentHTML('afterbegin',visualIcon(key));icon=host.firstElementChild;}
+        else if(icon.classList.contains(className)&&icon.dataset.uiIcon!==key){icon.innerHTML=VISUAL_ICONS[key]||VISUAL_ICONS.options;icon.dataset.uiIcon=Object.hasOwn(VISUAL_ICONS,key)?key:'options';}
+        icon.classList.add(className);
+      };
+      for(const node of matching('button,summary,a.btn,.app-downloads a')){
+        // Date cells, color swatches and artwork choices already are visual controls.
+        if(node.matches('[data-v5="day"],.stock-favorite')||node.querySelector('img,svg:not(.v5-ui-icon),.v5-style-preview,.theme-dot,.color-dot'))continue;
+        const host=node.matches('summary')?(node.querySelector(':scope > .v5-group-title')||node):node;
+        put(host,optionIconKey(node));node.classList.add('v5-has-option-icon');
+      }
+      for(const select of matching('select:not([hidden]):not([aria-hidden="true"])')){
+        let shell=select.parentElement;
+        if(!shell?.classList.contains('v5-select-shell')){
+          shell=document.createElement('span');shell.className='v5-select-shell';
+          if(select.classList.contains('top-select'))shell.classList.add('v5-select-compact');
+          select.before(shell);shell.append(select);
+        }
+        put(shell,selectIconKey(select),'v5-select-icon');shell.classList.toggle('is-disabled',select.disabled);
+      }
+      for(const input of matching('input[type="radio"],input[type="checkbox"]')){
+        const label=input.closest('label');if(!label||label.querySelector('svg,.theme-dot,.color-dot'))continue;
+        label.classList.add('v5-has-choice-icon');
+        input.insertAdjacentHTML('afterend',visualIcon(optionIconKey(label)));
+        input.nextElementSibling.classList.add('v5-choice-icon');
+      }
+    };
+    window.SalaryMateOptionIcons=Object.freeze({enhance:enhanceOptionIcons});
+    document.addEventListener('change',event=>{
+      const scope=event.target.closest?.('form')||(event.target.matches?.('select')?event.target:null);
+      if(scope)queueMicrotask(()=>{if(scope.isConnected)enhanceOptionIcons(scope);});
+    });
     const enhanceVisualHierarchy = root => {
       const add = (node,key) => { if(node && !node.querySelector('.v5-ui-icon')) node.insertAdjacentHTML('afterbegin',visualIcon(key)); };
       $$('.nav-inner [data-tab]').forEach(node=>add(node,node.dataset.tab==='records'?'wallet':node.dataset.tab));
@@ -3031,6 +3203,8 @@
       $$('.v5-current-pay>span',root).forEach(node=>add(node,'wallet'));
       $$('.v5-home-numbers>div>span',root).forEach((node,i)=>add(node,['overtime','leave','tax'][i]));
       $$('.v5-stats>div>span,.stock-stat>span',root).forEach((node,i)=>add(node,['wallet','investment','tax','check'][i%4]));
+      enhanceOptionIcons(root);
+      if(root?.id==='mainContent')for(const chrome of $$('.topbar,.sidebar,.app-footer'))enhanceOptionIcons(chrome);
       if (root?.id === 'mainContent') {
         const brand = $('#topbarCompanion');
         if (brand && !brand.firstChild && interfaceBaseStyle(ui.interfaceStyle) === 'pixel') brand.innerHTML = hd2dCompanion('interactive');
@@ -3291,7 +3465,7 @@
       }else if(action==='salary-month'){
         v5.salaryMonth=Number(button.dataset.month);ui.search='';selectPrimaryTab('records');
       }else if(action==='quick-hours'){
-        const input=$('#overtimeForm [name="hours"]');if(input){input.value=button.dataset.value;updateOvertimePreview();markDraftDirty();}
+        const input=$('#overtimeForm [name="hours"]');if(input){input.value=button.dataset.value;updateOvertimePreview('hours');markDraftDirty();}
       }
     });
     document.addEventListener('change',event=>{if(event.target.id==='v5SalaryMonth'){v5.salaryMonth=Number(event.target.value);renderView();}});
@@ -3382,7 +3556,7 @@
       const promise=new Promise((resolve,reject)=>{
         const script=document.createElement('script');let timer,settled=false;
         const finish=error=>{if(settled)return;settled=true;clearTimeout(timer);script.onload=script.onerror=null;script.remove();error?reject(error):resolve();};
-        script.src=new URL('./'+file+'?v=5.3.1-stability1',document.baseURI).href;script.async=true;
+        script.src=new URL('./'+file+'?v=5.3.1-icons4',document.baseURI).href;script.async=true;
         script.onload=()=>finish(window[key]?null:Error('Missing module'));script.onerror=()=>finish(Error('Load failed'));
         timer=setTimeout(()=>finish(Error('Load timed out')),20000);document.head.append(script);
       });
@@ -4255,10 +4429,13 @@
     };
 
     const companyOvertimeRate = (companyId, date) => salaryProfileOvertimeBasis(salaryProfileAt(getCompany(companyId), date)).hourlyRate;
+    const overtimeTypeForDate = (date) => validIsoDate(date) && new Date(date + 'T12:00:00').getDay() === 6 ? 'restday' : 'weekday';
+    const overtimeDefaultHours = (type) => ['restday', 'holiday'].includes(type) ? 8 : 2;
     const blankOvertime = () => {
       const company = currentCompany();
       const date = v5WorkDate();
-      return normalizeOvertime({ id: newId('ot'), date, companyId: company?.id || '', type: 'weekday', hours: 2, hourlyRate: companyOvertimeRate(company?.id, date), customRate: 1.34 });
+      const type = overtimeTypeForDate(date);
+      return normalizeOvertime({ id: newId('ot'), date, companyId: company?.id || '', type, hours: overtimeDefaultHours(type), hourlyRate: companyOvertimeRate(company?.id, date), customRate: 1.34 });
     };
 
     const overtimeAttributionText = (draft) => {
@@ -4303,6 +4480,8 @@
       if (!log && !currentCompany()) { toast('請先在公司管理設為目前公司', 'error'); selectPrimaryTab('companies'); return; }
       ui.overtimeDraft = log ? clone(log) : blankOvertime();
       ui.overtimeRateManual = Boolean(log);
+      ui.overtimeHoursManual = Boolean(log);
+      ui.overtimeTypeManual = Boolean(log);
       beginDraftScope({ entityType: 'overtime', companyId: ui.overtimeDraft.companyId, entityId: log?.id || '', operational: true });
       markSelectedEntity('overtime', log?.id || '', ui.overtimeDraft.companyId);
       openDialog(log ? '編輯加班紀錄' : '新增每日加班', overtimeFormHtml(ui.overtimeDraft, Boolean(log)), false);
@@ -4318,8 +4497,17 @@
     };
     const updateOvertimePreview = (changedField = '') => {
       if (changedField === 'hourlyRate') ui.overtimeRateManual = true;
+      if (changedField === 'hours') ui.overtimeHoursManual = true;
+      if (changedField === 'type') ui.overtimeTypeManual = true;
       const draft = collectOvertimeDraft();
       if (!draft) return;
+      if (changedField === 'date' && validIsoDate(draft.date) && !state.overtimeLogs.some((log) => log.id === draft.id)) {
+        const type = $('#overtimeForm [name="type"]'), hours = $('#overtimeForm [name="hours"]');
+        // Follow the chosen date only while these values are still defaults.
+        if (!ui.overtimeTypeManual) { draft.type = overtimeTypeForDate(draft.date); if (type) type.value = draft.type; }
+        if (!ui.overtimeHoursManual) { draft.hours = overtimeDefaultHours(draft.type); if (hours) hours.value = String(draft.hours); }
+        if (hours) hours.max = draft.type === 'restday' ? '12' : '24';
+      }
       if (changedField === 'date' && !ui.overtimeRateManual && !state.overtimeLogs.some((log) => log.id === draft.id)) {
         draft.hourlyRate = companyOvertimeRate(draft.companyId, draft.date);
         $('#overtimeForm [name="hourlyRate"]').value = draft.hourlyRate.toFixed(3);
@@ -5817,9 +6005,9 @@
         $('#companyBasicForm [name="name"]')?.focus({preventScroll:true});
       } else if (event.target.name === 'type' && event.target.closest('#overtimeForm')) {
         const hours=$('#overtimeForm [name="hours"]');
-        hours.value=['restday','holiday'].includes(event.target.value)?'8':'2';
+        hours.value=String(overtimeDefaultHours(event.target.value));
         hours.max=event.target.value==='restday'?'12':'24';
-        updateOvertimePreview();markDraftDirty();
+        updateOvertimePreview('type');markDraftDirty();
       } else if (event.target.id === 'companyFilter') {
         const companyId = String(event.target.value || '');
         if (companyId) setCurrentCompany(companyId);

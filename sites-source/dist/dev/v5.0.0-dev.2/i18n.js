@@ -45,6 +45,8 @@
     if(applying)return;applying=true;observer?.disconnect();
     try{
       for(const scope of scopes){
+      // Reuse the existing scoped render observer for asynchronous option controls.
+      root.SalaryMateOptionIcons?.enhance(scope);
       // Translating an option without a value would otherwise change submitted data.
       if(scope.matches?.('option:not([value])'))scope.setAttribute('value',scope.textContent);
       scope.querySelectorAll?.('option:not([value])').forEach(option=>option.setAttribute('value',option.textContent));

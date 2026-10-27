@@ -14,7 +14,7 @@ const names = [
   'calculatorProfileDate','applyCompanyDefaultsToCalculator','companyFixedEarningsForRecord','companyFixedDeductionsForRecord','applyCompanyDefaultsToRecord','currentCompanySalaryProfile',
   'blankCompanyBasicDraft','companyBasicFixedEarnings','companyBasicSalaryProfile','companySalaryFingerprint','companyBasicMoneyInput','companyBasicFixedRowsHtml','companyBasicCalculationHtml','companyBasicFormHtml',
   'collectCompanyBasicDraft','updateCompanyBasicPreview','commitCompanyBasicDraft','saveCompanyBasicForm','currentSalaryAdjustmentForDate','upsertCurrentSalaryRuleProfile',
-  'companyOvertimeRate','blankOvertime','collectOvertimeDraft','useCompanyOvertimeRate','updateOvertimePreview','overtimeAmount','roundOvertimeTotal','overtimeTotal','leaveWageDeduction',
+  'companyOvertimeRate','overtimeTypeForDate','overtimeDefaultHours','blankOvertime','collectOvertimeDraft','useCompanyOvertimeRate','updateOvertimePreview','overtimeAmount','roundOvertimeTotal','overtimeTotal','leaveWageDeduction',
   'gross','deductions','pension','mainNet','moneyInput','defaultPayDate','blankRecord','syncLeaveToRecord',
   'companyRuleItemRowsHtml','companyRuleItemsTotalsHtml','defaultDeductionRuleFormHtml','openDefaultDeductionRule','collectDefaultDeductionRuleDraft','saveDefaultDeductionRule'
 ];
