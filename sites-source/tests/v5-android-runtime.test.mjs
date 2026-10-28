@@ -99,8 +99,10 @@ test('Native Java contracts retain BridgeActivity/security, bounded providers an
  const base=new URL('../native-android/android/app/src/main/java/com/salarymate/personal/',import.meta.url);
  const main=fs.readFileSync(new URL('MainActivity.java',base),'utf8'),backup=fs.readFileSync(new URL('BackupFilePlugin.java',base),'utf8');
  assert.match(main,/extends BridgeActivity/);assert.match(main,/new BridgeWebViewClient\(bridge\)/);
- for(const path of ['quotes','nav','lookup','dividends','catalog'])assert.ok(main.includes('/api/stocks/portable/'+path));
- assert.match(main,/request\.isForMainFrame\(\).*MARKET_PATHS\.contains/s);assert.match(main,/uri\.getUserInfo\(\) == null/);
+ const routes=fs.readFileSync(new URL('PublicDataRoutes.java',base),'utf8');
+ for(const path of ['quotes','nav','lookup','dividends','catalog','sessions','history'])assert.ok(routes.includes('/api/stocks/portable/'+path));
+ assert.match(main,/if \(isOwnOrigin\(uri\)\).*PublicDataRoutes\.allows\(uri\.getEncodedPath\(\), request\.getMethod\(\), request\.isForMainFrame\(\)\)/s);
+ assert.match(main,/uri\.getUserInfo\(\) == null/);
  assert.match(main,/new NativeSecurityController\(this\)/);assert.match(main,/security\.applyScreenProtection\(\)/);
  assert.match(main,/app\.handleBackButton\(\)/);assert.doesNotMatch(main,/webView\.goBack|addJavascriptInterface/);
  assert.match(backup,/MAX_BACKUP_BYTES = 30 \* 1024 \* 1024/);assert.match(backup,/MAX_DOCUMENT_BYTES = 45 \* 1024 \* 1024/);

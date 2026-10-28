@@ -36,10 +36,6 @@ public class MainActivity extends BridgeActivity {
 
     private static final int ROUTE_RETRY_LIMIT = 16;
     private static final String APP_HOST = "salarymate.sparcgx2420.chatgpt.site";
-    private static final Set<String> MARKET_PATHS = new HashSet<>(Arrays.asList(
-        "/api/stocks/portable/quotes", "/api/stocks/portable/nav", "/api/stocks/portable/lookup",
-        "/api/stocks/portable/dividends", "/api/stocks/portable/catalog"
-    ));
     private static final Set<String> ALLOWED_TABS = new HashSet<>(Arrays.asList(
         "dashboard", "records", "overtime", "hourly", "tax", "companies"
     ));
@@ -63,14 +59,13 @@ public class MainActivity extends BridgeActivity {
         super.onCreate(savedInstanceState);
         if (bridge == null || bridge.getWebView() == null) return;
         // Keep Capacitor's file chooser, injected bridge and local asset server.
-        // Only the five explicit market endpoints may bypass local interception.
+        // Only explicit public data routes may bypass local interception.
         bridge.setWebViewClient(new BridgeWebViewClient(bridge) {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 Uri uri = request.getUrl();
                 if (isOwnOrigin(uri)) {
-                    if (!request.isForMainFrame() && MARKET_PATHS.contains(uri.getEncodedPath())
-                        && ("POST".equals(request.getMethod()) || "OPTIONS".equals(request.getMethod()))) return null;
+                    if (PublicDataRoutes.allows(uri.getEncodedPath(), request.getMethod(), request.isForMainFrame())) return null;
                     if (uri.getPath() != null && uri.getPath().startsWith("/api/")) return blockedResponse();
                     WebResourceResponse local = super.shouldInterceptRequest(view, request);
                     return local == null ? blockedResponse() : local;

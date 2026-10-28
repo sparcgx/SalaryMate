@@ -1,0 +1,84 @@
+{
+  "version": "5.3.2",
+  "versionCode": 5030201,
+  "releasedAt": "2026-10-29",
+  "file": "SalaryMate_v5.3.2_Android.apk",
+  "bytes": 47925028,
+  "sha256": "628e131eca4dddbe4d77dddd6faa0bc62f94ac62bfa6eb08608f737ca1786d85",
+  "url": "https://salarymate.sparcgx2420.chatgpt.site/downloads/SalaryMate_v5.3.2_Android.apk",
+  "minAndroid": "7.0",
+  "parts": [
+    {
+      "path": "apk/data/v5.3.2-00.bin",
+      "bytes": 4194304,
+      "sha256": "101b871c1cd22036dbff8584cfe0df9549eae171b3bb7a8e6bfae66e43c5917b",
+      "gitBlob": "35151121fab4b54ddd6764c94e8f76c2ec5a1932"
+    },
+    {
+      "path": "apk/data/v5.3.2-01.bin",
+      "bytes": 4194304,
+      "sha256": "a864cdc8781078ddf47c6d170fd066e336004fc3f833ef245878f7a8f5d5025b",
+      "gitBlob": "c282dc92914daf5d2dc11e509122390c159b7144"
+    },
+    {
+      "path": "apk/data/v5.3.2-02.bin",
+      "bytes": 4194304,
+      "sha256": "234cba69ba2dfcfdea2ccb334f5108e3d4edb24a74597e360ff3dcdb1500cc46",
+      "gitBlob": "94f9a9bd94b86bfddd9382a586eb079e46b6f259"
+    },
+    {
+      "path": "apk/data/v5.3.2-03.bin",
+      "bytes": 4194304,
+      "sha256": "d6d85f526bb4aba05a00ceab7ae722026f01f839be35bde7a56518ac0fac1af9",
+      "gitBlob": "6924d3c67584935f7f2148b2b6690e9dd860552f"
+    },
+    {
+      "path": "apk/data/v5.3.2-04.bin",
+      "bytes": 4194304,
+      "sha256": "19d23067bc604d7a939124f1128defa959dc71049937e05f29c01c669382362a",
+      "gitBlob": "d3704f07d2b37d3dc0f892e9b412463aabda58c7"
+    },
+    {
+      "path": "apk/data/v5.3.2-05.bin",
+      "bytes": 4194304,
+      "sha256": "4f8800101f57cb9dcdbc0c7c8943b82e4f9e4aeb90acc11acdaa6d381cb7fa61",
+      "gitBlob": "c353d0f46d585afc942e40bac062861d260172b8"
+    },
+    {
+      "path": "apk/data/v5.3.2-06.bin",
+      "bytes": 4194304,
+      "sha256": "b8aff3231eb6d43d3550fb43ca479e75b8c038fbd10f909afab40f7a8e7e70d3",
+      "gitBlob": "c40289ba392a6fa6736034004e98022b21642252"
+    },
+    {
+      "path": "apk/data/v5.3.2-07.bin",
+      "bytes": 4194304,
+      "sha256": "487c47716a741ca6510565baa3d6c1c842ad372f6fde1463afa38f5b7cc91f85",
+      "gitBlob": "fc1e5bf53401c82b43f2d07df9a75c149fdb285e"
+    },
+    {
+      "path": "apk/data/v5.3.2-08.bin",
+      "bytes": 4194304,
+      "sha256": "dcca1fa538d7f49eee234ce69ef07caaf413efba4617cfb87b7aa3756d56677f",
+      "gitBlob": "74fc6f1c85c7f93742423cff6fda4e925e2e582b"
+    },
+    {
+      "path": "apk/data/v5.3.2-09.bin",
+      "bytes": 4194304,
+      "sha256": "43d14be0dc0719ef104fbd50d3345804dad2af7bfefda0b2b179f1a03ca185a6",
+      "gitBlob": "b2d519a1f68f5b2fe7896bbb0d0ca0549e1f9536"
+    },
+    {
+      "path": "apk/data/v5.3.2-10.bin",
+      "bytes": 4194304,
+      "sha256": "cb0a2cfcf828388a750bebaf15af41e8f82fe02e640dc52f2d8d1d818b5529a8",
+      "gitBlob": "855c0578dd30ccf7312377423f6472b10fa0a109"
+    },
+    {
+      "path": "apk/data/v5.3.2-11.bin",
+      "bytes": 1787684,
+      "sha256": "32370e27189c0ca0fd2e97628cabcccf11717936962578fa1c72d64cd7d3b5c9",
+      "gitBlob": "3f6bd2fb69d539380bba693f9415dc14008ac569"
+    }
+  ]
+}

@@ -5,13 +5,15 @@ import vm from 'node:vm';
 import {createHash} from 'node:crypto';
 
 const root=new URL('../',import.meta.url),read=name=>fs.readFileSync(new URL(name,root),'utf8');
-test('Android development identity is isolated and keeps frozen source out of its launcher',()=>{
+test('Android release keeps the existing package identity and a single local launcher',()=>{
  const config=JSON.parse(read('native-android/capacitor.config.json'));
  assert.equal(config.appId,'com.salarymate.personal.dev');
  assert.deepEqual(config.server,{hostname:'salarymate.sparcgx2420.chatgpt.site',androidScheme:'https'});
  const gradle=read('native-android/android/app/build.gradle');
  assert.match(gradle,/applicationId "com.salarymate.personal.dev"/);
- assert.match(gradle,/versionCode 5000099/);assert.match(gradle,/versionName "5.0.0-dev.2-R99"/);
+ assert.match(gradle,/versionCode 5030201/);assert.match(gradle,/versionName "5.3.2"/);
+ assert.equal(JSON.parse(read('native-android/package.json')).version,'5.3.2');
+ assert.equal(config.appName,'SalaryMate v5.3.2 正式版');
  const manifest=read('native-android/android/app/src/main/AndroidManifest.xml');
  assert.match(manifest,/android:allowBackup="false"/);assert.match(manifest,/android:usesCleartextTraffic="false"/);
  assert.equal((manifest.match(/android.intent.category.LAUNCHER/g)||[]).length,1);
@@ -33,7 +35,7 @@ test('Android assets preserve the selected release, non-blocking first screen an
   else if(file.path==='android-legacy-backup.js')assert.deepEqual(bytes,fs.readFileSync(new URL('scripts/lib/'+file.path,root)),file.path);
   else if(file.path!=='index.html')assert.deepEqual(bytes,fs.readFileSync(new URL('dist/dev/v5.0.0-dev.2/'+file.path,root)),file.path);
  }
- for(const file of ['styles-core.css','styles.css','ornate-flight.js','startup.js','legal-data.js','art/jingyu-flight-r70.png'])assert.ok(meta.files.some(item=>item.path===file));
+ for(const file of ['styles-core.css','styles.css','ornate-flight.js','startup.js','legal-data.js','release-history.js','art/jingyu-flight-r70.png'])assert.ok(meta.files.some(item=>item.path===file));
  const html=read('native-android/www/index.html');
  assert.match(html,/data-startup-style/);assert.match(html,/data-style-core media="print"/);
  assert.match(html,/<input id="jsonImport" type="file" accept="application\/json,application\/octet-stream,\.json,\.salarymate"/);

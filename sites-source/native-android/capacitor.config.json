@@ -1,6 +1,6 @@
 {
   "appId": "com.salarymate.personal.dev",
-  "appName": "SalaryMate v5.0.0 正式版",
+  "appName": "SalaryMate v5.3.2 正式版",
   "webDir": "www",
   "plugins": {
     "CapacitorSQLite": {

@@ -53,7 +53,7 @@ export default {async fetch(request){
   return new Response(null,{status:302,headers:{location:target.href,'cache-control':'no-store'}});
  }
  if(['/apk','/apk/','/apk/index.html'].includes(url.pathname)&&['GET','HEAD'].includes(request.method))return new Response(null,{status:302,headers:{location:'https://sparcgx.github.io/SalaryMate/apk/','cache-control':'no-store'}});
- if(url.pathname==='/downloads/SalaryMate_v5.0.0_Android.apk')return androidDownload(request);
+ if(isAndroidDownloadPath(url.pathname))return androidDownload(request);
  if(url.pathname==='/api/health'){
   if(!['GET','HEAD'].includes(request.method))return new Response('Method not allowed',{status:405});
   return new Response(request.method==='HEAD'?null:JSON.stringify({ok:true,service:'salarymate-market',version:${JSON.stringify(serviceVersion)}}),{headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'}});

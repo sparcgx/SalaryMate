@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">SalaryMate v5.0.0 正式版</string>
-    <string name="title_activity_main">SalaryMate v5.0.0 正式版</string>
+    <string name="app_name">SalaryMate v5.3.2 正式版</string>
+    <string name="title_activity_main">SalaryMate v5.3.2 正式版</string>
     <string name="package_name">com.salarymate.personal.dev</string>
     <string name="custom_url_scheme">com.salarymate.personal.dev</string>
 </resources>

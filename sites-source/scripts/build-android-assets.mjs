@@ -8,6 +8,10 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const source=path.join(root,'dist/dev/v5.0.0-dev.2');
 const target=path.join(root,'native-android/www');
 const stage=target+'.building';
+for(const directory of [target,stage]){
+ if(path.dirname(directory)!==path.join(root,'native-android'))throw new Error('Android output must stay in native-android.');
+ if(fs.existsSync(directory)&&fs.lstatSync(directory).isSymbolicLink())throw new Error('Android output cannot be a symbolic link.');
+}
 const version=fs.readFileSync(path.join(source,'app.js'),'utf8').match(/const APP_VERSION = '([^']+)'/)?.[1];
 const args=process.argv.slice(2);
 if(args.length&&!(args.length===2&&args[0]==='--baseline-apk'))throw new Error('Use --baseline-apk /absolute/path/SalaryMate.apk.');
@@ -32,8 +36,9 @@ if(baselineApk){
  for(const name of runtimes)fs.copyFileSync(path.join(root,'scripts/lib',name),path.join(stage,name));
 }
 let html=fs.readFileSync(path.join(stage,'index.html'),'utf8');
-const startup=`<script defer src="./startup.js?v=${version}"></script>`;
-if(!html.includes(startup))throw new Error('Unexpected startup entry.');
+const startupEntries=[...html.matchAll(/<script defer src="\.\/startup\.js\?v=([\w.-]+)"><\/script>/g)];
+if(startupEntries.length!==1||!(startupEntries[0][1]===version||startupEntries[0][1].startsWith(version+'-')))throw new Error('Unexpected startup entry or release cache version.');
+const startup=startupEntries[0][0];
 if(!baselineApk){
 // Old native encrypted backups use .salarymate/octet-stream. Keep the
 // website picker unchanged and admit those files only in the Android package.
