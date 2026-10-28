@@ -77,6 +77,9 @@ test('snapshot contains current calendar, every offline scene and original payro
  assert.equal(manifest.omitted.length,3);
  for(const file of ['jingyu-hd2d-r74.png','jingyu-flight-r70.png',...['a','b','c','d'].map(x=>'jingyu-flight-r73-'+x+'.png'),'jingyu-cast-r76.png',...['blade','tornado'].map(x=>'jingyu-wind-'+x+'-r75.png'),...['bullet','spear','vortex'].map(x=>'jingyu-wind-'+x+'-r78.png')])assert.ok(manifest.files.some(f=>f.path==='art/'+file),file);
  assert.match(await read('native-desktop/www/app.js'),/officeCalendarBadge/);
+ const startup=await read('native-desktop/www/startup.js'),history=await read('dist/dev/v5.0.0-dev.2/release-history.js');
+ for(const [,tag]of history.matchAll(/tag:'([^']+)'/g))assert.ok(startup.includes(`tag:'${tag}'`),'Historical release remains exact: '+tag);
+ assert.ok(startup.includes('releases/download/v5.3.2-desktop.1/SalaryMate_v5.3.2_win_x64.exe'));
 });
 test('desktop scripts pass syntax and exact CSP without enabling Node in renderer',async()=>{
  const html=await read('native-desktop/www/index.html'),manifest=JSON.parse(await read('native-desktop/www/desktop-asset-manifest.json'));

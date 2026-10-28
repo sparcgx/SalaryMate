@@ -43,7 +43,8 @@ await fs.copyFile(path.join(root,'scripts/lib/android-legacy-backup.js'),path.jo
 let html=await fs.readFile(path.join(stage,'index.html'),'utf8');
 // The installer becomes public together with this release; retain current live
 // web links until the release workflow has published both verified packages.
-html=html.replace(/v5\.\d+\.\d+-desktop\.\d+/g,`v${pkg.version}-desktop.${pkg.desktopRelease}`).replace(/SalaryMate_v5\.\d+\.\d+_(win|mac)_/g,`SalaryMate_v${pkg.version}_$1_`);
+const desktopReleaseLinks=value=>value.replace(/(https:\/\/github\.com\/sparcgx\/SalaryMate\/releases\/(?:download|tag)\/)v5\.\d+\.\d+-desktop\.\d+/g,`$1v${pkg.version}-desktop.${pkg.desktopRelease}`).replace(/SalaryMate_v5\.\d+\.\d+_(win|mac)_/g,`SalaryMate_v${pkg.version}_$1_`);
+html=desktopReleaseLinks(html);
 const entry=html.match(/<script defer src="\.\/startup\.js\?v=[^"]+"><\/script>/)?.[0];if(!entry)throw Error('Missing startup entry');
 html=once(html,entry,'<script defer src="./desktop-runtime.js"></script>\n  <script defer src="./desktop-legacy-backup.js"></script>\n  <script defer src="./desktop-updates.js"></script>\n  <script defer src="./desktop-features.js"></script>\n  '+entry);
 html=html.replace(/\s*<link rel="manifest"[^>]*>/,'');
@@ -57,7 +58,9 @@ await fs.writeFile(path.join(stage,'index.html'),html);
 const zhOld='資料預設儲存在目前瀏覽器；啟用 Google Drive 備份後，備份會傳至你授權的 Google 帳戶。';
 const zhNew='桌面版資料儲存在此電腦，與網站及 Android 分開。一般／加密備份可手動搬移；Drive 備份請選自己的 Drive 電腦版同步資料夾。';
 let startup=await fs.readFile(path.join(stage,'startup.js'),'utf8');
-startup=startup.replace(/v5\.\d+\.\d+-desktop\.\d+/g,`v${pkg.version}-desktop.${pkg.desktopRelease}`).replace(/SalaryMate_v5\.\d+\.\d+_(win|mac)_/g,`SalaryMate_v${pkg.version}_$1_`);
+// Only current installer URLs are adapted. Historical release tags must retain
+// their original version so the version center opens the matching release.
+startup=desktopReleaseLinks(startup);
 // i18n keys and the app each contain this label, so replace both consistently.
 if(!startup.includes(zhOld))throw Error('Missing desktop data notice');
 startup=startup.replaceAll(zhOld,zhNew);
