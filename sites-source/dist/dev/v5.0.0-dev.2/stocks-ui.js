@@ -93,8 +93,14 @@
         : dated?`<time class="stock-quote-date" datetime="${esc(a.quoteDate)}" aria-label="${esc(at||a.quoteDate)}">${date}</time>`:'<span class="stock-quote-date">—</span>';
       const percent=quoted&&typeof a.quoteChangePercent==='number'&&Number.isFinite(a.quoteChangePercent)?a.quoteChangePercent:null;
       const change=percent==null?'—':`${percent>0?'+':''}${listPercentFormat.format(Object.is(percent,-0)?0:percent)}%`;
+      const amount=quoted&&typeof a.quoteChange==='number'&&Number.isFinite(a.quoteChange)?(Object.is(a.quoteChange,-0)?0:a.quoteChange):null;
+      const direction=amount==null?'unknown':amount>0?'up':amount<0?'down':'flat';
+      const directionLabel=amount==null?'漲跌額待更新':amount>0?'上漲':amount<0?'下跌':'平盤';
+      const amountText=amount==null?'—':`${amount>0?'+':''}${listPriceFormat.format(amount)}`;
+      const amountLabel=amount==null?directionLabel:`${root.SalaryMateI18n.text(directionLabel)} ${listPriceFormat.format(Math.abs(amount))} ${a.currency}`;
+      const amountHtml=`<div class="stock-quote-amount" data-change-direction="${direction}"><dt title="${esc(a.currency)}">漲跌額</dt><dd><strong class="stock-quote-value ${tone(amount)}" aria-label="${esc(amountLabel)}">${amount==null?'':`<span class="stock-change-direction" aria-hidden="true">${amount>0?'▲':amount<0?'▼':'＝'}</span>`}${amountText}</strong></dd></div>`;
        const closeMeta=closed&&dated?`<small class="stock-quote-meta stock-close-meta"><span>${esc(source)}</span><span>資料日期 <time datetime="${esc(a.quoteDate)}">${esc(a.quoteDate)}</time></span></small>`:'';
-       return `<div class="stock-list-price stock-list-price-summary"><dl class="stock-quote-summary" title="${esc(meta)}"><div><dt>${label}</dt><dd><strong class="stock-quote-value">${quoted?listPriceFormat.format(a.quotePrice):'待更新'}</strong>${stamp}</dd></div><div><dt>漲跌</dt><dd><strong class="stock-quote-value ${tone(percent)}"${percent==null?' aria-label="漲跌待更新"':''}>${change}</strong></dd></div></dl>${closeMeta}${quoteLiveBadge(a)}${navInfo(a)}</div>`;
+       return `<div class="stock-list-price stock-list-price-summary"><dl class="stock-quote-summary" title="${esc(meta)}"><div><dt>${label}</dt><dd><strong class="stock-quote-value">${quoted?listPriceFormat.format(a.quotePrice):'待更新'}</strong>${stamp}</dd></div>${amountHtml}<div><dt>漲跌幅</dt><dd><strong class="stock-quote-value ${tone(percent)}"${percent==null?' aria-label="漲跌待更新"':''}>${change}</strong></dd></div></dl>${closeMeta}${quoteLiveBadge(a)}${navInfo(a)}</div>`;
     }
     const empty=(label,action)=>`<div class="stock-empty"><h3>${label}</h3><p>輸入自己的實際資料，這裡不會預先放入示範持股。</p>${action||btn('新增股票','asset','',true)}</div>`;
     const stat=(label,value,hint='',cls='')=>`<div class="stock-stat"><span>${label}</span><strong class="${cls}">${value}</strong><small>${hint}</small></div>`;

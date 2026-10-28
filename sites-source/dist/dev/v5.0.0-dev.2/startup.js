@@ -2849,7 +2849,18 @@ globalThis.SalaryMateEnglish={
   "v5.2.0 正式版": "v5.2.0 Stable",
   "SalaryMate · v5.2.0 正式版": "SalaryMate · v5.2.0 Stable",
   "桌面更新套件只下載程式內容，保留已安裝主系統。到「設定 → 桌面工具 → 更新中心」檢查新版，下載或匯入相容套件，備份後重新啟動套用。主系統有變更時仍需完整安裝檔。": "Desktop content packages update application content while retaining the installed runtime. Go to Settings > Desktop tools > Update center, check for updates, download or import a compatible package, then back up and restart. Runtime changes still require a full installer.",
-  "v5.3.1 桌面封裝 3 修正差異更新讀取失敗。封裝 1／2 及更早版本需更新一次完整安裝檔：先匯出備份，再更新原安裝位置，不必先解除安裝。之後相容更新仍可使用套件。": "v5.3.1 Desktop package 3 fixes delta-update file reading. Package 1/2 and earlier need one full installer upgrade: export a backup first, then update the existing installation without uninstalling. Later compatible updates can still use content packages."
+  "v5.3.1 桌面封裝 3 修正差異更新讀取失敗。封裝 1／2 及更早版本需更新一次完整安裝檔：先匯出備份，再更新原安裝位置，不必先解除安裝。之後相容更新仍可使用套件。": "v5.3.1 Desktop package 3 fixes delta-update file reading. Package 1/2 and earlier need one full installer upgrade: export a backup first, then update the existing installation without uninstalling. Later compatible updates can still use content packages.",
+  "版本中心": "Version center",
+  "更新內容與版本紀錄": "Updates and version history",
+  "查看更新": "View updates",
+  "漲跌額": "Price change",
+  "漲跌幅": "Change %",
+  "漲跌額待更新": "Price change unavailable",
+  "上漲": "Up",
+  "下跌": "Down",
+  "平盤": "Unchanged",
+  "v5.3.2 正式版": "v5.3.2 Stable",
+  "SalaryMate · v5.3.2 正式版": "SalaryMate · v5.3.2 Stable"
 };
 
 
@@ -3244,7 +3255,7 @@ globalThis.SalaryMateEnglish={
 
 // Website-only style packages. The portable edition already contains all code and CSS.
 (() => {
- const version='5.3.1-desktop3';
+ const version='5.3.2-version2';
  const base=new URL('./',document.baseURI);
  const core=document.querySelector('link[data-style-core]');
  let css=null,cssReady=false,cssPending=null,flightPending=null;
@@ -4567,8 +4578,14 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
         : dated?`<time class="stock-quote-date" datetime="${esc(a.quoteDate)}" aria-label="${esc(at||a.quoteDate)}">${date}</time>`:'<span class="stock-quote-date">—</span>';
       const percent=quoted&&typeof a.quoteChangePercent==='number'&&Number.isFinite(a.quoteChangePercent)?a.quoteChangePercent:null;
       const change=percent==null?'—':`${percent>0?'+':''}${listPercentFormat.format(Object.is(percent,-0)?0:percent)}%`;
+      const amount=quoted&&typeof a.quoteChange==='number'&&Number.isFinite(a.quoteChange)?(Object.is(a.quoteChange,-0)?0:a.quoteChange):null;
+      const direction=amount==null?'unknown':amount>0?'up':amount<0?'down':'flat';
+      const directionLabel=amount==null?'漲跌額待更新':amount>0?'上漲':amount<0?'下跌':'平盤';
+      const amountText=amount==null?'—':`${amount>0?'+':''}${listPriceFormat.format(amount)}`;
+      const amountLabel=amount==null?directionLabel:`${root.SalaryMateI18n.text(directionLabel)} ${listPriceFormat.format(Math.abs(amount))} ${a.currency}`;
+      const amountHtml=`<div class="stock-quote-amount" data-change-direction="${direction}"><dt title="${esc(a.currency)}">漲跌額</dt><dd><strong class="stock-quote-value ${tone(amount)}" aria-label="${esc(amountLabel)}">${amount==null?'':`<span class="stock-change-direction" aria-hidden="true">${amount>0?'▲':amount<0?'▼':'＝'}</span>`}${amountText}</strong></dd></div>`;
        const closeMeta=closed&&dated?`<small class="stock-quote-meta stock-close-meta"><span>${esc(source)}</span><span>資料日期 <time datetime="${esc(a.quoteDate)}">${esc(a.quoteDate)}</time></span></small>`:'';
-       return `<div class="stock-list-price stock-list-price-summary"><dl class="stock-quote-summary" title="${esc(meta)}"><div><dt>${label}</dt><dd><strong class="stock-quote-value">${quoted?listPriceFormat.format(a.quotePrice):'待更新'}</strong>${stamp}</dd></div><div><dt>漲跌</dt><dd><strong class="stock-quote-value ${tone(percent)}"${percent==null?' aria-label="漲跌待更新"':''}>${change}</strong></dd></div></dl>${closeMeta}${quoteLiveBadge(a)}${navInfo(a)}</div>`;
+       return `<div class="stock-list-price stock-list-price-summary"><dl class="stock-quote-summary" title="${esc(meta)}"><div><dt>${label}</dt><dd><strong class="stock-quote-value">${quoted?listPriceFormat.format(a.quotePrice):'待更新'}</strong>${stamp}</dd></div>${amountHtml}<div><dt>漲跌幅</dt><dd><strong class="stock-quote-value ${tone(percent)}"${percent==null?' aria-label="漲跌待更新"':''}>${change}</strong></dd></div></dl>${closeMeta}${quoteLiveBadge(a)}${navInfo(a)}</div>`;
     }
     const empty=(label,action)=>`<div class="stock-empty"><h3>${label}</h3><p>輸入自己的實際資料，這裡不會預先放入示範持股。</p>${action||btn('新增股票','asset','',true)}</div>`;
     const stat=(label,value,hint='',cls='')=>`<div class="stock-stat"><span>${label}</span><strong class="${cls}">${value}</strong><small>${hint}</small></div>`;
@@ -5486,12 +5503,60 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
 })(globalThis);
 
 
+;/* SalaryMate module: release-history.js */
+/* Bundled release notes. Dates for earlier releases are Asia/Taipei dates
+ * verified against the official desktop releases; no network request on open. */
+(function(root){
+ 'use strict';
+ const text=(zh,en)=>root.SalaryMateI18n?.language?.()==='en'?en:zh;
+ const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const entries=[
+  {version:'5.3.2',date:'2026-10-29',title:['漲跌數值與版本中心','Price changes and version center'],items:[
+   ['股票／ETF 行情新增漲跌額，與最新價、漲跌幅並列；上漲、下跌、平盤皆有方向標示。','Stock and ETF quotes now show price change between the latest price and percentage change, with up, down and unchanged indicators.'],
+   ['新增版本中心：查看目前版本、更新日期與各版重點；設定與側欄版本號都可開啟。','Added a version center showing the current version, release dates and changes, accessible from Settings and the sidebar version.'],
+   ['沿用原始行情數值，缺少資料顯示「—」；既有薪資、投資與備份格式保持相容。','Uses source-provided changes and shows a dash when unavailable. Existing salary, investment and backup formats remain compatible.']
+  ]},
+  {version:'5.3.1',package:3,date:'2026-10-28',tag:'v5.3.1-desktop.3',title:['修正差異更新失敗','Fixed delta update failures'],items:[
+   ['修正安裝版讀取差異更新檔案時的誤判，補上具體錯誤提示。','Fixed packaged-file reading during delta updates and added specific error messages.'],
+   ['加入 Windows／Mac 封裝更新與還原測試。封裝 1／2 需更新一次完整安裝檔，後續相容版本可使用內容套件。','Added Windows and Mac packaged update and rollback tests. Packages 1/2 need one full installer upgrade; later compatible versions can use content packages.']
+  ]},
+  {version:'5.3.1',package:2,date:'2026-10-28',tag:'v5.3.1-desktop.2',title:['小圖示與星期六預設修正','Icons and Saturday defaults'],items:[
+   ['選單、功能按鈕、設定及下拉選項加入小圖示，保留文字標示。','Added small icons to navigation, buttons, settings and select options while retaining text labels.'],
+   ['星期六新增加班預設 8 小時，保留手動輸入時數與既有紀錄。','New Saturday overtime entries default to 8 hours; manual values and existing records are retained.']
+  ]},
+  {version:'5.3.1',package:1,date:'2026-10-24',tag:'v5.3.1-desktop.1',title:['更新與啟動穩定度','Update and startup stability'],items:[
+   ['版本狀態成功存檔後才切換；重複操作依序處理，保留正確的上一版紀錄。','Version changes take effect only after saving succeeds; overlapping operations are serialized and the previous version is retained.'],
+   ['無法保存還原狀態時，開啟可用版本並顯示提示，避免反覆重新啟動。','If recovery state cannot be saved, opens a working version with an explanation instead of repeatedly restarting.']
+  ]},
+  {version:'5.3.0',date:'2026-10-23',tag:'v5.3.0-desktop.1',title:['更新套件與失敗還原','Content updates and rollback'],items:[
+   ['新增下載／匯入內容套件、備份後套用與還原上一版；每個檔案先經校驗。','Added content-package download and import, backup before applying, and rollback, with file verification.']
+  ]},
+  {version:'5.2.1',date:'2026-10-22',tag:'v5.2.1-desktop.1',title:['深色介面可讀性','Dark theme readability'],items:[
+   ['修正深色、晚霧星紫與 HD-2D 介面的智慧分析卡片、文字與圖表對比。','Improved insight cards, text and chart contrast in Dark, Dusk Violet and HD-2D themes.']
+  ]},
+  {version:'5.2.0',date:'2026-10-22',tag:'v5.2.0-desktop.1',title:['原創圖示與智慧分析','Original icons and investment insights'],items:[
+   ['加入股票、ETF 等原創圖示，以及依近期收盤價計算的趨勢、動能與風險觀察。','Added original stock and ETF icons, plus trend, momentum and risk observations based on recent closing prices.']
+  ]},
+  {version:'5.1.0',date:'2026-10-21',tag:'v5.1.0-desktop.1',title:['台股與美股盤中行情','Taiwan and US market quotes'],items:[
+   ['交易時段每 60 秒查詢行情，顯示來源時間與即時／延遲狀態；收盤後補抓一次。','Queries quotes every 60 seconds during trading hours, displays source time and freshness, and checks once after the close.']
+  ]}
+ ];
+ const versionLabel=e=>'v'+e.version+(e.package?' · '+text('桌面封裝 ','Desktop package ')+e.package:'');
+ function render(version){
+  const platform=root.SalaryMateDesktop?.platform;
+  const channel=platform==='win32'?text('Windows 桌面版','Windows desktop'):platform==='darwin'?text('Mac 桌面版','Mac desktop'):root.Capacitor?.isNativePlatform?.()?text('Android 版','Android'):root.SalaryMatePortable||root.location?.protocol==='file:'?text('離線網頁版','Offline HTML'):text('網頁版','Web app');
+  return `<section id="versionCenterPanel" class="version-center"><header class="version-center-current"><div><span class="version-center-eyebrow">${text('目前使用','Currently using')}</span><h2>SalaryMate <strong>v${esc(version)}</strong></h2><p>${channel}<span data-version-desktop></span></p></div><span class="version-center-badge">${text('正式版','Stable')}</span></header><p class="hint">${text('查看這個版本新增了什麼，以及近期的修正紀錄。','See what is new in this version and review recent fixes.')}</p><div class="version-center-history">${entries.map((e,i)=>`<details class="version-center-release" ${i===0?'open':''}><summary><span><strong>${esc(versionLabel(e))}</strong><span class="version-center-release-title">${text(...e.title)}</span></span><time datetime="${e.date}">${e.date.replaceAll('-','/')}</time></summary><ul>${e.items.map(item=>`<li>${text(...item)}</li>`).join('')}</ul>${e.tag?`<a class="version-center-source" href="https://github.com/sparcgx/SalaryMate/releases/tag/${e.tag}" target="_blank" rel="noopener noreferrer">${text('查看這版發行說明','View this release')}</a>`:''}</details>`).join('')}</div><p class="hint">${text('歷史日期依桌面正式發行紀錄（台北時間）；網站與各平台可能分批更新。','Earlier dates follow official desktop releases in Taipei time; the website and platforms may be updated separately.')}</p><div class="form-actions">${platform?`<button type="button" class="btn btn-primary" data-action="open-desktop-updates">${text('桌面更新中心','Desktop update center')}</button>`:''}<a class="btn" href="https://github.com/sparcgx/SalaryMate/releases" target="_blank" rel="noopener noreferrer">${text('所有桌面發行紀錄','All desktop releases')}</a><button type="button" class="btn" data-action="close-dialog">${text('關閉','Close')}</button></div></section>`;
+ }
+ root.SalaryMateReleaseHistory=Object.freeze({version:'5.3.2',render,entries});
+})(globalThis);
+
+
 ;/* SalaryMate module: app.js */
 
   (() => {
     'use strict';
 
-    const APP_VERSION = '5.3.1';
+    const APP_VERSION = '5.3.2';
     const SCHEMA_VERSION = 15;
     const STORAGE_KEY = 'salarymate_v5_full_state';
     const LEGACY_KEYS = {
@@ -8508,6 +8573,7 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
       tax:'<path d="M5 20V10h3v10m4 0V4h3v16m4 0v-6h3v6M3 21h20"/>',
       settings:'<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="18" r="2"/>',
       overtime:'<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>',
+      history:'<path d="M3 11a9 9 0 1 1 2.5 7M3 4v7h7M12 7v5l3 2"/>',
       leave:'<path d="M12 21V10m-7 2c-4-9 10-13 15-8 0 10-5 14-12 10m4-4 6-4"/>',
       check:'<circle cx="12" cy="12" r="9"/><path d="m7 12 3 3 7-7"/>',
       plus:'<path d="M12 5v14M5 12h14"/>',
@@ -8575,6 +8641,8 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
       if(action==='toggle-market-quotes')return 'link';
       if(action==='toggle-market-auto')return 'refresh';
       if(action==='toggle-market-details')return 'expand';
+      if(action==='open-version-center')return 'history';
+      if(action==='open-desktop-updates')return 'refresh';
       if(action==='quotes')return 'edit';
       if(/manual|prices/.test(action))return 'edit';
       if(/delete|remove|clear-data/.test(action))return 'trash';
@@ -8817,7 +8885,7 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
     const renderV5Settings = () => {
       const c=currentCompany();
       const settingRow=(title,detail,action,label='開啟',extra='')=>`<div class="v5-setting-row"><div><h3>${title}</h3><p>${detail}</p></div>${v5Button(label,action,extra)}</div>`;
-      return `<section class="view">${v5Title('設定')}<div class="v5-settings-columns"><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">工作與公司</span></summary><div class="v5-settings-content">${settingRow('公司管理',c?`${userHtml(c.name)} · 共 ${state.companies.length} 家公司`:'建立任職公司與薪資基礎','manage-companies')}${settingRow('薪資規則','本薪、津貼、扣項與計薪區間','company-salary-rules','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}${settingRow('辦公日曆','政府機關上班與放假日參考','open-reference-calendar','查閱')}${settingRow('勞保／健保級距核對','按身分與適用日期核對投保金額','open-reference-insurance','核對')}${settingRow('歷史匯率','依日期查閱參考值，保留實際交易匯率','open-reference-fx','查詢')}${settingRow('假別額度管理','特休、共用額度與各假別設定','v5-leave-settings','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">顯示與操作</span></summary><div class="v5-settings-content"><label class="v5-language-setting"><span>介面語言</span><select class="field-select" data-language-preference><option value="auto">跟隨系統</option><option value="zh">繁體中文</option><option value="en">English</option></select></label>${settingRow('版面設定',escapeHtml(INTERFACE_STYLES[normalizeInterfaceStyle(ui.interfaceStyle)].name)+' · 介面風格、文字與密度、重點色','open-interface-settings','調整')}</div></details></div><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">資料管理</span></summary><div class="v5-settings-content"><p class="hint">資料預設儲存在目前瀏覽器；啟用 Google Drive 備份後，備份會傳至你授權的 Google 帳戶。</p><p class="hint">各入口同步的是程式版本，個人資料不會自動互通。切換網址、瀏覽器，或移動／更名單一網頁檔前，請先匯出備份，再於新入口匯入並核對。</p>${settingRow('備份全部資料','一般 JSON 或密碼加密備份，包含薪資與全部投資資料','export-json','下載')}${settingRow('匯入備份','一般、加密或 SmartPortfolio 備份；可選覆蓋或新增','restore-backup-file','選擇檔案')}${settingRow('自己的 Google Drive','<span data-google-summary>'+escapeHtml(window.SalaryMateCloud?.summary()||'儲存至自己的 Google Drive，可選密碼加密')+'</span>','open-google-drive','開啟')}${settingRow('匯出報表','薪資、請假及出勤分析 CSV','v5-export-options','選擇報表')}${settingRow('資料檢查','檢查公司關聯、重複紀錄與補休餘額','data-health','檢查')}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">下載應用程式</span></summary><div class="v5-settings-content"><div class="v5-setting-row"><div><h3>Windows 64 位元</h3><p>Windows 10／11 · x64 安裝版</p></div><a class="btn btn-small" href="https://github.com/sparcgx/SalaryMate/releases/download/v5.3.1-desktop.3/SalaryMate_v5.3.1_win_x64.exe" target="_blank" rel="noopener noreferrer" aria-label="下載 Windows 64 位元安裝版">下載</a></div><div class="v5-setting-row"><div><h3>Mac M 系列</h3><p>macOS 13 以上 · Apple Silicon 安裝版</p></div><a class="btn btn-small" href="https://github.com/sparcgx/SalaryMate/releases/download/v5.3.1-desktop.3/SalaryMate_v5.3.1_mac_arm64.dmg" target="_blank" rel="noopener noreferrer" aria-label="下載 Mac M 系列安裝版">下載</a></div><div class="v5-setting-row"><div><h3>Android</h3><p>Android 安裝檔與使用說明</p></div><a class="btn btn-small" href="https://sparcgx.github.io/SalaryMate/apk/" target="_blank" rel="noopener noreferrer" aria-label="開啟 Android 下載頁">下載</a></div><p class="hint">桌面版資料獨立儲存；請先匯出備份，再於桌面版匯入並核對。</p><p class="hint">桌面更新套件只下載程式內容，保留已安裝主系統。到「設定 → 桌面工具 → 更新中心」檢查新版，下載或匯入相容套件，備份後重新啟動套用。主系統有變更時仍需完整安裝檔。</p><p class="hint">v5.3.1 桌面封裝 3 修正差異更新讀取失敗。封裝 1／2 及更早版本需更新一次完整安裝檔：先匯出備份，再更新原安裝位置，不必先解除安裝。之後相容更新仍可使用套件。</p><p class="hint"><a href="https://github.com/sparcgx/SalaryMate/releases/tag/v5.3.1-desktop.3" target="_blank" rel="noopener noreferrer">安裝說明與 SHA-256 校驗碼</a></p><p class="hint">Windows 尚無發行者憑證；Mac 尚無 Apple 公證。安裝前請閱讀說明。</p></div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">說明</span></summary><div class="v5-settings-content">${settingRow('授權、隱私與試算','資料保存方式、授權文字與試算範圍','open-legal','閱讀')}<p class="hint">v${APP_VERSION} · 正式版<br>v5 資料獨立保存。可手動匯入薪資備份，原版本的資料仍保留。</p><p class="hint">程式檢查與實機驗證分開記錄；手機與桌面的可讀性、動畫流暢度及 FPS 仍待實機驗證。</p><details class="v5-explanation"><summary>效能數字與驗證範圍</summary><p class="hint">R85 的 77 項程式檢查為該次列出的回歸範圍，不代表所有功能或手機實機驗收完成。</p><p class="hint">R85 測試使用虛構資料：1,000 筆收入收合時，動態產生的 HTML 由 320,942 bytes 減至 7,122 bytes。這是程式產生的內容大小，不是網站下載量、開啟秒數或 FPS。</p><p class="hint">200 檔／10,000 筆交易的測試仍完整走訪 10,000 筆交易一次；200 次是買入／期初交易的代號欄位讀取次數，不是只處理 200 筆交易。</p></details><details class="v5-cleanup"><summary>清除這個版本的資料</summary><p class="hint">請先匯出備份；只清除目前 v5 完整版的資料。</p>${v5Button('清除本機資料','clear-data')}</details></div></details></div></div></section>`;
+      return `<section class="view">${v5Title('設定')}<div class="v5-settings-columns"><div><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">工作與公司</span></summary><div class="v5-settings-content">${settingRow('公司管理',c?`${userHtml(c.name)} · 共 ${state.companies.length} 家公司`:'建立任職公司與薪資基礎','manage-companies')}${settingRow('薪資規則','本薪、津貼、扣項與計薪區間','company-salary-rules','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}${settingRow('辦公日曆','政府機關上班與放假日參考','open-reference-calendar','查閱')}${settingRow('勞保／健保級距核對','按身分與適用日期核對投保金額','open-reference-insurance','核對')}${settingRow('歷史匯率','依日期查閱參考值，保留實際交易匯率','open-reference-fx','查詢')}${settingRow('假別額度管理','特休、共用額度與各假別設定','v5-leave-settings','設定',`data-id="${escapeAttr(c?.id||'')}" ${c?'':'disabled'}`)}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">顯示與操作</span></summary><div class="v5-settings-content"><label class="v5-language-setting"><span>介面語言</span><select class="field-select" data-language-preference><option value="auto">跟隨系統</option><option value="zh">繁體中文</option><option value="en">English</option></select></label>${settingRow('版面設定',escapeHtml(INTERFACE_STYLES[normalizeInterfaceStyle(ui.interfaceStyle)].name)+' · 介面風格、文字與密度、重點色','open-interface-settings','調整')}</div></details></div><div><section class="v5-settings-section version-center-entry">${settingRow('版本中心','v'+APP_VERSION+' · 更新內容與版本紀錄','open-version-center','查看更新')}</section><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">資料管理</span></summary><div class="v5-settings-content"><p class="hint">資料預設儲存在目前瀏覽器；啟用 Google Drive 備份後，備份會傳至你授權的 Google 帳戶。</p><p class="hint">各入口同步的是程式版本，個人資料不會自動互通。切換網址、瀏覽器，或移動／更名單一網頁檔前，請先匯出備份，再於新入口匯入並核對。</p>${settingRow('備份全部資料','一般 JSON 或密碼加密備份，包含薪資與全部投資資料','export-json','下載')}${settingRow('匯入備份','一般、加密或 SmartPortfolio 備份；可選覆蓋或新增','restore-backup-file','選擇檔案')}${settingRow('自己的 Google Drive','<span data-google-summary>'+escapeHtml(window.SalaryMateCloud?.summary()||'儲存至自己的 Google Drive，可選密碼加密')+'</span>','open-google-drive','開啟')}${settingRow('匯出報表','薪資、請假及出勤分析 CSV','v5-export-options','選擇報表')}${settingRow('資料檢查','檢查公司關聯、重複紀錄與補休餘額','data-health','檢查')}</div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">下載應用程式</span></summary><div class="v5-settings-content"><div class="v5-setting-row"><div><h3>Windows 64 位元</h3><p>Windows 10／11 · x64 安裝版</p></div><a class="btn btn-small" href="https://github.com/sparcgx/SalaryMate/releases/download/v5.3.1-desktop.3/SalaryMate_v5.3.1_win_x64.exe" target="_blank" rel="noopener noreferrer" aria-label="下載 Windows 64 位元安裝版">下載</a></div><div class="v5-setting-row"><div><h3>Mac M 系列</h3><p>macOS 13 以上 · Apple Silicon 安裝版</p></div><a class="btn btn-small" href="https://github.com/sparcgx/SalaryMate/releases/download/v5.3.1-desktop.3/SalaryMate_v5.3.1_mac_arm64.dmg" target="_blank" rel="noopener noreferrer" aria-label="下載 Mac M 系列安裝版">下載</a></div><div class="v5-setting-row"><div><h3>Android</h3><p>Android 安裝檔與使用說明</p></div><a class="btn btn-small" href="https://sparcgx.github.io/SalaryMate/apk/" target="_blank" rel="noopener noreferrer" aria-label="開啟 Android 下載頁">下載</a></div><p class="hint">桌面版資料獨立儲存；請先匯出備份，再於桌面版匯入並核對。</p><p class="hint">桌面更新套件只下載程式內容，保留已安裝主系統。到「設定 → 桌面工具 → 更新中心」檢查新版，下載或匯入相容套件，備份後重新啟動套用。主系統有變更時仍需完整安裝檔。</p><p class="hint">v5.3.1 桌面封裝 3 修正差異更新讀取失敗。封裝 1／2 及更早版本需更新一次完整安裝檔：先匯出備份，再更新原安裝位置，不必先解除安裝。之後相容更新仍可使用套件。</p><p class="hint"><a href="https://github.com/sparcgx/SalaryMate/releases/tag/v5.3.1-desktop.3" target="_blank" rel="noopener noreferrer">安裝說明與 SHA-256 校驗碼</a></p><p class="hint">Windows 尚無發行者憑證；Mac 尚無 Apple 公證。安裝前請閱讀說明。</p></div></details><details class="v5-settings-section v5-settings-disclosure"><summary class="v5-settings-summary"><span class="v5-group-title">說明</span></summary><div class="v5-settings-content">${settingRow('授權、隱私與試算','資料保存方式、授權文字與試算範圍','open-legal','閱讀')}<p class="hint">v${APP_VERSION} · 正式版<br>v5 資料獨立保存。可手動匯入薪資備份，原版本的資料仍保留。</p><p class="hint">程式檢查與實機驗證分開記錄；手機與桌面的可讀性、動畫流暢度及 FPS 仍待實機驗證。</p><details class="v5-explanation"><summary>效能數字與驗證範圍</summary><p class="hint">R85 的 77 項程式檢查為該次列出的回歸範圍，不代表所有功能或手機實機驗收完成。</p><p class="hint">R85 測試使用虛構資料：1,000 筆收入收合時，動態產生的 HTML 由 320,942 bytes 減至 7,122 bytes。這是程式產生的內容大小，不是網站下載量、開啟秒數或 FPS。</p><p class="hint">200 檔／10,000 筆交易的測試仍完整走訪 10,000 筆交易一次；200 次是買入／期初交易的代號欄位讀取次數，不是只處理 200 筆交易。</p></details><details class="v5-cleanup"><summary>清除這個版本的資料</summary><p class="hint">請先匯出備份；只清除目前 v5 完整版的資料。</p>${v5Button('清除本機資料','clear-data')}</details></div></details></div></div></section>`;
     };
     const renderV5Companies = () => `<div class="v5-breadcrumb"><button type="button" data-tab="settings">設定</button><span>／ 公司管理</span></div>${renderCompanies()}`;
     const readLeavePoliciesFromForm = (data, policies, hours) => {
@@ -9045,7 +9113,7 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
       const promise=new Promise((resolve,reject)=>{
         const script=document.createElement('script');let timer,settled=false;
         const finish=error=>{if(settled)return;settled=true;clearTimeout(timer);script.onload=script.onerror=null;script.remove();error?reject(error):resolve();};
-        script.src=new URL('./'+file+'?v=5.3.1-desktop3',document.baseURI).href;script.async=true;
+        script.src=new URL('./'+file+'?v=5.3.2-version2',document.baseURI).href;script.async=true;
         script.onload=()=>finish(window[key]?null:Error('Missing module'));script.onerror=()=>finish(Error('Load failed'));
         timer=setTimeout(()=>finish(Error('Load timed out')),20000);document.head.append(script);
       });
@@ -9071,6 +9139,16 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
       }
       try{await referencePending;if(active())show();}
       catch{if(active())openDialog('公開資料工具','<p role="status">資料工具載入失敗，請檢查連線或重新下載完整離線版。</p><button type="button" class="btn" data-action="open-reference-'+kind+'">重試</button>',true);}
+    };
+
+    const openVersionCenter = () => {
+      openDialog('版本中心',window.SalaryMateReleaseHistory.render(APP_VERSION),true);
+      const panel=$('#versionCenterPanel'),revision=dialogRevision;
+      if(window.SalaryMateDesktop?.updateState)void window.SalaryMateDesktop.updateState().then(info=>{
+        if(revision!==dialogRevision||!panel?.isConnected)return;
+        const label=panel.querySelector('[data-version-desktop]');
+        if(label&&Number.isSafeInteger(info.current?.sequence))label.textContent=' · '+(window.SalaryMateI18n.language()==='en'?'Desktop package ':'桌面封裝 ')+info.current.sequence;
+      }).catch(()=>{});
     };
 
     let legalPending=null,legalControllerWatch=false;
@@ -11227,6 +11305,8 @@ root.SalaryMateMarketHours=Object.freeze({MARKET_CALENDARS,MARKET_ZONES,marketLo
         'duplicate-record': duplicateLatestRecord,
         'manage-companies': () => selectPrimaryTab('companies'),
         'open-interface-settings': openInterfaceSettings,
+        'open-version-center': openVersionCenter,
+        'open-desktop-updates': () => { if(window.SalaryMateDesktopUpdates){closeDialog();void window.SalaryMateDesktopUpdates.open();} },
         'open-legal': () => { void openLegal(); },
         'save-company': saveCompanyForm,
         'edit-company': () => openCompanyManager(getCompany(id)),

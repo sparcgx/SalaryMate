@@ -1,11 +1,11 @@
-# SalaryMate v5.3.1 正式版 · Windows / macOS
+# SalaryMate v5.3.2 正式版 · Windows / macOS
 
-v5.3.1 桌面封裝 3，build 5030103，修正從已安裝封裝檔套用差異更新時的讀取失敗，並顯示具體錯誤提示。保留網站的小圖示、星期六加班預設 8 小時及版本切換、啟動與還原修正。資料 KEY `salarymate_v5_full_state`、Schema 15 維持一致。
+v5.3.2 桌面封裝 1，build 5030201，新增股票／ETF 漲跌額與版本中心。v5.3.1 桌面封裝 3 可使用差異更新套件；封裝 1／2 需完整安裝檔升級一次。保留小圖示、星期六預設 8 小時及更新、啟動與還原修正。資料 KEY `salarymate_v5_full_state`、Schema 15 維持一致。
 
 ## 安裝
 
-- Windows 10／11 64 位元：開啟 `SalaryMate_v5.3.1_win_x64.exe`，選擇個人安裝位置。此包不要求系統管理員權限。
-- macOS 13 以上 Apple Silicon（M 系列）：`SalaryMate_v5.3.1_mac_arm64.dmg`。
+- Windows 10／11 64 位元：開啟 `SalaryMate_v5.3.2_win_x64.exe`，選擇個人安裝位置。此包不要求系統管理員權限。
+- macOS 13 以上 Apple Silicon（M 系列）：`SalaryMate_v5.3.2_mac_arm64.dmg`。
 - Intel Mac 保留[桌面封裝 2](https://github.com/sparcgx/SalaryMate/releases/tag/v5.0.0-desktop.2)；本次優化發行只包含 Windows x64 與 Mac arm64。
 - Mac 開啟 DMG，將 SalaryMate 拖到 Applications（應用程式），再從應用程式開啟。
 - 尚未提供發行者簽章憑證。Windows 未有 Authenticode 簽章；Mac 只有 ad-hoc 完整性簽章，沒有 Apple Developer ID 與公證。首次安裝可能被系統阻擋；請核對下載來源與 SHA-256，不要關閉系統的整體安全保護。受管理的電腦可能需要管理員核准。

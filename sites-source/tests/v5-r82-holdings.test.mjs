@@ -6,7 +6,7 @@ import vm from 'node:vm';
 // Pure HTML rendering with native object fixtures. No browser, DOM emulator,
 // real network, account access or user records.
 const base=new URL('../dist/dev/v5.0.0-dev.2/',import.meta.url);
-const scripts=['stocks.js','stocks-ui.js'].map(name=>fs.readFileSync(new URL(name,base),'utf8'));
+const scripts=['stocks.js','market-hours.js','stocks-integrations.js','stocks-ui.js'].map(name=>fs.readFileSync(new URL(name,base),'utf8'));
 const asset=(id,patch={})=>({id,symbol:id==='tw'?'0050':id==='us'?'ACME':'00888',name:id==='tw'?'測試台股 ETF':id==='us'?'Sample US share':'觀察標的',market:id==='us'?'US':'TW',currency:id==='us'?'USD':'TWD',account:id==='tw'?'長期帳戶 <私人>&"':id==='us'?'':'觀察帳戶',quotePrice:120,quoteDate:'2026-10-08',quoteFx:id==='us'?30:1,quoteSource:'TWSE 最新成交',quoteProviderTime:'2026-10-08 13:30:00',quoteCheckedAt:'2026-10-08T14:45:00+08:00',quoteChange:2,quoteChangePercent:1.69,marketInfo:{exchange:id==='us'?'NASDAQ':'TWSE',instrumentType:id==='us'?'stock':'etf'},group:id==='tw'?'長期投資':'',...patch});
 const buy=(id)=>({id:'buy-'+id,assetId:id,date:'2026-10-01',time:'10:00',type:'buy',quantity:10,price:100,amount:0,ratio:1,fee:0,tax:0,fx:id==='us'?30:1,note:''});
 function setup(patch={}){
@@ -14,6 +14,7 @@ function setup(patch={}){
  const state={stockPortfolio:portfolio};
  const context={Intl,Date,URL,console,AbortController,FormData:class extends Map{constructor(form){super(Object.entries(form.values||{}));}},document:{hidden:true,addEventListener(){},querySelector:()=>null},clearTimeout(){},setTimeout(){throw Error('No timer should start during rendering');},SalaryMateI18n:{user:v=>v,text:v=>v}};
  vm.createContext(context);for(const source of scripts)vm.runInContext(source,context);
+ context.SalaryMateStockServices.refreshSessions=async()=>{};
  const core=context.SalaryMateStocks;core.validate(portfolio);
  const ui=context.SalaryMateStocksUI.create({state:()=>state,year:()=>2026,today:()=>'2026-10-08',legacyTotal:()=>0,render(){}});
  const before=JSON.stringify(portfolio),model=JSON.stringify(core.calculate(portfolio,2026,'2026-10-08'));
@@ -24,6 +25,24 @@ function ledger(html){
  return {heads:[...table.matchAll(/<th scope="col">([^<]+)<\/th>/g)].map(m=>m[1]),rows:[...table.split('<tbody>')[1].matchAll(/<tr>([\s\S]*?)<\/tr>/g)].map(m=>[...m[1].matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/g)].map(m=>m[1]))};
 }
 const rowFor=(table,id)=>table.rows.find(row=>row[0].includes('data-id="'+id+'"'));
+
+test('v5.3.2 quote amount sits between price and percentage, preserves source precision and does not change holdings',()=>{
+ for(const [change,direction,number,label,symbol]of [[2.05,'up','+2.05','上漲','▲'],[-2.05,'down','-2.05','下跌','▼'],[0,'flat','0.00','平盤','＝'],[-0,'flat','0.00','平盤','＝'],[0.0031,'up','+0.0031','上漲','▲']]){
+  const h=setup({quotePrice:108.65,quoteChange:change,quoteChangePercent:1.92});
+  for(const tab of ['overview','stocks']){
+   h.ui.click({dataset:{stock:'tab',id:tab},closest:()=>null});const cell=rowFor(ledger(h.render()),'tw')[3];
+   assert.ok(cell.indexOf('最新價')<cell.indexOf('漲跌額'));assert.ok(cell.indexOf('漲跌額')<cell.indexOf('漲跌幅'));
+   assert.ok(cell.includes(`data-change-direction="${direction}"`));assert.ok(cell.includes(`aria-label="${label} ${Math.abs(change).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:4})} TWD"`));
+   assert.ok(cell.includes(`>${symbol}</span>${number}</strong>`));assert.ok(cell.includes('+1.92%'));assert.ok(cell.includes('108.65'));
+  }h.assertUnchanged();
+ }
+});
+test('v5.3.2 missing change remains unavailable, is never inferred from percentage, and USD keeps its currency',()=>{
+ for(const patch of [{quoteChange:null},{quoteChange:undefined},{quotePrice:null,quoteChange:2.05}]){
+  const h=setup(patch),cell=rowFor(ledger(h.render()),'tw')[3];assert.match(cell,/data-change-direction="unknown"[\s\S]*?aria-label="漲跌額待更新">—<\/strong>/);h.assertUnchanged();
+ }
+ const h=setup(),cell=rowFor(ledger(h.render()),'us')[3];assert.ok(cell.includes('aria-label="上漲 2.00 USD"'));h.assertUnchanged();
+});
 
 test('R82 holdings separates classification and account with nine aligned columns and preserved actions',()=>{
  const h=setup(),table=ledger(h.render());
@@ -86,7 +105,7 @@ test('R83 the single refresh stays busy, rejects duplicate requests and recovers
  const h=setup(),card={outerHTML:''};let calls=0,reject;
  const pending=new Promise((resolve,rejectRequest)=>{reject=rejectRequest;});
  // Attach the service before create: create captures this reference.
- h.context.SalaryMateStockServices={fetchQuotes(){calls++;return pending;}};
+ h.context.SalaryMateStockServices.fetchQuotes=()=>{calls++;return pending;};
  const ui=h.context.SalaryMateStocksUI.create({state:()=>({stockPortfolio:h.portfolio}),year:()=>2026,today:()=>'2026-10-08',legacyTotal:()=>0,render(){}});
  h.context.document.hidden=false;h.context.document.querySelector=selector=>selector==='.stock-view'?{}:selector==='[data-market-card]'?card:null;
  const click=()=>ui.click({dataset:{stock:'refresh'},closest:()=>null});click();click();assert.equal(calls,1);

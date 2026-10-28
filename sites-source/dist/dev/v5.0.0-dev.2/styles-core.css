@@ -1272,3 +1272,25 @@ body.jingyu-screen-hit :is(.sidebar,.workspace-shell>.topbar,.workspace-shell>ma
 
 /* Regular-session market updates */
 .stock-session-bar{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center;padding:.6rem 0 .15rem}.stock-session{display:flex;gap:.45rem;flex-wrap:wrap;align-items:baseline;border:1px solid var(--border,#dce2e9);border-radius:.6rem;padding:.4rem .65rem}.stock-session small{opacity:.72}.stock-session[data-phase="open"]{border-color:#2d9b78}.stock-session[data-phase="open"]>span{color:#187451;font-weight:700}.stock-session-frequency{font-size:.8rem;opacity:.78}.stock-live-quality{display:block;font-size:.73rem;opacity:.8;margin-top:.2rem}.stock-live-quality[data-quality="stale"],.stock-live-quality[data-quality="delayed"]{color:#a4560b}.stock-market-policy{font-size:.8rem;line-height:1.6;opacity:.85}
+
+/* v5.3.2: source price changes and bundled release history. */
+.stock-list-price.stock-list-price-summary{width:clamp(280px,32vw,390px)}
+.stock-quote-summary{grid-template-columns:minmax(0,1.2fr) minmax(76px,.8fr) minmax(76px,.8fr)}
+.stock-quote-summary>.stock-quote-amount{text-align:center}
+.stock-quote-summary>.stock-quote-amount :is(dt,dd){padding-left:8px;padding-right:8px}
+.stock-quote-summary>div:last-child{text-align:right}
+.stock-change-direction{font-size:.7em;margin-right:5px;vertical-align:.1em}
+.stock-holdings-table .stock-quote-summary{grid-template-columns:minmax(230px,1fr) minmax(100px,auto) minmax(90px,auto)}
+.stock-holdings-table .stock-list-price.stock-list-price-summary{width:100%;min-width:420px}
+.version-center-link{display:inline-flex;align-items:center;gap:7px;padding:4px 0;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.version-center-link:hover{text-decoration:underline}.version-center-link:focus-visible{outline:2px solid var(--brand);outline-offset:4px}
+.version-center-entry .v5-setting-row{border:0;padding:0;margin:0}
+.version-center{color:var(--ink)}.version-center-current{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding:24px;border:1px solid var(--line);border-radius:var(--radius,16px);background:var(--surface-2)}
+.version-center-eyebrow{font-size:.8125rem;color:var(--muted)}.version-center-current h2{margin:9px 0 12px;font-size:1.3rem;line-height:1.5;color:var(--ink)}.version-center-current h2 strong{display:block;font-size:2rem;font-variant-numeric:tabular-nums}
+.version-center-current p{margin:0;color:var(--muted)}.version-center-badge{padding:5px 11px;border:1px solid var(--line);border-radius:99px;color:var(--ink);font-size:.8125rem;white-space:nowrap}
+.version-center-history{display:grid;gap:12px;margin:24px 0}.version-center-release{padding:18px 20px;border:1px solid var(--line);border-radius:var(--radius,14px);background:var(--surface)}
+.version-center-release>summary{display:flex;justify-content:space-between;align-items:baseline;gap:16px;cursor:pointer;color:var(--ink);list-style:none}.version-center-release>summary::-webkit-details-marker{display:none}
+.version-center-release>summary:after{content:'+';flex:none;color:var(--muted)}.version-center-release[open]>summary:after{content:'−'}
+.version-center-release-title{display:block;margin-top:6px;font-size:.9375rem;color:var(--muted)}.version-center-release time{margin-left:auto;font-size:.8125rem;white-space:nowrap;color:var(--muted)}
+.version-center-release ul{padding-left:1.25rem;margin:18px 0 6px}.version-center .version-center-release li{color:var(--ink);line-height:1.85;margin:7px 0}.version-center-source{display:inline-block;margin-top:12px;color:var(--ink);font-size:.8125rem;text-underline-offset:3px}
+@media(max-width:520px){.version-center-current{padding:18px}.version-center-release{padding:15px}.version-center-release>summary{flex-wrap:wrap;gap:8px}.version-center-release>summary>span{flex:1 1 calc(100% - 28px)}.version-center-release time{order:3;flex-basis:100%;margin-left:0}.version-center-current h2 strong{font-size:1.75rem}.version-center .form-actions{align-items:stretch}.version-center .form-actions>.btn{flex:1 1 100%}}

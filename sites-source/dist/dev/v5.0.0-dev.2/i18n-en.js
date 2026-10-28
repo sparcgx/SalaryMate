@@ -2847,5 +2847,16 @@ globalThis.SalaryMateEnglish={
   "v5.2.0 正式版": "v5.2.0 Stable",
   "SalaryMate · v5.2.0 正式版": "SalaryMate · v5.2.0 Stable",
   "桌面更新套件只下載程式內容，保留已安裝主系統。到「設定 → 桌面工具 → 更新中心」檢查新版，下載或匯入相容套件，備份後重新啟動套用。主系統有變更時仍需完整安裝檔。": "Desktop content packages update application content while retaining the installed runtime. Go to Settings > Desktop tools > Update center, check for updates, download or import a compatible package, then back up and restart. Runtime changes still require a full installer.",
-  "v5.3.1 桌面封裝 3 修正差異更新讀取失敗。封裝 1／2 及更早版本需更新一次完整安裝檔：先匯出備份，再更新原安裝位置，不必先解除安裝。之後相容更新仍可使用套件。": "v5.3.1 Desktop package 3 fixes delta-update file reading. Package 1/2 and earlier need one full installer upgrade: export a backup first, then update the existing installation without uninstalling. Later compatible updates can still use content packages."
+  "v5.3.1 桌面封裝 3 修正差異更新讀取失敗。封裝 1／2 及更早版本需更新一次完整安裝檔：先匯出備份，再更新原安裝位置，不必先解除安裝。之後相容更新仍可使用套件。": "v5.3.1 Desktop package 3 fixes delta-update file reading. Package 1/2 and earlier need one full installer upgrade: export a backup first, then update the existing installation without uninstalling. Later compatible updates can still use content packages.",
+  "版本中心": "Version center",
+  "更新內容與版本紀錄": "Updates and version history",
+  "查看更新": "View updates",
+  "漲跌額": "Price change",
+  "漲跌幅": "Change %",
+  "漲跌額待更新": "Price change unavailable",
+  "上漲": "Up",
+  "下跌": "Down",
+  "平盤": "Unchanged",
+  "v5.3.2 正式版": "v5.3.2 Stable",
+  "SalaryMate · v5.3.2 正式版": "SalaryMate · v5.3.2 Stable"
 };
